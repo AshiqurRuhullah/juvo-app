@@ -14,7 +14,7 @@ internal static class TestDatabase
     private static string Server => Environment.GetEnvironmentVariable("JUVO_TEST_SQL_SERVER") ?? DefaultServer;
 
     public static string NewConnectionString() =>
-        $"Server={Server};Database=JuvoDb_Test_{Guid.NewGuid():N};Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true";
+        $"Server={Server};Database=JuvoDb_Test_{Guid.NewGuid():N};Trusted_Connection=True;TrustServerCertificate=True";
 
     public static async Task DropAsync(string connectionString)
     {

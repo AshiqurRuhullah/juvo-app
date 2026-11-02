@@ -16,7 +16,7 @@ internal sealed class PermissionBehavior<TRequest, TResponse>(ICurrentUser curre
             return ResultFactory<TResponse>.Failure(Error.Unauthorized());
         }
 
-        if (!await checker.HasPermissionAsync(request.Permission, cancellationToken))
+        if (!await checker.HasPermissionAsync(request.Permission, request.Scope, cancellationToken))
         {
             return ResultFactory<TResponse>.Failure(Error.Forbidden());
         }

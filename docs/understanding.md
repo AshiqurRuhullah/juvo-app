@@ -453,11 +453,11 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-D10 | Order source recorded (website, admin-created, Facebook/phone order entered by staff) | M | 8 | Not started | | |
 | FR-D11 | Admin can create an order manually on behalf of a customer (for Facebook/phone orders) using the same rules | M | 8 | Not started | | |
 | FR-D12 | Terms, privacy and return policy acceptance stored with the order | M | 8 | Not started | | |
-| FR-E01 | Create a quick profile in real time from the order confirmation page or the sign-in page using only mobile number and email (email optional) | M | 7 | Not started | | |
+| FR-E01 | Create a quick profile in real time from the order confirmation page or the sign-in page using only mobile number and email (email optional) | M | 7 | Partial | CustomerAuthService.VerifyOtpAsync creates the quick profile | Confirmation-page flow and optional email in Step 7. |
 | FR-E02 | A customer can also create a profile before ordering, from the sign-in page | M | 7 | Not started | | |
-| FR-E03 | Mobile number is the unique key. Orders placed as guest with the same verified mobile number are automatically attached to the profile afte… | M | 7 | Not started | | |
-| FR-E04 | Sign-in options: mobile + OTP (default), email + OTP, email/mobile + password (if set), Google sign-in (Could) | M | 7 | Not started | | |
-| FR-E05 | OTP rules: 6 digits, expires in 5 minutes, limited attempts and resend cooldown, rate-limited per number and device | M | 7 | Not started | | |
+| FR-E03 | Mobile number is the unique key. Orders placed as guest with the same verified mobile number are automatically attached to the profile afte… | M | 7 | Partial | Customers.Mobile unique index, PhoneNumber.Normalize | Attaching guest orders after OTP in Step 8. |
+| FR-E04 | Sign-in options: mobile + OTP (default), email + OTP, email/mobile + password (if set), Google sign-in (Could) | M | 7 | Partial | POST /api/v1/auth/otp/request and /verify | Mobile + OTP done; email OTP, password and Google later. |
+| FR-E05 | OTP rules: 6 digits, expires in 5 minutes, limited attempts and resend cooldown, rate-limited per number and device | M | 7 | Done | CustomerAuthService, OtpCode, rate limit policy otp | 6 digits, 5 min, 5 attempts, 60 s cooldown, hourly cap; tested. |
 | FR-E06 | Progressive profile: ask for extra fields one at a time later, never block an order for them | S | 7 | Not started | | |
 | FR-E07 | Consent checkboxes for marketing SMS/email, stored with timestamp; transactional messages always allowed | M | 7 | Not started | | |
 | FR-E08 | Customer can delete their account; order records are kept in anonymised form for legal and accounting needs | S | 7 | Not started | | |
@@ -522,7 +522,7 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-K02 | Customer events: OTP, order placed, order confirmed, payment received/failed, packed, handed to courier (with tracking link), out for deliv… | M | 9 | Not started | | |
 | FR-K03 | Admin events: new order, payment received/failed, low stock, courier booking failed, delivery failed, return requested, COD unsettled too l… | M | 9 | Not started | | |
 | FR-K04 | Message templates editable by admin in English and Bengali, with variables like {order_no}, {name}, {tracking_link} | S | 9 | Not started | | |
-| FR-K05 | Notification log per customer and order (sent, failed, provider response); automatic retry on failure | M | 9 | Not started | | |
+| FR-K05 | Notification log per customer and order (sent, failed, provider response); automatic retry on failure | M | 9 | Partial | NotificationLogs table, sandbox SMS/email senders | Templates, retries and viewer in Step 9. |
 | FR-K06 | Marketing messages only to customers who consented (FR-E07), with unsubscribe | S | 9 | Not started | | |
 | FR-K07 | SMS cost control: admin can choose which events send SMS versus email only | S | 9 | Not started | | |
 | FR-L01 | Customer cancels before the courier pickup; after pickup, only admin can intercept through the courier | M | 10 | Not started | | |
@@ -547,12 +547,12 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-N04 | Internal notes and tags on orders and customers | S | 6-12 | Not started | | |
 | FR-N05 | Sound/visual alert for a new order while the admin panel is open | S | 6-12 | Not started | | |
 | FR-N06 | Destructive actions (delete product, cancel shipped order) ask for confirmation and a reason; products used in orders are archived, not era… | M | 6-12 | Not started | | |
-| FR-O01 | Staff accounts created by Super Admin; sign-in with email/mobile and password; two-step verification mandatory for Super Admin, optional fo… | M | 3 | Not started | | |
-| FR-O02 | Roles with permission sets per module (view, create, edit, delete, approve, export) | M | 3 | Not started | | |
-| FR-O03 | Default roles: Super Admin, Manager, Order Manager, Inventory Manager, Content Editor, Support, Accountant (view money data only) | M | 3 | Not started | | |
-| FR-O04 | Hide cost price, profit and settings from roles without permission | M | 3 | Not started | | |
-| FR-O05 | Session timeout, forced sign-out, sign-in history, lock after repeated failed attempts | M | 3 | Not started | | |
-| FR-O06 | Deactivate a staff account instantly without deleting history | M | 3 | Not started | | |
+| FR-O01 | Staff accounts created by Super Admin; sign-in with email/mobile and password; two-step verification mandatory for Super Admin, optional fo… | M | 3 | Done | AuthService (login, 2FA, forced setup), UsersService.CreateAsync; /api/v1/auth/*, /api/v1/ums/users | Backend done in Step 3; screens in Step 5. 2FA mandatory for Super Admin (limited token until set up). |
+| FR-O02 | Roles with permission sets per module (view, create, edit, delete, approve, export) | M | 3 | Done | RolesService, PermissionCatalog (234 codes), /api/v1/ums/roles, /api/v1/ums/permissions | Permission matrix UI in Step 5. |
+| FR-O03 | Default roles: Super Admin, Manager, Order Manager, Inventory Manager, Content Editor, Support, Accountant (view money data only) | M | 3 | Done | Shared/Security/DefaultRoles.cs, IdentitySeeder | Seven default roles per the roles matrix; tested. |
+| FR-O04 | Hide cost price, profit and settings from roles without permission | M | 3 | Partial | Permissions catalog.product.view-cost, reports.finance.*, accounting.pnl.view; Manager/Order Manager lack them | Enforced where cost and profit are read (Steps 6, 11A). |
+| FR-O05 | Session timeout, forced sign-out, sign-in history, lock after repeated failed attempts | M | 3 | Done | Lockout, sign-in history (/ums/sign-in-history), forced logout, session list/revoke, token expiry | Idle timeout is the 15-minute access token plus refresh policy. |
+| FR-O06 | Deactivate a staff account instantly without deleting history | M | 3 | Done | UsersService.DeactivateAsync (revokes tokens, bumps permission version) | Access ends at once; history kept. |
 | FR-P01 | Sales: by day/week/month, product, category, size/colour, channel, zone, payment method | M | 11A | Not started | | |
 | FR-P02 | Orders: funnel (placed, confirmed, delivered, cancelled, returned) and cancellation/return reasons | M | 11A | Not started | | |
 | FR-P03 | Inventory: current stock value, low stock, movement, dead stock | M | 11A | Not started | | |
@@ -581,12 +581,12 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | NFR-004 | Capacity: Designed for at least 100 concurrent shoppers and 10,000 products at launch, scalable by adding servers (proposal; revise with bu… | - | 13 | Not started | | |
 | NFR-005 | Real-time: Status changes reach open screens within about 3 seconds; automatic fallback to polling | - | 13 | Not started | | |
 | NFR-006 | Security: transport: HTTPS everywhere, HSTS, secure cookies | - | 13 | Partial | Juvo.Api/Configuration/WebApplicationExtensions.cs (HSTS, HTTPS redirect), Http/SecurityHeadersMiddleware.cs | Step 2 foundation. Secure auth cookies come with Step 3/4. |
-| NFR-007 | Security: application: Protection against the OWASP Top 10 (injection, XSS, CSRF, broken access control, etc.); input validation on client… | - | 13 | Partial | Rate limiting (ServiceCollectionExtensions.cs), validation pipeline, ProblemDetails | Step 2 foundation. Authorization and the OWASP review come in Steps 3 and 13. |
-| NFR-008 | Security: secrets: Courier and gateway credentials encrypted and never exposed to the browser; secrets kept in a vault or secure configurat… | - | 13 | Not started | | |
+| NFR-007 | Security: application: Protection against the OWASP Top 10 (injection, XSS, CSRF, broken access control, etc.); input validation on client… | - | 13 | Partial | Rate limits on auth/otp, lockout, hashed tokens, ProblemDetails, security headers, permission policies | Full OWASP review in Step 13. |
+| NFR-008 | Security: secrets: Courier and gateway credentials encrypted and never exposed to the browser; secrets kept in a vault or secure configurat… | - | 13 | Partial | Signing key and DB secrets via user-secrets/environment; refresh tokens and OTP hashed | Encrypted provider credentials in Steps 10 and 14. |
 | NFR-009 | Security: payments: No card data stored; gateway-hosted payment fields; webhook signature checks | - | 13 | Not started | | |
 | NFR-010 | Privacy: Personal data minimised, access logged, consent recorded; follow Bangladesh data protection requirements in force at the time. I a… | - | 13 | Not started | | |
 | NFR-011 | Backup and recovery: Automated daily database backups, tested restore, recovery point and time objectives agreed (proposal: 24 h and 4 h) | - | 13 | Not started | | |
-| NFR-012 | Audit: All admin changes logged and cannot be edited by staff | - | 13 | Partial | Infrastructure/Persistence/Interceptors/AuditSaveChangesInterceptor.cs, AuditLogs (append-only) | Audit written on every save. Admin viewer in Steps 3/5. |
+| NFR-012 | Audit: All admin changes logged and cannot be edited by staff | - | 13 | Partial | AuditSaveChangesInterceptor, AccessDenied entries, GET /api/v1/ums/audit-logs | Audit viewer UI in Step 5. |
 | NFR-013 | Usability: Guest checkout in at most 5 steps; touch targets at least 44 px; clear errors in plain language | - | 13 | Not started | | |
 | NFR-014 | Accessibility: WCAG 2.1 AA as the target for contrast, keyboard use and labels | - | 13 | Not started | | |
 | NFR-015 | Localisation: English and Bengali; BDT formatting; Bengali digits optional; dates in local format | - | 13 | Not started | | |
@@ -675,7 +675,7 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | BR-003 | An order always has an immutable status history (who, when, from, to). | Not started | | |
 | BR-004 | Delivery charge depends on destination zone, parcel weight and courier; the customer sees the full total before confirming. | Not started | | |
 | BR-005 | Prices are stored in BDT; international display currency is a conversion for information, with the charged currency shown clearly at checko… | Not started | | |
-| BR-006 | Guest, quick-profile and registered customers can all order; the mobile number is the main customer identity. | Not started | | |
+| BR-006 | Guest, quick-profile and registered customers can all order; the mobile number is the main customer identity. | Partial | Customers.Mobile unique, OTP sign-in, PhoneNumber.Normalize | Guest checkout identity in Steps 7-8. |
 | BR-B1 | a product can be published only if it has a name, category, price, at least one image and at least one variant with stock tracked (stock ma… | Not started | | |
 | BR-B2 | sale price must be lower than regular price. | Not started | | |
 | BR-B3 | SKU is unique across the system. | Not started | | |

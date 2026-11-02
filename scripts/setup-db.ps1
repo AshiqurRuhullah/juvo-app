@@ -93,7 +93,7 @@ Write-Host "Database [$Database] on $found : $($result | Select-Object -First 1)
 $version = & sqlcmd -S $found -E -C -h -1 -W -Q "SET NOCOUNT ON; SELECT CAST(SERVERPROPERTY('ProductVersion') AS nvarchar(50)) + ' ' + CAST(SERVERPROPERTY('Edition') AS nvarchar(100))"
 Write-Host "Server version: $($version | Select-Object -First 1)"
 
-$conn = "Server=$found;Database=$Database;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true"
+$conn = "Server=$found;Database=$Database;Trusted_Connection=True;TrustServerCertificate=True"
 Write-Host ""
 Write-Host "Connection string (Windows authentication, local development only):"
 Write-Host "  $conn"

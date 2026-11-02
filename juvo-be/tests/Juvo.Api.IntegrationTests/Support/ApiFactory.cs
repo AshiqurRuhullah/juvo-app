@@ -1,3 +1,4 @@
+using Juvo.Infrastructure.Identity;
 using Juvo.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -19,9 +20,20 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         ["Outbox:Enabled"] = "false",
         ["OpenApi:Enabled"] = "true",
         ["Database:AutoMigrate"] = "false",
+        ["Auth:SigningKey"] = "integration-tests-signing-key-0123456789-abcdef",
+        ["Auth:RequireTwoFactorForSuperAdmin"] = "false",
+        ["Auth:Seed:Password"] = SeedPassword,
+        ["Auth:Seed:Email"] = SeedEmail,
+        ["Notifications:StoreOtpPlaintext"] = "true",
+        ["RateLimiting:Enabled"] = "false",
     };
 
+    public const string SeedEmail = "admin@juvo.test";
+    public const string SeedPassword = "Sup3r-Secret!Pass";
+
     public string ConnectionString => _connectionString;
+
+    protected virtual bool KeepSeedAdminPasswordChange => false;
 
     protected void Setting(string key, string value) => _settings[key] = value;
 
@@ -41,6 +53,7 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         builder.ConfigureServices(ConfigureTestServices);
         builder.UseSetting("ConnectionStrings:Default", _connectionString);
         builder.UseSetting("Storage:RootPath", _storageRoot);
+        builder.UseSetting("DataProtection:KeysPath", Path.Combine(_storageRoot, "keys"));
         foreach (var (key, value) in _settings)
         {
             builder.UseSetting(key, value);
@@ -53,6 +66,14 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         using var scope = Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<JuvoDbContext>();
         await db.Database.MigrateAsync();
+        await scope.ServiceProvider.GetRequiredService<IdentitySeeder>().SeedAsync();
+
+        // The seeded Super Admin must change the password at first sign-in. Most tests want a usable admin, so clear that flag
+        // here; tests of the forced change create a fresh user through the API instead.
+        if (!KeepSeedAdminPasswordChange)
+        {
+            await db.Users.Where(u => u.Email == SeedEmail).ExecuteUpdateAsync(set => set.SetProperty(u => u.MustChangePassword, false));
+        }
     }
 
     public override async ValueTask DisposeAsync()

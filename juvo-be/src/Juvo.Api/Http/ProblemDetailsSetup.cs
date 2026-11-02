@@ -1,3 +1,4 @@
+using Juvo.Application.Abstractions;
 using Juvo.Shared.Results;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -50,8 +51,16 @@ internal sealed class GlobalExceptionHandler(
             return true;
         }
 
+        if (exception is BranchAccessDeniedException denied)
+        {
+            await httpContext.RequestServices.GetRequiredService<IAccessDeniedAuditor>()
+                .RecordAsync(denied.Entity, $"write refused in branch {denied.BranchId}", cancellationToken);
+        }
+
         var (status, code, title) = exception switch
         {
+            BranchAccessDeniedException => (StatusCodes.Status403Forbidden, ErrorCodes.Auth.BranchForbidden,
+                "You do not have access to this branch."),
             DbUpdateConcurrencyException => (StatusCodes.Status409Conflict, ErrorCodes.General.ConcurrencyConflict,
                 "The record was changed by someone else. Reload and try again."),
             BadHttpRequestException => (StatusCodes.Status400BadRequest, ErrorCodes.General.BadRequest, "The request is not valid."),

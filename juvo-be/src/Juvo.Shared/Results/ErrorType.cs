@@ -10,4 +10,5 @@ public enum ErrorType
     Unauthorized = 4,
     Forbidden = 5,
     TooManyRequests = 6,
+    Locked = 7,
 }
