@@ -1,3 +1,5 @@
+> Generated copy of `Juvo BD — E-Commerce Platform BRD & SRS.docx` (source of truth), converted on 2026-11-02 by scripts/docx_to_md.py. Do not edit by hand; re-run the script.
+
 # Juvo BD — E-Commerce Platform: BRD & SRS
 
 Nov 2, 2026 · @Mahmudur Rahman

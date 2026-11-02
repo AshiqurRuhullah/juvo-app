@@ -9,6 +9,7 @@ result can be checked against the original (heading and table counts).
 """
 from __future__ import annotations
 
+import datetime
 import sys
 import zipfile
 import xml.etree.ElementTree as ET
@@ -178,6 +179,12 @@ def convert(src: Path, dst: Path) -> None:
         out.append("")
         prev_was_list = False
 
+    notice = (
+        f"> Generated copy of `{src.name}` (source of truth), converted on "
+        f"{datetime.date.today().isoformat()} by scripts/docx_to_md.py. "
+        "Do not edit by hand; re-run the script."
+    )
+    out = [notice, ""] + out
     dst.parent.mkdir(parents=True, exist_ok=True)
     dst.write_text("\n".join(out).rstrip() + "\n", encoding="utf-8", newline="\n")
     print(f"written {dst} ({len(out)} lines)")
