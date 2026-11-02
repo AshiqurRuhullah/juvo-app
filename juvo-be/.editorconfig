@@ -52,6 +52,7 @@ dotnet_diagnostic.CA1062.severity = none   # nullable reference types already gu
 dotnet_diagnostic.CA1812.severity = none   # internal classes created by DI/EF are not "uninstantiated"
 dotnet_diagnostic.CA1716.severity = none
 dotnet_diagnostic.CA1002.severity = none
+dotnet_diagnostic.CA1000.severity = none   # static factories on generic result types are intended
 dotnet_diagnostic.CA1819.severity = none   # byte[] RowVersion properties
 dotnet_diagnostic.CA1056.severity = none
 dotnet_diagnostic.CA1054.severity = none
