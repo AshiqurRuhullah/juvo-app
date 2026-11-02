@@ -35,6 +35,18 @@ dotnet run --project juvo-be/src/Juvo.Api   # Development: applies migrations au
 
 Ports come from `src/Juvo.Api/Properties/launchSettings.json`. The ASP.NET dev certificate may show as untrusted: run `dotnet dev-certs https --trust` once.
 
+## Sign in (Development)
+
+On first start in Development the database is migrated and seeded (permission catalog, 7 default roles, branches HO and ONL, and a Super Admin):
+
+| | |
+| --- | --- |
+| Email / user name | `admin@juvobd.local` / `admin` |
+| Password | `Juvo@Dev#2026` (development only; you must change it at first sign-in) |
+| Try it | open `/scalar/v1`, call `POST /api/v1/auth/login`, then use the token as a Bearer token |
+
+How tokens, permissions and branches work: `docs/auth-and-access.md` in the repository root. Access tokens last 15 minutes; refresh tokens rotate. In Development the signing key is generated per run, so tokens stop working after a restart; set a fixed one with `dotnet user-secrets set "Auth:SigningKey" "<32+ characters>" --project juvo-be/src/Juvo.Api`.
+
 ## Configuration
 
 Order of precedence: `appsettings.json` < `appsettings.{Environment}.json` < user-secrets (Development) < environment variables. Environment variables use `__` for nesting, for example `ConnectionStrings__Default`. See `.env.example` for every key.
