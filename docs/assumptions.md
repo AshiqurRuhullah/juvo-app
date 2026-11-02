@@ -119,3 +119,23 @@ Last updated: 2026-11-02 (Step 1).
 | **Only a global-scope user can create branches, change global scope or set the default branch.** Branch activate/deactivate use the `ums.branch.deactivate` permission. | Company-wide actions. | n/a |
 | **Connection strings no longer use MARS** (it disabled EF savepoints and logged a warning on every transaction); nothing in the code needs it. | Cleaner transactions. | n/a |
 
+## G. Step 4 (front-end foundation) decisions
+
+| Decision | Reason | How to change |
+| --- | --- | --- |
+| **Next.js 16.4 App Router with `proxy.ts` (Node runtime)**; `cacheComponents` and partial prefetching are off (classic dynamic rendering). | Every admin page depends on the session cookie, so nothing is shareable between users; the new caching model adds risk with no gain yet. | Turn on per route group when public catalogue pages arrive (Step 7). |
+| **Backend-for-frontend:** tokens live only in httpOnly cookies; the browser calls `/api/bff/...`; token-returning endpoints are blocked in the generic proxy and have dedicated cookie-setting routes. | SRS NFR-007 and master prompt 4.2: no tokens in JavaScript or local storage. | n/a |
+| **One in-flight refresh per refresh token** (shared promise plus a 10 s reuse window), because the API treats a reused refresh token as theft and cuts the session. | `docs/auth-and-access.md`. | `REUSE_WINDOW_MS` in `src/lib/server/refresh.ts`. |
+| **Process-local refresh store** (a Map on `globalThis`). Correct for one Node process; a second server would need a shared store. | One app server for now. | Move the map to Redis/SQL before running several instances (Step 14). |
+| **Language by cookie, no URL prefix** (`juvo_locale`, en/bn, next-intl 4). | One URL per page, no duplicate-content or redirect rules; SEO language URLs can be added with the storefront. | Switch to `/bn/...` routing in Step 7 if the owner wants indexable Bengali pages. |
+| **Bengali strings are first-pass translations** and need review by a native speaker before launch. | I cannot verify tone and vocabulary. | Review `src/messages/bn.json` in Step 12. |
+| **TanStack Table is pinned to v8.21.3.** v9 is a different, store-based API without a stable ecosystem yet. | Stability. | Upgrade deliberately later. |
+| **`react-leaflet` is not used** (Hippocratic-2.1 licence, not OSI open source). Step 7 uses plain Leaflet (BSD-2). | Master prompt: verify licences. | n/a |
+| **`@axe-core/playwright` (MPL-2.0) is a dev-only dependency**, never shipped. | Licence check passed for test tooling. | n/a |
+| **`npm audit`:** production dependencies 0 vulnerabilities; 18 moderate findings (minimatch DoS) exist only in dev tooling and are not reachable at runtime. | Fixes require breaking downgrades of the tool chain. | Re-check each step. |
+| **`/design` component gallery is development only:** 404 in production unless `ENABLE_DESIGN_PAGE=true` (the e2e run sets it). | No internal pages on the public site. | n/a |
+| **Menu items for screens that are not built are shown muted with a "Soon" tag**, not hidden and not linked. Each later step flips `ready`. | Shows the final structure and avoids dead links. | `ready` in `src/lib/nav.ts`. |
+| **Icon rail labels are visually hidden text, not `display:none`;** on phones language and theme are inline items of the account menu (nested dropdowns do not work on touch). | Found by the automated accessibility and device tests. | n/a |
+| **QR codes for 2FA setup are drawn in the browser with `qrcode`** (MIT) from the otpauth URI; the secret is shown as text too. | No third-party QR service sees the secret. | n/a |
+| **Per-IP rate limits behind the BFF:** the BFF forwards `X-Forwarded-For`, but the API does not trust forwarded headers yet, so in production it sees the app server's address. | Needs the proxy topology (Step 14). | Add `UseForwardedHeaders` with known proxies in Step 14. |
+| **Phone numbers accept Bengali and other Unicode digits** (`PhoneNumber.Normalize` maps them to 0-9; the regex uses `[0-9]`, not `\d`, which also matches Bengali digits). | The Bengali form hint shows Bengali digits and customers type in their own script. | n/a |
