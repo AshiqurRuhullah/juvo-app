@@ -36,7 +36,7 @@ export function CommandPalette({ groups, profileHref }: { groups: NavGroup[]; pr
 
   return (
     <>
-      <Button variant="secondary" className="hidden w-56 justify-between gap-2 px-3 text-muted lg:inline-flex" onClick={() => setOpen(true)} aria-label={t("search")}>
+      <Button variant="secondary" className="hidden w-56 justify-between gap-2 px-3 text-muted lg:inline-flex" onClick={() => setOpen(true)}>
         <span className="flex items-center gap-2">
           <Search aria-hidden />
           {t("searchPlaceholder")}

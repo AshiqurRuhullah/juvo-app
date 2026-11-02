@@ -26,7 +26,7 @@ export function NavList({ groups, rail = false, onNavigate, responsive = false }
   const pathname = usePathname();
   const t = useTranslations("nav");
   const current = activeItem(groups, pathname);
-  const labelClass = responsive ? "hidden lg:group-data-[collapsed=false]/shell:inline" : rail ? "sr-only" : "inline";
+  const labelClass = responsive ? "sr-only lg:group-data-[collapsed=false]/shell:not-sr-only" : rail ? "sr-only" : "inline";
 
   return (
     <nav aria-label={t("menu")} className="space-y-5">
@@ -81,7 +81,11 @@ function NavLink({
       {active ? <span className="absolute inset-y-2 start-0 w-1 rounded-full bg-primary" aria-hidden /> : null}
       <Icon aria-hidden />
       <span className={cn("min-w-0 flex-1 truncate", labelClass)}>{label}</span>
-      {!item.ready ? <Badge variant="outline" className={cn("shrink-0", labelClass === "sr-only" ? "sr-only" : labelClass)}>{soon}</Badge> : null}
+      {!item.ready ? (
+        <span className={cn("shrink-0", labelClass)}>
+          <Badge variant="outline">{soon}</Badge>
+        </span>
+      ) : null}
     </>
   );
 

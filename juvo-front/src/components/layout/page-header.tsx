@@ -27,7 +27,7 @@ export function PageHeader({
               <li key={`${crumb.label}-${index}`} className="flex items-center gap-1">
                 {index > 0 ? <ChevronRight className="size-4 rtl:rotate-180" aria-hidden /> : null}
                 {crumb.href ? (
-                  <Link href={crumb.href} className="inline-flex min-h-6 items-center rounded px-0.5 hover:text-strong hover:underline">
+                  <Link href={crumb.href} className="inline-flex min-h-11 items-center rounded px-1 hover:text-strong hover:underline">
                     {crumb.label}
                   </Link>
                 ) : (

@@ -64,7 +64,7 @@ export function AppShell({ area, initialCollapsed, children }: { area: Area; ini
         className="fixed inset-y-0 start-0 z-30 hidden w-[4.5rem] flex-col border-e border-line bg-card md:flex lg:group-data-[collapsed=false]/shell:w-72"
       >
         <div className="flex h-16 shrink-0 items-center justify-center border-b border-line px-3 lg:group-data-[collapsed=false]/shell:justify-start">
-          <Link href={home} aria-label="Juvo BD" className="inline-flex min-h-11 items-center gap-2.5 rounded-control">
+          <Link href={home} aria-label="Juvo BD" className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2.5 rounded-control">
             <Logo size={40} wordmark={false} />
             <span className="hidden font-display text-xl font-semibold text-strong lg:group-data-[collapsed=false]/shell:inline">Juvo BD</span>
           </Link>
@@ -88,7 +88,7 @@ export function AppShell({ area, initialCollapsed, children }: { area: Area; ini
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setDrawer(true)} aria-label={t("openMenu")} aria-haspopup="dialog">
             <Menu aria-hidden />
           </Button>
-          <Link href={home} className="inline-flex items-center md:hidden" aria-label="Juvo BD">
+          <Link href={home} className="tap hidden shrink-0 items-center justify-center sm:inline-flex md:hidden" aria-label="Juvo BD">
             <Logo size={32} wordmark={false} />
           </Link>
           {area === "admin" ? <BranchSwitcher /> : null}

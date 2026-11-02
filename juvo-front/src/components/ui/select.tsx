@@ -83,7 +83,7 @@ export function Select({ id, value, onValueChange, options, placeholder, searchP
         className,
       )}
     >
-      <span className={cn("truncate", selected ? "text-strong" : "text-muted/80")}>{selected?.label ?? placeholder}</span>
+      <span className={cn("truncate", selected ? "text-strong" : "text-muted")}>{selected?.label ?? placeholder}</span>
       <ChevronsUpDown className="size-4 shrink-0 text-muted" aria-hidden />
     </button>
   );

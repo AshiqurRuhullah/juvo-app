@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/surfaces";
 import { postJson } from "@/lib/api/post";
 import { initials } from "@/lib/utils";
 import { useSession } from "@/components/providers/session-provider";
-import { LanguageSwitch, ThemeToggle } from "./preferences";
+import { LanguageMenuItems, ThemeMenuItems } from "./preferences";
 import { hardNavigate } from "@/lib/navigation";
 
 export async function signOut() {
@@ -21,19 +21,18 @@ export async function signOut() {
 export function UserMenu({ profileHref }: { profileHref: string }) {
   const { me, name } = useSession();
   const t = useTranslations("shell");
+  const tc = useTranslations("common");
   const roles = Array.from(new Set(me.assignments.map((a) => a.roleName)));
   const subtitle = me.staff?.email ?? me.customer?.mobile ?? "";
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        aria-label={t("accountMenu")}
-        className="tap flex items-center justify-center rounded-full bg-primary-soft text-sm font-bold text-primary-dark outline-none ring-offset-0 [@media(hover:hover)]:hover:bg-primary [@media(hover:hover)]:hover:text-on-primary"
+                className="tap flex items-center justify-center rounded-full bg-primary-soft text-sm font-bold text-primary-dark outline-none ring-offset-0 [@media(hover:hover)]:hover:bg-primary [@media(hover:hover)]:hover:text-on-primary"
         data-testid="user-menu"
       >
-        <span className="flex size-11 items-center justify-center" aria-hidden>
-          {initials(name)}
-        </span>
+        <span className="flex size-11 items-center justify-center">{initials(name)}</span>
+        <span className="sr-only">{t("accountMenu")}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-72">
         <DropdownMenuLabel className="space-y-1 px-3 py-2">
@@ -56,12 +55,13 @@ export function UserMenu({ profileHref }: { profileHref: string }) {
             {t("profile")}
           </Link>
         </DropdownMenuItem>
-        <div className="flex items-center justify-between px-3 py-1 md:hidden">
-          <span className="text-sm text-muted">{t("preferences")}</span>
-          <span className="flex">
-            <LanguageSwitch />
-            <ThemeToggle />
-          </span>
+        <div className="md:hidden">
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted">{tc("language")}</DropdownMenuLabel>
+          <LanguageMenuItems />
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted">{tc("theme")}</DropdownMenuLabel>
+          <ThemeMenuItems />
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => void signOut()}>

@@ -26,8 +26,8 @@ function applyTheme(theme: Theme) {
   else document.documentElement.setAttribute("data-theme", theme);
 }
 
-/** Light, dark or follow the device. The choice is a cookie, so the server renders the right theme on the first paint. */
-export function ThemeToggle() {
+/** The three theme choices as menu items (shared by the theme menu and the phone account menu). */
+export function ThemeMenuItems() {
   const t = useTranslations("common");
   const theme = React.useSyncExternalStore(subscribeTheme, readTheme, () => "system" as Theme);
 
@@ -43,6 +43,23 @@ export function ThemeToggle() {
   ];
 
   return (
+    <>
+      {options.map((o) => (
+        <DropdownMenuItem key={o.id} onSelect={() => choose(o.id)}>
+          {o.icon}
+          <span className="flex-1">{o.label}</span>
+          {theme === o.id ? <Check className="!text-primary" aria-hidden /> : null}
+        </DropdownMenuItem>
+      ))}
+    </>
+  );
+}
+
+/** Light, dark or follow the device. The choice is a cookie, so the server renders the right theme on the first paint. */
+export function ThemeToggle() {
+  const t = useTranslations("common");
+  const theme = React.useSyncExternalStore(subscribeTheme, readTheme, () => "system" as Theme);
+  return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" aria-label={t("theme")}>
@@ -50,21 +67,14 @@ export function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-44">
-        {options.map((o) => (
-          <DropdownMenuItem key={o.id} onSelect={() => choose(o.id)}>
-            {o.icon}
-            <span className="flex-1">{o.label}</span>
-            {theme === o.id ? <Check className="!text-primary" aria-hidden /> : null}
-          </DropdownMenuItem>
-        ))}
+        <ThemeMenuItems />
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
 
-/** English / Bengali. Re-renders the server components in the new language without losing the page. */
-export function LanguageSwitch() {
-  const t = useTranslations("common");
+/** English / Bengali as menu items. Re-renders the server components in the new language without losing the page. */
+export function LanguageMenuItems() {
   const locale = useLocale();
   const router = useRouter();
 
@@ -75,6 +85,25 @@ export function LanguageSwitch() {
   };
 
   return (
+    <>
+      {(
+        [
+          ["en", "English"],
+          ["bn", "বাংলা"],
+        ] as const
+      ).map(([id, label]) => (
+        <DropdownMenuItem key={id} lang={id} onSelect={() => choose(id)}>
+          <span className="flex-1">{label}</span>
+          {locale === id ? <Check className="!text-primary" aria-hidden /> : null}
+        </DropdownMenuItem>
+      ))}
+    </>
+  );
+}
+
+export function LanguageSwitch() {
+  const t = useTranslations("common");
+  return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" aria-label={t("language")}>
@@ -82,17 +111,7 @@ export function LanguageSwitch() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-44">
-        {(
-          [
-            ["en", "English"],
-            ["bn", "বাংলা"],
-          ] as const
-        ).map(([id, label]) => (
-          <DropdownMenuItem key={id} lang={id} onSelect={() => choose(id)}>
-            <span className="flex-1">{label}</span>
-            {locale === id ? <Check className="!text-primary" aria-hidden /> : null}
-          </DropdownMenuItem>
-        ))}
+        <LanguageMenuItems />
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
  * Every size is at least 44 px tall (touch friendly, SRS 3.3). Loading shows a spinner and blocks repeat clicks.
  */
 const buttonVariants = cva(
-  "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-control font-semibold transition-[background-color,box-shadow,border-color,color] duration-150 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:size-5 [&_svg]:shrink-0",
+  "inline-flex shrink-0 select-none items-center justify-center gap-2 whitespace-nowrap rounded-control font-semibold transition-[background-color,box-shadow,border-color,color] duration-150 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:size-5 [&_svg]:shrink-0",
   {
     variants: {
       variant: {

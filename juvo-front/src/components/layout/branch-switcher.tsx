@@ -50,7 +50,7 @@ export function BranchSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={needsChoice ? "primary" : "secondary"} className="max-w-[11rem] gap-2 px-3 sm:max-w-[16rem]" disabled={busy} aria-label={`${t("branch")}: ${label}`}>
+        <Button variant={needsChoice ? "primary" : "secondary"} className="min-w-0 max-w-[11rem] shrink gap-2 px-3 sm:max-w-[16rem]" disabled={busy} aria-label={`${t("branch")}: ${label}`}>
           {me.isAllBranches ? <Layers aria-hidden /> : <Building2 aria-hidden />}
           <span className="truncate sm:hidden">{shortLabel}</span>
           <span className="hidden truncate sm:inline">{label}</span>
