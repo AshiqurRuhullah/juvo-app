@@ -39,7 +39,7 @@ Last updated: 2026-11-02.
 
 ## Known issues
 
-1. **Push blocked (HTTP 403):** `Permission to AshiqurRuhullah/juvo-app.git denied to ashiqurgit.` Windows has cached credentials for GitHub user `ashiqurgit`. Fix: give `ashiqurgit` write access, or sign in as `AshiqurRuhullah` (`gh auth login` / remove the cached credential in Windows Credential Manager). Then run `git push` (6+ local commits waiting; `git log origin/main..HEAD`).
+1. **Push blocked (HTTP 403):** `Permission to AshiqurRuhullah/juvo-app.git denied to ashiqurgit.` Windows has cached credentials for GitHub user `ashiqurgit`. Fix: give `ashiqurgit` write access, or sign in as `AshiqurRuhullah` (`gh auth login` / remove the cached credential in Windows Credential Manager). Then run `git push` (10 local commits waiting; `git log origin/main..HEAD`).
 2. SQL Server is LocalDB 2019 (compatibility level 150). EF Core 10 must be verified against it in Step 2; install SQL Server 2022 if a feature needs level 160.
 3. Provider onboarding (courier, payment gateway, SMS sender ID, map key) is not started by the owner; not needed until Step 14.
 4. Tax/VAT rules for Bangladesh are unverified (sample 15% rule seeded inactive); confirm with an accountant before go-live.
