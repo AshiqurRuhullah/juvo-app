@@ -27,7 +27,7 @@ Last updated: 2026-11-02 (Step 1).
 | **Microsoft SQL Server** instead of PostgreSQL | Master prompt requires it. | Different EF provider + migrations rebuild. Not planned. |
 | **No Redis, no Docker.** `IMemoryCache` for caching; SignalR without a backplane; background jobs through the transactional outbox + hosted service. | Master prompt rule 0.7. Fine for one server. | Add a Redis backplane/cache adapter behind the same interfaces if the site is scaled to several servers. |
 | Local database: **SQL Server LocalDB `(localdb)\MSSQLLocalDB`, version 15.0.4382 (SQL Server 2019 Express)**, compatibility level 150. It was the only reachable instance (`localhost` and `.\SQLEXPRESS` are not installed). Database `JuvoDb` created by `scripts/setup-db.ps1` with the UTF-8 collation `Latin1_General_100_CI_AS_SC_UTF8`; all text columns use `nvarchar` so Bengali is safe regardless. | Express/LocalDB is enough for development and demos. | Pass `-Server` to the script for another instance. For production use SQL Server 2022+ (Express limits: 10 GB per database, 1 GB RAM). |
-| **EF Core 10 vs SQL Server 2019:** EF Core's newer JSON/vector features need compatibility level 160+. The data model will not depend on those features, so level 150 works. | Avoid blocking on a SQL Server install. | Install SQL Server 2022 Developer and rerun `setup-db.ps1 -Server localhost`; the schema is unchanged. Verify in Step 2 that the chosen EF version runs against 2019. |
+| **EF Core 10 vs SQL Server 2019 (verified in Step 2):** EF Core 10.0.14 runs against LocalDB 2019 (compatibility level 150) with `UseCompatibilityLevel(150)`; migrations applied, `/health/ready` healthy, 69 tests pass on it. The data model does not use JSON/vector features that need level 160+. | Avoid blocking on a SQL Server install. | Set `Database:CompatibilityLevel` (and install SQL Server 2022 Developer) if a feature needs 160; rerun `setup-db.ps1 -Server localhost`. |
 | Integration tests use a **separate local database** (`JuvoDb_Test`, created and dropped by the test fixture). | Master prompt: real SQL Server, no containers. | `scripts/setup-db.ps1 -Database JuvoDb_Test`. |
 | Front end: Next.js latest stable (App Router). `npm view next version` returned **16.4.3** on 2026-11-02; confirmed again at scaffold time in Step 4. Node v26.3.0 is installed. | Master prompt: latest stable. | Pin versions in `package.json`; upgrade deliberately. |
 | Backend: .NET **10.0.301** SDK installed; target `net10.0`. | Installed SDK. | n/a |
@@ -74,3 +74,22 @@ Last updated: 2026-11-02 (Step 1).
 | Default admin credentials | Development-only Super Admin seeded in Step 3 with a forced password change at first login; credentials documented in the README, never reused in production. | Master prompt section 7. |
 | Dark mode | Light is the default; a dark theme is included in the generated tokens (admin first). | SRS 3.3 "Could". |
 | Danger colour | The brand colour is red, so the danger/error colour is a deeper crimson and is always paired with an icon and text. | `docs/brand-tokens.md`. |
+
+## E. Step 2 (backend foundation) decisions
+
+| Decision | Reason | How to change |
+| --- | --- | --- |
+| **No mediator library.** A small in-process dispatcher with pipeline behaviours (logging, permission, validation, transaction). | MediatR changed to a commercial licence; this avoids the risk. | Replace `Juvo.Application/Messaging` if ever needed. |
+| **FluentValidation 12 (Apache-2.0)** for request validation; **no mapper library yet** (hand-written mappers; Mapperly may be added later). | Licences checked on nuget.org. | n/a |
+| **Scalar (MIT) for the API UI** and **Asp.Versioning 10.x (MIT)** with the built-in OpenAPI generator (`Microsoft.AspNetCore.OpenApi`). One document per API version at `/openapi/v1.json`. | Built-in generator plus a maintained UI. | `OpenApi:Enabled` (on in Development, off by default elsewhere). |
+| **Built-in logging with the JSON console formatter** (simple console in Development) instead of Serilog. Scope carries the correlation id. | Fewer dependencies. | Add Serilog sinks in Step 13/14 if central logging needs them. |
+| **xunit v3 (Apache-2.0) with plain asserts**; no FluentAssertions. `global.json` selects the Microsoft Testing Platform runner for `dotnet test`. | FluentAssertions moved to a paid licence; .NET 10 requires the new runner. | n/a |
+| **Tests use a real local SQL Server**, one throw-away `JuvoDb_Test_<guid>` database per test class, created from migrations and dropped afterwards; only names with that prefix may be dropped. | Master prompt: no Docker. | `JUVO_TEST_SQL_SERVER`. |
+| **Transitive pin `System.Security.Cryptography.Pkcs 10.0.14`** in `Directory.Packages.props` because Microsoft.Data.SqlClient 6.1.7 pulls 9.0.11, which NuGet audit flags as vulnerable (moderate and high). | Warnings are errors; do not ship known vulnerable packages. | Remove the pin when SqlClient ships a fixed dependency. |
+| **Audit log JSON keeps PascalCase property names** (the EF property names) and omits `RowVersion`, created/updated stamps and `[AuditIgnore]` properties. Soft deletes are recorded as action `Deleted`. | Matches the column names; no secrets in the log. | n/a |
+| **Outbox delivery is at-least-once.** Each message runs in its own DI scope so a failing handler cannot leak changes. Retry backoff 5 s doubling up to 60 min, 8 attempts, then status `Failed` (manual requeue). Claiming uses `UPDLOCK, READPAST`. | Reliable notifications/webhooks (NFR-020). | `Outbox:*` settings. |
+| **Rate limits are per client IP** (global 300/min; policies `auth` 10, `otp` 5, `checkout` 20 per minute). Behind a proxy, forwarded headers and the known proxy must be configured first (Step 14). | OWASP / NFR-007. | `RateLimiting:*`. |
+| **Permission checker denies everything by default** until the Identity module (Step 3) registers the real one. A request implementing `IRequirePermission` is rejected with 401/403. | Secure by default. | Step 3. |
+| **Migrations are applied automatically only in Development** (`Database:AutoMigrate`); Production uses `dotnet run --project src/Juvo.Api -- --migrate`. | Safer deployments. | n/a |
+| **API ports:** HTTPS 7080, HTTP 5080. | `launchSettings.json`. | n/a |
+
