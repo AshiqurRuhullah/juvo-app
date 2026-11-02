@@ -7,8 +7,8 @@ Last updated: 2026-11-02.
 
 | Step | Title | Status |
 | --- | --- | --- |
-| 1 | Understand the business, Git and project docs | **Done locally; push pending** (see Known issues) |
-| 2 | Backend foundation | Not started |
+| 1 | Understand the business, Git and project docs | **Done** (pushed to `main`) |
+| 2 | Backend foundation | **Done** (branch `feature/02-backend-foundation`, merged to `main`) |
 | 3 | UMS backend: auth, roles, permissions, branches | Not started |
 | 4 | Front-end foundation, brand, login, token handling | Not started |
 | 5 | UMS user interface | Not started |
@@ -23,24 +23,46 @@ Last updated: 2026-11-02.
 | 13 | Hardening, QA, documentation | Not started |
 | 14 | Real providers and go-live preparation | Not started |
 
-## Step 1: what is done
+## Step 1 (done)
 
-- Git: repo initialised, `origin` = `https://github.com/AshiqurRuhullah/juvo-app.git`, local `main` aligned to the remote's single "Initial commit" (README only). No force operations.
-- `.gitignore` and `.gitattributes` (Windows, .NET, Next.js, secrets).
-- `docs/source/brd-srs.md`: SRS converted with `scripts/docx_to_md.py`; verified 1 H1, 17 H2, 79 H3, 63 tables and the Mermaid ERD all present (counts equal the original OOXML).
-- `docs/understanding.md`: business summary, module matrix A-AF + identity + branches, roles matrix, order/payment/delivery and other state machines, cross-cutting rules, final ERD with branches, traceability table (257 FR/NFR rows = same count as the SRS tables, 15 business rules, all "Not started"). All 4 Mermaid diagrams parse (mermaid 11 `parse`).
-- `docs/assumptions.md`: defaults for the 14 open questions (SRS 14.5), technology decisions, conflicts between SRS and master prompt, environment facts, Git remote validation result.
-- Brand: palette extracted from `Logo/Official Logo.jpg` (`scripts/extract_palette.py`), `scripts/generate_tokens.py` writes `docs/brand-tokens.md`, `juvo-front/docs/brand-tokens.md` and `juvo-front/src/styles/tokens.css`; every text pair passes WCAG AA in light and dark. Logo copied to `juvo-be/assets/brand/` and `juvo-front/public/brand/` (variants and favicons come in Step 4).
-- `scripts/setup-db.ps1`: finds a local SQL Server and creates `JuvoDb`. Ran twice: first "created", then "exists". Server used: `(localdb)\MSSQLLocalDB`, SQL Server 2019 Express (15.0.4382.1).
+Git validated and connected, `.gitignore`/`.gitattributes`, SRS converted to Markdown (counts verified), `docs/understanding.md` (module matrix, state machines, ERD, traceability of 257 FR/NFR rows + 15 business rules), `docs/assumptions.md`, brand tokens from the logo (WCAG AA verified), `scripts/setup-db.ps1`.
+
+## Step 2 (done): backend foundation in `juvo-be`
+
+- Solution `Juvo.sln` (.NET 10.0.301): Api, Application, Domain, Infrastructure, Shared + 3 test projects. `Directory.Build.props` (nullable, analyzers, warnings as errors), `Directory.Packages.props` (central versions, licences checked, vulnerable transitive pinned), `.editorconfig`, `global.json` (testing platform runner), local tool `dotnet-ef 10.0.14`.
+- Shared: `Result`/`Result<T>`, `Error`, stable error codes, `PageRequest`/`PagedResult` (page, pageSize max 100, sort, filter, search).
+- Domain: `Entity` (v7 GUID, stamps, rowversion), soft delete, `IAppendOnly`, `[AuditIgnore]`, `AggregateRoot` + domain events, `AuditLog`, `OutboxMessage`, `JobLog`.
+- Application: own dispatcher + pipeline behaviours (logging, permission [deny-all until Step 3], FluentValidation, transaction), abstractions (`ICurrentUser`, `IUnitOfWork`, `IFileStorage`, `IOutboxWriter`, `IOutboxMessageHandler`), sample `Ping` query.
+- Infrastructure: `JuvoDbContext` (SQL Server, retry, compat level 150, `decimal(18,2)`, soft-delete filters), audit + domain-event interceptors, unit of work, transactional outbox + background worker (UPDLOCK/READPAST claim, exponential backoff, job log, handler isolation), local-disk `IFileStorage` (traversal-safe), validated options, design-time factory, migration `InitialPlatform` (AuditLogs, OutboxMessages, JobLogs).
+- Api: correlation id, RFC 9457 ProblemDetails with codes, global exception handler (409 for concurrency), security headers, HSTS/HTTPS, CORS for `http://localhost:3000`, rate limiting (global + auth/otp/checkout policies), compression, output cache, `/health/live`, `/health/ready`, API versioning `/api/v1`, OpenAPI + Scalar, uploads at `/files`, `--migrate` command, auto-migrate in Development.
+- Docs: `juvo-be/README.md`, `juvo-be/.env.example`, assumptions section E, traceability updates (10 NFR/FR rows now Partial).
+
+**Gate result (all run and seen passing):**
+- `dotnet build`: 0 errors, 0 warnings (warnings are errors).
+- `dotnet test`: **69 passed, 0 failed** (22 domain, 10 application, 37 integration on real SQL Server).
+- API ran: `/health/ready` Healthy (database check), OpenAPI document and `/scalar/v1` load, 400/404 return problem details with `code` and `correlationId`, CORS allows only the front-end origin.
+- Migration `InitialPlatform` applied on `JuvoDb` (tables AuditLogs, JobLogs, OutboxMessages); `--migrate` verified in Production mode on a scratch database; `has-pending-model-changes`: none.
+- `dotnet list package --vulnerable --include-transitive`: none. No leftover `JuvoDb_Test_*` databases.
+- Start-up fails fast with a clear message when the connection string is missing or a CORS origin is a wildcard (verified).
+
+## How to run now
+
+```powershell
+.\scripts\setup-db.ps1
+dotnet run --project juvo-be/src/Juvo.Api         # https://localhost:7080/scalar/v1
+dotnet test juvo-be                               # needs SQL Server / LocalDB
+```
 
 ## Next step
 
-**Step 2: Backend foundation** (create the .NET 10 solution inside `juvo-be`). Before it, fix the push access below and push the Step 1 commits.
+**Step 3: UMS backend** (ASP.NET Core Identity staff users, JWT + rotating refresh tokens with reuse detection, permission catalog, roles, branches, branch-scoped authorization, seed Super Admin/HO). Plug into: `IPermissionChecker` (replace the deny-all default), `HttpCurrentUser.BranchItemKey` (set `X-Branch-Id` after validation), `JuvoDbContext` (add Identity tables + migration), `RateLimitSettings.AuthPolicy` on login/refresh.
 
-## Known issues
+## Known issues / notes
 
-1. **Push blocked (HTTP 403):** `Permission to AshiqurRuhullah/juvo-app.git denied to ashiqurgit.` Windows has cached credentials for GitHub user `ashiqurgit`. Fix: give `ashiqurgit` write access, or sign in as `AshiqurRuhullah` (`gh auth login` / remove the cached credential in Windows Credential Manager). Then run `git push` (10 local commits waiting; `git log origin/main..HEAD`).
-2. SQL Server is LocalDB 2019 (compatibility level 150). EF Core 10 must be verified against it in Step 2; install SQL Server 2022 if a feature needs level 160.
-3. Provider onboarding (courier, payment gateway, SMS sender ID, map key) is not started by the owner; not needed until Step 14.
-4. Tax/VAT rules for Bangladesh are unverified (sample 15% rule seeded inactive); confirm with an accountant before go-live.
-5. Brand story, photos, policies text and pickup address must be supplied by the owner.
+1. SQL Server is LocalDB 2019 (compatibility level 150); verified working with EF Core 10. Install SQL Server 2022 only if a later feature needs level 160.
+2. Behind a reverse proxy, per-IP rate limiting needs forwarded-headers configuration (Step 14).
+3. The OpenAPI document title shows "Juvo.Api | v1" (cosmetic; set a document transformer later).
+4. Provider onboarding (courier, payment gateway, SMS sender ID, map key) is not started by the owner; not needed until Step 14.
+5. Bangladesh VAT rules are unverified (sample 15% rule will be seeded inactive); confirm with an accountant before go-live.
+6. Brand story, photos, policy text and pickup address must be supplied by the owner.
+7. The Visual Studio GitHub credential for `ashiqurgit` is still stored in Windows Credential Manager (left alone; git uses the `AshiqurRuhullah` login now).
