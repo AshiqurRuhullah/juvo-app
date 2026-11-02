@@ -233,6 +233,13 @@ public sealed class AuthService(
 
         var subject = currentUser.SubjectType == "customer" ? SubjectType.Customer : SubjectType.Staff;
         await sessions.RevokeAllAsync(subject, userId, "logout-all", cancellationToken);
+        if (subject == SubjectType.Staff && await users.FindByIdAsync(userId.ToString()) is { } staff)
+        {
+            staff.BumpPermissionVersion(); // access tokens already issued stop working at once, not only the refresh tokens
+            await users.UpdateAsync(staff);
+            states.Invalidate(userId);
+        }
+
         await db.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }

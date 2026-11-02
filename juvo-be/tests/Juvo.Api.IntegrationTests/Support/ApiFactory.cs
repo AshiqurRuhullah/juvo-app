@@ -33,6 +33,8 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
     public string ConnectionString => _connectionString;
 
+    protected virtual bool KeepSeedAdminPasswordChange => false;
+
     protected void Setting(string key, string value) => _settings[key] = value;
 
     protected virtual void ConfigureSettings()
@@ -65,6 +67,13 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         var db = scope.ServiceProvider.GetRequiredService<JuvoDbContext>();
         await db.Database.MigrateAsync();
         await scope.ServiceProvider.GetRequiredService<IdentitySeeder>().SeedAsync();
+
+        // The seeded Super Admin must change the password at first sign-in. Most tests want a usable admin, so clear that flag
+        // here; tests of the forced change create a fresh user through the API instead.
+        if (!KeepSeedAdminPasswordChange)
+        {
+            await db.Users.Where(u => u.Email == SeedEmail).ExecuteUpdateAsync(set => set.SetProperty(u => u.MustChangePassword, false));
+        }
     }
 
     public override async ValueTask DisposeAsync()
