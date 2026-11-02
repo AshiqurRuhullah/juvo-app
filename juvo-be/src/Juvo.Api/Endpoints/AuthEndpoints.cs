@@ -20,6 +20,8 @@ public sealed record ListParams(int? Page, int? PageSize, string? Sort, string? 
     };
 }
 
+public sealed record PermissionCheckResponse(string Permission, bool Allowed, Guid? BranchId, bool IsAllBranches);
+
 internal static class AuthEndpoints
 {
     public static ClientInfo ClientOf(HttpContext context, string? deviceName = null)
@@ -58,6 +60,11 @@ internal static class AuthEndpoints
         auth.MapGet("/me", async (AuthService service, CancellationToken ct) => (await service.GetMeAsync(ct)).ToHttpResult())
             .RequireAuthorization(Policies.Authenticated)
             .WithSummary("Profile, branches, roles per branch and effective permissions of the signed-in user.");
+
+        auth.MapGet("/can", async (string permission, IPermissionChecker checker, IBranchContext branch, CancellationToken ct) =>
+                Results.Ok(new PermissionCheckResponse(permission, await checker.HasPermissionAsync(permission, ct), branch.ActiveBranchId, branch.IsAllBranches)))
+            .RequireAuthorization(Policies.Staff)
+            .WithSummary("Does the signed-in staff member hold this permission in the active branch (X-Branch-Id)? For hiding buttons in the UI.");
 
         // ---- password ----
         auth.MapPost("/change-password", async (ChangePasswordRequest request, AuthService service, HttpContext http, CancellationToken ct) =>

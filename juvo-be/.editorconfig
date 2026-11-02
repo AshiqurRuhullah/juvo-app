@@ -65,3 +65,7 @@ generated_code = true
 dotnet_analyzer_diagnostic.severity = none
 dotnet_style_qualification_for_field = false:none
 csharp_style_namespace_declarations = block_scoped:none
+
+# Tests build small literal arrays inline for readability.
+[tests/**/*.cs]
+dotnet_diagnostic.CA1861.severity = none

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Juvo.Application.Ums;
 
 /// <summary>Branch management. Reads and changes are limited to the branches where the actor holds the permission.</summary>
-public sealed class BranchesService(IApplicationDbContext db, ActorContext actors, AccessChanges changes, IAccessDeniedAuditor auditor)
+public sealed class BranchesService(IApplicationDbContext db, ActorContext actors, AccessChanges changes, IAccessDeniedAuditor auditor, IUnitOfWork unitOfWork)
 {
     private static Error NotFound() => Error.NotFound(ErrorCodes.Ums.BranchNotFound, "Branch not found.");
 
@@ -236,13 +236,19 @@ public sealed class BranchesService(IApplicationDbContext db, ActorContext actor
             return Error.Conflict(ErrorCodes.Ums.BranchInactive, "An inactive branch cannot be the default.");
         }
 
-        foreach (var other in await db.Branches.Where(b => b.IsDefault && b.Id != id).ToListAsync(cancellationToken))
+        // A unique index allows exactly one default, so the old one is cleared (and saved) before the new one is set.
+        await unitOfWork.ExecuteInTransactionAsync(async ct =>
         {
-            other.UnmarkDefault();
-        }
+            foreach (var other in await db.Branches.Where(b => b.IsDefault && b.Id != id).ToListAsync(ct))
+            {
+                other.UnmarkDefault();
+            }
 
-        branch.MarkDefault();
-        await db.SaveChangesAsync(cancellationToken);
+            await db.SaveChangesAsync(ct);
+            branch.MarkDefault();
+            await db.SaveChangesAsync(ct);
+            return true;
+        }, cancellationToken);
         return Result.Success();
     }
 

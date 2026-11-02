@@ -64,7 +64,7 @@ public sealed class BranchContextResolver(IApplicationDbContext db, IUserStateCa
 
         if (!Guid.TryParse(value, out var branchId))
         {
-            return Error.Failure(ErrorCodes.General.BadRequest, "X-Branch-Id must be a branch id or 'all'.");
+            return new Error(ErrorCodes.General.BadRequest, "X-Branch-Id must be a branch id or 'all'.", ErrorType.Validation);
         }
 
         var usable = isGlobal

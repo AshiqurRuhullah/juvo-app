@@ -112,7 +112,7 @@ internal static class AuthSetup
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
         services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
-            .Configure<SigningKeyProvider, IOptions<AuthOptions>>((bearer, keys, auth) =>
+            .Configure<SigningKeyProvider, IOptions<AuthOptions>, TimeProvider>((bearer, keys, auth, clock) =>
             {
                 bearer.MapInboundClaims = false; // keep "sub", "name", "stype" as they are
                 bearer.TokenValidationParameters = new TokenValidationParameters
@@ -124,6 +124,29 @@ internal static class AuthSetup
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = keys.Key,
                     ValidateLifetime = true,
+
+                    // One clock for issuing and validating, so tests can move time. Same rules as the default validator.
+                    LifetimeValidator = (notBefore, expires, _, _) =>
+                    {
+                        var now = clock.GetUtcNow().UtcDateTime;
+                        var skew = TimeSpan.FromSeconds(30);
+                        if (expires is null)
+                        {
+                            throw new SecurityTokenNoExpirationException("The token has no expiry.");
+                        }
+
+                        if (notBefore is { } start && start > now + skew)
+                        {
+                            throw new SecurityTokenNotYetValidException("The token is not valid yet.") { NotBefore = start };
+                        }
+
+                        if (expires.Value < now - skew)
+                        {
+                            throw new SecurityTokenExpiredException("The token has expired.") { Expires = expires.Value };
+                        }
+
+                        return true;
+                    },
                     ClockSkew = TimeSpan.FromSeconds(30),
                     NameClaimType = "name",
                     ValidAlgorithms = [SecurityAlgorithms.HmacSha256],
