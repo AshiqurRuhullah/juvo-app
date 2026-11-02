@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Juvo.Shared\Juvo.Shared.csproj" />
+  </ItemGroup>
+</Project>
