@@ -41,60 +41,60 @@ internal static class AuthEndpoints
         auth.MapPost("/login", async (LoginRequest request, AuthService service, HttpContext http, CancellationToken ct) =>
                 (await service.LoginAsync(request, ClientOf(http, request.DeviceName), ct)).ToHttpResult())
             .AllowAnonymous().RequireRateLimiting(RateLimitSettings.AuthPolicy)
-            .WithSummary("Staff sign-in with email or user name and password (plus a 2FA code when enabled).");
+            .Produces<AuthTokens>().WithSummary("Staff sign-in with email or user name and password (plus a 2FA code when enabled).");
 
         auth.MapPost("/refresh", async (RefreshRequest request, AuthService service, HttpContext http, CancellationToken ct) =>
                 (await service.RefreshAsync(request, ClientOf(http, request.DeviceName), ct)).ToHttpResult())
             .AllowAnonymous()
-            .WithSummary("Exchange a refresh token for a new access token and a new refresh token (rotation with reuse detection).");
+            .Produces<AuthTokens>().WithSummary("Exchange a refresh token for a new access token and a new refresh token (rotation with reuse detection).");
 
         auth.MapPost("/logout", async (LogoutRequest request, AuthService service, CancellationToken ct) =>
                 (await service.LogoutAsync(request, ct)).ToHttpResult())
             .AllowAnonymous()
-            .WithSummary("End this session. Works with the refresh token even when the access token has expired.");
+            .Produces(StatusCodes.Status204NoContent).WithSummary("End this session. Works with the refresh token even when the access token has expired.");
 
         auth.MapPost("/logout-all", async (AuthService service, CancellationToken ct) => (await service.LogoutAllAsync(ct)).ToHttpResult())
             .RequireAuthorization(Policies.Authenticated)
-            .WithSummary("End every session of the signed-in user.");
+            .Produces(StatusCodes.Status204NoContent).WithSummary("End every session of the signed-in user.");
 
         auth.MapGet("/me", async (AuthService service, CancellationToken ct) => (await service.GetMeAsync(ct)).ToHttpResult())
             .RequireAuthorization(Policies.Authenticated)
-            .WithSummary("Profile, branches, roles per branch and effective permissions of the signed-in user.");
+            .Produces<MeResponse>().WithSummary("Profile, branches, roles per branch and effective permissions of the signed-in user.");
 
         auth.MapGet("/can", async (string permission, IPermissionChecker checker, IBranchContext branch, CancellationToken ct) =>
                 Results.Ok(new PermissionCheckResponse(permission, await checker.HasPermissionAsync(permission, ct), branch.ActiveBranchId, branch.IsAllBranches)))
             .RequireAuthorization(Policies.Staff)
-            .WithSummary("Does the signed-in staff member hold this permission in the active branch (X-Branch-Id)? For hiding buttons in the UI.");
+            .Produces<PermissionCheckResponse>().WithSummary("Does the signed-in staff member hold this permission in the active branch (X-Branch-Id)? For hiding buttons in the UI.");
 
         // ---- password ----
         auth.MapPost("/change-password", async (ChangePasswordRequest request, AuthService service, HttpContext http, CancellationToken ct) =>
                 (await service.ChangePasswordAsync(request, ClientOf(http), ct)).ToHttpResult())
             .RequireAuthorization(Policies.StaffLimited)
-            .WithSummary("Change the password. All other sessions end; a new session is returned.");
+            .Produces<AuthTokens>().WithSummary("Change the password. All other sessions end; a new session is returned.");
 
         auth.MapPost("/forgot-password", async (ForgotPasswordRequest request, AuthService service, CancellationToken ct) =>
                 (await service.ForgotPasswordAsync(request, ct)).ToHttpResult(() => Results.Accepted()))
             .AllowAnonymous().RequireRateLimiting(RateLimitSettings.AuthPolicy)
-            .WithSummary("Email a password-reset link. Always answers 202, so it cannot reveal which emails have accounts.");
+            .Produces(StatusCodes.Status202Accepted).WithSummary("Email a password-reset link. Always answers 202, so it cannot reveal which emails have accounts.");
 
         auth.MapPost("/reset-password", async (ResetPasswordRequest request, AuthService service, CancellationToken ct) =>
                 (await service.ResetPasswordAsync(request, ct)).ToHttpResult())
             .AllowAnonymous().RequireRateLimiting(RateLimitSettings.AuthPolicy)
-            .WithSummary("Set a new password with the emailed token. All sessions end.");
+            .Produces(StatusCodes.Status204NoContent).WithSummary("Set a new password with the emailed token. All sessions end.");
 
         // ---- two-step verification ----
         var twoFactor = auth.MapGroup("/2fa").RequireAuthorization(Policies.StaffLimited);
         twoFactor.MapPost("/setup", async (AuthService service, CancellationToken ct) => (await service.BeginTwoFactorSetupAsync(ct)).ToHttpResult())
-            .WithSummary("Get the authenticator key and otpauth URI to scan.");
+            .Produces<TwoFactorSetupResponse>().WithSummary("Get the authenticator key and otpauth URI to scan.");
         twoFactor.MapPost("/enable", async (EnableTwoFactorRequest request, AuthService service, CancellationToken ct) =>
                 (await service.EnableTwoFactorAsync(request, ct)).ToHttpResult())
-            .WithSummary("Turn two-step verification on with a code from the app. Returns one-time recovery codes.");
+            .Produces<RecoveryCodesResponse>().WithSummary("Turn two-step verification on with a code from the app. Returns one-time recovery codes.");
         twoFactor.MapPost("/disable", async (DisableTwoFactorRequest request, AuthService service, CancellationToken ct) =>
                 (await service.DisableTwoFactorAsync(request, ct)).ToHttpResult())
-            .WithSummary("Turn two-step verification off (not allowed for Super Admin).");
+            .Produces(StatusCodes.Status204NoContent).WithSummary("Turn two-step verification off (not allowed for Super Admin).");
         twoFactor.MapPost("/recovery-codes", async (AuthService service, CancellationToken ct) =>
                 (await service.RegenerateRecoveryCodesAsync(ct)).ToHttpResult())
-            .WithSummary("Replace the recovery codes.");
+            .Produces<RecoveryCodesResponse>().WithSummary("Replace the recovery codes.");
 
         // ---- own sessions ----
         auth.MapGet("/sessions", async (AuthService service, ICurrentUser user, CancellationToken ct) =>
@@ -108,7 +108,7 @@ internal static class AuthEndpoints
                 return Results.Ok(await service.ListSessionsAsync(type, id, user.SessionId, ct));
             })
             .RequireAuthorization(Policies.Authenticated)
-            .WithSummary("Devices signed in as me.");
+            .Produces<IReadOnlyList<SessionDto>>().WithSummary("Devices signed in as me.");
 
         auth.MapDelete("/sessions/{sessionId:guid}", async (Guid sessionId, AuthService service, ICurrentUser user, CancellationToken ct) =>
             {
@@ -121,18 +121,18 @@ internal static class AuthEndpoints
                 return (await service.RevokeSessionAsync(type, id, sessionId, ct)).ToHttpResult();
             })
             .RequireAuthorization(Policies.Authenticated)
-            .WithSummary("Sign one of my devices out.");
+            .Produces(StatusCodes.Status204NoContent).WithSummary("Sign one of my devices out.");
 
         // ---- customers: mobile number + one-time password ----
         auth.MapPost("/otp/request", async (RequestOtpRequest request, CustomerAuthService service, HttpContext http, CancellationToken ct) =>
                 (await service.RequestOtpAsync(request, ClientOf(http), ct)).ToHttpResult(value => Results.Accepted(value: value)))
             .AllowAnonymous().RequireRateLimiting(RateLimitSettings.OtpPolicy)
-            .WithSummary("Send a one-time password by SMS to a mobile number.");
+            .Produces<RequestOtpResponse>(StatusCodes.Status202Accepted).WithSummary("Send a one-time password by SMS to a mobile number.");
 
         auth.MapPost("/otp/verify", async (VerifyOtpRequest request, CustomerAuthService service, HttpContext http, CancellationToken ct) =>
                 (await service.VerifyOtpAsync(request, ClientOf(http, request.DeviceName), ct)).ToHttpResult())
             .AllowAnonymous().RequireRateLimiting(RateLimitSettings.OtpPolicy)
-            .WithSummary("Verify the code; creates the quick profile on first use and signs the customer in.");
+            .Produces<AuthTokens>().WithSummary("Verify the code; creates the quick profile on first use and signs the customer in.");
 
         return app;
     }

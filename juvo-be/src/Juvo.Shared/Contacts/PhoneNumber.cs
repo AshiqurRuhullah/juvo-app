@@ -8,10 +8,10 @@ namespace Juvo.Shared.Contacts;
 /// </summary>
 public static partial class PhoneNumber
 {
-    [GeneratedRegex(@"^\+8801[3-9]\d{8}$")]
+    [GeneratedRegex(@"^\+8801[3-9][0-9]{8}$")]
     private static partial Regex BangladeshMobile();
 
-    [GeneratedRegex(@"^\+[1-9]\d{7,14}$")]
+    [GeneratedRegex(@"^\+[1-9][0-9]{7,14}$")]
     private static partial Regex InternationalE164();
 
     /// <summary>Returns the normalized number, or null when the input is not a valid mobile number.</summary>
@@ -22,7 +22,11 @@ public static partial class PhoneNumber
             return null;
         }
 
-        var cleaned = new string(input.Where(c => char.IsDigit(c) || c == '+').ToArray());
+        // Bengali (০-৯) and other Unicode decimal digits are mapped to 0-9 so a customer can type in their own script.
+        var cleaned = new string(input
+            .Where(c => char.IsDigit(c) || c == '+')
+            .Select(c => char.IsDigit(c) ? (char)('0' + (int)char.GetNumericValue(c)) : c)
+            .ToArray());
         if (cleaned.Length == 0)
         {
             return null;

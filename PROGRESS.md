@@ -10,7 +10,7 @@ Last updated: 2026-11-02.
 | 1 | Understand the business, Git and project docs | **Done** |
 | 2 | Backend foundation | **Done** |
 | 3 | UMS backend: auth, roles, permissions, branches | **Done** (branch `feature/03-ums-backend`, merged to `main`) |
-| 4 | Front-end foundation, brand, login, token handling | Not started |
+| 4 | Front-end foundation, brand, login, token handling | **Done** (branch `feature/04-front-foundation`, merged to `main`) |
 | 5 | UMS user interface | Not started |
 | 6 | Catalog, media, branch-wise inventory | Not started |
 | 7 | Storefront, cart, customer identity, address, delivery zones | Not started |
@@ -45,18 +45,36 @@ Contract for the front end: **`docs/auth-and-access.md`**. Decisions: `docs/assu
 - Real run on `JuvoDb`: migration applied, seed created 234 permissions, 7 roles, 2 branches and the Super Admin; dev login returns a limited token (forced password change); `/auth/me` shows HO and ONL; `/ums/users` with the limited token answers 403; OpenAPI lists 45 paths and Scalar loads.
 - `has-pending-model-changes`: none. `dotnet list package --vulnerable --include-transitive`: none. No leftover `JuvoDb_Test_*` databases.
 
+## Step 4 (done): front-end foundation
+
+- **App:** Next.js 16.4 (App Router, strict TypeScript, Tailwind 4) in `juvo-front`; details and route/menu maps in `juvo-front/docs/frontend.md`, run instructions in `juvo-front/README.md`.
+- **Session:** backend-for-frontend; tokens only in httpOnly cookies; one in-flight refresh; `proxy.ts` keeps the session fresh; token endpoints blocked in the generic proxy; open redirects refused.
+- **Typed API client** generated from the API's OpenAPI file (`npm run gen:api`); the API now declares response types on all 53 operations.
+- **Design system** from the logo (light and dark), forms, dialogs, menus, tabs, select, data table, toasts; dev-only `/design` gallery.
+- **Screens:** staff login with 2FA step, customer OTP login, forgot/reset password, forced first-login, admin shell (sidebar / rail / drawer + bottom bar, branch switcher, command palette, notifications bell, language and theme), profile with security panel, 401/403/404/error pages, account and storefront placeholders. English and Bengali.
+- **Small backend fix:** `PhoneNumber.Normalize` accepts Bengali and other Unicode digits.
+
+**Gate result (all run and seen passing):**
+- `npm run lint`: clean. `npx tsc --noEmit`: clean. `npm run build`: succeeds.
+- `npm test`: 39 unit tests passed. `npm run test:e2e`: **104 passed** (desktop, tablet, Android, iPhone) against the real API and a throw-away database; includes login, silent refresh, logout, role change without re-login, per-role and per-branch menus, forged branch cookie.
+- UI checks at 360 / 768 / 1280 px on all 12 pages: no horizontal overflow, no tap target under 44 px, no axe violations, no console errors; 200% and 400% zoom pass. Key screenshots in `juvo-front/docs/ui-checks/`.
+- Backend: all test projects run **213 passed** (domain 76, application 10, integration 127).
+- Unbuilt modules are shown as "Soon" by design.
+
 ## How to run now
 
 ```powershell
 .\scripts\setup-db.ps1
-dotnet run --project juvo-be/src/Juvo.Api         # https://localhost:7080/scalar/v1
-# sign in: admin / Juvo@Dev#2026 (development only; change it at first sign-in)
+dotnet run --project juvo-be/src/Juvo.Api         # http://localhost:5080/scalar/v1
+cd juvo-front; copy .env.example .env.local; npm install; npm run dev    # http://localhost:3000
+# sign in at /login: admin@juvobd.local / Juvo@Dev#2026 (development only; change it at first sign-in)
 dotnet test juvo-be                               # needs SQL Server / LocalDB
+npm test; npm run test:e2e                        # in juvo-front
 ```
 
 ## Next step
 
-**Step 4: Front-end foundation** (Next.js inside `juvo-front`, brand tokens, design system, typed API client from `/openapi/v1.json`, BFF route handlers that keep the tokens in httpOnly cookies and refresh with a single in-flight request, middleware, `usePermissions`/`<Can>`, login page with the 2FA step, admin shell with the permission-built sidebar and branch switcher). Everything it needs about tokens, error codes, `X-Branch-Id` and `/auth/me` is in `docs/auth-and-access.md`.
+**Step 5: UMS user interface** (users, roles and permission matrix, branches, assignments, audit log and sign-in history screens on top of the Step 4 shell and the Step 3 endpoints). The menu items already exist as "Soon" in `src/lib/nav.ts`; flip `ready` as each screen lands.
 
 ## Known issues / notes
 
@@ -67,3 +85,5 @@ dotnet test juvo-be                               # needs SQL Server / LocalDB
 5. `Auth:RequireTwoFactorForSuperAdmin` is off in `appsettings.Development.json` only.
 6. Provider onboarding (courier, payment gateway, SMS sender ID, map key) is not started by the owner; not needed until Step 14. Bangladesh VAT rules are unverified. Brand content, policies and the pickup address must be supplied by the owner.
 7. The Visual Studio GitHub credential for `ashiqurgit` is still in Windows Credential Manager (left alone).
+8. `dotnet test` from `juvo-be` sometimes reports "Zero tests ran" in this environment; running each test project's `.exe` under `tests/*/bin/Debug/net10.0/` works and shows the real totals.
+9. The refresh single-flight store is process-local (one app server); several servers need a shared store (Step 14). Bengali translations need native review (Step 12).

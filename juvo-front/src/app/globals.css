@@ -1,0 +1,173 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+/*
+ * Brand tokens (src/styles/tokens.css, generated from the logo) are the only source of colour.
+ * This maps them to Tailwind utilities: bg-primary, text-strong, border-line, ...
+ * Components never use raw hex values.
+ */
+@theme inline {
+  --color-primary: var(--brand-primary);
+  --color-primary-dark: var(--brand-primary-dark);
+  --color-primary-soft: var(--brand-primary-soft);
+  --color-secondary: var(--brand-secondary);
+  --color-accent: var(--brand-accent);
+  --color-surface: var(--surface);
+  --color-card: var(--surface-card);
+  --color-sunken: var(--surface-sunken);
+  --color-strong: var(--text-strong);
+  --color-muted: var(--text-muted);
+  --color-on-primary: var(--text-on-primary);
+  --color-line: var(--border);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  --font-sans: var(--font-inter), var(--font-bengali), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), var(--font-bengali), ui-serif, Georgia, serif;
+
+  --radius-card: 1rem;
+  --radius-control: 0.75rem;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.08);
+  --shadow-pop: 0 2px 6px rgb(0 0 0 / 0.1), 0 16px 40px rgb(0 0 0 / 0.16);
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) {
+    color-scheme: dark;
+  }
+}
+
+body {
+  background: var(--surface);
+  color: var(--text-strong);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+  min-height: 100dvh;
+  overflow-x: clip; /* never a horizontal page scroll */
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* One visible keyboard focus style everywhere. */
+:focus-visible {
+  outline: 3px solid var(--brand-primary-glow);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Inputs stay at 16px so iOS does not zoom on focus. */
+input,
+select,
+textarea {
+  font-size: 1rem;
+}
+
+/* Touch targets: anything we mark as tappable is at least 44px (WCAG 2.5.5 / SRS NFR-013). */
+.tap {
+  min-height: var(--tap-min);
+  min-width: var(--tap-min);
+}
+
+/* Hover effects only where hover exists, so touch screens never get stuck states. */
+@media (hover: none) {
+  .hover-lift:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Safe areas for notches and home indicators. */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Slim scrollbars inside panels. */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-sunken) 25%, var(--border) 37%, var(--surface-sunken) 63%);
+  background-size: 400% 100%;
+  animation: var(--animate-shimmer);
+}
+
+/* Sonner toasts follow the brand tokens. */
+[data-sonner-toaster] {
+  --normal-bg: var(--surface-card);
+  --normal-text: var(--text-strong);
+  --normal-border: var(--border);
+  --success-bg: var(--surface-card);
+  --success-text: var(--success);
+  --success-border: var(--border);
+  --error-bg: var(--surface-card);
+  --error-text: var(--danger);
+  --error-border: var(--border);
+  font-family: var(--font-sans);
+}
+
+/* Overlay motion (150-250 ms ease-out, SRS 3.3). Radix sets data-state; reduced motion is handled above. */
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes slide-in-left { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes slide-out-left { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+@keyframes slide-in-bottom { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes slide-out-bottom { from { transform: translateY(0); } to { transform: translateY(100%); } }
+@keyframes pop-in { from { opacity: 0; transform: translate(-50%, -48%) scale(0.97); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@keyframes pop-out { from { opacity: 1; transform: translate(-50%, -50%) scale(1); } to { opacity: 0; transform: translate(-50%, -48%) scale(0.97); } }
+
+.anim-overlay[data-state="open"] { animation: fade-in 200ms ease-out; }
+.anim-overlay[data-state="closed"] { animation: fade-out 150ms ease-in; }
+.anim-left[data-state="open"] { animation: slide-in-left 220ms ease-out; }
+.anim-left[data-state="closed"] { animation: slide-out-left 180ms ease-in; }
+.anim-bottom[data-state="open"] { animation: slide-in-bottom 220ms ease-out; }
+.anim-bottom[data-state="closed"] { animation: slide-out-bottom 180ms ease-in; }
+.anim-pop[data-state="open"] { animation: pop-in 200ms ease-out; }
+.anim-pop[data-state="closed"] { animation: pop-out 150ms ease-in; }
+.anim-fade[data-state="open"] { animation: fade-in 150ms ease-out; }
+.anim-fade[data-state="closed"] { animation: fade-out 100ms ease-in; }
