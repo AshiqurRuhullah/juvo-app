@@ -90,6 +90,14 @@ public sealed class FakeCurrentUser : ICurrentUser
 
     public string? IpAddress => "10.0.0.1";
 
+    public string? UserAgent => "tests";
+
+    public Guid? SessionId => null;
+
+    public bool IsLimitedToken => false;
+
+    public string? SubjectType => "staff";
+
     public string? CorrelationId => "corr-test-1";
 }
 

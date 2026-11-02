@@ -26,6 +26,9 @@ internal sealed class AuditSaveChangesInterceptor(TimeProvider timeProvider, ICu
     [
         nameof(Entity.RowVersion), nameof(Entity.CreatedAt), nameof(Entity.CreatedBy),
         nameof(Entity.UpdatedAt), nameof(Entity.UpdatedBy),
+
+        // Identity user fields that are secrets or pure bookkeeping.
+        "PasswordHash", "SecurityStamp", "ConcurrencyStamp", "NormalizedEmail", "NormalizedUserName", "AccessFailedCount",
     ];
 
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
@@ -55,7 +58,7 @@ internal sealed class AuditSaveChangesInterceptor(TimeProvider timeProvider, ICu
 
         foreach (var entry in context.ChangeTracker.Entries().ToList())
         {
-            if (entry.State is EntityState.Detached or EntityState.Unchanged || entry.Entity is not Entity entity)
+            if (entry.State is EntityState.Detached or EntityState.Unchanged || entry.Entity is not IAuditable entity)
             {
                 continue;
             }
@@ -88,7 +91,7 @@ internal sealed class AuditSaveChangesInterceptor(TimeProvider timeProvider, ICu
                 entry.Property(nameof(Entity.UpdatedBy)).IsModified = true;
             }
 
-            if (entity is AuditLog or OutboxMessage or JobLog)
+            if (entity is INotAudited)
             {
                 continue;
             }
@@ -111,7 +114,7 @@ internal sealed class AuditSaveChangesInterceptor(TimeProvider timeProvider, ICu
         }
     }
 
-    private AuditLog? BuildAudit(EntityEntry entry, Entity entity, bool softDeleted, DateTimeOffset now, Guid? userId)
+    private AuditLog? BuildAudit(EntityEntry entry, IAuditable entity, bool softDeleted, DateTimeOffset now, Guid? userId)
     {
         var entityName = entry.Metadata.ClrType.Name;
         var entityId = entity.Id.ToString();

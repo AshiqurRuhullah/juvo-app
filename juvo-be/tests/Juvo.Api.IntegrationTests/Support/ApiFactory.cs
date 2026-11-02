@@ -1,3 +1,4 @@
+using Juvo.Infrastructure.Identity;
 using Juvo.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -19,7 +20,16 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         ["Outbox:Enabled"] = "false",
         ["OpenApi:Enabled"] = "true",
         ["Database:AutoMigrate"] = "false",
+        ["Auth:SigningKey"] = "integration-tests-signing-key-0123456789-abcdef",
+        ["Auth:RequireTwoFactorForSuperAdmin"] = "false",
+        ["Auth:Seed:Password"] = SeedPassword,
+        ["Auth:Seed:Email"] = SeedEmail,
+        ["Notifications:StoreOtpPlaintext"] = "true",
+        ["RateLimiting:Enabled"] = "false",
     };
+
+    public const string SeedEmail = "admin@juvo.test";
+    public const string SeedPassword = "Sup3r-Secret!Pass";
 
     public string ConnectionString => _connectionString;
 
@@ -41,6 +51,7 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         builder.ConfigureServices(ConfigureTestServices);
         builder.UseSetting("ConnectionStrings:Default", _connectionString);
         builder.UseSetting("Storage:RootPath", _storageRoot);
+        builder.UseSetting("DataProtection:KeysPath", Path.Combine(_storageRoot, "keys"));
         foreach (var (key, value) in _settings)
         {
             builder.UseSetting(key, value);
@@ -53,6 +64,7 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         using var scope = Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<JuvoDbContext>();
         await db.Database.MigrateAsync();
+        await scope.ServiceProvider.GetRequiredService<IdentitySeeder>().SeedAsync();
     }
 
     public override async ValueTask DisposeAsync()
