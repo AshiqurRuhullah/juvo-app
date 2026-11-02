@@ -21,6 +21,11 @@ internal static class ServiceCollectionExtensions
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, HttpCurrentUser>();
+        services.AddScoped<IBranchContext, HttpBranchContext>();
+        services.AddJuvoAuth();
+
+        // Enums travel as text ("Shop", not 2), so the API is readable and stable.
+        services.ConfigureHttpJsonOptions(options => options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
 
         services.AddJuvoProblemDetails();
         services.AddJuvoCors(configuration);

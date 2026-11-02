@@ -2,6 +2,7 @@ using System.Text.Json;
 using Juvo.Api.Configuration;
 using Juvo.Api.Endpoints;
 using Juvo.Api.Http;
+using Juvo.Infrastructure.Identity;
 using Juvo.Infrastructure.Options;
 using Juvo.Infrastructure.Persistence;
 using Juvo.Infrastructure.Storage;
@@ -35,6 +36,9 @@ internal static class WebApplicationExtensions
 
         app.UseCors(CorsSettings.PolicyName);
         app.UseRateLimiter();
+        app.UseAuthentication();
+        app.UseMiddleware<BranchContextMiddleware>(); // validates X-Branch-Id against the signed-in user, every request
+        app.UseAuthorization();
         app.UseOutputCache();
 
         return app;
@@ -44,11 +48,13 @@ internal static class WebApplicationExtensions
     {
         MapHealth(app);
         app.MapSystemEndpoints();
+        app.MapAuthEndpoints();
+        app.MapUmsEndpoints();
 
         if (app.Services.GetRequiredService<IOptions<OpenApiSettings>>().Value.Enabled)
         {
-            app.MapOpenApi().WithDocumentPerVersion();
-            app.MapScalarApiReference(options => options.WithTitle("Juvo BD API"));
+            app.MapOpenApi().WithDocumentPerVersion().AllowAnonymous();
+            app.MapScalarApiReference(options => options.WithTitle("Juvo BD API")).AllowAnonymous();
         }
 
         return app;
@@ -63,6 +69,10 @@ internal static class WebApplicationExtensions
         var pending = (await db.Database.GetPendingMigrationsAsync()).ToList();
         logger.LogInformation("Applying {Count} pending migration(s): {Names}", pending.Count, string.Join(", ", pending));
         await db.Database.MigrateAsync();
+
+        // Reference data (permissions, roles, branches, first Super Admin) is seeded right after the schema is current.
+        var seeder = scope.ServiceProvider.GetRequiredService<IdentitySeeder>();
+        await seeder.SeedAsync();
     }
 
     private static void UseUploadedFiles(WebApplication app)
@@ -91,14 +101,14 @@ internal static class WebApplicationExtensions
         {
             Predicate = _ => false,
             ResponseWriter = WriteHealth,
-        });
+        }).AllowAnonymous();
 
         // Readiness: dependencies (database) are reachable.
         app.MapHealthChecks("/health/ready", new HealthCheckOptions
         {
             Predicate = check => check.Tags.Contains("ready"),
             ResponseWriter = WriteHealth,
-        });
+        }).AllowAnonymous();
     }
 
     private static Task WriteHealth(HttpContext context, Microsoft.Extensions.Diagnostics.HealthChecks.HealthReport report)
