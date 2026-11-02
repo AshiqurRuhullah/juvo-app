@@ -15,6 +15,9 @@ public class PhoneNumberTests
     [InlineData("+14155552671", "+14155552671")]
     [InlineData("0014155552671", "+14155552671")]
     [InlineData("+919876543210", "+919876543210")]
+    [InlineData("০১৭১২৩৪৫৬৭৮", "+8801712345678")]        // Bengali digits
+    [InlineData("+৮৮০১৭১২৩৪৫৬৭৮", "+8801712345678")]
+    [InlineData("٠١٧١٢٣٤٥٦٧٨", "+8801712345678")]        // Arabic-Indic digits
     public void Valid_numbers_are_normalized_to_international_format(string input, string expected) =>
         Assert.Equal(expected, PhoneNumber.Normalize(input));
 
