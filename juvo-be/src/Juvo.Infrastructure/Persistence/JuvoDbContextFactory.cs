@@ -12,7 +12,7 @@ internal sealed class JuvoDbContextFactory : IDesignTimeDbContextFactory<JuvoDbC
     public JuvoDbContext CreateDbContext(string[] args)
     {
         var connection = Environment.GetEnvironmentVariable("JUVO_CONNECTION")
-            ?? "Server=(localdb)\\MSSQLLocalDB;Database=JuvoDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true";
+            ?? "Server=(localdb)\\MSSQLLocalDB;Database=JuvoDb;Trusted_Connection=True;TrustServerCertificate=True";
 
         var builder = new DbContextOptionsBuilder<JuvoDbContext>();
         builder.UseSqlServer(connection, sql =>
