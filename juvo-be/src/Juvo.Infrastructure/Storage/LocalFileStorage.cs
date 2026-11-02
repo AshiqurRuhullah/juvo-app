@@ -13,8 +13,7 @@ internal sealed class LocalFileStorage : IFileStorage
 
     public LocalFileStorage(IOptions<StorageOptions> options, IHostEnvironment environment)
     {
-        var configured = options.Value.RootPath;
-        _root = Path.GetFullPath(Path.IsPathRooted(configured) ? configured : Path.Combine(environment.ContentRootPath, configured));
+        _root = StorageLocation.ResolveRoot(options.Value, environment);
         _publicBase = options.Value.PublicBaseUrl.TrimEnd('/');
         Directory.CreateDirectory(_root);
     }
