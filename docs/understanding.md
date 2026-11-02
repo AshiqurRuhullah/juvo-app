@@ -543,7 +543,7 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-M08 | Date range filter; all cards link to the filtered list behind them | M | 12 | Not started | | |
 | FR-N01 | Every list has search, filters, sorting, pagination, column chooser and export to Excel/CSV | M | 6-12 | Not started | | |
 | FR-N02 | Bulk actions (confirm, book courier, print labels, change status) with a result summary per order | M | 6-12 | Not started | | |
-| FR-N03 | Optimistic-lock protection: if two staff edit the same order, the second gets a conflict message | S | 6-12 | Not started | | |
+| FR-N03 | Optimistic-lock protection: if two staff edit the same order, the second gets a conflict message | S | 6-12 | Partial | rowversion concurrency token; GlobalExceptionHandler returns 409 GENERAL.CONCURRENCY_CONFLICT | UI conflict message in Steps 5/8. |
 | FR-N04 | Internal notes and tags on orders and customers | S | 6-12 | Not started | | |
 | FR-N05 | Sound/visual alert for a new order while the admin panel is open | S | 6-12 | Not started | | |
 | FR-N06 | Destructive actions (delete product, cancel shipped order) ask for confirmation and a reason; products used in orders are archived, not era… | M | 6-12 | Not started | | |
@@ -580,21 +580,21 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | NFR-003 | Performance (front end): Product and home pages usable within about 3 seconds on a mid-range phone over 4G; images lazy-loaded and served i… | - | 13 | Not started | | |
 | NFR-004 | Capacity: Designed for at least 100 concurrent shoppers and 10,000 products at launch, scalable by adding servers (proposal; revise with bu… | - | 13 | Not started | | |
 | NFR-005 | Real-time: Status changes reach open screens within about 3 seconds; automatic fallback to polling | - | 13 | Not started | | |
-| NFR-006 | Security: transport: HTTPS everywhere, HSTS, secure cookies | - | 13 | Not started | | |
-| NFR-007 | Security: application: Protection against the OWASP Top 10 (injection, XSS, CSRF, broken access control, etc.); input validation on client… | - | 13 | Not started | | |
+| NFR-006 | Security: transport: HTTPS everywhere, HSTS, secure cookies | - | 13 | Partial | Juvo.Api/Configuration/WebApplicationExtensions.cs (HSTS, HTTPS redirect), Http/SecurityHeadersMiddleware.cs | Step 2 foundation. Secure auth cookies come with Step 3/4. |
+| NFR-007 | Security: application: Protection against the OWASP Top 10 (injection, XSS, CSRF, broken access control, etc.); input validation on client… | - | 13 | Partial | Rate limiting (ServiceCollectionExtensions.cs), validation pipeline, ProblemDetails | Step 2 foundation. Authorization and the OWASP review come in Steps 3 and 13. |
 | NFR-008 | Security: secrets: Courier and gateway credentials encrypted and never exposed to the browser; secrets kept in a vault or secure configurat… | - | 13 | Not started | | |
 | NFR-009 | Security: payments: No card data stored; gateway-hosted payment fields; webhook signature checks | - | 13 | Not started | | |
 | NFR-010 | Privacy: Personal data minimised, access logged, consent recorded; follow Bangladesh data protection requirements in force at the time. I a… | - | 13 | Not started | | |
 | NFR-011 | Backup and recovery: Automated daily database backups, tested restore, recovery point and time objectives agreed (proposal: 24 h and 4 h) | - | 13 | Not started | | |
-| NFR-012 | Audit: All admin changes logged and cannot be edited by staff | - | 13 | Not started | | |
+| NFR-012 | Audit: All admin changes logged and cannot be edited by staff | - | 13 | Partial | Infrastructure/Persistence/Interceptors/AuditSaveChangesInterceptor.cs, AuditLogs (append-only) | Audit written on every save. Admin viewer in Steps 3/5. |
 | NFR-013 | Usability: Guest checkout in at most 5 steps; touch targets at least 44 px; clear errors in plain language | - | 13 | Not started | | |
 | NFR-014 | Accessibility: WCAG 2.1 AA as the target for contrast, keyboard use and labels | - | 13 | Not started | | |
 | NFR-015 | Localisation: English and Bengali; BDT formatting; Bengali digits optional; dates in local format | - | 13 | Not started | | |
 | NFR-016 | Compatibility: Latest two versions of major browsers, plus Android 8+ and iOS 15+ browsers (proposal) | - | 13 | Not started | | |
-| NFR-017 | Maintainability: Modular code, automated tests for order, stock and payment logic, API documentation, environment separation (development,… | - | 13 | Not started | | |
-| NFR-018 | Observability: Central logs, error tracking, uptime alerts, webhook and integration dashboards | - | 13 | Not started | | |
-| NFR-019 | Data integrity: Stock and order creation use transactions so two buyers cannot take the last item | - | 13 | Not started | | |
-| NFR-020 | Scalability: Background jobs for notifications, courier calls and reports so checkout stays fast | - | 13 | Not started | | |
+| NFR-017 | Maintainability: Modular code, automated tests for order, stock and payment logic, API documentation, environment separation (development,… | - | 13 | Partial | Layered solution, tests/*, OpenAPI (Scalar), Testing/Development/Production environments | Docs and full tests in Step 13. |
+| NFR-018 | Observability: Central logs, error tracking, uptime alerts, webhook and integration dashboards | - | 13 | Partial | Http/CorrelationIdMiddleware.cs, JSON logging, /health/live and /health/ready | Dashboards and alerts in Steps 12/14. |
+| NFR-019 | Data integrity: Stock and order creation use transactions so two buyers cannot take the last item | - | 13 | Partial | rowversion on Entity, UnitOfWork.ExecuteInTransactionAsync, tests/InterceptorTests.cs | Last-unit stock reservation is built in Step 8. |
+| NFR-020 | Scalability: Background jobs for notifications, courier calls and reports so checkout stays fast | - | 13 | Partial | Infrastructure/Outbox/OutboxProcessor.cs (transactional outbox + worker, retry, JobLogs) | Notification and courier jobs use it in Steps 9/10. |
 | FR-S01 | Quick order form for staff: customer mobile (finds existing customer), items by SKU or search, address with map, delivery, payment, source… | M | 8 | Not started | | |
 | FR-S02 | Order source tag and filter: Website, Facebook, Messenger, WhatsApp, Phone, Walk-in | M | 8 | Not started | | |
 | FR-S03 | Paste a customer chat message and use "Pick details" to fill name, phone, address manually into the form (staff-assisted, no automatic read… | C | 8 | Not started | | |
@@ -657,9 +657,9 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-AE02 | Shared stock between online and shop, with location-wise availability | C | 11B | Not started | | |
 | FR-AE03 | Shop cash register open/close report | C | 11B | Not started | | |
 | FR-AF01 | Settings centre: feature switches (turn modules, payment methods, OTP rules on/off without code change) | M | 12 | Not started | | |
-| FR-AF02 | Background job dashboard: failed SMS, courier, payment, webhook jobs with retry | M | 12 | Not started | | |
+| FR-AF02 | Background job dashboard: failed SMS, courier, payment, webhook jobs with retry | M | 12 | Partial | JobLogs table + OutboxProcessor (retry/backoff, manual Requeue) | Dashboard UI in Step 12. |
 | FR-AF03 | Backup, restore and data export/import tools; restore tested before launch | M | 12 | Not started | | |
-| FR-AF04 | Monitoring: error log, uptime alerts, slow-request alerts, integration health page | M | 12 | Not started | | |
+| FR-AF04 | Monitoring: error log, uptime alerts, slow-request alerts, integration health page | M | 12 | Partial | /health/live, /health/ready, correlation id, structured logs | Integration health page in Step 12. |
 | FR-AF05 | Public REST API with API keys and webhooks for orders, products, stock (documented) | S | 12 | Not started | | |
 | FR-AF06 | Data privacy tools: consent log, customer data export and anonymisation | S | 12 | Not started | | |
 | FR-AF07 | Installable web app (PWA) with home-screen icon and push notifications | S | 12 | Not started | | |
