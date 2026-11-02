@@ -14,5 +14,16 @@ public interface ICurrentUser
 
     string? IpAddress { get; }
 
+    string? UserAgent { get; }
+
+    /// <summary>The refresh-token family (session) of the access token in use, when there is one.</summary>
+    Guid? SessionId { get; }
+
+    /// <summary>True for a limited token (password change or two-factor setup still pending).</summary>
+    bool IsLimitedToken { get; }
+
+    /// <summary>The kind of caller: <c>staff</c>, <c>customer</c> or null when anonymous.</summary>
+    string? SubjectType { get; }
+
     string? CorrelationId { get; }
 }

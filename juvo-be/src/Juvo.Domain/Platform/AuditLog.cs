@@ -13,7 +13,7 @@ public enum AuditAction
 }
 
 /// <summary>Who changed what and when. Append-only; staff cannot edit it (NFR-012). Global table; every row records the branch.</summary>
-public sealed class AuditLog : Entity, IAppendOnly
+public sealed class AuditLog : Entity, IAppendOnly, INotAudited
 {
     private AuditLog()
     {

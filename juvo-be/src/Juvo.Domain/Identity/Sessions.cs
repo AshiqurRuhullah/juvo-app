@@ -12,7 +12,7 @@ public enum SubjectType
 /// A refresh token. Only the SHA-256 hash is stored. Tokens belong to a family (one sign-in on one device); every refresh
 /// rotates to a new token in the same family, and presenting an already-used token revokes the whole family (reuse detection).
 /// </summary>
-public sealed class RefreshToken : Entity
+public sealed class RefreshToken : Entity, INotAudited
 {
     private RefreshToken()
     {
@@ -86,7 +86,7 @@ public sealed class RefreshToken : Entity
 }
 
 /// <summary>Every sign-in attempt, successful or not (staff and customers). Append-only.</summary>
-public sealed class SignInHistory : Entity, IAppendOnly
+public sealed class SignInHistory : Entity, IAppendOnly, INotAudited
 {
     private SignInHistory()
     {

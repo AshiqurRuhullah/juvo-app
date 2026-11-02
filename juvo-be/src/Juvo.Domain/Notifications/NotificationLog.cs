@@ -19,7 +19,7 @@ public enum NotificationStatus
 /// Record of every message the system sends (FR-K05). The sandbox senders write here instead of calling a provider,
 /// so the whole platform runs end to end without external keys. Step 9 adds templates, retries and the admin viewer.
 /// </summary>
-public sealed class NotificationLog : Entity
+public sealed class NotificationLog : Entity, INotAudited
 {
     private NotificationLog()
     {

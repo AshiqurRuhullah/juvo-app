@@ -10,7 +10,7 @@ public enum JobStatus
 }
 
 /// <summary>One execution attempt of a background job (outbox delivery, scheduled task). Feeds the job dashboard (FR-AF02).</summary>
-public sealed class JobLog : Entity
+public sealed class JobLog : Entity, INotAudited
 {
     private JobLog()
     {

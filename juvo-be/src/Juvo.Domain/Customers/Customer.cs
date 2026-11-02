@@ -71,7 +71,7 @@ public enum OtpPurpose
 }
 
 /// <summary>A one-time password sent by SMS (SRS FR-E05): 6 digits, 5 minutes, limited attempts. Only a hash is stored.</summary>
-public sealed class OtpCode : Entity
+public sealed class OtpCode : Entity, INotAudited
 {
     public const int MaxAttempts = 5;
 

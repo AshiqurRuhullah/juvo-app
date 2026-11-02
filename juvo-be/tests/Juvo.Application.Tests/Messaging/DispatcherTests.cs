@@ -21,6 +21,10 @@ public class DispatcherTests
         public string? UserName => authenticated ? "tester" : null;
         public Guid? BranchId => null;
         public string? IpAddress => "127.0.0.1";
+        public string? UserAgent => "tests";
+        public Guid? SessionId => null;
+        public bool IsLimitedToken => false;
+        public string? SubjectType => authenticated ? "staff" : null;
         public string? CorrelationId => "corr";
     }
 
@@ -45,6 +49,10 @@ public class DispatcherTests
     private sealed class AllowChecker(bool allow) : IPermissionChecker
     {
         public Task<bool> HasPermissionAsync(string permission, CancellationToken cancellationToken = default) => Task.FromResult(allow);
+
+        public Task<bool> HasPermissionAsync(string permission, PermissionScope scope, CancellationToken cancellationToken = default) => Task.FromResult(allow);
+
+        public Task<bool> HasPermissionInBranchAsync(string permission, Guid branchId, CancellationToken cancellationToken = default) => Task.FromResult(allow);
     }
 
     private sealed record SecretQuery : IQuery<string>, IRequirePermission

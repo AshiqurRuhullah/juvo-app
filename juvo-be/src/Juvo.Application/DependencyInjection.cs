@@ -1,5 +1,7 @@
 using FluentValidation;
 using Juvo.Application.Abstractions;
+using Juvo.Application.Identity;
+using Juvo.Application.Ums;
 using Juvo.Application.Messaging;
 using Juvo.Application.Messaging.Behaviors;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,15 +35,27 @@ public static class DependencyInjection
 
         services.AddValidatorsFromAssembly(assembly, includeInternalTypes: true);
 
-        // Secure default until the Identity module (Step 3) registers the real checker.
-        services.TryAddScoped<IPermissionChecker, DenyAllPermissionChecker>();
+        // Identity and access (Step 3).
+        services.AddMemoryCache();
+        services.AddScoped<IUserStateCache, UserStateCache>();
+        services.AddScoped<AccessService>();
+        services.AddScoped<IPermissionChecker, PermissionChecker>();
+        services.AddScoped<BranchContextResolver>();
+        services.AddScoped<SessionIssuer>();
+        services.AddScoped<AuthService>();
+        services.AddScoped<CustomerAuthService>();
+
+        // User management (module O, section 4A).
+        services.AddScoped<ActorContext>();
+        services.AddScoped<AccessChanges>();
+        services.AddScoped<UsersService>();
+        services.AddScoped<RolesService>();
+        services.AddScoped<BranchesService>();
+        services.AddScoped<AuditQueryService>();
+
+        // No branch scope unless the host provides one (the API registers the per-request scope).
+        services.TryAddScoped<IBranchContext>(_ => UnscopedBranchContext.Instance);
 
         return services;
-    }
-
-    private sealed class DenyAllPermissionChecker : IPermissionChecker
-    {
-        public Task<bool> HasPermissionAsync(string permission, CancellationToken cancellationToken = default) =>
-            Task.FromResult(false);
     }
 }

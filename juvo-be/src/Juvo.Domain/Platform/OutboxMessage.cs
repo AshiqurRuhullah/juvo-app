@@ -15,7 +15,7 @@ public enum OutboxStatus
 /// A message written in the same transaction as the change that caused it (domain events,
 /// notifications, webhooks, courier calls) and delivered later by the background worker with retry.
 /// </summary>
-public sealed class OutboxMessage : Entity
+public sealed class OutboxMessage : Entity, INotAudited
 {
     private OutboxMessage()
     {
