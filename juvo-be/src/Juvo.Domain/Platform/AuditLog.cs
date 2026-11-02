@@ -7,6 +7,9 @@ public enum AuditAction
     Created = 1,
     Updated = 2,
     Deleted = 3,
+
+    /// <summary>A request was refused (wrong branch, missing permission). Written so attempts can be reviewed.</summary>
+    AccessDenied = 4,
 }
 
 /// <summary>Who changed what and when. Append-only; staff cannot edit it (NFR-012). Global table; every row records the branch.</summary>

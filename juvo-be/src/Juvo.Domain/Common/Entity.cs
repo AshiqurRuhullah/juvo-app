@@ -4,7 +4,7 @@ namespace Juvo.Domain.Common;
 /// Base for every persisted entity: time-ordered GUID id, created/updated stamps (filled by the
 /// audit interceptor) and a SQL Server <c>rowversion</c> concurrency token.
 /// </summary>
-public abstract class Entity
+public abstract class Entity : IAuditable
 {
     public Guid Id { get; protected set; } = Guid.CreateVersion7();
 
