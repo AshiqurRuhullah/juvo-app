@@ -29,10 +29,16 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
     }
 
+    /// <summary>Register extra services (test handlers, fake clock). Runs after the application's own registrations.</summary>
+    protected virtual void ConfigureTestServices(IServiceCollection services)
+    {
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         ConfigureSettings();
         builder.UseEnvironment("Testing");
+        builder.ConfigureServices(ConfigureTestServices);
         builder.UseSetting("ConnectionStrings:Default", _connectionString);
         builder.UseSetting("Storage:RootPath", _storageRoot);
         foreach (var (key, value) in _settings)
