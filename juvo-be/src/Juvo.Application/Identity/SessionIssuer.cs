@@ -47,28 +47,23 @@ public sealed class SessionIssuer(
         return tokens;
     }
 
-    /// <summary>Revokes every active token of a session. The caller saves.</summary>
+    /// <summary>
+    /// Revokes every active token of a session. Runs as one bulk update right away, so it never loses a race with a refresh
+    /// that is rotating the same family at that moment (a tracked update would fail on the row version).
+    /// </summary>
     public async Task RevokeFamilyAsync(Guid familyId, string reason, CancellationToken cancellationToken)
     {
         var now = timeProvider.GetUtcNow();
-        var tokens = await db.RefreshTokens.Where(t => t.FamilyId == familyId && t.RevokedAt == null).ToListAsync(cancellationToken);
-        foreach (var token in tokens)
-        {
-            token.Revoke(now, reason);
-        }
+        await db.RefreshTokens.Where(t => t.FamilyId == familyId && t.RevokedAt == null)
+            .ExecuteUpdateAsync(set => set.SetProperty(t => t.RevokedAt, now).SetProperty(t => t.RevokedReason, reason), cancellationToken);
     }
 
-    /// <summary>Revokes every session of a user (password change, deactivation, force logout). The caller saves.</summary>
+    /// <summary>Revokes every session of a user (password change, deactivation, force logout). One bulk update, applied at once.</summary>
     public async Task RevokeAllAsync(SubjectType subject, Guid subjectId, string reason, CancellationToken cancellationToken)
     {
         var now = timeProvider.GetUtcNow();
-        var tokens = await db.RefreshTokens
-            .Where(t => t.SubjectType == subject && t.SubjectId == subjectId && t.RevokedAt == null)
-            .ToListAsync(cancellationToken);
-        foreach (var token in tokens)
-        {
-            token.Revoke(now, reason);
-        }
+        await db.RefreshTokens.Where(t => t.SubjectType == subject && t.SubjectId == subjectId && t.RevokedAt == null)
+            .ExecuteUpdateAsync(set => set.SetProperty(t => t.RevokedAt, now).SetProperty(t => t.RevokedReason, reason), cancellationToken);
     }
 
     private AuthTokens Create(SubjectType subject, Guid subjectId, Guid familyId, string displayName, int permissionVersion,
