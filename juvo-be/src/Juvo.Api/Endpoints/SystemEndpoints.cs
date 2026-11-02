@@ -16,7 +16,12 @@ internal static class SystemEndpoints
         ApiVersionSet versionSet = app.NewApiVersionSet().HasApiVersion(new ApiVersion(1, 0)).ReportApiVersions().Build();
         // Secure by default: every /api/v1 endpoint needs a signed-in user unless it says AllowAnonymous(). Endpoints add their own
         // permission policy on top (RequirePermission / RequireBranchPermission).
-        return app.MapGroup("/api/v{version:apiVersion}").WithApiVersionSet(versionSet).RequireAuthorization(Policies.Authenticated);
+        return app.MapGroup("/api/v{version:apiVersion}").WithApiVersionSet(versionSet).RequireAuthorization(Policies.Authenticated)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict);
     }
 
     public static WebApplication MapSystemEndpoints(this WebApplication app)
@@ -30,13 +35,13 @@ internal static class SystemEndpoints
             .AllowAnonymous()
             .CacheOutput("Short")
             .WithName("GetSystemInfo")
-            .WithSummary("Name, version and environment of the running API.");
+            .Produces<SystemInfo>().WithSummary("Name, version and environment of the running API.");
 
         system.MapGet("/ping", async (string? name, IDispatcher dispatcher, CancellationToken cancellationToken) =>
             (await dispatcher.SendAsync(new PingQuery(name), cancellationToken)).ToHttpResult())
             .AllowAnonymous()
             .WithName("Ping")
-            .WithSummary("Smoke test that runs a query through the full application pipeline.");
+            .Produces<PingResponse>().WithSummary("Smoke test that runs a query through the full application pipeline.");
 
         return app;
     }
