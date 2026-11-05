@@ -22,13 +22,15 @@ type Props = {
   className?: string;
   /** Show the search box only when there are many options (default: more than 7). */
   searchable?: boolean;
+  /** Name for the field when no <label htmlFor> points at it (a combobox is not named by its text). */
+  "aria-label"?: string;
 };
 
 /**
  * Select with search for long lists (district, upazila, country, role). Same height and border as an input (48 px).
  * On phones the list opens as a bottom sheet with large rows; on larger screens it is a popover under the field.
  */
-export function Select({ id, value, onValueChange, options, placeholder, searchPlaceholder, emptyText, disabled, invalid, className, searchable }: Props) {
+export function Select({ id, value, onValueChange, options, placeholder, searchPlaceholder, emptyText, disabled, invalid, className, searchable, "aria-label": ariaLabel }: Props) {
   const [open, setOpen] = React.useState(false);
   const listId = React.useId();
   const isMobile = useIsMobile();
@@ -76,6 +78,7 @@ export function Select({ id, value, onValueChange, options, placeholder, searchP
       aria-controls={listId}
       aria-haspopup="listbox"
       aria-invalid={invalid || undefined}
+      aria-label={ariaLabel}
       disabled={disabled}
       {...extra}
       className={cn(

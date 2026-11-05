@@ -5,7 +5,7 @@ import * as LabelPrimitive from "@radix-ui/react-label";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import * as SwitchPrimitive from "@radix-ui/react-switch";
-import { Check, Eye, EyeOff } from "lucide-react";
+import { Check, Eye, EyeOff, Minus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Label = React.forwardRef<React.ComponentRef<typeof LabelPrimitive.Root>, React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>>(
@@ -97,14 +97,14 @@ export const Checkbox = React.forwardRef<React.ComponentRef<typeof CheckboxPrimi
     <CheckboxPrimitive.Root
       ref={ref}
       className={cn(
-        "peer flex size-6 shrink-0 items-center justify-center rounded-md border border-line bg-card transition-colors data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-on-primary disabled:opacity-50",
+        "peer flex size-6 shrink-0 items-center justify-center rounded-md border border-line bg-card transition-colors data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-on-primary data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-on-primary disabled:opacity-50",
         "relative before:absolute before:-inset-2.5 before:content-['']",
         className,
       )}
       {...props}
     >
       <CheckboxPrimitive.Indicator>
-        <Check className="size-4" aria-hidden />
+        {props.checked === "indeterminate" ? <Minus className="size-4" aria-hidden /> : <Check className="size-4" aria-hidden />}
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   ),

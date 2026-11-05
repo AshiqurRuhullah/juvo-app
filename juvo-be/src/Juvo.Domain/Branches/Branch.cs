@@ -30,7 +30,9 @@ public sealed partial class Branch : SoftDeletableEntity
         NameEn = nameEn.Trim();
         NameBn = nameBn?.Trim();
         Type = type;
-        OrderPrefix = Code.Replace("-", string.Empty, StringComparison.Ordinal);
+        // The prefix column holds 10 characters while a code may have 20, so a long code gives a shortened default.
+        var prefix = Code.Replace("-", string.Empty, StringComparison.Ordinal);
+        OrderPrefix = prefix.Length <= 10 ? prefix : prefix[..10];
     }
 
     /// <summary>Unique short code such as <c>HO</c> or <c>DHK-01</c>. Used in order and invoice numbers.</summary>

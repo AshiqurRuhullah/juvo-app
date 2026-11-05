@@ -43,6 +43,15 @@ public class IdentityDomainTests
     }
 
     [Fact]
+    public void A_long_branch_code_gives_a_default_order_prefix_that_fits_the_column()
+    {
+        var branch = new Branch("DHAKA-GULSHAN-SHOP-1", "Gulshan", null, BranchType.Shop);
+
+        Assert.Equal(10, branch.OrderPrefix.Length);
+        Assert.Equal("DHAKAGULSH", branch.OrderPrefix);
+    }
+
+    [Fact]
     public void Deactivating_a_branch_clears_the_default_flag_and_a_branch_cannot_be_its_own_parent()
     {
         var branch = new Branch("HO", "Head Office", null, BranchType.HeadOffice);
