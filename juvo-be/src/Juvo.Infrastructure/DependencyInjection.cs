@@ -81,6 +81,7 @@ public static class DependencyInjection
         services.AddScoped<IEmailSender, SandboxEmailSender>();
         services.AddScoped<IAccessDeniedAuditor, AccessDeniedAuditor>();
         services.AddScoped<IdentitySeeder>();
+        services.AddScoped<Catalog.CatalogSeeder>();
 
         return services;
     }

@@ -1,4 +1,5 @@
 using Juvo.Domain.Branches;
+using Juvo.Domain.Catalog;
 using Juvo.Domain.Customers;
 using Juvo.Domain.Identity;
 using Juvo.Domain.Notifications;
@@ -33,6 +34,18 @@ public interface IApplicationDbContext
     DbSet<NotificationLog> NotificationLogs { get; }
 
     DbSet<AuditLog> AuditLogs { get; }
+
+    DbSet<Category> Categories { get; }
+
+    DbSet<Brand> Brands { get; }
+
+    DbSet<SizeChart> SizeCharts { get; }
+
+    DbSet<Product> Products { get; }
+
+    DbSet<ProductVariant> ProductVariants { get; }
+
+    DbSet<ProductImage> ProductImages { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

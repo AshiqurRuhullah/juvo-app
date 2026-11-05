@@ -1,5 +1,6 @@
 using Juvo.Application.Abstractions;
 using Juvo.Domain.Branches;
+using Juvo.Domain.Catalog;
 using Juvo.Domain.Customers;
 using Juvo.Domain.Identity;
 using Juvo.Domain.Notifications;
@@ -45,6 +46,18 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
     public DbSet<NotificationLog> NotificationLogs => Set<NotificationLog>();
 
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+
+    public DbSet<Category> Categories => Set<Category>();
+
+    public DbSet<Brand> Brands => Set<Brand>();
+
+    public DbSet<SizeChart> SizeCharts => Set<SizeChart>();
+
+    public DbSet<Product> Products => Set<Product>();
+
+    public DbSet<ProductVariant> ProductVariants => Set<ProductVariant>();
+
+    public DbSet<ProductImage> ProductImages => Set<ProductImage>();
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 

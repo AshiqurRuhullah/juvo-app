@@ -61,6 +61,22 @@ public static class ErrorCodes
         public const string SessionNotFound = "UMS.SESSION_NOT_FOUND";
     }
 
+    public static class Catalog
+    {
+        public const string CategoryNotFound = "CATALOG.CATEGORY_NOT_FOUND";
+        public const string CategoryInUse = "CATALOG.CATEGORY_IN_USE";
+        public const string CategoryCycle = "CATALOG.CATEGORY_CYCLE";
+        public const string BrandNotFound = "CATALOG.BRAND_NOT_FOUND";
+        public const string BrandInUse = "CATALOG.BRAND_IN_USE";
+        public const string SizeChartNotFound = "CATALOG.SIZE_CHART_NOT_FOUND";
+        public const string ProductNotFound = "CATALOG.PRODUCT_NOT_FOUND";
+        public const string VariantNotFound = "CATALOG.VARIANT_NOT_FOUND";
+        public const string SlugTaken = "CATALOG.SLUG_TAKEN";
+        public const string SkuTaken = "CATALOG.SKU_TAKEN";
+        public const string PublishRules = "CATALOG.PUBLISH_RULES";
+        public const string ProductArchived = "CATALOG.PRODUCT_ARCHIVED";
+    }
+
     public static class Order
     {
         public const string StockInsufficient = "ORDER.STOCK_INSUFFICIENT";

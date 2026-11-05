@@ -12,7 +12,7 @@ Last updated: 2026-11-05.
 | 3 | UMS backend: auth, roles, permissions, branches | **Done** (branch `feature/03-ums-backend`, merged to `main`) |
 | 4 | Front-end foundation, brand, login, token handling | **Done** (branch `feature/04-front-foundation`, merged to `main`) |
 | 5 | UMS user interface | **Done** (branch `feature/05-ums-ui`) |
-| 6 | Catalog, media, branch-wise inventory | Not started |
+| 6 | Catalog, media, branch-wise inventory | **In progress**, split into 6-a to 6-e below (branch `feature/06-catalog-inventory`) |
 | 7 | Storefront, cart, customer identity, address, delivery zones | Not started |
 | 8 | Checkout, orders, order processing | Not started |
 | 9 | Payments, tax/invoices, notifications | Not started |
@@ -72,6 +72,20 @@ Contract for the front end: **`docs/auth-and-access.md`**. Decisions: `docs/assu
 - `npm run test:e2e`: **150 passed**, 3 skipped (desktop-only sidebar test on other projects), against the real API and a throw-away database. UMS flows: create a role with a few permissions, matrix select-all, create a user and assign branch + role, log in as that user and see only the allowed menus in their own branch, deactivate/reactivate, create a branch with a map pin and deactivate it, audit and sign-in history show the actions.
 - UMS UI checks at 360 / 768 / 1280 px on every UMS page: no horizontal overflow, no tap target under 44 px, no axe violations, no console errors.
 - Backend: build 0 warnings 0 errors; **214 passed** (domain 77, application 10, integration 127).
+
+## Step 6 (in progress): catalog, media, inventory
+
+Split (the step is too large for one session); each sub-step has its own gate and commit.
+
+| Sub-step | Scope | Status |
+| --- | --- | --- |
+| 6-a | Catalog backend: categories (tree), brands, size charts, products, variants, pricing/sale dates, publish rules BR-B1..B3, duplicate, cost-price visibility, audit, seed | **Done** |
+| 6-b | Image pipeline: upload, validate, resize, WebP, focal point, blur placeholder, per-colour sets, reorder (`IFileStorage`) | Not started |
+| 6-c | Inventory: branch stock locations, on-hand/reserved/available, append-only movements, adjustments, thresholds, transfers, stocktake | Not started |
+| 6-d | Bulk CSV/Excel import and export with validation report; sample products with images | Not started |
+| 6-e | Admin UI: product list, add/edit with live card preview, variants/stock grid, categories, inventory by branch, transfers, adjustments; Playwright and screenshots | Not started |
+
+**6-a result:** endpoints under `/api/v1/catalog` (categories, brands, size-charts, products, variants, publish/unpublish/archive/duplicate), 21 new `Permissions.Catalog` constants (codes already in the catalog). Migration `CatalogProducts`. `CatalogSeeder` (4 top-level categories with sub-categories, 2 size charts) runs with the migration. `ProductImage` entity exists (publish needs one image); upload comes in 6-b. SKU unique among live variants (case-insensitive, freed on removal); slugs unique among live rows; staff without `catalog.product.view-cost` neither see nor change cost. Tests: 143 integration (20 new), 23 application (13 new), build 0 warnings, no pending model changes.
 
 ## How to run now
 
