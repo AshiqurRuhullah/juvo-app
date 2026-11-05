@@ -9,6 +9,7 @@ import {
   Headset,
   Landmark,
   Layers,
+  LogIn,
   Megaphone,
   PackageSearch,
   Receipt,
@@ -129,10 +130,11 @@ export const ADMIN_NAV: NavGroup[] = [
     id: "ums",
     label: "ums",
     items: [
-      { id: "users", label: "users", href: "/admin/ums/users", icon: UserCog, permission: "ums.user.view", scope: "anywhere", ready: false },
-      { id: "roles", label: "roles", href: "/admin/ums/roles", icon: Shield, permission: "ums.role.view", scope: "anywhere", ready: false },
-      { id: "branches", label: "branches", href: "/admin/ums/branches", icon: BadgeDollarSign, permission: "ums.branch.view", scope: "anywhere", ready: false },
-      { id: "audit", label: "audit", href: "/admin/ums/audit", icon: FileText, permission: "ums.audit.view", scope: "anywhere", ready: false },
+      { id: "users", label: "users", href: "/admin/ums/users", icon: UserCog, permission: "ums.user.view", scope: "anywhere", ready: true },
+      { id: "roles", label: "roles", href: "/admin/ums/roles", icon: Shield, permission: "ums.role.view", scope: "anywhere", ready: true },
+      { id: "branches", label: "branches", href: "/admin/ums/branches", icon: BadgeDollarSign, permission: "ums.branch.view", scope: "anywhere", ready: true },
+      { id: "audit", label: "audit", href: "/admin/ums/audit", icon: FileText, permission: "ums.audit.view", scope: "anywhere", ready: true },
+      { id: "sign-ins", label: "signIns", href: "/admin/ums/sign-ins", icon: LogIn, permission: "ums.sign-in.view", scope: "anywhere", ready: true },
     ],
   },
 ];

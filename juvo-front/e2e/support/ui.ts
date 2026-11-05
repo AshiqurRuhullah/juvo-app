@@ -61,6 +61,15 @@ export async function smallTapTargets(page: Page): Promise<string[]> {
         const lr = row.getBoundingClientRect();
         if (lr.height >= 43.5) continue;
       }
+      // Controls drawn small but given a larger invisible hit area (a ::before layer): the points around them still hit the control.
+      if (/^(checkbox|radio|switch)$/.test(el.getAttribute("role") ?? "")) {
+        const grow = (44 - Math.min(r.width, r.height)) / 2 - 1;
+        const hits = (x: number, y: number) => {
+          const target = document.elementFromPoint(x, y);
+          return target === el || (target !== null && el.contains(target));
+        };
+        if (grow > 0 && hits(r.left - grow, r.top - grow) && hits(r.right + grow, r.bottom + grow) && hits(r.left - grow, r.bottom + grow) && hits(r.right + grow, r.top - grow)) continue;
+      }
       if (r.width < 43.5 || r.height < 43.5) {
         const label = (el.getAttribute("aria-label") || el.textContent || el.getAttribute("id") || "").trim().slice(0, 40);
         issues.push(`${el.tagName.toLowerCase()} "${label}" ${Math.round(r.width)}x${Math.round(r.height)}`);

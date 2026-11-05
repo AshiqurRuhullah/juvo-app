@@ -29,7 +29,7 @@ The browser never calls the API. It calls this app, and this app calls the API w
 | `/` | everyone | storefront placeholder (Step 7) |
 | `/login`, `/login?as=customer`, `/forgot-password`, `/reset-password`, `/first-login` | public / limited session | done |
 | `/admin`, `/admin/profile` | staff | done (profile: password, 2FA, sessions, sign-in history) |
-| `/admin/...` (users, roles, branches, audit) | staff | Step 5 |
+| `/admin/ums/users`, `/roles`, `/branches`, `/audit`, `/sign-ins` (+ `[id]`, `new`) | staff | done (Step 5) |
 | `/account` | customer | placeholder (Step 7) |
 | `/forbidden` (403), `/unauthorized` (401), not-found (404), error and global-error | all | done |
 | `/design` | development only (404 in production unless `ENABLE_DESIGN_PAGE=true`) | every component in every state |

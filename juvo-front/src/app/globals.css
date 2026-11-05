@@ -171,3 +171,14 @@ textarea {
 .anim-pop[data-state="closed"] { animation: pop-out 150ms ease-in; }
 .anim-fade[data-state="open"] { animation: fade-in 150ms ease-out; }
 .anim-fade[data-state="closed"] { animation: fade-out 100ms ease-in; }
+
+/* Map controls: 44 px touch targets (SRS 3.3). Leaflet's own buttons are 30 px. */
+div.leaflet-container .leaflet-bar a {
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+}
+.juvo-pin {
+  background: none;
+  border: 0;
+}

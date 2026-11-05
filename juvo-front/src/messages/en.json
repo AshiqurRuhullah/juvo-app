@@ -58,7 +58,8 @@
       "accountHome": "Overview",
       "myOrders": "My orders",
       "addresses": "Addresses",
-      "wishlist": "Wishlist"
+      "wishlist": "Wishlist",
+      "signIns": "Sign-in history"
     }
   },
   "shell": {
@@ -322,6 +323,540 @@
     "AUTH_OTP_EXPIRED": "That code has expired. Ask for a new one.",
     "AUTH_OTP_TOO_MANY_ATTEMPTS": "Too many wrong codes. Ask for a new one.",
     "AUTH_OTP_COOLDOWN": "Please wait a minute before asking for another code.",
-    "AUTH_INVALID_MOBILE": "Enter a valid mobile number, for example 01712345678."
+    "AUTH_INVALID_MOBILE": "Enter a valid mobile number, for example 01712345678.",
+    "UMS_ASSIGNMENT_EXISTS": "This person already has that role in that branch.",
+    "UMS_ASSIGNMENT_NOT_FOUND": "That role assignment no longer exists.",
+    "UMS_BRANCH_CODE_TAKEN": "Another branch already uses that code.",
+    "UMS_BRANCH_DEFAULT_PROTECTED": "The default branch cannot be deactivated. Make another branch the default first.",
+    "UMS_BRANCH_INACTIVE": "That branch is inactive.",
+    "UMS_BRANCH_LAST_ACTIVE": "The last active branch cannot be deactivated.",
+    "UMS_BRANCH_NOT_FOUND": "We could not find that branch.",
+    "UMS_EMAIL_TAKEN": "Another account already uses that email address.",
+    "UMS_LAST_SUPER_ADMIN": "There must always be at least one active Super Admin.",
+    "UMS_PERMISSION_UNKNOWN": "One of the permissions is not known. Reload the page and try again.",
+    "UMS_ROLE_IN_USE": "This role is still given to people. Remove it from them first.",
+    "UMS_ROLE_NAME_TAKEN": "Another role already has that name.",
+    "UMS_ROLE_NOT_FOUND": "We could not find that role.",
+    "UMS_ROLE_SYSTEM_PROTECTED": "Built-in roles cannot be deleted or renamed.",
+    "UMS_SELF_ACTION_FORBIDDEN": "You cannot do this to your own account.",
+    "UMS_SESSION_NOT_FOUND": "That session has already ended.",
+    "UMS_USER_NOT_FOUND": "We could not find that user."
+  },
+  "table": {
+    "empty": "Nothing to show yet",
+    "emptyDescription": "Try a different search or remove a filter.",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {pages}",
+    "total": "{count, plural, one {# result} other {# results}}",
+    "sortBy": "Sort by {column}"
+  },
+  "ums": {
+    "common": {
+      "cancel": "Cancel",
+      "close": "Close",
+      "everywhere": "Everywhere",
+      "show": "Show",
+      "hide": "Hide",
+      "search": "Search",
+      "noMatch": "No match"
+    },
+    "secret": {
+      "onceTitle": "Shown only once",
+      "onceBody": "Copy it now and give it to the person safely. It cannot be shown again, and they must change it at their first sign-in.",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "modules": {
+      "accounting": "Accounting",
+      "catalog": "Catalog",
+      "cms": "Content (CMS)",
+      "couriers": "Couriers",
+      "customers": "Customers",
+      "delivery": "Delivery",
+      "fraud": "Fraud checks",
+      "inventory": "Inventory",
+      "loyalty": "Loyalty",
+      "marketing": "Marketing",
+      "notifications": "Notifications",
+      "orders": "Orders",
+      "partners": "Partners and resellers",
+      "payments": "Payments",
+      "platform": "Platform",
+      "pos": "Point of sale",
+      "privacy": "Privacy",
+      "promotions": "Promotions",
+      "purchasing": "Purchasing",
+      "reports": "Reports",
+      "returns": "Returns",
+      "settings": "Settings",
+      "support": "Support",
+      "tax": "Tax and invoices",
+      "ums": "Users, roles and branches"
+    },
+    "assignments": {
+      "branch": "Branch",
+      "role": "Role",
+      "chooseBranch": "Choose a branch",
+      "chooseRole": "Choose a role",
+      "everywhere": "Everywhere (all branches)",
+      "add": "Add",
+      "search": "Search",
+      "noMatch": "No match"
+    },
+    "matrix": {
+      "filter": "Search permissions",
+      "selected": "{count} of {total} selected",
+      "expandAll": "Expand all",
+      "collapseAll": "Collapse all",
+      "noMatch": "No permission matches your search.",
+      "selectModule": "Select every permission in {module}",
+      "selectResource": "Select every {resource} permission"
+    },
+    "users": {
+      "title": "Users",
+      "subtitle": "Staff accounts, their roles and where they work.",
+      "search": "Search users",
+      "searchPlaceholder": "Search by name, email or phone",
+      "loadFailed": "The users could not be loaded. Please try again.",
+      "active": "Active",
+      "inactive": "Inactive",
+      "locked": "Locked",
+      "global": "All branches",
+      "never": "Never",
+      "noRoles": "No role yet",
+      "twoFactorOn": "Two-step verification is on",
+      "twoFactorOff": "Two-step verification is off",
+      "view": "View",
+      "open": "View {name}",
+      "columns": {
+        "name": "Name",
+        "roles": "Roles",
+        "status": "Status",
+        "lastLogin": "Last sign-in",
+        "actions": "Actions"
+      },
+      "filters": {
+        "status": "Status",
+        "role": "Role",
+        "branch": "Branch",
+        "anyStatus": "Any status",
+        "anyRole": "Any role",
+        "anyBranch": "Any branch",
+        "search": "Search",
+        "noMatch": "No match",
+        "clear": "Clear filters"
+      },
+      "create": {
+        "button": "New user",
+        "title": "New staff user",
+        "description": "The person signs in with their email. They must choose a new password at their first sign-in.",
+        "fullName": "Full name",
+        "email": "Email",
+        "userName": "User name",
+        "userNameHint": "Optional. The email is used when this is empty.",
+        "phone": "Mobile number",
+        "password": "Password",
+        "passwordHint": "Optional. Leave empty and a temporary password is made for you.",
+        "global": "Works in all branches",
+        "globalHint": "Global users can hold a role everywhere. Others only work in the branches you give them below.",
+        "assignments": "Branches and roles",
+        "noAssignments": "No branch or role yet. You can add them later on the user's page.",
+        "removeAssignment": "Remove {role} in {branch}",
+        "submit": "Create user",
+        "created": "User created",
+        "doneTitle": "{name} is ready",
+        "doneWithPassword": "Give the temporary password to the person. They will be asked to change it when they sign in.",
+        "doneNoPassword": "The account was created with the password you entered.",
+        "temporaryPassword": "Temporary password",
+        "openUser": "Open the user",
+        "errors": {
+          "nameRequired": "Enter the full name.",
+          "emailRequired": "Enter the email address.",
+          "emailInvalid": "Enter a valid email address."
+        }
+      },
+      "tabs": {
+        "label": "User sections",
+        "overview": "Overview",
+        "access": "Branches and roles",
+        "sessions": "Sessions",
+        "signIns": "Sign-in history"
+      },
+      "detail": {
+        "back": "Back to users",
+        "notFoundTitle": "User not found",
+        "notFoundBody": "It may have been removed, or it belongs to a branch you cannot see.",
+        "inactiveNote": "This account is inactive. The person cannot sign in until it is activated again."
+      },
+      "overview": {
+        "details": "Details",
+        "detailsHint": "Changes apply the next time the person's session refreshes.",
+        "readOnly": "You can view these details but not change them.",
+        "fullName": "Full name",
+        "phone": "Mobile number",
+        "nameRequired": "Enter the full name.",
+        "save": "Save changes",
+        "saved": "Changes saved",
+        "account": "Account",
+        "email": "Email",
+        "userName": "User name",
+        "created": "Created",
+        "lastLogin": "Last sign-in",
+        "security": "Security",
+        "mustChange": "Must change password"
+      },
+      "actions": {
+        "menu": "Account actions",
+        "labels": {
+          "activate": "Activate account",
+          "deactivate": "Deactivate account",
+          "reset-password": "Set a new temporary password",
+          "force-logout": "Sign out everywhere",
+          "reset-two-factor": "Reset two-step verification"
+        },
+        "confirm": {
+          "activate": {
+            "title": "Activate this account?",
+            "body": "{name} will be able to sign in again.",
+            "button": "Activate"
+          },
+          "deactivate": {
+            "title": "Deactivate this account?",
+            "body": "{name} is signed out at once and cannot sign in. Their history is kept. You can activate the account again later.",
+            "button": "Deactivate"
+          },
+          "reset-password": {
+            "title": "Set a new temporary password?",
+            "body": "{name} is signed out everywhere and must use the new password at the next sign-in.",
+            "button": "Set password"
+          },
+          "force-logout": {
+            "title": "Sign out everywhere?",
+            "body": "Every device of {name} is signed out now.",
+            "button": "Sign out"
+          },
+          "reset-two-factor": {
+            "title": "Reset two-step verification?",
+            "body": "Use this when {name} lost their authenticator app. They can set it up again after signing in.",
+            "button": "Reset"
+          }
+        },
+        "done": {
+          "activate": "Account activated",
+          "deactivate": "Account deactivated",
+          "force-logout": "Signed out everywhere",
+          "reset-two-factor": "Two-step verification reset"
+        },
+        "resetDone": {
+          "title": "New temporary password",
+          "body": "{name} must change it at the next sign-in.",
+          "label": "Temporary password"
+        }
+      }
+    },
+    "access": {
+      "title": "Branches and roles",
+      "description": "A role only counts in the branch it is given for.",
+      "globalNote": "This person works in all branches. A role given to \"Everywhere\" applies in every branch.",
+      "none": "No branch or role yet. This person can sign in but sees nothing.",
+      "everywhere": "Everywhere",
+      "remove": "Remove {role} in {branch}",
+      "removeShort": "Remove",
+      "removeTitle": "Remove this role?",
+      "removeBody": "{role} in {branch} is taken away. It takes effect within seconds, without signing the person out.",
+      "removeConfirm": "Remove",
+      "removed": "Role removed",
+      "added": "Role added",
+      "addTitle": "Give a role in a branch",
+      "cancel": "Cancel",
+      "close": "Close",
+      "effective": {
+        "title": "What this person can do",
+        "description": "All permissions from their roles, branch by branch.",
+        "none": "Nothing yet.",
+        "noneAssigned": "Add a role above and the permissions appear here.",
+        "pickBranch": "Branch",
+        "everywhere": "Everywhere",
+        "allTitle": "Every permission",
+        "allBody": "Super Admin holds every permission, including ones added later.",
+        "count": "{count, plural, one {# permission} other {# permissions}}",
+        "filter": "Search permissions",
+        "noMatch": "No permission matches your search."
+      }
+    },
+    "sessions": {
+      "title": "Active sessions",
+      "description": "Devices where this person is signed in.",
+      "device": "Device",
+      "ip": "IP address",
+      "started": "Started",
+      "expires": "Expires",
+      "actions": "Actions",
+      "signOutDevice": "Sign out",
+      "revoked": "Device signed out",
+      "empty": "No active session."
+    },
+    "signIns": {
+      "title": "Sign-in history",
+      "description": "Recent sign-in attempts for this account.",
+      "pageTitle": "Sign-in history",
+      "pageSubtitle": "Every sign-in attempt by staff and customers, successful or not.",
+      "when": "When",
+      "who": "Account",
+      "result": "Result",
+      "succeeded": "Signed in",
+      "failed": "Failed",
+      "ip": "IP address",
+      "device": "Device",
+      "staff": "Staff",
+      "customer": "Customers",
+      "search": "Search sign-ins",
+      "searchPlaceholder": "Search by email or mobile",
+      "empty": "No sign-ins to show.",
+      "loadFailed": "The sign-in history could not be loaded. Please try again.",
+      "filters": {
+        "anyResult": "Any result",
+        "anySubject": "Staff and customers",
+        "subject": "Who",
+        "from": "From date",
+        "to": "To date",
+        "search": "Search",
+        "noMatch": "No match",
+        "clear": "Clear filters"
+      }
+    },
+    "roles": {
+      "title": "Roles",
+      "subtitle": "What each kind of staff member may see and do.",
+      "new": "New role",
+      "newTitle": "New role",
+      "newDescription": "Name the role and tick what it may do. You can change it later.",
+      "search": "Search roles",
+      "searchPlaceholder": "Search by name",
+      "loadFailed": "The roles could not be loaded. Please try again.",
+      "notFoundTitle": "Role not found",
+      "back": "Back to roles",
+      "columns": {
+        "name": "Role",
+        "type": "Type",
+        "users": "People",
+        "permissions": "Permissions",
+        "actions": "Actions"
+      },
+      "superAdmin": "Super Admin",
+      "system": "Built in",
+      "custom": "Custom",
+      "all": "All",
+      "users": "{count, plural, one {# person} other {# people}}",
+      "view": "View",
+      "open": "View {name}",
+      "clone": "Clone",
+      "cloneNamed": "Clone {name}",
+      "delete": "Delete",
+      "details": "Details",
+      "name": "Name",
+      "nameRequired": "Enter a name for the role.",
+      "description": "Description",
+      "permissions": "Permissions",
+      "permissionsHint": "Tick what this role may do. A person only has these permissions in the branches where they hold the role.",
+      "superAdminTitle": "Super Admin cannot be changed",
+      "superAdminBody": "This role always holds every permission, including ones added later.",
+      "superAdminAll": "Every permission, always.",
+      "systemNote": "This is a built-in role. Its name stays, but you can change its permissions.",
+      "escalationNote": "You can only give permissions you hold yourself. The rest are shown greyed out.",
+      "unsaved": "You have unsaved changes.",
+      "upToDate": "Everything is saved.",
+      "save": "Save changes",
+      "create": "Create role",
+      "created": "Role created",
+      "saved": "Role saved",
+      "deleteTitle": "Delete this role?",
+      "deleteBody": "{name} is removed. A role that people still hold cannot be deleted.",
+      "deleteConfirm": "Delete role",
+      "deleted": "Role deleted",
+      "cloneDialog": {
+        "title": "Clone {name}",
+        "description": "The copy gets the same permissions. You can change them afterwards.",
+        "name": "Name of the copy",
+        "defaultName": "{name} (copy)",
+        "nameRequired": "Enter a name for the copy.",
+        "submit": "Clone role",
+        "done": "Role cloned"
+      }
+    },
+    "branches": {
+      "title": "Branches",
+      "subtitle": "Shops, warehouses and the online fulfilment centre.",
+      "new": "New branch",
+      "newTitle": "New branch",
+      "newDescription": "Add a place that holds stock or takes orders.",
+      "search": "Search branches",
+      "searchPlaceholder": "Search by name or code",
+      "status": "Status",
+      "anyStatus": "Any status",
+      "noMatch": "No match",
+      "active": "Active",
+      "inactive": "Inactive",
+      "default": "Default",
+      "loadFailed": "The branches could not be loaded. Please try again.",
+      "notFoundTitle": "Branch not found",
+      "notFoundBody": "It may have been removed, or you may not have access to it.",
+      "back": "Back to branches",
+      "view": "View",
+      "open": "View {name}",
+      "readOnly": "You can view this branch but not change it.",
+      "columns": {
+        "name": "Branch",
+        "code": "Code",
+        "type": "Type",
+        "status": "Status",
+        "users": "People",
+        "actions": "Actions"
+      },
+      "types": {
+        "HeadOffice": "Head office",
+        "Shop": "Shop",
+        "Warehouse": "Warehouse",
+        "OnlineFulfilment": "Online fulfilment"
+      },
+      "sections": {
+        "identity": "Identity",
+        "contact": "Contact and address",
+        "location": "Location on the map",
+        "operations": "Operations"
+      },
+      "fields": {
+        "code": "Code",
+        "type": "Type",
+        "nameEn": "Name (English)",
+        "nameBn": "Name (Bengali)",
+        "parent": "Part of",
+        "orderPrefix": "Order number prefix",
+        "phone": "Phone",
+        "email": "Email",
+        "workingHours": "Working hours",
+        "addressLine": "Address",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "timeZone": "Time zone",
+        "currency": "Currency",
+        "pickupAddress": "Courier pickup address",
+        "courierStoreIds": "Courier store IDs"
+      },
+      "codeHint": "Short and unique, for example HO or GUL1. It cannot be changed later.",
+      "codeLocked": "The code cannot be changed.",
+      "parentHint": "Optional. For example a shop that belongs to a region.",
+      "noParent": "Not part of another branch",
+      "orderPrefixHint": "Optional. Shown at the start of order numbers from this branch.",
+      "workingHoursHint": "For example: Sat-Thu 10:00-21:00",
+      "locationHint": "Click the map or drag the pin. You can also type the coordinates.",
+      "mapLabel": "Map to choose the branch location",
+      "mapHelp": "Map data from OpenStreetMap contributors.",
+      "operationsHint": "Used for dates, prices and courier bookings from this branch.",
+      "pickupHint": "Where couriers collect parcels. Leave empty to use the address above.",
+      "courierHint": "Optional. The branch's store IDs at your courier companies.",
+      "save": "Save changes",
+      "create": "Create branch",
+      "created": "Branch created",
+      "saved": "Branch saved",
+      "errors": {
+        "codeRequired": "Enter a code of 2 to 20 characters.",
+        "codeFormat": "Use letters, numbers and dashes only.",
+        "nameRequired": "Enter the branch name.",
+        "emailInvalid": "Enter a valid email address.",
+        "timeZoneRequired": "Enter a time zone, for example Asia/Dhaka.",
+        "currency": "Use a 3-letter currency code, for example BDT.",
+        "latitude": "Latitude is a number from -90 to 90.",
+        "longitude": "Longitude is a number from -180 to 180."
+      },
+      "actions": {
+        "labels": {
+          "activate": "Activate",
+          "deactivate": "Deactivate",
+          "set-default": "Make default"
+        },
+        "confirm": {
+          "activate": {
+            "title": "Activate this branch?",
+            "body": "{name} can take orders and hold stock again.",
+            "button": "Activate"
+          },
+          "deactivate": {
+            "title": "Deactivate this branch?",
+            "body": "{name} stops taking new orders. Its history is kept. The default branch and the last active branch cannot be deactivated.",
+            "button": "Deactivate"
+          },
+          "set-default": {
+            "title": "Make this the default branch?",
+            "body": "{name} becomes the branch used when none is chosen.",
+            "button": "Make default"
+          }
+        },
+        "done": {
+          "activate": "Branch activated",
+          "deactivate": "Branch deactivated",
+          "set-default": "Default branch changed"
+        }
+      },
+      "users": {
+        "title": "People in this branch",
+        "description": "Staff who hold a role in this branch.",
+        "empty": "Nobody works in this branch yet.",
+        "inactive": "Inactive"
+      }
+    },
+    "audit": {
+      "title": "Audit log",
+      "subtitle": "Every change made in the admin, who made it and when. Entries cannot be edited or deleted.",
+      "search": "Search the audit log",
+      "searchPlaceholder": "Search by person, record or ID",
+      "system": "System",
+      "details": "Details",
+      "openDetails": "Details of the {entity} change",
+      "loadFailed": "The audit log could not be loaded. Please try again.",
+      "columns": {
+        "when": "When",
+        "who": "Who",
+        "action": "Action",
+        "entity": "Record",
+        "branch": "Branch",
+        "details": "Details"
+      },
+      "actions": {
+        "Created": "Created",
+        "Updated": "Updated",
+        "Deleted": "Deleted",
+        "AccessDenied": "Access denied"
+      },
+      "filters": {
+        "action": "Action",
+        "anyAction": "Any action",
+        "branch": "Branch",
+        "anyBranch": "Any branch",
+        "from": "From date",
+        "to": "To date",
+        "entity": "Record type",
+        "entityPlaceholder": "For example Role or Branch",
+        "search": "Search",
+        "noMatch": "No match",
+        "clear": "Clear filters"
+      },
+      "detail": {
+        "title": "{entity} change",
+        "subtitle": "{when} by {who}",
+        "system": "System",
+        "entityId": "Record ID",
+        "branch": "Branch",
+        "ip": "IP address",
+        "correlation": "Request ID",
+        "changes": "Changed values",
+        "field": "Field",
+        "before": "Before",
+        "after": "After",
+        "changedFlag": "changed",
+        "noValues": "No values were recorded for this entry."
+      }
+    }
   }
 }

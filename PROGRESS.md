@@ -1,7 +1,7 @@
 # PROGRESS
 
 Resume from this file alone. Plan: `Documents/juvo-step-prompts.md` (14 steps). Master prompt: `juvo-claude-code-prompt.md`.
-Last updated: 2026-11-02.
+Last updated: 2026-11-05.
 
 ## Status of the 14 steps
 
@@ -11,7 +11,7 @@ Last updated: 2026-11-02.
 | 2 | Backend foundation | **Done** |
 | 3 | UMS backend: auth, roles, permissions, branches | **Done** (branch `feature/03-ums-backend`, merged to `main`) |
 | 4 | Front-end foundation, brand, login, token handling | **Done** (branch `feature/04-front-foundation`, merged to `main`) |
-| 5 | UMS user interface | Not started |
+| 5 | UMS user interface | **Done** (branch `feature/05-ums-ui`) |
 | 6 | Catalog, media, branch-wise inventory | Not started |
 | 7 | Storefront, cart, customer identity, address, delivery zones | Not started |
 | 8 | Checkout, orders, order processing | Not started |
@@ -61,6 +61,18 @@ Contract for the front end: **`docs/auth-and-access.md`**. Decisions: `docs/assu
 - Backend: all test projects run **213 passed** (domain 76, application 10, integration 127).
 - Unbuilt modules are shown as "Soon" by design.
 
+## Step 5 (done): UMS user interface
+
+- **Screens** under `/admin/ums/` (code in `juvo-front/src/modules/ums`): users (list, create with one-time temporary password, edit, activate/deactivate, reset password, force logout, reset 2FA, sessions, sign-ins, branch-role assignment, effective permissions per branch, global scope), roles (list, create/edit/clone/delete, module-grouped permission matrix with select-all), branches (list, create/edit with Leaflet map pin, activate/deactivate, set default), audit log, sign-in history. Menu items flipped to `ready`; new `ums.sign-in.view` item.
+- **Small backend fix:** `Branch` default order prefix is cut to 10 characters (a 20-character code overflowed the column); domain test added.
+- English and Bengali strings added for all screens.
+
+**Gate result (all run and seen passing):**
+- `npm run lint` and `npx tsc --noEmit`: clean. `npm run build`: succeeds. `npm test`: 39 passed.
+- `npm run test:e2e`: **150 passed**, 3 skipped (desktop-only sidebar test on other projects), against the real API and a throw-away database. UMS flows: create a role with a few permissions, matrix select-all, create a user and assign branch + role, log in as that user and see only the allowed menus in their own branch, deactivate/reactivate, create a branch with a map pin and deactivate it, audit and sign-in history show the actions.
+- UMS UI checks at 360 / 768 / 1280 px on every UMS page: no horizontal overflow, no tap target under 44 px, no axe violations, no console errors.
+- Backend: build 0 warnings 0 errors; **214 passed** (domain 77, application 10, integration 127).
+
 ## How to run now
 
 ```powershell
@@ -74,7 +86,7 @@ npm test; npm run test:e2e                        # in juvo-front
 
 ## Next step
 
-**Step 5: UMS user interface** (users, roles and permission matrix, branches, assignments, audit log and sign-in history screens on top of the Step 4 shell and the Step 3 endpoints). The menu items already exist as "Soon" in `src/lib/nav.ts`; flip `ready` as each screen lands.
+**Step 6: Catalog, media and branch-wise inventory** (backend + UI). Orders, stock etc. adopt `IBranchScoped` from here.
 
 ## Known issues / notes
 
