@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
-import en from "@/messages/en.json";
-import bn from "@/messages/bn.json";
+import { loadMessages } from "@/messages/load";
+
+const en = await loadMessages("en");
+const bn = await loadMessages("bn");
 
 function leaves(value: unknown, prefix = ""): [string, unknown][] {
   if (value && typeof value === "object") {
