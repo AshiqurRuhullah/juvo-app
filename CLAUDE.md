@@ -105,8 +105,8 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 | 3 | UMS backend (auth, roles, permissions, branches) | Done |
 | 4 | Front-end foundation, brand, login, tokens | Done |
 | 5 | UMS UI | Done |
-| 6 | Catalog, media, branch inventory (6-a…6-e) | **In progress** (6-a to 6-d done; next 6-e) on `feature/06-catalog-inventory` |
-| 7 | Storefront, cart, customer identity, address, delivery zones (modules A, C, E, F, G) | Not started |
+| 6 | Catalog, media, branch inventory (6-a…6-e) | **Done** (gated 2026-11-10) on `feature/06-catalog-inventory`, not yet merged to `main` |
+| 7 | Storefront, cart, customer identity, address, delivery zones (modules A, C, E, F, G) | **Next** |
 | 8 | Checkout, orders, order processing, social desk, fraud basics (D, S, T, J) | Not started |
 | 9 | Payments, tax/invoices, notifications (I, U, K) | Not started |
 | 10 | Couriers, real-time (SignalR), returns (H, J, L) | Not started |
@@ -121,7 +121,7 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 - 6-b Image pipeline: **Done** (gated). Endpoints `/api/v1/catalog/products/{id}/images` (upload, update focal/colour/alt, reorder, delete); SkiaSharp WebP main/card (4:5)/thumb + blur placeholder; min 1000 px, max 10 MB, max 12 per product (FR-B04..B06). **Next: 6-c inventory.**
 - 6-c Inventory: **Done** (gated 2026-11-10: domain 94, application 23, integration 171 pass, migration `InventoryStock`). `/api/v1/inventory`: stock list and product grid, adjustments with reasons, reorder levels, append-only movements, transfers (request, approve, ship, receive, reject, cancel), stock counts (start, enter, submit, approve, reopen, cancel). One stock location per branch; `StockLevel` is `IBranchScoped`; reserve/release/deduct exist on `StockLevel` for Step 8. Decisions: `docs/assumptions.md` section H. **Next: 6-d bulk import/export, then 6-e admin UI.**
 - 6-d Bulk import/export and sample catalog: **Done** (gated 2026-11-10: domain 94, application 23, integration 190 pass). `/api/v1/catalog/products/import|export|import-template` (CSV or Excel via the MIT Open XML SDK, own CSV code; one row per variant; create/upsert; dryRun; all-or-nothing; opening stock; report with row, column, message). Sample catalog (`Seed:SampleCatalog`, Development): 16 published demo products with generated placeholder pictures, tag `sample`, already in the dev `JuvoDb`; never runs once a real product exists. Decisions: `docs/assumptions.md` section I.
-- 6-e Admin UI (NEXT) (product list, add/edit with live premium card preview, variants/stock grid, categories, inventory by branch, transfers, adjustments; Playwright + screenshots): not started. Menu items Products/Categories/Inventory flip to `ready`.
+- 6-e Admin UI: **Done**. Products (list, editor with live card preview, variants generator, stock grid, pictures with focal point, publish flow, import/export), categories/brands/size charts, inventory (stock, movements, transfers, counts). Front-end modules `src/modules/{catalog,inventory}`; picture route `/media`; texts in `src/messages/{catalog,lookups,inventory}.*.json` merged by `src/messages/load.ts`. Gate: tsc, lint, 39 unit tests, build, e2e 237 passed + UI checks at 360/768/1280. **Next: merge the branch to `main` (after the owner has looked), then Step 7.**
 
 ## 9. Commands
 
@@ -139,7 +139,7 @@ cd juvo-front; npm run lint; npx tsc --noEmit; npm run build; npm test; npm run 
 Ports: API 5080/7080 (e2e API 5081), front end 3000 (e2e 3100). `scripts/`: `setup-db.ps1`, `docx_to_md.py`, `extract_palette.py`, `generate_tokens.py`, `generate_brand_assets.py`, `gen_traceability.py`.
 
 ## 10. Test status (last recorded)
-Backend (6-d): domain 94 + application 23 + integration 190, build 0 warnings. Front end (Step 5): vitest 39, Playwright 150 passed / 3 skipped. If `dotnet test` reports "Zero tests ran" (known environment quirk), run each `tests/*/bin/Debug/net10.0/*.exe` directly.
+Backend (6-d): domain 94 + application 23 + integration 190, build 0 warnings. Front end (6-e): vitest 39, Playwright 237 passed / 3 skipped (+ the inventory spec re-run 6/6 after a spec fix). If `dotnet test` reports "Zero tests ran" (known environment quirk), run each `tests/*/bin/Debug/net10.0/*.exe` directly.
 
 ## 11. Known issues / things the owner must supply
 1. LocalDB is SQL Server 2019 (compat level 150): avoid features needing 160+.
@@ -148,3 +148,11 @@ Backend (6-d): domain 94 + application 23 + integration 190, build 0 warnings. F
 4. Owner must provide before go-live: courier/payment/SMS/map provider accounts and keys, domain/hosting, brand content (About story, policies, tagline, photos), pickup address, tax confirmation (VAT), restricted/non-returnable item lists.
 5. Bangladesh VAT rules unverified; international shipping restricted-items list starts empty.
 6. Open decisions for the owner can be raised any time; ask rather than guess when a business rule is unclear.
+
+## 12. Working notes learned in Step 6-e
+- Node.js is at `C:\Program Files\nodejs` (installed in 6-e); in Git Bash run `export PATH="/c/Program Files/nodejs:$PATH"` first. Long shell heredocs get truncated here: write scripts with the Write tool instead.
+- ESLint rule `react-hooks/set-state-in-effect` is on: reset a dialog's state by mounting its body only while open (state initialised from props), not with an effect.
+- UI checks use real browsers: wait for dialog animations (use `locator.click({ position })`, never read a box right after opening), and prefer count assertions over strict locators that can match two rows while a filter applies.
+- Front-end texts: add keys to the module's own message files in BOTH languages; `tests/messages.test.ts` enforces equal keys and placeholders. Error texts for API codes live in `errors.*` in `en.json`/`bn.json`.
+- Product pictures are shown from `/media/...` (see `src/modules/catalog/format.ts` `imageSrc`); never link to the API's `/files` directly.
+- Sample catalog: `Seed:SampleCatalog` (Development) seeds 16 demo products (tag `sample`); the e2e API runs in Development so tests can rely on them (for example SKU `JV-TSH-BLA-M`).
