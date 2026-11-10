@@ -126,6 +126,7 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 ## 9. Commands
 
 ```powershell
+.scriptsstart-all.ps1                              # ONE command: checks tools, creates DB, installs packages, starts API (5080) and web (3000); -Open, -Status, -Stop
 .\scripts\setup-db.ps1                               # creates JuvoDb on (localdb)\MSSQLLocalDB
 dotnet run --project juvo-be/src/Juvo.Api            # http://localhost:5080 , https://localhost:7080/scalar/v1
 cd juvo-front; copy .env.example .env.local; npm install; npm run dev    # http://localhost:3000

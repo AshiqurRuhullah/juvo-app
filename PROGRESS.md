@@ -108,13 +108,14 @@ Split (the step is too large for one session); each sub-step has its own gate an
 
 ## How to run now
 
+One command (checks tools, creates the database, installs packages, starts API and web app; details in the root `README.md`):
+
 ```powershell
-.\scripts\setup-db.ps1
-dotnet run --project juvo-be/src/Juvo.Api         # http://localhost:5080/scalar/v1
-cd juvo-front; copy .env.example .env.local; npm install; npm run dev    # http://localhost:3000
+.\scripts\start-all.ps1          # -Open opens the login page, -Status shows what runs, -Stop stops both
+# web http://localhost:3000   API docs http://localhost:5080/scalar/v1
 # sign in at /login: admin@juvobd.local / Juvo@Dev#2026 (development only; change it at first sign-in)
 dotnet test juvo-be                               # needs SQL Server / LocalDB
-npm test; npm run test:e2e                        # in juvo-front
+cd juvo-front; npm test; npm run build; npm run test:e2e
 ```
 
 ## Next step
