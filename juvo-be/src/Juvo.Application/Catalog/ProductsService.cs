@@ -13,7 +13,7 @@ namespace Juvo.Application.Catalog;
 /// Products, variants, pricing and the publish workflow (module B). BR-B1: publish needs a name, category, price, one image and one active
 /// variant. BR-B2: the sale price is lower than the regular price. BR-B3: SKUs are unique. Every change is audited by the persistence layer (FR-B14).
 /// </summary>
-public sealed partial class ProductsService(IApplicationDbContext db, ActorContext actors, TimeProvider clock)
+public sealed partial class ProductsService(IApplicationDbContext db, ActorContext actors, TimeProvider clock, IFileStorage storage)
 {
     [GeneratedRegex("^#[0-9A-Fa-f]{6}$")]
     private static partial Regex HexColour();
@@ -232,7 +232,9 @@ public sealed partial class ProductsService(IApplicationDbContext db, ActorConte
 
         foreach (var image in source.Images.OrderBy(i => i.SortOrder))
         {
-            db.ProductImages.Add(new ProductImage(copy.Id, image.Path, image.ColorName, image.SortOrder));
+            var imageCopy = new ProductImage(copy.Id, image.Path, image.ColorName, image.SortOrder);
+            imageCopy.CopyMediaFrom(image);
+            db.ProductImages.Add(imageCopy);
         }
 
         await db.SaveChangesAsync(cancellationToken);
@@ -522,7 +524,7 @@ public sealed partial class ProductsService(IApplicationDbContext db, ActorConte
             canSeeCost ? p.CostPrice : null, !canSeeCost, p.IsNew, p.IsFeatured, p.IsBestSeller, p.SizeChartId, p.MetaTitle, p.MetaDescription,
             p.SocialImagePath, p.VideoUrl, p.PublishedAt, p.CreatedAt, p.UpdatedAt, p.RowVersion,
             [.. p.Variants.Where(v => !v.IsDeleted).OrderBy(v => v.SortOrder).ThenBy(v => v.Sku).Select(ToDto)],
-            [.. p.Images.OrderBy(i => i.SortOrder).Select(i => new ProductImageDto(i.Id, i.Path, i.ColorName, i.SortOrder, i.AltText, i.FocalX, i.FocalY, i.Width, i.Height, i.BlurDataUrl))],
+            [.. p.Images.OrderBy(i => i.SortOrder).Select(i => ProductMediaService.ToDto(i, storage))],
             PublishProblems(p));
     }
 

@@ -13,6 +13,8 @@ public sealed record CategoryNodeDto(
 
 public sealed record SaveCategoryRequest(string NameEn, string? NameBn, string? Slug, Guid? ParentId, int SortOrder, bool IsActive = true);
 
+public sealed record UpdateImageRequest(string? ColorName, string? AltText, double? FocalX, double? FocalY);
+
 public sealed record ReorderRequest(IReadOnlyList<Guid> Ids);
 
 // ---- Brands and size charts ------------------------------------------------------------------------------
@@ -39,7 +41,7 @@ public sealed record VariantDto(
     int? WeightGramsOverride, bool TracksStock, bool IsActive, int SortOrder);
 
 public sealed record ProductImageDto(
-    Guid Id, string Path, string? ColorName, int SortOrder, string? AltText, double FocalX, double FocalY, int Width, int Height, string? BlurDataUrl);
+    Guid Id, string Path, string Url, string CardUrl, string ThumbUrl, string? ColorName, int SortOrder, string? AltText, double FocalX, double FocalY, int Width, int Height, string? BlurDataUrl);
 
 public sealed record ProductDetailDto(
     Guid Id, string NameEn, string? NameBn, string Slug, Guid CategoryId, Guid? BrandId, string? ShortDescription, string? Description,

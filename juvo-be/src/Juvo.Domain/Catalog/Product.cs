@@ -278,4 +278,28 @@ public sealed class ProductImage : Entity
     public string? BlurDataUrl { get; private set; }
 
     public void SetOrder(int sortOrder) => SortOrder = sortOrder;
+
+    public void SetPath(string path) => Path = path;
+
+    /// <summary>Records what the upload pipeline produced for the main rendition.</summary>
+    public void SetMedia(int width, int height, string? blurDataUrl)
+    {
+        Width = width;
+        Height = height;
+        BlurDataUrl = blurDataUrl;
+    }
+
+    public void SetDetails(string? colorName, string? altText, double focalX, double focalY)
+    {
+        ColorName = string.IsNullOrWhiteSpace(colorName) ? null : colorName.Trim();
+        AltText = string.IsNullOrWhiteSpace(altText) ? null : altText.Trim();
+        FocalX = Math.Clamp(focalX, 0, 1);
+        FocalY = Math.Clamp(focalY, 0, 1);
+    }
+
+    public void CopyMediaFrom(ProductImage source)
+    {
+        SetMedia(source.Width, source.Height, source.BlurDataUrl);
+        SetDetails(source.ColorName, source.AltText, source.FocalX, source.FocalY);
+    }
 }

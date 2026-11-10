@@ -1,5 +1,6 @@
 using Juvo.Api.Configuration;
 using Juvo.Api.Http;
+using Microsoft.AspNetCore.Mvc;
 using Juvo.Application.Catalog;
 using Juvo.Domain.Catalog;
 using Juvo.Shared.Pagination;
@@ -118,5 +119,27 @@ internal static class CatalogEndpoints
         g.MapDelete("/{id:guid}/variants/{variantId:guid}", async (Guid id, Guid variantId, ProductsService s, CancellationToken ct) =>
                 (await s.RemoveVariantAsync(id, variantId, ct)).ToHttpResult())
             .RequirePermission(Permissions.Catalog.ProductEdit).Produces(StatusCodes.Status204NoContent).WithSummary("Remove a variant (frees the SKU).");
+
+        // Pictures. The upload is a multipart form; the API is token based (no cookies), so antiforgery does not apply.
+        g.MapPost("/{id:guid}/images", async (Guid id, IFormFile file, [FromForm] string? colorName, [FromForm] string? altText,
+                [FromForm] double? focalX, [FromForm] double? focalY, ProductMediaService s, CancellationToken ct) =>
+            {
+                await using var stream = file.OpenReadStream();
+                return (await s.UploadAsync(id, stream, colorName, altText, focalX, focalY, ct))
+                    .ToHttpResult(v => Results.Created($"/api/v1/catalog/products/{id}/images/{v.Id}", v));
+            })
+            .DisableAntiforgery().WithMetadata(new RequestSizeLimitAttribute(12 * 1024 * 1024))
+            .RequirePermission(Permissions.Catalog.MediaUpload).Produces<ProductImageDto>(StatusCodes.Status201Created)
+            .WithSummary("Upload a JPEG, PNG or WebP picture (at least 1000 px on the long side, at most 10 MB). WebP renditions, a 4:5 crop and a blur placeholder are made.");
+
+        g.MapPut("/{id:guid}/images/{imageId:guid}", async (Guid id, Guid imageId, UpdateImageRequest r, ProductMediaService s, CancellationToken ct) =>
+                (await s.UpdateAsync(id, imageId, r, ct)).ToHttpResult())
+            .RequirePermission(Permissions.Catalog.MediaUpload).Produces<ProductImageDto>().WithSummary("Set the colour, alt text or focal point of a picture.");
+
+        g.MapPut("/{id:guid}/images/order", async (Guid id, ReorderRequest r, ProductMediaService s, CancellationToken ct) => (await s.ReorderAsync(id, r, ct)).ToHttpResult())
+            .RequirePermission(Permissions.Catalog.MediaUpload).Produces(StatusCodes.Status204NoContent).WithSummary("Set the picture order by the order of the ids (the first is the card image).");
+
+        g.MapDelete("/{id:guid}/images/{imageId:guid}", async (Guid id, Guid imageId, ProductMediaService s, CancellationToken ct) => (await s.DeleteAsync(id, imageId, ct)).ToHttpResult())
+            .RequirePermission(Permissions.Catalog.MediaDelete).Produces(StatusCodes.Status204NoContent).WithSummary("Delete a picture and its files.");
     }
 }

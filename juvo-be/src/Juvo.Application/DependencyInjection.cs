@@ -57,6 +57,7 @@ public static class DependencyInjection
         // Catalog (module B).
         services.AddScoped<CatalogLookupsService>();
         services.AddScoped<ProductsService>();
+        services.AddScoped<ProductMediaService>();
 
         // No branch scope unless the host provides one (the API registers the per-request scope).
         services.TryAddScoped<IBranchContext>(_ => UnscopedBranchContext.Instance);

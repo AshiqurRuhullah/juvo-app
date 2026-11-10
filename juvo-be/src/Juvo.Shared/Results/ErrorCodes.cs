@@ -75,6 +75,8 @@ public static class ErrorCodes
         public const string SkuTaken = "CATALOG.SKU_TAKEN";
         public const string PublishRules = "CATALOG.PUBLISH_RULES";
         public const string ProductArchived = "CATALOG.PRODUCT_ARCHIVED";
+        public const string ImageNotFound = "CATALOG.IMAGE_NOT_FOUND";
+        public const string ImageInvalid = "CATALOG.IMAGE_INVALID";
     }
 
     public static class Order
