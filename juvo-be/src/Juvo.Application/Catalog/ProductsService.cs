@@ -310,6 +310,12 @@ public sealed partial class ProductsService(IApplicationDbContext db, ActorConte
             return Error.Conflict(ErrorCodes.Catalog.PublishRules, "A published product needs at least one variant. Unpublish it first.");
         }
 
+        // Stock in any branch must be moved or written off first, so units never become invisible. The check looks across branches.
+        if (await db.StockLevels.IgnoreQueryFilters().AnyAsync(l => l.VariantId == variantId && (l.OnHand > 0 || l.Reserved > 0), cancellationToken))
+        {
+            return Error.Conflict(ErrorCodes.Inventory.VariantHasStock, "This variant still has stock. Move or write it off before removing the variant.");
+        }
+
         db.ProductVariants.Remove(variant); // soft delete: frees the SKU, keeps stock and order history readable
         await db.SaveChangesAsync(cancellationToken);
         return Result.Success();

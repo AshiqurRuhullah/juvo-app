@@ -51,6 +51,7 @@ internal static class WebApplicationExtensions
         app.MapAuthEndpoints();
         app.MapUmsEndpoints();
         app.MapCatalogEndpoints();
+        app.MapInventoryEndpoints();
 
         if (app.Services.GetRequiredService<IOptions<OpenApiSettings>>().Value.Enabled)
         {

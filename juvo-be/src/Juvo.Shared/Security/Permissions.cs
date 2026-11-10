@@ -57,4 +57,20 @@ public static class Permissions
         public const string MediaUpload = "catalog.media.upload";
         public const string MediaDelete = "catalog.media.delete";
     }
+
+    public static class Inventory
+    {
+        public const string StockView = "inventory.stock.view";
+        public const string StockAdjust = "inventory.stock.adjust";
+        public const string TransferView = "inventory.transfer.view";
+        public const string TransferRequest = "inventory.transfer.request";
+        public const string TransferApprove = "inventory.transfer.approve";
+        public const string TransferReceive = "inventory.transfer.receive";
+        public const string TransferCancel = "inventory.transfer.cancel";
+        public const string CountView = "inventory.count.view";
+        public const string CountCreate = "inventory.count.create";
+        public const string CountApprove = "inventory.count.approve";
+        public const string ReorderView = "inventory.reorder.view";
+        public const string ReorderEdit = "inventory.reorder.edit";
+    }
 }

@@ -84,4 +84,17 @@ public static class ErrorCodes
         public const string StockInsufficient = "ORDER.STOCK_INSUFFICIENT";
         public const string InvalidTransition = "ORDER.INVALID_TRANSITION";
     }
+
+    public static class Inventory
+    {
+        public const string BranchRequired = "INVENTORY.BRANCH_REQUIRED";
+        public const string BranchInactive = "INVENTORY.BRANCH_INACTIVE";
+        public const string VariantNotFound = "INVENTORY.VARIANT_NOT_FOUND";
+        public const string InsufficientStock = "INVENTORY.INSUFFICIENT_STOCK";
+        public const string TransferNotFound = "INVENTORY.TRANSFER_NOT_FOUND";
+        public const string TransferState = "INVENTORY.TRANSFER_STATE";
+        public const string CountNotFound = "INVENTORY.COUNT_NOT_FOUND";
+        public const string CountState = "INVENTORY.COUNT_STATE";
+        public const string VariantHasStock = "INVENTORY.VARIANT_HAS_STOCK";
+    }
 }
