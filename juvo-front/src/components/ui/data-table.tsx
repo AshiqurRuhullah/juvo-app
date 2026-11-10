@@ -94,6 +94,18 @@ export function DataTable<T>({
     onSortingChange,
   });
 
+  // When a wide table scrolls sideways inside its box, keyboard users must be able to reach and scroll it (WCAG 2.1.1).
+  const wrap = React.useRef<HTMLDivElement>(null);
+  const [scrolls, setScrolls] = React.useState(false);
+  React.useEffect(() => {
+    const el = wrap.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => setScrolls(el.scrollWidth > el.clientWidth + 1));
+    observer.observe(el);
+    if (el.firstElementChild) observer.observe(el.firstElementChild);
+    return () => observer.disconnect();
+  }, []);
+
   const rows = table.getRowModel().rows;
   const pages = total !== undefined ? Math.max(1, Math.ceil(total / pageSize)) : 1;
   const hasData = rows.length > 0;
@@ -101,7 +113,13 @@ export function DataTable<T>({
   return (
     <div className={cn("space-y-3", className)}>
       {/* Tablet and desktop */}
-      <div className="scroll-thin hidden overflow-x-auto rounded-card border border-line bg-card shadow-card md:block">
+      <div
+        ref={wrap}
+        tabIndex={scrolls ? 0 : undefined}
+        role={scrolls ? "region" : undefined}
+        aria-label={scrolls ? caption : undefined}
+        className="scroll-thin hidden overflow-x-auto rounded-card border border-line bg-card shadow-card focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--brand-primary-glow)] md:block"
+      >
         <table className="w-full border-collapse text-start text-base">
           <caption className="sr-only">{caption}</caption>
           <thead className="sticky top-0 z-10 bg-sunken text-sm text-muted">
