@@ -83,3 +83,7 @@ Lists use `?page&pageSize&sort&search` plus endpoint-specific filters and return
 ## 7. Development seed
 
 `Development` creates `admin@juvobd.local` (user name `admin`, password `Juvo@Dev#2026`, global scope, Super Admin) and must change the password at first sign-in. Production creates no account unless `Auth__Seed__Password` is set. The signing key (`Auth:SigningKey`) is never in the repository: in Development a random key is generated per run (tokens stop working after a restart); elsewhere it is required (32+ characters).
+
+## 8. Sign-in code by SMS or email (added after Step 6)
+
+`POST /auth/otp/request` takes `{ mobile, channel?, email?, purpose? }`. `channel` is `sms` (default) or `email` (then `email` must be a valid address, else `400 AUTH.INVALID_EMAIL`). The mobile number stays the customer's identity; the email is only where the code is sent. The answer holds `channel`, a masked `sentTo` (`017****78`, `a***@example.com`) and, **only when `Auth:Otp:ShowCodeInResponse` is true**, `devCode`. That setting is true in Development so a tester can sign in without a provider (no real SMS or email provider is connected before Step 14) and must be false everywhere else. `POST /auth/otp/verify` accepts the same `email` and stores it on a new quick profile after a correct code.

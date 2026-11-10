@@ -66,6 +66,12 @@ public sealed class OtpOptions
 
     [Range(1, 100)]
     public int MaxRequestsPerHourPerMobile { get; set; } = 5;
+
+    /// <summary>
+    /// Sandbox only: put the code in the response of the request so a tester can sign in without a real SMS or email provider
+    /// (none is connected before Step 14). Must stay false in Production.
+    /// </summary>
+    public bool ShowCodeInResponse { get; set; }
 }
 
 /// <summary>First Super Admin account created at start-up. Leave the password empty in Production to skip it.</summary>

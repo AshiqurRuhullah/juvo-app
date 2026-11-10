@@ -10,11 +10,14 @@ using Microsoft.Extensions.Options;
 
 namespace Juvo.Application.Identity;
 
-public sealed record RequestOtpRequest(string Mobile, string? Purpose);
+/// <summary>The mobile number is always the identity. <c>Channel</c> says where the code goes: <c>sms</c> (default) or <c>email</c> (then <c>Email</c> is required).</summary>
+public sealed record RequestOtpRequest(string Mobile, string? Purpose, string? Email = null, string? Channel = null);
 
-public sealed record RequestOtpResponse(string Mobile, int ExpiresInSeconds, int ResendAfterSeconds);
+/// <summary><c>SentTo</c> is masked (017*****78, a***@example.com). <c>DevCode</c> is only filled in sandbox mode (<c>Auth:Otp:ShowCodeInResponse</c>).</summary>
+public sealed record RequestOtpResponse(string Mobile, int ExpiresInSeconds, int ResendAfterSeconds, string Channel, string SentTo, string? DevCode);
 
-public sealed record VerifyOtpRequest(string Mobile, string Code, string? DeviceName);
+/// <summary><c>Email</c> (the address the code was sent to) is saved on a new quick profile after a correct code.</summary>
+public sealed record VerifyOtpRequest(string Mobile, string Code, string? DeviceName, string? Email = null);
 
 /// <summary>
 /// Customer sign-in by mobile number and one-time password (SRS module E). The mobile number is the identity: verifying it
@@ -24,6 +27,7 @@ public sealed class CustomerAuthService(
     IApplicationDbContext db,
     SessionIssuer sessions,
     ISmsSender smsSender,
+    IEmailSender emailSender,
     TimeProvider timeProvider,
     IOptions<AuthOptions> options)
 {
@@ -36,6 +40,14 @@ public sealed class CustomerAuthService(
         {
             return new Error(ErrorCodes.Auth.InvalidMobile, "Enter a valid mobile number, for example 01712345678.", ErrorType.Validation,
                 new Dictionary<string, string[]> { ["mobile"] = ["Enter a valid mobile number."] });
+        }
+
+        var viaEmail = string.Equals(request.Channel, "email", StringComparison.OrdinalIgnoreCase);
+        var email = request.Email?.Trim();
+        if (viaEmail && !IsEmail(email))
+        {
+            return new Error(ErrorCodes.Auth.InvalidEmail, "Enter a valid email address to receive the code.", ErrorType.Validation,
+                new Dictionary<string, string[]> { ["email"] = ["Enter a valid email address."] });
         }
 
         var now = timeProvider.GetUtcNow();
@@ -65,10 +77,18 @@ public sealed class CustomerAuthService(
         db.OtpCodes.Add(new OtpCode(mobile, purpose, Hash(mobile, code), now.AddMinutes(_otp.ExpiryMinutes), client.IpAddress));
         await db.SaveChangesAsync(cancellationToken);
 
-        await smsSender.SendAsync(mobile, "auth.otp",
-            $"Your Juvo BD verification code is {code}. It is valid for {_otp.ExpiryMinutes} minutes. Do not share it.", cancellationToken);
+        var text = $"Your Juvo BD verification code is {code}. It is valid for {_otp.ExpiryMinutes} minutes. Do not share it.";
+        if (viaEmail)
+        {
+            await emailSender.SendAsync(email!, "auth.otp", "Your Juvo BD verification code", text, cancellationToken);
+        }
+        else
+        {
+            await smsSender.SendAsync(mobile, "auth.otp", text, cancellationToken);
+        }
 
-        return new RequestOtpResponse(mobile, _otp.ExpiryMinutes * 60, _otp.ResendCooldownSeconds);
+        return new RequestOtpResponse(mobile, _otp.ExpiryMinutes * 60, _otp.ResendCooldownSeconds, viaEmail ? "email" : "sms",
+            viaEmail ? MaskEmail(email!) : MaskMobile(mobile), _otp.ShowCodeInResponse ? code : null);
     }
 
     public async Task<Result<AuthTokens>> VerifyOtpAsync(VerifyOtpRequest request, ClientInfo client, CancellationToken cancellationToken)
@@ -114,6 +134,11 @@ public sealed class CustomerAuthService(
         }
 
         customer.VerifyMobile(now);
+        if (string.IsNullOrEmpty(customer.Email) && IsEmail(request.Email?.Trim()))
+        {
+            customer.UpdateProfile(customer.FullName, request.Email!.Trim());
+        }
+
         await db.SaveChangesAsync(cancellationToken);
 
         var tokens = await sessions.StartAsync(SubjectType.Customer, customer.Id, customer.FullName ?? customer.Mobile, 0,
@@ -127,6 +152,18 @@ public sealed class CustomerAuthService(
         db.SignInHistory.Add(new SignInHistory(SubjectType.Customer, customerId, mobile, ok, reason, client.IpAddress, client.UserAgent,
             timeProvider.GetUtcNow()));
         await db.SaveChangesAsync(cancellationToken);
+    }
+
+    private static bool IsEmail(string? value) =>
+        !string.IsNullOrWhiteSpace(value) && value.Length <= 254 && System.Net.Mail.MailAddress.TryCreate(value, out var address) && address.Address == value &&
+        value.Contains('.', StringComparison.Ordinal);
+
+    private static string MaskMobile(string mobile) => mobile.Length <= 6 ? "***" : string.Concat(mobile.AsSpan(0, mobile.Length - 6), "****", mobile.AsSpan(mobile.Length - 2));
+
+    private static string MaskEmail(string email)
+    {
+        var at = email.IndexOf('@', StringComparison.Ordinal);
+        return at <= 1 ? "***" + email[at..] : email[0] + "***" + email[at..];
     }
 
     private static string GenerateCode(int length)

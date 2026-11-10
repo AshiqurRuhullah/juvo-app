@@ -35,6 +35,7 @@ public static class ErrorCodes
         public const string OtpExpired = "AUTH.OTP_EXPIRED";
         public const string OtpTooManyAttempts = "AUTH.OTP_TOO_MANY_ATTEMPTS";
         public const string OtpCooldown = "AUTH.OTP_COOLDOWN";
+        public const string InvalidEmail = "AUTH.INVALID_EMAIL";
         public const string InvalidMobile = "AUTH.INVALID_MOBILE";
         public const string WeakPassword = "AUTH.WEAK_PASSWORD";
         public const string ResetTokenInvalid = "AUTH.RESET_TOKEN_INVALID";
