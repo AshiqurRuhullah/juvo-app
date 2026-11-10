@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5080/"
+      "url": "http://localhost:5090/"
     }
   ],
   "paths": {
@@ -12197,6 +12197,18 @@
               "null",
               "string"
             ]
+          },
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "channel": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -12204,7 +12216,10 @@
         "required": [
           "mobile",
           "expiresInSeconds",
-          "resendAfterSeconds"
+          "resendAfterSeconds",
+          "channel",
+          "sentTo",
+          "devCode"
         ],
         "type": "object",
         "properties": {
@@ -12226,6 +12241,18 @@
               "string"
             ],
             "format": "int32"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "sentTo": {
+            "type": "string"
+          },
+          "devCode": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -14018,6 +14045,12 @@
             "type": "string"
           },
           "deviceName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "email": {
             "type": [
               "null",
               "string"

@@ -1,0 +1,15 @@
+{
+  "channelLabel": "Send my code by",
+  "viaSms": "SMS",
+  "viaEmail": "Email",
+  "emailLabel": "Email address",
+  "emailHint": "We send the code to this address. Your mobile number is still your account.",
+  "emailInvalid": "Enter a valid email address, for example name@example.com.",
+  "sentSms": "We sent a code by SMS to {to}.",
+  "sentEmail": "We sent a code by email to {to}.",
+  "sandboxTitle": "Test mode: no real SMS or email is sent yet",
+  "sandboxBody": "Use this code to sign in:",
+  "sandboxCodeLabel": "Your test code is {code}",
+  "sandboxHelp": "Real messages start when an SMS and an email provider are connected before going live.",
+  "changeDestination": "Change number or email"
+}

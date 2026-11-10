@@ -9208,6 +9208,8 @@ export interface components {
         RequestOtpRequest: {
             mobile: string;
             purpose: null | string;
+            email?: null | string;
+            channel?: null | string;
         };
         RequestOtpResponse: {
             mobile: string;
@@ -9215,6 +9217,9 @@ export interface components {
             expiresInSeconds: number | string;
             /** Format: int32 */
             resendAfterSeconds: number | string;
+            channel: string;
+            sentTo: string;
+            devCode: null | string;
         };
         RequestTransferRequest: {
             /** Format: uuid */
@@ -9634,6 +9639,7 @@ export interface components {
             mobile: string;
             code: string;
             deviceName: null | string;
+            email?: null | string;
         };
     };
     responses: never;

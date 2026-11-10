@@ -9,6 +9,7 @@ const bodySchema = z.object({
   mobile: z.string().min(5).max(30),
   code: z.string().min(4).max(10),
   deviceName: z.string().max(100).optional().nullable(),
+  email: z.string().email().max(254).optional().nullable(),
 });
 
 /** Customer sign-in with mobile number and one-time password. Same cookie handling as the staff login. */
