@@ -53,3 +53,21 @@ test-results/
 !/docs/ui-checks/login-staff-768.png
 !/docs/ui-checks/login-staff-1280.png
 !/docs/ui-checks/design-system-1280.png
+
+# Step 6-e: key catalog, lookups and inventory screens (phone and desktop) are kept; the rest is regenerated.
+!/docs/ui-checks/catalog-products-360.png
+!/docs/ui-checks/catalog-products-1280.png
+!/docs/ui-checks/catalog-product-details-1280.png
+!/docs/ui-checks/catalog-product-variants-360.png
+!/docs/ui-checks/catalog-product-pictures-1280.png
+!/docs/ui-checks/catalog-picture-editor-1280.png
+/docs/ui-checks/inventory/*.png
+!/docs/ui-checks/inventory/inventory-stock-360.png
+!/docs/ui-checks/inventory/inventory-stock-1280.png
+!/docs/ui-checks/inventory/inventory-transfer-detail-1280.png
+!/docs/ui-checks/inventory/inventory-count-detail-360.png
+/docs/ui-checks/lookups/*.png
+!/docs/ui-checks/lookups/categories-1280.png
+!/docs/ui-checks/lookups/categories-360.png
+!/docs/ui-checks/lookups/import-report-1280.png
+!/docs/ui-checks/lookups/size-chart-dialog-360.png
