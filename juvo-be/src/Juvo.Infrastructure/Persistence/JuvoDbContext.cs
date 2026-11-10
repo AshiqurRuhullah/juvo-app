@@ -2,6 +2,7 @@ using Juvo.Application.Abstractions;
 using Juvo.Domain.Branches;
 using Juvo.Domain.Catalog;
 using Juvo.Domain.Customers;
+using Juvo.Domain.Inventory;
 using Juvo.Domain.Identity;
 using Juvo.Domain.Notifications;
 using Juvo.Domain.Platform;
@@ -58,6 +59,14 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
     public DbSet<ProductVariant> ProductVariants => Set<ProductVariant>();
 
     public DbSet<ProductImage> ProductImages => Set<ProductImage>();
+
+    public DbSet<StockLevel> StockLevels => Set<StockLevel>();
+
+    public DbSet<StockMovement> StockMovements => Set<StockMovement>();
+
+    public DbSet<StockTransfer> StockTransfers => Set<StockTransfer>();
+
+    public DbSet<StockCount> StockCounts => Set<StockCount>();
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 

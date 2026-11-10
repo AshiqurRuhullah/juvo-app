@@ -1,6 +1,7 @@
 using Juvo.Domain.Branches;
 using Juvo.Domain.Catalog;
 using Juvo.Domain.Customers;
+using Juvo.Domain.Inventory;
 using Juvo.Domain.Identity;
 using Juvo.Domain.Notifications;
 using Juvo.Domain.Platform;
@@ -46,6 +47,14 @@ public interface IApplicationDbContext
     DbSet<ProductVariant> ProductVariants { get; }
 
     DbSet<ProductImage> ProductImages { get; }
+
+    DbSet<StockLevel> StockLevels { get; }
+
+    DbSet<StockMovement> StockMovements { get; }
+
+    DbSet<StockTransfer> StockTransfers { get; }
+
+    DbSet<StockCount> StockCounts { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
