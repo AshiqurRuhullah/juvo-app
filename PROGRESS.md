@@ -80,12 +80,15 @@ Split (the step is too large for one session); each sub-step has its own gate an
 | Sub-step | Scope | Status |
 | --- | --- | --- |
 | 6-a | Catalog backend: categories (tree), brands, size charts, products, variants, pricing/sale dates, publish rules BR-B1..B3, duplicate, cost-price visibility, audit, seed | **Done** |
-| 6-b | Image pipeline: upload, validate, resize, WebP, focal point, blur placeholder, per-colour sets, reorder (`IFileStorage`) | Not started |
+| 6-b | Image pipeline: upload, validate, resize, WebP, focal point, blur placeholder, per-colour sets, reorder (`IFileStorage`) | **Done** |
 | 6-c | Inventory: branch stock locations, on-hand/reserved/available, append-only movements, adjustments, thresholds, transfers, stocktake | Not started |
 | 6-d | Bulk CSV/Excel import and export with validation report; sample products with images | Not started |
 | 6-e | Admin UI: product list, add/edit with live card preview, variants/stock grid, categories, inventory by branch, transfers, adjustments; Playwright and screenshots | Not started |
 
 **6-a result:** endpoints under `/api/v1/catalog` (categories, brands, size-charts, products, variants, publish/unpublish/archive/duplicate), 21 new `Permissions.Catalog` constants (codes already in the catalog). Migration `CatalogProducts`. `CatalogSeeder` (4 top-level categories with sub-categories, 2 size charts) runs with the migration. `ProductImage` entity exists (publish needs one image); upload comes in 6-b. SKU unique among live variants (case-insensitive, freed on removal); slugs unique among live rows; staff without `catalog.product.view-cost` neither see nor change cost. Tests: 143 integration (20 new), 23 application (13 new), build 0 warnings, no pending model changes.
+
+**6-b result:** pictures under `/api/v1/catalog/products/{id}/images` (multipart upload, update colour/alt/focal point, reorder, delete). Accepts JPEG/PNG/WebP, max 10 MB (measured from the stream, not the header), min 1000 px long side, pixel cap against decompression bombs, EXIF rotation applied, max 12 images per product. SkiaSharp (MIT) writes WebP renditions: main (long side up to 1600), 4:5 card (800x1000) and thumbnail (160x200) cropped around the focal point, plus a 16 px blur placeholder data URL. Changing the focal point re-crops; a duplicated product shares files (copy on write); delete removes files only when no product still uses them. Storage via `IFileStorage` (`/files`); DTOs return `url`, `cardUrl`, `thumbUrl`. Permissions `catalog.media.upload` / `catalog.media.delete`. No migration needed.
+**6-b gate (run and seen):** `dotnet build --no-incremental` 0 warnings, 0 errors; test executables: domain 77, application 23, integration 151 (8 new media tests), 0 failed; `has-pending-model-changes`: none; no vulnerable packages; no leftover `JuvoDb_Test_*` databases.
 
 ## How to run now
 

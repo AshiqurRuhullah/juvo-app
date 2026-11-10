@@ -423,9 +423,9 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-B01 | Create/edit product: name (EN + optional BN), slug, category, sub-category, brand, short and long description, material, care, tags, gender… | M | 6 | Not started | | |
 | FR-B02 | Variants: colour and size combinations, each with its own SKU, price override, stock quantity, barcode (optional), weight override | M | 6 | Not started | | |
 | FR-B03 | Pricing: regular price, sale price with start/end date, cost price (admin-only, for profit report) | M | 6 | Not started | | |
-| FR-B04 | Image upload: multiple images, drag to reorder, first image is primary; per-colour image sets; bulk upload | M | 6 | Not started | | |
-| FR-B05 | System auto-processes images: resize to several sizes, convert to modern format (e.g. WebP), compress, crop to the 4:5 frame with adjustabl… | M | 6 | Not started | | |
-| FR-B06 | Image rules shown to staff: minimum 1000 px on the long side, max 10 MB per file; warn if too small or blurry (blur check is Could) | M | 6 | Not started | | |
+| FR-B04 | Image upload: multiple images, drag to reorder, first image is primary; per-colour image sets; bulk upload | M | 6 | Done | `POST /api/v1/catalog/products/{id}/images` (ProductMediaService, SkiaImageProcessor) | Step 6-b; UI in 6-e |
+| FR-B05 | System auto-processes images: resize to several sizes, convert to modern format (e.g. WebP), compress, crop to the 4:5 frame with adjustabl… | M | 6 | Done | `POST /api/v1/catalog/products/{id}/images` (ProductMediaService, SkiaImageProcessor) | Step 6-b; UI in 6-e |
+| FR-B06 | Image rules shown to staff: minimum 1000 px on the long side, max 10 MB per file; warn if too small or blurry (blur check is Could) | M | 6 | Done | `POST /api/v1/catalog/products/{id}/images` (ProductMediaService, SkiaImageProcessor) | Step 6-b; UI in 6-e |
 | FR-B07 | Optional product video (short clip or link) | C | 6 | Not started | | |
 | FR-B08 | Live "storefront preview" while editing, showing the exact card and page | M | 6 | Not started | | |
 | FR-B09 | Bulk import/export of products and stock via CSV/Excel with a validation report | S | 6 | Not started | | |
