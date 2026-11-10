@@ -47,8 +47,13 @@ $candidates += @("localhost", ".\SQLEXPRESS", "(localdb)\MSSQLLocalDB")
 $found = $null
 foreach ($candidate in $candidates) {
     Write-Host "Trying $candidate ..." -NoNewline
+    # An unreachable instance writes to stderr; Windows PowerShell 5.1 would turn that into a terminating error.
+    $previousPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     & sqlcmd -S $candidate -E -C -l 10 -b -Q "SET NOCOUNT ON; SELECT 1" 2>$null | Out-Null
-    if ($LASTEXITCODE -eq 0) {
+    $probeExit = $LASTEXITCODE
+    $ErrorActionPreference = $previousPreference
+    if ($probeExit -eq 0) {
         Write-Host " reachable" -ForegroundColor Green
         $found = $candidate
         break
