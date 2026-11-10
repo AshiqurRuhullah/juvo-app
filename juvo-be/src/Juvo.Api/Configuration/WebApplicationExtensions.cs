@@ -76,6 +76,10 @@ internal static class WebApplicationExtensions
         var seeder = scope.ServiceProvider.GetRequiredService<IdentitySeeder>();
         await seeder.SeedAsync();
         await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Catalog.CatalogSeeder>().SeedAsync();
+        if (app.Configuration.GetValue<bool>("Seed:SampleCatalog"))
+        {
+            await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Catalog.SampleCatalogSeeder>().SeedAsync();
+        }
     }
 
     private static void UseUploadedFiles(WebApplication app)
