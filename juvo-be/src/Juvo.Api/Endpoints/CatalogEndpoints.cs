@@ -1,6 +1,7 @@
 using Juvo.Api.Configuration;
 using Juvo.Api.Http;
 using Microsoft.AspNetCore.Mvc;
+using Juvo.Application.Abstractions;
 using Juvo.Application.Catalog;
 using Juvo.Domain.Catalog;
 using Juvo.Shared.Pagination;
@@ -120,6 +121,29 @@ internal static class CatalogEndpoints
                 (await s.RemoveVariantAsync(id, variantId, ct)).ToHttpResult())
             .RequirePermission(Permissions.Catalog.ProductEdit).Produces(StatusCodes.Status204NoContent).WithSummary("Remove a variant (frees the SKU).");
 
+        // Bulk import and export (CSV or Excel). One row is one variant; see ProductImportService for the rules.
+        g.MapGet("/import-template", (string? format, ProductImportService s) =>
+            {
+                var file = s.Template(ParseFormat(format));
+                return Results.File(file.Content, file.ContentType, file.FileName);
+            })
+            .RequirePermission(Permissions.Catalog.ProductImport).Produces(StatusCodes.Status200OK, contentType: "text/csv")
+            .WithSummary("Download the import template (format=csv or xlsx) with the expected columns and example rows.");
+
+        g.MapPost("/import", async (IFormFile file, string? mode, bool? dryRun, ProductImportService s, CancellationToken ct) =>
+            {
+                await using var stream = file.OpenReadStream();
+                return (await s.ImportAsync(stream, string.Equals(mode, "upsert", StringComparison.OrdinalIgnoreCase) ? ImportMode.Upsert : ImportMode.Create, dryRun ?? false, ct)).ToHttpResult();
+            })
+            .DisableAntiforgery().WithMetadata(new RequestSizeLimitAttribute(6 * 1024 * 1024))
+            .RequirePermission(Permissions.Catalog.ProductImport).Produces<ImportReportDto>()
+            .WithSummary("Import products, variants and opening stock from a CSV or Excel file (mode=create|upsert, dryRun=true to only validate). A file with any error saves nothing.");
+
+        g.MapGet("/export", async (string? format, ProductStatus? status, Guid? categoryId, Guid? branchId, ProductImportService s, CancellationToken ct) =>
+                (await s.ExportAsync(ParseFormat(format), new ExportQuery(status, categoryId, branchId), ct))
+                .ToHttpResult(f => Results.File(f.Content, f.ContentType, f.FileName)))
+            .RequirePermission(Permissions.Catalog.ProductExport).Produces(StatusCodes.Status200OK, contentType: "text/csv")
+            .WithSummary("Export products and variants (format=csv or xlsx). Pass branchId to include that branch's stock. Cost price only with catalog.product.view-cost.");
         // Pictures. The upload is a multipart form; the API is token based (no cookies), so antiforgery does not apply.
         g.MapPost("/{id:guid}/images", async (Guid id, IFormFile file, [FromForm] string? colorName, [FromForm] string? altText,
                 [FromForm] double? focalX, [FromForm] double? focalY, ProductMediaService s, CancellationToken ct) =>
@@ -142,4 +166,7 @@ internal static class CatalogEndpoints
         g.MapDelete("/{id:guid}/images/{imageId:guid}", async (Guid id, Guid imageId, ProductMediaService s, CancellationToken ct) => (await s.DeleteAsync(id, imageId, ct)).ToHttpResult())
             .RequirePermission(Permissions.Catalog.MediaDelete).Produces(StatusCodes.Status204NoContent).WithSummary("Delete a picture and its files.");
     }
+
+    private static TabularFormat ParseFormat(string? format) =>
+        string.Equals(format, "xlsx", StringComparison.OrdinalIgnoreCase) ? TabularFormat.Xlsx : TabularFormat.Csv;
 }

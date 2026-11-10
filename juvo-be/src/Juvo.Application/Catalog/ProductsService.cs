@@ -52,7 +52,7 @@ public sealed partial class ProductsService(IApplicationDbContext db, ActorConte
         if (!string.IsNullOrWhiteSpace(request.Search))
         {
             var term = request.Search.Trim();
-            query = query.Where(p => p.NameEn.Contains(term) || (p.NameBn != null && p.NameBn.Contains(term)) || p.Slug.Contains(term) ||
+            query = query.Where(p => p.NameEn.Contains(term) || (p.NameBn != null && p.NameBn.Contains(term)) || p.Slug.Contains(term) || (p.Tags != null && p.Tags.Contains(term)) ||
                                      p.Variants.Any(v => v.Sku.Contains(term) || (v.Barcode != null && v.Barcode == term)));
         }
 

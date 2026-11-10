@@ -59,6 +59,7 @@ public static class DependencyInjection
         services.AddScoped<CatalogLookupsService>();
         services.AddScoped<ProductsService>();
         services.AddScoped<ProductMediaService>();
+        services.AddScoped<ProductImportService>();
 
         // Inventory (module V).
         services.AddScoped<InventoryAccess>();
