@@ -36,3 +36,21 @@ export function renditionUrl(path: string | null | undefined, kind: "card" | "th
 export function discountPercent(regular: number, effective: number): number {
   return regular > 0 && effective < regular ? Math.round(((regular - effective) / regular) * 100) : 0;
 }
+
+/**
+ * Address of one rendition of a product picture. A new focal point re-cuts the card and thumbnail under the same file name, and the
+ * files are cached for a year, so the focal point is part of the address (`?v=`): changing it gives a new address.
+ */
+export function imageSrc(image: { url: string; cardUrl: string; thumbUrl: string; focalX: number | string; focalY: number | string }, kind: "main" | "card" | "thumb" = "card"): string {
+  const base = mediaUrl(kind === "main" ? image.url : kind === "card" ? image.cardUrl : image.thumbUrl) ?? "";
+  return `${base}?v=${toNumber(image.focalX).toFixed(3)}-${toNumber(image.focalY).toFixed(3)}`;
+}
+
+/** The part of the picture the card shows, in 0..1 of the main picture (the same maths as the API's crop). */
+export function cropWindow(width: number, height: number, focalX: number, focalY: number) {
+  const cropW = Math.min(width, Math.floor((height * 4) / 5));
+  const cropH = Math.min(height, Math.floor((cropW * 5) / 4));
+  const left = Math.min(Math.max(Math.round(focalX * width - cropW / 2), 0), width - cropW);
+  const top = Math.min(Math.max(Math.round(focalY * height - cropH / 2), 0), height - cropH);
+  return { left: left / width, top: top / height, width: cropW / width, height: cropH / height };
+}

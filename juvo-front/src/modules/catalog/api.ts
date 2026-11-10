@@ -207,3 +207,20 @@ export function useReportError() {
     return problem ? fieldErrors(problem) : {};
   };
 }
+
+/* ---- Stock of one product (read-only grid, and the quick "set quantity" on the product screen) ----------------------------- */
+
+export type ProductStock = Schemas["ProductStockDto"];
+export type StockReason = Schemas["StockReason"];
+
+/** Every variant against every branch the user may view. Needs inventory.stock.view, so callers pass `enabled`. */
+export function useProductStock(productId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ["inventory", "product-stock", productId],
+    enabled: enabled && !!productId,
+    queryFn: async () => unwrap(await api.GET("/api/v1/inventory/stock/products/{productId}", { params: { path: { productId } } })),
+  });
+}
+
+export const useAdjustStock = () =>
+  useCatalogMutation(async (body: Schemas["AdjustStockRequest"]) => unwrap(await api.POST("/api/v1/inventory/adjustments", { body })));
