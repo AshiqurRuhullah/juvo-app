@@ -42,7 +42,8 @@ src/components/     auth forms, shell (sidebar, top bar, branch switcher, comman
 src/lib/auth/       permission checks that mirror the API, cookie names and JWT timing helpers
 src/lib/server/     server-only: backend fetch, single-flight refresh, session loading, cookie writing
 src/lib/api/        generated types (schema.d.ts), openapi-fetch client, problem+json handling
-src/messages/       en.json and bn.json (next-intl)
+src/modules/        one folder per business module: ums, catalog (products, categories, import/export), inventory
+src/messages/       en.json and bn.json (shell, auth, UMS) plus one file per module (catalog.*, lookups.*, inventory.*), merged by load.ts (next-intl)
 src/proxy.ts        keeps the session fresh before protected pages render
 e2e/ tests/         Playwright and vitest
 docs/               frontend.md (design and decisions), brand-tokens.md, ui-checks/ (screenshots)

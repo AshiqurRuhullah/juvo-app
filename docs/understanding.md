@@ -420,20 +420,20 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-A10 | Share product to Facebook, WhatsApp, copy link; clean URLs and social preview image | M | 7 | Not started | | |
 | FR-A11 | Language switch English / Bengali; currency display BDT, with optional conversion for international visitors | S | 7 | Not started | | |
 | FR-A12 | Customer-visible reviews with star rating and photos (only verified buyers can review) | S | 7 | Not started | | |
-| FR-B01 | Create/edit product: name (EN + optional BN), slug, category, sub-category, brand, short and long description, material, care, tags, gender… | M | 6 | Not started | | |
-| FR-B02 | Variants: colour and size combinations, each with its own SKU, price override, stock quantity, barcode (optional), weight override | M | 6 | Not started | | |
-| FR-B03 | Pricing: regular price, sale price with start/end date, cost price (admin-only, for profit report) | M | 6 | Not started | | |
-| FR-B04 | Image upload: multiple images, drag to reorder, first image is primary; per-colour image sets; bulk upload | M | 6 | Not started | | |
-| FR-B05 | System auto-processes images: resize to several sizes, convert to modern format (e.g. WebP), compress, crop to the 4:5 frame with adjustabl… | M | 6 | Not started | | |
-| FR-B06 | Image rules shown to staff: minimum 1000 px on the long side, max 10 MB per file; warn if too small or blurry (blur check is Could) | M | 6 | Not started | | |
-| FR-B07 | Optional product video (short clip or link) | C | 6 | Not started | | |
-| FR-B08 | Live "storefront preview" while editing, showing the exact card and page | M | 6 | Not started | | |
-| FR-B09 | Bulk import/export of products and stock via CSV/Excel with a validation report | S | 6 | Not started | | |
-| FR-B10 | Duplicate a product to create similar ones quickly | S | 6 | Not started | | |
-| FR-B11 | Category management: add/edit/reorder, category image, active flag | M | 6 | Not started | | |
-| FR-B12 | Mark product as New, Featured, Best seller (manual or automatic rules) | M | 6 | Not started | | |
-| FR-B13 | Product SEO fields: meta title, description, social image | S | 6 | Not started | | |
-| FR-B14 | Every product change is written to the audit log (who, what, when, old/new) | M | 6 | Not started | | |
+| FR-B01 | Create/edit product: name (EN + optional BN), slug, category, sub-category, brand, short and long description, material, care, tags, gender… | M | 6 | Done | `/admin/products/new`, `/admin/products/{id}` (ProductEditor, ProductDetailsForm); API `/api/v1/catalog/products` | Steps 6-a and 6-e. |
+| FR-B02 | Variants: colour and size combinations, each with its own SKU, price override, stock quantity, barcode (optional), weight override | M | 6 | Done | Variants tab (ProductVariants: add, edit, remove, colour x size generator); stock quantity per branch in the stock grid | Step 6-e. |
+| FR-B03 | Pricing: regular price, sale price with start/end date, cost price (admin-only, for profit report) | M | 6 | Done | Price card of the product form; cost price only with `catalog.product.view-cost` | Step 6-e. |
+| FR-B04 | Image upload: multiple images, drag to reorder, first image is primary; per-colour image sets; bulk upload | M | 6 | Done | Pictures tab (ProductImages): several files at once, per-colour set, drag or button reorder, delete; API `/images` | Steps 6-b and 6-e. |
+| FR-B05 | System auto-processes images: resize to several sizes, convert to modern format (e.g. WebP), compress, crop to the 4:5 frame with adjustabl… | M | 6 | Done | Picture editor (focal point by click or sliders, live 4:5 crop frame); API pipeline `SkiaImageProcessor` | Steps 6-b and 6-e. |
+| FR-B06 | Image rules shown to staff: minimum 1000 px on the long side, max 10 MB per file; warn if too small or blurry (blur check is Could) | M | 6 | Done | Rules shown on the Pictures tab; type, size and 1000 px checks in the browser before sending, and again in the API | Blur check (Could) not built. |
+| FR-B07 | Optional product video (short clip or link) | C | 6 | Partial | Video link field on the Search and sharing tab | A link only; no video upload. |
+| FR-B08 | Live "storefront preview" while editing, showing the exact card and page | M | 6 | Partial | Live storefront card beside the editor (ProductCard) built from the unsaved form, the saved pictures, variants and stock | The product page preview arrives with the storefront (Step 7). |
+| FR-B09 | Bulk import/export of products and stock via CSV/Excel with a validation report | S | 6 | Done | Import and export buttons on `/admin/products` (ImportExportButtons); API `/products/import`, `/export`, `/import-template` | Steps 6-d and 6-e. Check-first flow with a row-by-row report. |
+| FR-B10 | Duplicate a product to create similar ones quickly | S | 6 | Done | Duplicate button in the product header; API `/duplicate` | Step 6-e. |
+| FR-B11 | Category management: add/edit/reorder, category image, active flag | M | 6 | Partial | `/admin/categories` (tree, add, edit, delete, move up/down, active flag); API `/catalog/categories` | Category picture upload is not in the UI yet. |
+| FR-B12 | Mark product as New, Featured, Best seller (manual or automatic rules) | M | 6 | Done | Labels card of the product form (New, Featured, Best seller; manual) | Automatic rules not built. |
+| FR-B13 | Product SEO fields: meta title, description, social image | S | 6 | Partial | Search and sharing tab (page title, description) | Social share image upload is not in the UI yet. |
+| FR-B14 | Every product change is written to the audit log (who, what, when, old/new) | M | 6 | Done | Audit interceptor; viewable in `/admin/ums/audit` | Step 6-a. |
 | FR-C01 | Add to cart from card (quick add) or product page with required variant selection | M | 7 | Not started | | |
 | FR-C02 | Cart drawer and full cart page: change quantity, remove, see line totals, subtotal, estimated delivery, coupon field | M | 7 | Not started | | |
 | FR-C03 | Cart is kept for guests (browser storage + server session) and merged into the account after sign-in | M | 7 | Not started | | |
@@ -614,10 +614,10 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-U05 | Tax summary report by period for the accountant | S | 9 | Not started | | |
 | FR-U06 | Bengali/English invoice templates editable in admin | S | 9 | Not started | | |
 | FR-V01 | Barcode/QR per variant; scan to receive, pack and count (phone camera or scanner) | S | 6 | Not started | | |
-| FR-V02 | Stock count (stocktake): start a count, enter or scan quantities, review differences, approve adjustments | M | 6 | Not started | | |
-| FR-V03 | Multiple locations (shop, warehouse, home stock); transfer between locations | C | 6 | Not started | | |
-| FR-V04 | Reorder level and suggested reorder quantity from sales speed | S | 6 | Not started | | |
-| FR-V05 | Reserved, available, damaged and returned-pending quantities shown separately | M | 6 | Not started | | |
+| FR-V02 | Stock count (stocktake): start a count, enter or scan quantities, review differences, approve adjustments | M | 6 | Partial | `/admin/inventory/counts` and `/counts/{id}` (start, enter, submit, approve, reopen, cancel) | Manual entry; barcode scanning is not built. |
+| FR-V03 | Multiple locations (shop, warehouse, home stock); transfer between locations | C | 6 | Partial | `/admin/inventory/transfers` (request, approve, ship, receive, reject, cancel) and stock by branch | One stock location per branch. |
+| FR-V04 | Reorder level and suggested reorder quantity from sales speed | S | 6 | Partial | Low-stock level per variant and branch; low-stock filter on `/admin/inventory` | Suggested reorder quantity from sales speed needs orders (later). |
+| FR-V05 | Reserved, available, damaged and returned-pending quantities shown separately | M | 6 | Partial | Reserved, available and on hand shown separately on `/admin/inventory` and the product stock grid | Damage is a ledger reason; returned-pending arrives with returns (Step 10). |
 | FR-V06 | Dead-stock and slow-mover list with a markdown suggestion | C | 6 | Not started | | |
 | FR-W01 | Supplier list: name, contact, address, payment terms, notes | M | 11A | Not started | | |
 | FR-W02 | Purchase order: choose supplier, items, quantity, cost, expected date; statuses Draft, Sent, Partly received, Received, Cancelled | M | 11A | Not started | | |

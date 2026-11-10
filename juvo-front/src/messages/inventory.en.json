@@ -1,0 +1,345 @@
+{
+  "tabs": {
+    "label": "Inventory sections",
+    "stock": "Stock",
+    "movements": "Movements",
+    "transfers": "Transfers",
+    "counts": "Stock counts"
+  },
+  "common": {
+    "branch": "Branch",
+    "anyBranch": "All my branches",
+    "search": "Search",
+    "noMatch": "No match",
+    "clear": "Clear filters",
+    "cancel": "Cancel",
+    "close": "Close",
+    "loadFailed": "The list could not be loaded. Please try again."
+  },
+  "reasons": {
+    "OpeningStock": "Opening stock",
+    "Correction": "Correction",
+    "Damage": "Damaged",
+    "Loss": "Lost",
+    "Found": "Found",
+    "CustomerReturn": "Customer return",
+    "TransferOut": "Transfer out",
+    "TransferIn": "Transfer in",
+    "TransferCancelled": "Transfer cancelled",
+    "StockCount": "Stock count"
+  },
+  "transferStatus": {
+    "Requested": "Requested",
+    "Approved": "Approved",
+    "InTransit": "In transit",
+    "Received": "Received",
+    "Cancelled": "Cancelled",
+    "Rejected": "Rejected"
+  },
+  "countStatus": {
+    "InProgress": "In progress",
+    "Submitted": "Waiting for review",
+    "Approved": "Approved",
+    "Cancelled": "Cancelled"
+  },
+  "picker": {
+    "label": "Find a product",
+    "placeholder": "Type a product name or SKU",
+    "hint": "Type at least two letters to search.",
+    "searchFailed": "The search did not work. Please try again.",
+    "noProducts": "No product matches \"{term}\".",
+    "results": "Matching products",
+    "variantCount": "{count, plural, one {# variant} other {# variants}}",
+    "otherProduct": "Choose another product",
+    "noVariants": "This product has no variant that tracks stock.",
+    "available": "{count} available in the sending branch",
+    "addVariant": "Add {sku}",
+    "add": "Add",
+    "added": "Added"
+  },
+  "stock": {
+    "title": "Stock by branch",
+    "subtitle": "What is on the shelf in each branch, what is promised to orders and what can still be sold.",
+    "search": "Search stock",
+    "searchPlaceholder": "Product name, SKU or barcode",
+    "lowOnly": "Only low stock",
+    "low": "Low",
+    "noThreshold": "Not set",
+    "adjust": "Adjust",
+    "setLevel": "Low-stock level",
+    "adjustFor": "Adjust stock of {sku} in {branch}",
+    "levelFor": "Set the low-stock level of {sku} in {branch}",
+    "columns": {
+      "product": "Product",
+      "branch": "Branch",
+      "onHand": "On hand",
+      "reserved": "Reserved",
+      "available": "Available",
+      "threshold": "Low-stock level",
+      "actions": "Actions"
+    }
+  },
+  "adjust": {
+    "title": "Adjust stock",
+    "for": "{product} ({sku}) in {branch}",
+    "current": "Now: {onHand} on hand, {reserved} reserved, {available} available.",
+    "reason": "Reason",
+    "sign": {
+      "add": "Adds stock",
+      "remove": "Removes stock",
+      "either": "Adds or removes"
+    },
+    "hint": {
+      "OpeningStock": "Use this to enter the first count of a new product. It adds stock.",
+      "Correction": "Fix a wrong number after checking the shelf. You choose whether to add or remove.",
+      "Damage": "Units that are damaged and cannot be sold. It removes stock.",
+      "Loss": "Units that are missing or stolen. It removes stock.",
+      "Found": "Units that turned up and were not on the books. It adds stock.",
+      "CustomerReturn": "Units a customer brought back in sellable condition. It adds stock."
+    },
+    "direction": "What to do",
+    "add": "Add stock",
+    "remove": "Remove stock",
+    "quantity": "Quantity",
+    "quantityHint": "A whole number, 1 or more.",
+    "willBecome": "On hand will become {count}.",
+    "note": "Note",
+    "noteHint": "Optional. Up to 300 characters, shown in the movement history.",
+    "submit": "Save adjustment",
+    "done": "Stock adjusted.",
+    "errors": {
+      "quantityRequired": "Enter how many units, 1 or more.",
+      "tooMuch": "Only {count} can be removed: the rest is reserved for orders."
+    }
+  },
+  "reorder": {
+    "title": "Low-stock level",
+    "for": "{sku} in {branch}",
+    "level": "Warn me when available stock is at or below",
+    "hint": "Enter 0 to switch the warning off.",
+    "submit": "Save level",
+    "done": "Low-stock level saved."
+  },
+  "movements": {
+    "title": "Stock movements",
+    "subtitle": "Every change of stock, newest first. Entries are never edited or deleted.",
+    "anyReason": "Any reason",
+    "reason": "Reason",
+    "from": "From date",
+    "to": "To date",
+    "added": "(added)",
+    "removed": "(removed)",
+    "system": "System",
+    "reference": {
+      "transfer": "Open transfer",
+      "count": "Open stock count"
+    },
+    "columns": {
+      "date": "When",
+      "product": "Product",
+      "branch": "Branch",
+      "change": "Change",
+      "after": "On hand after",
+      "reason": "Reason",
+      "note": "Note",
+      "reference": "Linked to",
+      "by": "By"
+    }
+  },
+  "transfers": {
+    "title": "Stock transfers",
+    "subtitle": "Move stock between branches: request, approve, ship and receive.",
+    "search": "Search transfers",
+    "searchPlaceholder": "Transfer number",
+    "new": "New transfer",
+    "anyStatus": "Any status",
+    "to": "to",
+    "view": "Open",
+    "open": "Open transfer {number}",
+    "columns": {
+      "number": "Transfer",
+      "route": "From and to",
+      "status": "Status",
+      "lines": "Items",
+      "created": "Requested",
+      "actions": "Actions"
+    }
+  },
+  "newTransfer": {
+    "crumb": "Transfers",
+    "title": "New transfer",
+    "subtitle": "Ask for stock to move from one branch to another.",
+    "branches": "Branches",
+    "branchesHint": "Either side can ask. The sending branch approves and ships; the receiving branch confirms the arrival.",
+    "from": "Sending branch",
+    "to": "Receiving branch",
+    "choose": "Choose a branch",
+    "lines": "Items to move",
+    "linesHint": "Find a product, add its variants and set the quantities.",
+    "noLinesYet": "Nothing added yet.",
+    "quantity": "Quantity",
+    "remove": "Remove {sku}",
+    "note": "Note",
+    "noteHint": "Optional. Up to 300 characters.",
+    "needTwoBranches": "You can only choose between the branches you work in. You need at least two to start a transfer here.",
+    "submit": "Request transfer",
+    "created": "Transfer requested.",
+    "errors": {
+      "fromRequired": "Choose the sending branch.",
+      "toRequired": "Choose the receiving branch.",
+      "sameBranch": "Choose two different branches.",
+      "noLines": "Add at least one item.",
+      "quantity": "Every item needs a quantity of 1 or more."
+    }
+  },
+  "transferDetail": {
+    "crumb": "Transfers",
+    "notFoundTitle": "Transfer not found",
+    "back": "Back to transfers",
+    "route": "From {from} to {to}",
+    "to": "to",
+    "lines": "Items",
+    "quantity": "Quantity",
+    "summary": "Summary",
+    "note": "Note",
+    "rejectedBecause": "Rejected",
+    "cancelledBecause": "Cancelled",
+    "progress": "Progress",
+    "timeline": {
+      "requested": "Requested",
+      "approved": "Approved by the sending branch",
+      "shipped": "Shipped: stock left the sending branch",
+      "received": "Received: stock entered the receiving branch",
+      "waiting": "Not yet",
+      "rejected": "Rejected",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "approve": "Approve",
+      "ship": "Ship",
+      "receive": "Mark as received",
+      "reject": "Reject",
+      "cancel": "Cancel transfer"
+    },
+    "done": {
+      "approve": "Transfer approved.",
+      "reject": "Transfer rejected.",
+      "ship": "Transfer shipped. The stock has left the sending branch.",
+      "receive": "Transfer received. The stock is now in the receiving branch.",
+      "cancel": "Transfer cancelled."
+    },
+    "confirm": {
+      "ship": {
+        "title": "Ship this transfer?",
+        "description": "The items are taken out of the stock of {from} now. Check that the goods are really leaving.",
+        "confirm": "Ship now"
+      },
+      "reject": {
+        "title": "Reject this request?",
+        "description": "Nothing moves and the request is closed.",
+        "confirm": "Reject request"
+      },
+      "cancel": {
+        "title": "Cancel this transfer?",
+        "description": "The transfer is closed and nothing moves.",
+        "descriptionInTransit": "The goods are on their way. Cancelling puts them back into the stock of {from}.",
+        "confirm": "Cancel transfer"
+      }
+    },
+    "reasonLabel": "Reason",
+    "reasonHint": "Optional. Shown on the transfer."
+  },
+  "counts": {
+    "title": "Stock counts",
+    "subtitle": "Count what is really on the shelf, review the differences and correct the numbers.",
+    "search": "Search stock counts",
+    "searchPlaceholder": "Count number",
+    "anyStatus": "Any status",
+    "view": "Open",
+    "open": "Open stock count {number}",
+    "progress": "{counted} of {lines} counted",
+    "differenceCell": "{lines} differ ({total})",
+    "columns": {
+      "number": "Count",
+      "branch": "Branch",
+      "status": "Status",
+      "progress": "Progress",
+      "difference": "Differences",
+      "created": "Started",
+      "actions": "Actions"
+    },
+    "start": {
+      "button": "Start a count",
+      "title": "Start a stock count",
+      "description": "The system quantities are saved now. Staff then enter what they counted.",
+      "chooseBranch": "Choose a branch",
+      "note": "Note",
+      "noteHint": "Optional, for example the shelf or the reason for the count.",
+      "scope": "What to count",
+      "scopeAll": "Every variant that has stock in this branch.",
+      "scopeSome": "{count, plural, one {Only # chosen variant.} other {Only # chosen variants.}}",
+      "chosen": "Chosen variants",
+      "remove": "Remove {sku}",
+      "submit": "Start count",
+      "created": "Stock count started.",
+      "errors": {
+        "branchRequired": "Choose the branch to count."
+      }
+    }
+  },
+  "countDetail": {
+    "crumb": "Stock counts",
+    "notFoundTitle": "Stock count not found",
+    "back": "Back to stock counts",
+    "description": "Stock count in {branch}",
+    "noteLine": "Note: {note}",
+    "reviewHint": "This count is waiting for review. Approving it books the differences as stock movements.",
+    "approvedHint": "Approved on {date}. The differences are in the stock history.",
+    "summary": {
+      "lines": "Variants",
+      "counted": "Counted",
+      "differing": "Differences",
+      "net": "Net difference"
+    },
+    "linesTitle": "Counted quantities",
+    "onlyDifferences": "Only lines that differ",
+    "editHint": "Type what you counted. Leave a line empty to skip it: skipped lines change nothing.",
+    "columns": {
+      "product": "Product",
+      "expected": "System",
+      "counted": "Counted",
+      "difference": "Difference"
+    },
+    "noDifferences": "No line differs from the system.",
+    "noLines": "There are no lines.",
+    "notCounted": "Not counted",
+    "same": "Same",
+    "countedFor": "Counted quantity for {sku}",
+    "saved": "Counted quantities saved.",
+    "actions": {
+      "save": "Save counts",
+      "submit": "Submit for review",
+      "approve": "Approve",
+      "reopen": "Send back",
+      "cancel": "Cancel count"
+    },
+    "done": {
+      "submit": "Count submitted for review.",
+      "approve": "Count approved. The differences are booked.",
+      "reopen": "Count sent back for more counting.",
+      "cancel": "Count cancelled. Nothing was changed."
+    },
+    "confirm": {
+      "approve": {
+        "title": "Approve this count?",
+        "description": "{lines, plural, one {# line differs} other {# lines differ}} from the system (net {net}). The stock numbers will be corrected and recorded in the history.",
+        "confirm": "Approve and correct stock"
+      },
+      "cancel": {
+        "title": "Cancel this count?",
+        "description": "The count is closed and no stock is changed.",
+        "confirm": "Cancel count"
+      }
+    }
+  }
+}

@@ -1,6 +1,8 @@
 using FluentValidation;
 using Juvo.Application.Abstractions;
+using Juvo.Application.Catalog;
 using Juvo.Application.Identity;
+using Juvo.Application.Inventory;
 using Juvo.Application.Ums;
 using Juvo.Application.Messaging;
 using Juvo.Application.Messaging.Behaviors;
@@ -52,6 +54,19 @@ public static class DependencyInjection
         services.AddScoped<RolesService>();
         services.AddScoped<BranchesService>();
         services.AddScoped<AuditQueryService>();
+
+        // Catalog (module B).
+        services.AddScoped<CatalogLookupsService>();
+        services.AddScoped<ProductsService>();
+        services.AddScoped<ProductMediaService>();
+        services.AddScoped<ProductImportService>();
+
+        // Inventory (module V).
+        services.AddScoped<InventoryAccess>();
+        services.AddScoped<StockLedger>();
+        services.AddScoped<StockService>();
+        services.AddScoped<TransfersService>();
+        services.AddScoped<CountsService>();
 
         // No branch scope unless the host provides one (the API registers the per-request scope).
         services.TryAddScoped<IBranchContext>(_ => UnscopedBranchContext.Instance);

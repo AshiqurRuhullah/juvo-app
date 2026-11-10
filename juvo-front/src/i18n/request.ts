@@ -1,6 +1,7 @@
 import { getRequestConfig } from "next-intl/server";
 import { cookies } from "next/headers";
 import { COOKIES } from "@/lib/auth/cookies";
+import { loadMessages } from "@/messages/load";
 
 export const LOCALES = ["en", "bn"] as const;
 export type Locale = (typeof LOCALES)[number];
@@ -19,7 +20,7 @@ export default getRequestConfig(async () => {
   const locale = toLocale(store.get(COOKIES.locale)?.value);
   return {
     locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
+    messages: await loadMessages(locale),
     timeZone: "Asia/Dhaka",
   };
 });

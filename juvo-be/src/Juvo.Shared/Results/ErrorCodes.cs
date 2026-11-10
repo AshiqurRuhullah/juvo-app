@@ -61,9 +61,40 @@ public static class ErrorCodes
         public const string SessionNotFound = "UMS.SESSION_NOT_FOUND";
     }
 
+    public static class Catalog
+    {
+        public const string CategoryNotFound = "CATALOG.CATEGORY_NOT_FOUND";
+        public const string CategoryInUse = "CATALOG.CATEGORY_IN_USE";
+        public const string CategoryCycle = "CATALOG.CATEGORY_CYCLE";
+        public const string BrandNotFound = "CATALOG.BRAND_NOT_FOUND";
+        public const string BrandInUse = "CATALOG.BRAND_IN_USE";
+        public const string SizeChartNotFound = "CATALOG.SIZE_CHART_NOT_FOUND";
+        public const string ProductNotFound = "CATALOG.PRODUCT_NOT_FOUND";
+        public const string VariantNotFound = "CATALOG.VARIANT_NOT_FOUND";
+        public const string SlugTaken = "CATALOG.SLUG_TAKEN";
+        public const string SkuTaken = "CATALOG.SKU_TAKEN";
+        public const string PublishRules = "CATALOG.PUBLISH_RULES";
+        public const string ProductArchived = "CATALOG.PRODUCT_ARCHIVED";
+        public const string ImageNotFound = "CATALOG.IMAGE_NOT_FOUND";
+        public const string ImageInvalid = "CATALOG.IMAGE_INVALID";
+    }
+
     public static class Order
     {
         public const string StockInsufficient = "ORDER.STOCK_INSUFFICIENT";
         public const string InvalidTransition = "ORDER.INVALID_TRANSITION";
+    }
+
+    public static class Inventory
+    {
+        public const string BranchRequired = "INVENTORY.BRANCH_REQUIRED";
+        public const string BranchInactive = "INVENTORY.BRANCH_INACTIVE";
+        public const string VariantNotFound = "INVENTORY.VARIANT_NOT_FOUND";
+        public const string InsufficientStock = "INVENTORY.INSUFFICIENT_STOCK";
+        public const string TransferNotFound = "INVENTORY.TRANSFER_NOT_FOUND";
+        public const string TransferState = "INVENTORY.TRANSFER_STATE";
+        public const string CountNotFound = "INVENTORY.COUNT_NOT_FOUND";
+        public const string CountState = "INVENTORY.COUNT_STATE";
+        public const string VariantHasStock = "INVENTORY.VARIANT_HAS_STOCK";
     }
 }

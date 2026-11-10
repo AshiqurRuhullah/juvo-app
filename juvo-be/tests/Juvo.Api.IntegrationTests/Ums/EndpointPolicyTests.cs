@@ -60,9 +60,9 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
     }
 
     [Fact]
-    public void Every_ums_endpoint_requires_a_named_permission_that_exists_in_the_catalog()
+    public void Every_admin_endpoint_requires_a_named_permission_that_exists_in_the_catalog()
     {
-        var ums = ApiEndpoints().Where(e => e.Route.Contains("/ums/", StringComparison.Ordinal)).ToList();
+        var ums = ApiEndpoints().Where(e => e.Route.Contains("/ums/", StringComparison.Ordinal) || e.Route.Contains("/catalog/", StringComparison.Ordinal)).ToList();
 
         Assert.NotEmpty(ums);
         foreach (var endpoint in ums)

@@ -50,6 +50,8 @@ internal static class WebApplicationExtensions
         app.MapSystemEndpoints();
         app.MapAuthEndpoints();
         app.MapUmsEndpoints();
+        app.MapCatalogEndpoints();
+        app.MapInventoryEndpoints();
 
         if (app.Services.GetRequiredService<IOptions<OpenApiSettings>>().Value.Enabled)
         {
@@ -73,6 +75,11 @@ internal static class WebApplicationExtensions
         // Reference data (permissions, roles, branches, first Super Admin) is seeded right after the schema is current.
         var seeder = scope.ServiceProvider.GetRequiredService<IdentitySeeder>();
         await seeder.SeedAsync();
+        await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Catalog.CatalogSeeder>().SeedAsync();
+        if (app.Configuration.GetValue<bool>("Seed:SampleCatalog"))
+        {
+            await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Catalog.SampleCatalogSeeder>().SeedAsync();
+        }
     }
 
     private static void UseUploadedFiles(WebApplication app)

@@ -72,9 +72,9 @@ export const ADMIN_NAV: NavGroup[] = [
     id: "catalog",
     label: "catalog",
     items: [
-      { id: "products", label: "products", href: "/admin/products", icon: ShoppingBag, permission: "catalog.product.view", scope: "anywhere", ready: false, bottom: true },
-      { id: "categories", label: "categories", href: "/admin/categories", icon: Layers, permission: "catalog.category.view", scope: "anywhere", ready: false },
-      { id: "inventory", label: "inventory", href: "/admin/inventory", icon: Boxes, permission: "inventory.stock.view", ready: false },
+      { id: "products", label: "products", href: "/admin/products", icon: ShoppingBag, permission: "catalog.product.view", scope: "anywhere", ready: true, bottom: true },
+      { id: "categories", label: "categories", href: "/admin/categories", icon: Layers, permission: "catalog.category.view", scope: "anywhere", ready: true },
+      { id: "inventory", label: "inventory", href: "/admin/inventory", icon: Boxes, permission: "inventory.stock.view", ready: true },
       { id: "purchasing", label: "purchasing", href: "/admin/purchasing", icon: PackageSearch, permission: "purchasing.po.view", ready: false },
     ],
   },

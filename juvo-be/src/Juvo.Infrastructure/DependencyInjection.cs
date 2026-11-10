@@ -71,6 +71,8 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IOutboxWriter, OutboxWriter>();
         services.AddSingleton<IFileStorage, LocalFileStorage>();
+        services.AddSingleton<IImageProcessor, SkiaImageProcessor>();
+        services.AddSingleton<ITabularFile, TabularFiles>();
         services.AddHostedService<OutboxProcessor>();
 
         AddIdentity(services, configuration, environment);
@@ -81,6 +83,8 @@ public static class DependencyInjection
         services.AddScoped<IEmailSender, SandboxEmailSender>();
         services.AddScoped<IAccessDeniedAuditor, AccessDeniedAuditor>();
         services.AddScoped<IdentitySeeder>();
+        services.AddScoped<Catalog.CatalogSeeder>();
+        services.AddScoped<Catalog.SampleCatalogSeeder>();
 
         return services;
     }

@@ -1,7 +1,7 @@
 # PROGRESS
 
 Resume from this file alone. Plan: `Documents/juvo-step-prompts.md` (14 steps). Master prompt: `juvo-claude-code-prompt.md`.
-Last updated: 2026-11-05.
+Last updated: 2026-11-10.
 
 ## Status of the 14 steps
 
@@ -12,7 +12,7 @@ Last updated: 2026-11-05.
 | 3 | UMS backend: auth, roles, permissions, branches | **Done** (branch `feature/03-ums-backend`, merged to `main`) |
 | 4 | Front-end foundation, brand, login, token handling | **Done** (branch `feature/04-front-foundation`, merged to `main`) |
 | 5 | UMS user interface | **Done** (branch `feature/05-ums-ui`) |
-| 6 | Catalog, media, branch-wise inventory | Not started |
+| 6 | Catalog, media, branch-wise inventory | **Done** (6-a to 6-e; branch `feature/06-catalog-inventory`, not yet merged to `main`) |
 | 7 | Storefront, cart, customer identity, address, delivery zones | Not started |
 | 8 | Checkout, orders, order processing | Not started |
 | 9 | Payments, tax/invoices, notifications | Not started |
@@ -73,6 +73,39 @@ Contract for the front end: **`docs/auth-and-access.md`**. Decisions: `docs/assu
 - UMS UI checks at 360 / 768 / 1280 px on every UMS page: no horizontal overflow, no tap target under 44 px, no axe violations, no console errors.
 - Backend: build 0 warnings 0 errors; **214 passed** (domain 77, application 10, integration 127).
 
+## Step 6 (in progress): catalog, media, inventory
+
+Split (the step is too large for one session); each sub-step has its own gate and commit.
+
+| Sub-step | Scope | Status |
+| --- | --- | --- |
+| 6-a | Catalog backend: categories (tree), brands, size charts, products, variants, pricing/sale dates, publish rules BR-B1..B3, duplicate, cost-price visibility, audit, seed | **Done** |
+| 6-b | Image pipeline: upload, validate, resize, WebP, focal point, blur placeholder, per-colour sets, reorder (`IFileStorage`) | **Done** |
+| 6-c | Inventory: branch stock locations, on-hand/reserved/available, append-only movements, adjustments, thresholds, transfers, stocktake | **Done** |
+| 6-d | Bulk CSV/Excel import and export with validation report; sample products with images | **Done** |
+| 6-e | Admin UI: product list, add/edit with live card preview, variants/stock grid, categories, inventory by branch, transfers, adjustments; Playwright and screenshots | **Done** |
+
+**6-a result:** endpoints under `/api/v1/catalog` (categories, brands, size-charts, products, variants, publish/unpublish/archive/duplicate), 21 new `Permissions.Catalog` constants (codes already in the catalog). Migration `CatalogProducts`. `CatalogSeeder` (4 top-level categories with sub-categories, 2 size charts) runs with the migration. `ProductImage` entity exists (publish needs one image); upload comes in 6-b. SKU unique among live variants (case-insensitive, freed on removal); slugs unique among live rows; staff without `catalog.product.view-cost` neither see nor change cost. Tests: 143 integration (20 new), 23 application (13 new), build 0 warnings, no pending model changes.
+
+**6-b result:** pictures under `/api/v1/catalog/products/{id}/images` (multipart upload, update colour/alt/focal point, reorder, delete). Accepts JPEG/PNG/WebP, max 10 MB (measured from the stream, not the header), min 1000 px long side, pixel cap against decompression bombs, EXIF rotation applied, max 12 images per product. SkiaSharp (MIT) writes WebP renditions: main (long side up to 1600), 4:5 card (800x1000) and thumbnail (160x200) cropped around the focal point, plus a 16 px blur placeholder data URL. Changing the focal point re-crops; a duplicated product shares files (copy on write); delete removes files only when no product still uses them. Storage via `IFileStorage` (`/files`); DTOs return `url`, `cardUrl`, `thumbUrl`. Permissions `catalog.media.upload` / `catalog.media.delete`. No migration needed.
+**6-b gate (run and seen):** `dotnet build --no-incremental` 0 warnings, 0 errors; test executables: domain 77, application 23, integration 151 (8 new media tests), 0 failed; `has-pending-model-changes`: none; no vulnerable packages; no leftover `JuvoDb_Test_*` databases.
+
+
+**6-c result:** `/api/v1/inventory` (permissions `inventory.*`, constants in `Permissions.Inventory`). **Stock:** `GET /stock` (per variant and branch: on hand, reserved, available, threshold, filters branch/product/low-only/search), `GET /stock/products/{id}` (variants x branches grid), `POST /adjustments` (all-or-nothing lines with a reason: opening stock, correction, damage, loss, found, customer return), `PUT /reorder-levels`, `GET /movements` (append-only ledger with who/when/reason/reference). **Transfers:** request (either branch) -> approve -> ship (stock leaves the source, movement there) -> receive (stock enters the destination, movement there); reject, cancel (goods in transit go back to the source), per-user `allowedActions`. **Stock counts:** start (snapshot), enter counted quantities, submit, approve (books differences as movements), reopen, cancel. Domain `StockLevel` already has the reserve / release / deduct operations Step 8 will use. Database refuses negative stock and reserved above on-hand; `StockLevel` is `IBranchScoped` (central isolation) and a variant that still has stock cannot be removed. Migration `InventoryStock` (6 tables). Decisions: `docs/assumptions.md` section H.
+**6-c gate (run and seen):** `dotnet build --no-incremental` 0 warnings, 0 errors; test executables: domain 94, application 23, integration 171 (20 new inventory tests incl. branch isolation with audit, per-branch permission, transfer flow with movements on both sides, invalid transitions, cancel in transit, count approval, reserved-units guard, 12 parallel adjustments with a ledger that adds up, two simultaneous last-unit shipments, DB check constraints), 0 failed; `has-pending-model-changes`: none; no vulnerable packages; no leftover test databases; migration applied on `JuvoDb`, `/health/ready` healthy, OpenAPI lists all 19 inventory paths.
+
+**6-d result:** **Import/export** (`/api/v1/catalog/products/import`, `/export`, `/import-template`; permissions `catalog.product.import` and `.export`): CSV or Excel, one row per variant, mode `create` or `upsert` (blank cell keeps the value), `dryRun`, one transaction so a file with any error saves nothing, a report with row, column, severity and message, brands created on the fly, opening stock by `branch_code` (skipped when the variant already has stock history), cost price only for those who may see it, CSV-injection protection, 5 MB / 5,000 rows. Excel via Microsoft's MIT Open XML SDK (ClosedXML rejected: SixLabors licence). **Sample catalog** (`Seed:SampleCatalog`, on in Development): 16 published demo products, 90 variants, 31 generated placeholder pictures (labelled "SAMPLE PICTURE"), stock in HO and ONL, tag `sample`; already seeded in your `JuvoDb`; it never runs once a non-sample product exists. Product search now also matches tags. Decisions: `docs/assumptions.md` section I.
+**6-d gate (run and seen):** `dotnet build --no-incremental` 0 warnings, 0 errors; test executables: domain 94, application 23, integration 190 (19 new: create/dry-run/all-or-nothing/row errors/upsert/stock history/permissions/export round trip/Excel validated with the Open XML validator/shared-string and sparse-cell reading/CSV quoting and injection/unusable files/sample catalog and its guard), 0 failed; real start on `JuvoDb` seeded 16 products and the generated pictures were fetched and looked at.
+
+**6-e result (admin UI):** menu items Products, Categories and Inventory are live (`juvo-front/src/modules/catalog`, `modules/inventory`; routes in `juvo-front/docs/frontend.md`).
+- **Products** `/admin/products`: list with search (name, slug, SKU, tag), status/category/brand filters, thumbnails, price with sale; editor with tabs *Details*, *Variants and stock*, *Pictures*, *Search and sharing*; **live storefront card preview** (the same premium `ProductCard` Step 7 will use) fed by the unsaved form; colour x size variant generator; stock-per-branch grid that books the difference in the ledger; picture upload (several at once, client checks), drag or button reorder, per-colour sets, focal-point editor with live 4:5 crop frame, delete; publish checklist from the API; publish, unpublish, archive, duplicate, delete draft; import/export buttons (check first, row-by-row report).
+- **Categories** `/admin/categories`: category tree (add, edit, move up/down, delete empty), brands, size charts (grid editor).
+- **Inventory** `/admin/inventory`: stock by branch (adjust with reason, low-stock level), movements ledger, transfers (request, approve, ship, receive, reject, cancel, driven by the API's allowed actions), stock counts (start, enter, submit, approve, reopen, cancel).
+- English and Bengali texts per module (`src/messages/catalog.*`, `lookups.*`, `inventory.*`); Bengali is a first pass. Pictures are served at `/media`. Decisions: `docs/assumptions.md` section J.
+- Work was split between three parallel builders (products, categories/import, inventory) over a shared foundation; the lead merged and verified everything.
+
+**6-e gate (run and seen):** `npx tsc --noEmit` clean; `npm run lint` clean; `npm test` 39 passed; `npm run build` succeeds; `npm run test:e2e` (desktop, tablet, Android, iPhone): **237 passed, 3 skipped (desktop-only tests on other profiles), 1 failed** = a timing flake in the inventory spec (a strict row locator saw two ledger rows before the filter applied); fixed in the spec and the inventory spec re-run: 6 of 6 passed (the "4 did not run" of that run were its later tests). New real-browser flows: product create to publish (preview, validation, variants, stock, pictures, focal point, reorder, duplicate, view-only role), categories/brands/size charts, import check and import with a bad file, inventory adjust, transfer, reject/cancel, stock count, view-only role. UI checks at 360 / 768 / 1280 px on every new page: no sideways scroll, no tap target under 44 px, no axe violations, no console errors (all passed after fixes found by these checks: switch hit areas, a crowded filter row, a long button at 360 px, a stacked action column, a focusable scroll region in the shared table). Backend unchanged in this step (build 0 warnings; domain 94, application 23, integration 190 as in 6-d). Key screenshots: `juvo-front/docs/ui-checks/`.
+
 ## How to run now
 
 ```powershell
@@ -86,7 +119,7 @@ npm test; npm run test:e2e                        # in juvo-front
 
 ## Next step
 
-**Step 6: Catalog, media and branch-wise inventory** (backend + UI). Orders, stock etc. adopt `IBranchScoped` from here.
+**Step 7: Storefront, cart, customer identity, address and delivery zones** (modules A, C, E, F, G). First merge `feature/06-catalog-inventory` into `main` once you have looked at the catalog and inventory screens. Orders, purchasing and the other branch data adopt `IBranchScoped` the way stock does.
 
 ## Known issues / notes
 
@@ -99,3 +132,5 @@ npm test; npm run test:e2e                        # in juvo-front
 7. The Visual Studio GitHub credential for `ashiqurgit` is still in Windows Credential Manager (left alone).
 8. `dotnet test` from `juvo-be` sometimes reports "Zero tests ran" in this environment; running each test project's `.exe` under `tests/*/bin/Debug/net10.0/` works and shows the real totals.
 9. The refresh single-flight store is process-local (one app server); several servers need a shared store (Step 14). Bengali translations need native review (Step 12).
+10. Node.js 26.13.0 LTS and Playwright's Chromium were installed on this machine in Step 6-e (they were missing); new shells see Node on the PATH, older shells may need `C:\Program Files\nodejs` added.
+11. Product pictures: the 16 sample products use generated placeholders; replace them (and the products) with real ones when ready (see `juvo-be/README.md`).

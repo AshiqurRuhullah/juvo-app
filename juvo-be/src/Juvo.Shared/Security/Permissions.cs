@@ -32,4 +32,45 @@ public static class Permissions
         public const string SignInView = "ums.sign-in.view";
         public const string AuditView = "ums.audit.view";
     }
+
+    public static class Catalog
+    {
+        public const string ProductView = "catalog.product.view";
+        public const string ProductCreate = "catalog.product.create";
+        public const string ProductEdit = "catalog.product.edit";
+        public const string ProductPublish = "catalog.product.publish";
+        public const string ProductArchive = "catalog.product.archive";
+        public const string ProductDuplicate = "catalog.product.duplicate";
+        public const string ProductImport = "catalog.product.import";
+        public const string ProductExport = "catalog.product.export";
+        public const string ProductViewCost = "catalog.product.view-cost";
+        public const string CategoryView = "catalog.category.view";
+        public const string CategoryCreate = "catalog.category.create";
+        public const string CategoryEdit = "catalog.category.edit";
+        public const string CategoryDelete = "catalog.category.delete";
+        public const string BrandView = "catalog.brand.view";
+        public const string BrandCreate = "catalog.brand.create";
+        public const string BrandEdit = "catalog.brand.edit";
+        public const string BrandDelete = "catalog.brand.delete";
+        public const string SizeChartView = "catalog.size-chart.view";
+        public const string SizeChartEdit = "catalog.size-chart.edit";
+        public const string MediaUpload = "catalog.media.upload";
+        public const string MediaDelete = "catalog.media.delete";
+    }
+
+    public static class Inventory
+    {
+        public const string StockView = "inventory.stock.view";
+        public const string StockAdjust = "inventory.stock.adjust";
+        public const string TransferView = "inventory.transfer.view";
+        public const string TransferRequest = "inventory.transfer.request";
+        public const string TransferApprove = "inventory.transfer.approve";
+        public const string TransferReceive = "inventory.transfer.receive";
+        public const string TransferCancel = "inventory.transfer.cancel";
+        public const string CountView = "inventory.count.view";
+        public const string CountCreate = "inventory.count.create";
+        public const string CountApprove = "inventory.count.approve";
+        public const string ReorderView = "inventory.reorder.view";
+        public const string ReorderEdit = "inventory.reorder.edit";
+    }
 }

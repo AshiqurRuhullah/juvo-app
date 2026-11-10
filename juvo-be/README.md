@@ -90,3 +90,9 @@ Integration tests create a throw-away database `JuvoDb_Test_<guid>` from the mig
 - Commands run in a transaction (`ICommand`); queries do not. A request implementing `IRequirePermission` is denied unless the permission checker allows it (default: deny all until the Identity module in Step 3).
 - Uploads go through `IFileStorage` (local disk under `Storage:RootPath`, served at `/files` with long cache headers).
 - Behind a reverse proxy, configure forwarded headers and the known proxy before relying on per-IP rate limits (Step 14).
+
+## Bulk import, export and the sample catalog
+
+- **Import** (`POST /api/v1/catalog/products/import?mode=create|upsert&dryRun=true`, multipart `file`): CSV (UTF-8, `,` `;` or tab) or Excel `.xlsx`. One row per variant; rows with the same `slug` (or English name) are one product. Download the columns and examples from `GET /api/v1/catalog/products/import-template?format=csv|xlsx`. Always try `dryRun=true` first: the report lists every problem with its row and column, and a file with any error saves nothing. In `upsert` mode a blank cell keeps the current value. Images are uploaded per product afterwards; imported products are drafts.
+- **Export** (`GET /api/v1/catalog/products/export?format=csv|xlsx&branchId=...`): the same columns, so an exported file can be edited and imported back.
+- **Sample catalog:** with `Seed:SampleCatalog=true` (set in `appsettings.Development.json`) the first start adds 16 demo products tagged `sample` with generated placeholder pictures and stock. It never runs once a product without that tag exists. Search the product list for `sample` to find and delete them when real data arrives.

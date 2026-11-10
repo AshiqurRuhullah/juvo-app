@@ -30,6 +30,10 @@ The browser never calls the API. It calls this app, and this app calls the API w
 | `/login`, `/login?as=customer`, `/forgot-password`, `/reset-password`, `/first-login` | public / limited session | done |
 | `/admin`, `/admin/profile` | staff | done (profile: password, 2FA, sessions, sign-in history) |
 | `/admin/ums/users`, `/roles`, `/branches`, `/audit`, `/sign-ins` (+ `[id]`, `new`) | staff | done (Step 5) |
+| `/admin/products`, `/new`, `/[id]` (tabs: details, variants and stock, pictures, search and sharing; `?tab=`) | staff | done (Step 6-e) |
+| `/admin/categories` (tabs: categories, brands, size charts; `?tab=`) | staff | done (Step 6-e) |
+| `/admin/inventory` (stock), `/movements`, `/transfers`, `/transfers/new`, `/transfers/[id]`, `/counts`, `/counts/[id]` | staff | done (Step 6-e) |
+| `/media/...` (product pictures from the API, public, cached for a year) | everyone | done (Step 6-e) |
 | `/account` | customer | placeholder (Step 7) |
 | `/forbidden` (403), `/unauthorized` (401), not-found (404), error and global-error | all | done |
 | `/design` | development only (404 in production unless `ENABLE_DESIGN_PAGE=true`) | every component in every state |
@@ -44,8 +48,8 @@ Items for screens that do not exist yet are shown muted with a "Soon" tag, never
 | Sales | Orders (`/admin/orders`) | `orders.order.view` | active | 8 |
 | | Social orders | `orders.order.create` | active | 8 |
 | | Returns | `returns.return.view` | active | 10 |
-| Catalog | Products, Categories | `catalog.product.view`, `catalog.category.view` | anywhere | 6 |
-| | Inventory | `inventory.stock.view` | active | 6 |
+| Catalog | Products, Categories | `catalog.product.view`, `catalog.category.view` | anywhere | 6 (done) |
+| | Inventory | `inventory.stock.view` | active | 6 (done) |
 | | Purchasing | `purchasing.po.view` | active | 11A |
 | Customers | Customers | `customers.customer.view` | anywhere | 12 |
 | Delivery | Zones; Couriers | `delivery.zone.view` (anywhere); `couriers.courier.view` | | 7; 10 |

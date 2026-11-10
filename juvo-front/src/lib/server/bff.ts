@@ -1,7 +1,7 @@
 import "server-only";
 import { NextResponse } from "next/server";
 
-const PASS_HEADERS = ["content-type", "x-correlation-id", "retry-after", "www-authenticate"];
+const PASS_HEADERS = ["content-type", "content-disposition", "x-correlation-id", "retry-after", "www-authenticate"];
 
 /** Sends the API's answer to the browser unchanged (status, body and the few headers that matter), never cached. */
 export async function relay(response: Response): Promise<NextResponse> {
