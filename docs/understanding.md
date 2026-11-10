@@ -428,7 +428,7 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-B06 | Image rules shown to staff: minimum 1000 px on the long side, max 10 MB per file; warn if too small or blurry (blur check is Could) | M | 6 | Done | `POST /api/v1/catalog/products/{id}/images` (ProductMediaService, SkiaImageProcessor) | Step 6-b; UI in 6-e |
 | FR-B07 | Optional product video (short clip or link) | C | 6 | Not started | | |
 | FR-B08 | Live "storefront preview" while editing, showing the exact card and page | M | 6 | Not started | | |
-| FR-B09 | Bulk import/export of products and stock via CSV/Excel with a validation report | S | 6 | Not started | | |
+| FR-B09 | Bulk import/export of products and stock via CSV/Excel with a validation report | S | 6 | Done | `POST /api/v1/catalog/products/import`, `GET /export`, `GET /import-template` (ProductImportService, TabularFiles) | Step 6-d. CSV and Excel; one row per variant; dry run; all-or-nothing; opening stock. Images are uploaded per product, not in the file. UI in 6-e. |
 | FR-B10 | Duplicate a product to create similar ones quickly | S | 6 | Partial | `/api/v1/catalog/*` (ProductsService, CatalogLookupsService) | Step 6-a backend done; admin UI in 6-e. |
 | FR-B11 | Category management: add/edit/reorder, category image, active flag | M | 6 | Partial | `/api/v1/catalog/*` (ProductsService, CatalogLookupsService) | Step 6-a backend done; admin UI in 6-e. |
 | FR-B12 | Mark product as New, Featured, Best seller (manual or automatic rules) | M | 6 | Partial | `/api/v1/catalog/*` (ProductsService, CatalogLookupsService) | Step 6-a backend done; admin UI in 6-e. |

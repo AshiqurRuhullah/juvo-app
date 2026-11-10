@@ -82,7 +82,7 @@ Split (the step is too large for one session); each sub-step has its own gate an
 | 6-a | Catalog backend: categories (tree), brands, size charts, products, variants, pricing/sale dates, publish rules BR-B1..B3, duplicate, cost-price visibility, audit, seed | **Done** |
 | 6-b | Image pipeline: upload, validate, resize, WebP, focal point, blur placeholder, per-colour sets, reorder (`IFileStorage`) | **Done** |
 | 6-c | Inventory: branch stock locations, on-hand/reserved/available, append-only movements, adjustments, thresholds, transfers, stocktake | **Done** |
-| 6-d | Bulk CSV/Excel import and export with validation report; sample products with images | Not started |
+| 6-d | Bulk CSV/Excel import and export with validation report; sample products with images | **Done** |
 | 6-e | Admin UI: product list, add/edit with live card preview, variants/stock grid, categories, inventory by branch, transfers, adjustments; Playwright and screenshots | Not started |
 
 **6-a result:** endpoints under `/api/v1/catalog` (categories, brands, size-charts, products, variants, publish/unpublish/archive/duplicate), 21 new `Permissions.Catalog` constants (codes already in the catalog). Migration `CatalogProducts`. `CatalogSeeder` (4 top-level categories with sub-categories, 2 size charts) runs with the migration. `ProductImage` entity exists (publish needs one image); upload comes in 6-b. SKU unique among live variants (case-insensitive, freed on removal); slugs unique among live rows; staff without `catalog.product.view-cost` neither see nor change cost. Tests: 143 integration (20 new), 23 application (13 new), build 0 warnings, no pending model changes.
@@ -93,6 +93,9 @@ Split (the step is too large for one session); each sub-step has its own gate an
 
 **6-c result:** `/api/v1/inventory` (permissions `inventory.*`, constants in `Permissions.Inventory`). **Stock:** `GET /stock` (per variant and branch: on hand, reserved, available, threshold, filters branch/product/low-only/search), `GET /stock/products/{id}` (variants x branches grid), `POST /adjustments` (all-or-nothing lines with a reason: opening stock, correction, damage, loss, found, customer return), `PUT /reorder-levels`, `GET /movements` (append-only ledger with who/when/reason/reference). **Transfers:** request (either branch) -> approve -> ship (stock leaves the source, movement there) -> receive (stock enters the destination, movement there); reject, cancel (goods in transit go back to the source), per-user `allowedActions`. **Stock counts:** start (snapshot), enter counted quantities, submit, approve (books differences as movements), reopen, cancel. Domain `StockLevel` already has the reserve / release / deduct operations Step 8 will use. Database refuses negative stock and reserved above on-hand; `StockLevel` is `IBranchScoped` (central isolation) and a variant that still has stock cannot be removed. Migration `InventoryStock` (6 tables). Decisions: `docs/assumptions.md` section H.
 **6-c gate (run and seen):** `dotnet build --no-incremental` 0 warnings, 0 errors; test executables: domain 94, application 23, integration 171 (20 new inventory tests incl. branch isolation with audit, per-branch permission, transfer flow with movements on both sides, invalid transitions, cancel in transit, count approval, reserved-units guard, 12 parallel adjustments with a ledger that adds up, two simultaneous last-unit shipments, DB check constraints), 0 failed; `has-pending-model-changes`: none; no vulnerable packages; no leftover test databases; migration applied on `JuvoDb`, `/health/ready` healthy, OpenAPI lists all 19 inventory paths.
+
+**6-d result:** **Import/export** (`/api/v1/catalog/products/import`, `/export`, `/import-template`; permissions `catalog.product.import` and `.export`): CSV or Excel, one row per variant, mode `create` or `upsert` (blank cell keeps the value), `dryRun`, one transaction so a file with any error saves nothing, a report with row, column, severity and message, brands created on the fly, opening stock by `branch_code` (skipped when the variant already has stock history), cost price only for those who may see it, CSV-injection protection, 5 MB / 5,000 rows. Excel via Microsoft's MIT Open XML SDK (ClosedXML rejected: SixLabors licence). **Sample catalog** (`Seed:SampleCatalog`, on in Development): 16 published demo products, 90 variants, 31 generated placeholder pictures (labelled "SAMPLE PICTURE"), stock in HO and ONL, tag `sample`; already seeded in your `JuvoDb`; it never runs once a non-sample product exists. Product search now also matches tags. Decisions: `docs/assumptions.md` section I.
+**6-d gate (run and seen):** `dotnet build --no-incremental` 0 warnings, 0 errors; test executables: domain 94, application 23, integration 190 (19 new: create/dry-run/all-or-nothing/row errors/upsert/stock history/permissions/export round trip/Excel validated with the Open XML validator/shared-string and sparse-cell reading/CSV quoting and injection/unusable files/sample catalog and its guard), 0 failed; real start on `JuvoDb` seeded 16 products and the generated pictures were fetched and looked at.
 
 ## How to run now
 
@@ -107,7 +110,7 @@ npm test; npm run test:e2e                        # in juvo-front
 
 ## Next step
 
-**Step 6-d (bulk import/export) then 6-e (admin UI)** of Catalog, media and branch-wise inventory. Orders, stock etc. adopt `IBranchScoped` from here.
+**Step 6-e (admin UI)** of Catalog, media and branch-wise inventory. Orders, stock etc. adopt `IBranchScoped` from here.
 
 ## Known issues / notes
 
