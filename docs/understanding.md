@@ -420,20 +420,20 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-A10 | Share product to Facebook, WhatsApp, copy link; clean URLs and social preview image | M | 7 | Not started | | |
 | FR-A11 | Language switch English / Bengali; currency display BDT, with optional conversion for international visitors | S | 7 | Not started | | |
 | FR-A12 | Customer-visible reviews with star rating and photos (only verified buyers can review) | S | 7 | Not started | | |
-| FR-B01 | Create/edit product: name (EN + optional BN), slug, category, sub-category, brand, short and long description, material, care, tags, gender… | M | 6 | Not started | | |
-| FR-B02 | Variants: colour and size combinations, each with its own SKU, price override, stock quantity, barcode (optional), weight override | M | 6 | Not started | | |
-| FR-B03 | Pricing: regular price, sale price with start/end date, cost price (admin-only, for profit report) | M | 6 | Not started | | |
+| FR-B01 | Create/edit product: name (EN + optional BN), slug, category, sub-category, brand, short and long description, material, care, tags, gender… | M | 6 | Partial | `/api/v1/catalog/*` (ProductsService, CatalogLookupsService) | Step 6-a backend done; admin UI in 6-e. |
+| FR-B02 | Variants: colour and size combinations, each with its own SKU, price override, stock quantity, barcode (optional), weight override | M | 6 | Partial | `/api/v1/catalog/*` (ProductsService, CatalogLookupsService) | Step 6-a backend done; admin UI in 6-e. |
+| FR-B03 | Pricing: regular price, sale price with start/end date, cost price (admin-only, for profit report) | M | 6 | Partial | `/api/v1/catalog/*` (ProductsService, CatalogLookupsService) | Step 6-a backend done; admin UI in 6-e. |
 | FR-B04 | Image upload: multiple images, drag to reorder, first image is primary; per-colour image sets; bulk upload | M | 6 | Done | `POST /api/v1/catalog/products/{id}/images` (ProductMediaService, SkiaImageProcessor) | Step 6-b; UI in 6-e |
 | FR-B05 | System auto-processes images: resize to several sizes, convert to modern format (e.g. WebP), compress, crop to the 4:5 frame with adjustabl… | M | 6 | Done | `POST /api/v1/catalog/products/{id}/images` (ProductMediaService, SkiaImageProcessor) | Step 6-b; UI in 6-e |
 | FR-B06 | Image rules shown to staff: minimum 1000 px on the long side, max 10 MB per file; warn if too small or blurry (blur check is Could) | M | 6 | Done | `POST /api/v1/catalog/products/{id}/images` (ProductMediaService, SkiaImageProcessor) | Step 6-b; UI in 6-e |
 | FR-B07 | Optional product video (short clip or link) | C | 6 | Not started | | |
 | FR-B08 | Live "storefront preview" while editing, showing the exact card and page | M | 6 | Not started | | |
 | FR-B09 | Bulk import/export of products and stock via CSV/Excel with a validation report | S | 6 | Not started | | |
-| FR-B10 | Duplicate a product to create similar ones quickly | S | 6 | Not started | | |
-| FR-B11 | Category management: add/edit/reorder, category image, active flag | M | 6 | Not started | | |
-| FR-B12 | Mark product as New, Featured, Best seller (manual or automatic rules) | M | 6 | Not started | | |
-| FR-B13 | Product SEO fields: meta title, description, social image | S | 6 | Not started | | |
-| FR-B14 | Every product change is written to the audit log (who, what, when, old/new) | M | 6 | Not started | | |
+| FR-B10 | Duplicate a product to create similar ones quickly | S | 6 | Partial | `/api/v1/catalog/*` (ProductsService, CatalogLookupsService) | Step 6-a backend done; admin UI in 6-e. |
+| FR-B11 | Category management: add/edit/reorder, category image, active flag | M | 6 | Partial | `/api/v1/catalog/*` (ProductsService, CatalogLookupsService) | Step 6-a backend done; admin UI in 6-e. |
+| FR-B12 | Mark product as New, Featured, Best seller (manual or automatic rules) | M | 6 | Partial | `/api/v1/catalog/*` (ProductsService, CatalogLookupsService) | Step 6-a backend done; admin UI in 6-e. |
+| FR-B13 | Product SEO fields: meta title, description, social image | S | 6 | Partial | `/api/v1/catalog/*` (ProductsService, CatalogLookupsService) | Step 6-a backend done; admin UI in 6-e. |
+| FR-B14 | Every product change is written to the audit log (who, what, when, old/new) | M | 6 | Partial | `/api/v1/catalog/*` (ProductsService, CatalogLookupsService) | Step 6-a backend done; admin UI in 6-e. |
 | FR-C01 | Add to cart from card (quick add) or product page with required variant selection | M | 7 | Not started | | |
 | FR-C02 | Cart drawer and full cart page: change quantity, remove, see line totals, subtotal, estimated delivery, coupon field | M | 7 | Not started | | |
 | FR-C03 | Cart is kept for guests (browser storage + server session) and merged into the account after sign-in | M | 7 | Not started | | |
@@ -614,10 +614,10 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-U05 | Tax summary report by period for the accountant | S | 9 | Not started | | |
 | FR-U06 | Bengali/English invoice templates editable in admin | S | 9 | Not started | | |
 | FR-V01 | Barcode/QR per variant; scan to receive, pack and count (phone camera or scanner) | S | 6 | Not started | | |
-| FR-V02 | Stock count (stocktake): start a count, enter or scan quantities, review differences, approve adjustments | M | 6 | Not started | | |
-| FR-V03 | Multiple locations (shop, warehouse, home stock); transfer between locations | C | 6 | Not started | | |
-| FR-V04 | Reorder level and suggested reorder quantity from sales speed | S | 6 | Not started | | |
-| FR-V05 | Reserved, available, damaged and returned-pending quantities shown separately | M | 6 | Not started | | |
+| FR-V02 | Stock count (stocktake): start a count, enter or scan quantities, review differences, approve adjustments | M | 6 | Partial | `/api/v1/inventory/counts` (CountsService) | Step 6-c backend: start, enter, submit, approve books movements. Scanning and UI in 6-e. |
+| FR-V03 | Multiple locations (shop, warehouse, home stock); transfer between locations | C | 6 | Partial | `/api/v1/inventory/stock`, `/transfers` (StockService, TransfersService) | One stock location per branch; transfers Requested, Approved, In transit, Received. UI in 6-e. |
+| FR-V04 | Reorder level and suggested reorder quantity from sales speed | S | 6 | Partial | `PUT /api/v1/inventory/reorder-levels`, `GET /stock?lowOnly=true` | Reorder level and low-stock list done; suggested quantity from sales speed deferred (needs orders, Step 8+). |
+| FR-V05 | Reserved, available, damaged and returned-pending quantities shown separately | M | 6 | Partial | `GET /api/v1/inventory/stock` (on hand, reserved, available) | Damage is a ledger reason, not a separate quantity; returned-pending arrives with returns (Step 10). |
 | FR-V06 | Dead-stock and slow-mover list with a markdown suggestion | C | 6 | Not started | | |
 | FR-W01 | Supplier list: name, contact, address, payment terms, notes | M | 11A | Not started | | |
 | FR-W02 | Purchase order: choose supplier, items, quantity, cost, expected date; statuses Draft, Sent, Partly received, Received, Cancelled | M | 11A | Not started | | |

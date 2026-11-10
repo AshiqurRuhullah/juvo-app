@@ -105,7 +105,7 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 | 3 | UMS backend (auth, roles, permissions, branches) | Done |
 | 4 | Front-end foundation, brand, login, tokens | Done |
 | 5 | UMS UI | Done |
-| 6 | Catalog, media, branch inventory (6-a…6-e) | **In progress** (6-a, 6-b done; next 6-c) on `feature/06-catalog-inventory` |
+| 6 | Catalog, media, branch inventory (6-a…6-e) | **In progress** (6-a, 6-b, 6-c done; next 6-d) on `feature/06-catalog-inventory` |
 | 7 | Storefront, cart, customer identity, address, delivery zones (modules A, C, E, F, G) | Not started |
 | 8 | Checkout, orders, order processing, social desk, fraud basics (D, S, T, J) | Not started |
 | 9 | Payments, tax/invoices, notifications (I, U, K) | Not started |
@@ -118,8 +118,8 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 
 ### Step 6 detail
 - 6-a Catalog backend: **Done** (committed `f5aaf89`): categories tree, brands, size charts, products, variants, pricing/sale dates, publish rules, duplicate, cost-price visibility, audit, `CatalogSeeder`; endpoints `/api/v1/catalog/*`; migration `CatalogProducts`; SKU unique among live variants (case-insensitive); slugs unique among live rows.
-- 6-b Image pipeline: **Done** (gated 2026-11-10: build 0 warnings; domain 77, application 23, integration 151 pass). Endpoints `/api/v1/catalog/products/{id}/images` (upload, update focal/colour/alt, reorder, delete); SkiaSharp WebP main/card (4:5)/thumb + blur placeholder; min 1000 px, max 10 MB, max 12 per product (FR-B04..B06). **Next: 6-c inventory.**
-- 6-c Inventory (branch stock locations, on-hand/reserved/available, append-only movements, adjustments with reason, low-stock thresholds, transfers workflow, stocktake): not started. First `IBranchScoped` entities.
+- 6-b Image pipeline: **Done** (gated). Endpoints `/api/v1/catalog/products/{id}/images` (upload, update focal/colour/alt, reorder, delete); SkiaSharp WebP main/card (4:5)/thumb + blur placeholder; min 1000 px, max 10 MB, max 12 per product (FR-B04..B06). **Next: 6-c inventory.**
+- 6-c Inventory: **Done** (gated 2026-11-10: domain 94, application 23, integration 171 pass, migration `InventoryStock`). `/api/v1/inventory`: stock list and product grid, adjustments with reasons, reorder levels, append-only movements, transfers (request, approve, ship, receive, reject, cancel), stock counts (start, enter, submit, approve, reopen, cancel). One stock location per branch; `StockLevel` is `IBranchScoped`; reserve/release/deduct exist on `StockLevel` for Step 8. Decisions: `docs/assumptions.md` section H. **Next: 6-d bulk import/export, then 6-e admin UI.**
 - 6-d Bulk CSV/Excel import/export with validation report; sample products with images: not started.
 - 6-e Admin UI (product list, add/edit with live premium card preview, variants/stock grid, categories, inventory by branch, transfers, adjustments; Playwright + screenshots): not started. Menu items Products/Categories/Inventory flip to `ready`.
 
@@ -139,7 +139,7 @@ cd juvo-front; npm run lint; npx tsc --noEmit; npm run build; npm test; npm run 
 Ports: API 5080/7080 (e2e API 5081), front end 3000 (e2e 3100). `scripts/`: `setup-db.ps1`, `docx_to_md.py`, `extract_palette.py`, `generate_tokens.py`, `generate_brand_assets.py`, `gen_traceability.py`.
 
 ## 10. Test status (last recorded)
-Backend (6-b): domain 77 + application 23 + integration 151, build 0 warnings. Front end (Step 5): vitest 39, Playwright 150 passed / 3 skipped. If `dotnet test` reports "Zero tests ran" (known environment quirk), run each `tests/*/bin/Debug/net10.0/*.exe` directly.
+Backend (6-c): domain 94 + application 23 + integration 171, build 0 warnings. Front end (Step 5): vitest 39, Playwright 150 passed / 3 skipped. If `dotnet test` reports "Zero tests ran" (known environment quirk), run each `tests/*/bin/Debug/net10.0/*.exe` directly.
 
 ## 11. Known issues / things the owner must supply
 1. LocalDB is SQL Server 2019 (compat level 150): avoid features needing 160+.

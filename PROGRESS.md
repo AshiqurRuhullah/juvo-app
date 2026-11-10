@@ -81,7 +81,7 @@ Split (the step is too large for one session); each sub-step has its own gate an
 | --- | --- | --- |
 | 6-a | Catalog backend: categories (tree), brands, size charts, products, variants, pricing/sale dates, publish rules BR-B1..B3, duplicate, cost-price visibility, audit, seed | **Done** |
 | 6-b | Image pipeline: upload, validate, resize, WebP, focal point, blur placeholder, per-colour sets, reorder (`IFileStorage`) | **Done** |
-| 6-c | Inventory: branch stock locations, on-hand/reserved/available, append-only movements, adjustments, thresholds, transfers, stocktake | Not started |
+| 6-c | Inventory: branch stock locations, on-hand/reserved/available, append-only movements, adjustments, thresholds, transfers, stocktake | **Done** |
 | 6-d | Bulk CSV/Excel import and export with validation report; sample products with images | Not started |
 | 6-e | Admin UI: product list, add/edit with live card preview, variants/stock grid, categories, inventory by branch, transfers, adjustments; Playwright and screenshots | Not started |
 
@@ -89,6 +89,10 @@ Split (the step is too large for one session); each sub-step has its own gate an
 
 **6-b result:** pictures under `/api/v1/catalog/products/{id}/images` (multipart upload, update colour/alt/focal point, reorder, delete). Accepts JPEG/PNG/WebP, max 10 MB (measured from the stream, not the header), min 1000 px long side, pixel cap against decompression bombs, EXIF rotation applied, max 12 images per product. SkiaSharp (MIT) writes WebP renditions: main (long side up to 1600), 4:5 card (800x1000) and thumbnail (160x200) cropped around the focal point, plus a 16 px blur placeholder data URL. Changing the focal point re-crops; a duplicated product shares files (copy on write); delete removes files only when no product still uses them. Storage via `IFileStorage` (`/files`); DTOs return `url`, `cardUrl`, `thumbUrl`. Permissions `catalog.media.upload` / `catalog.media.delete`. No migration needed.
 **6-b gate (run and seen):** `dotnet build --no-incremental` 0 warnings, 0 errors; test executables: domain 77, application 23, integration 151 (8 new media tests), 0 failed; `has-pending-model-changes`: none; no vulnerable packages; no leftover `JuvoDb_Test_*` databases.
+
+
+**6-c result:** `/api/v1/inventory` (permissions `inventory.*`, constants in `Permissions.Inventory`). **Stock:** `GET /stock` (per variant and branch: on hand, reserved, available, threshold, filters branch/product/low-only/search), `GET /stock/products/{id}` (variants x branches grid), `POST /adjustments` (all-or-nothing lines with a reason: opening stock, correction, damage, loss, found, customer return), `PUT /reorder-levels`, `GET /movements` (append-only ledger with who/when/reason/reference). **Transfers:** request (either branch) -> approve -> ship (stock leaves the source, movement there) -> receive (stock enters the destination, movement there); reject, cancel (goods in transit go back to the source), per-user `allowedActions`. **Stock counts:** start (snapshot), enter counted quantities, submit, approve (books differences as movements), reopen, cancel. Domain `StockLevel` already has the reserve / release / deduct operations Step 8 will use. Database refuses negative stock and reserved above on-hand; `StockLevel` is `IBranchScoped` (central isolation) and a variant that still has stock cannot be removed. Migration `InventoryStock` (6 tables). Decisions: `docs/assumptions.md` section H.
+**6-c gate (run and seen):** `dotnet build --no-incremental` 0 warnings, 0 errors; test executables: domain 94, application 23, integration 171 (20 new inventory tests incl. branch isolation with audit, per-branch permission, transfer flow with movements on both sides, invalid transitions, cancel in transit, count approval, reserved-units guard, 12 parallel adjustments with a ledger that adds up, two simultaneous last-unit shipments, DB check constraints), 0 failed; `has-pending-model-changes`: none; no vulnerable packages; no leftover test databases; migration applied on `JuvoDb`, `/health/ready` healthy, OpenAPI lists all 19 inventory paths.
 
 ## How to run now
 
@@ -103,7 +107,7 @@ npm test; npm run test:e2e                        # in juvo-front
 
 ## Next step
 
-**Step 6: Catalog, media and branch-wise inventory** (backend + UI). Orders, stock etc. adopt `IBranchScoped` from here.
+**Step 6-d (bulk import/export) then 6-e (admin UI)** of Catalog, media and branch-wise inventory. Orders, stock etc. adopt `IBranchScoped` from here.
 
 ## Known issues / notes
 
