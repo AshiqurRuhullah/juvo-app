@@ -35,7 +35,11 @@ test.describe("Returns: customer", () => {
     const order = await deliveredOrder([{ variantId: variant!.id, quantity: 2 }]);
     await signInCustomer(context, order.mobile);
 
-    await page.goto(`/account/returns/new?order=${order.orderId}`);
+    // The delivered order's page links to the request flow.
+    await page.goto(`/account/orders/${order.orderId}`);
+    await expect(page.getByTestId("return-order-link")).toBeVisible();
+    await page.getByTestId("return-order-link").click();
+    await expect(page).toHaveURL(new RegExp(`/account/returns/new\\?order=${order.orderId}`));
     await expect(page.getByRole("heading", { level: 1, name: "Return or exchange" })).toBeVisible();
     await expect(page.getByTestId("return-deadline")).toContainText("You can ask for a return until");
     await expect(page.getByTestId("return-line")).toHaveCount(1);

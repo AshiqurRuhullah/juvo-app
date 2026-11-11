@@ -13,6 +13,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { useDateTime } from "@/components/data/list-kit";
 import { ApiError } from "@/lib/api/client";
 import { useCancelMyOrder, useMyOrder, useOrderErrorText, type MyOrder } from "./api";
+import { ReturnOrderLink } from "@/modules/returns/return-order-link";
 import { AmountList, OrderLines, ProgressLine, Section, TrackBadges, TrackHistory, useMethodLabel } from "./common";
 
 /** The shipping address in a few readable lines. */
@@ -85,11 +86,14 @@ export function MyOrderDetail({ id }: { id: string }) {
         description={t("placed", { date: dateTime(order.placedAt) })}
         crumbs={crumbs}
         actions={
-          order.canCancel ? (
-            <Button variant="secondary" onClick={() => setOpen(true)} data-testid="cancel-order">
-              {t("cancel")}
-            </Button>
-          ) : null
+          <>
+            {order.canCancel ? (
+              <Button variant="secondary" onClick={() => setOpen(true)} data-testid="cancel-order">
+                {t("cancel")}
+              </Button>
+            ) : null}
+            <ReturnOrderLink orderId={order.id} orderStatus={order.status} />
+          </>
         }
       />
 
