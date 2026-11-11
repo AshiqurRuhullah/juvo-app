@@ -187,7 +187,7 @@ export function ReturnDetailView({ id }: { id: string }) {
                 <div>
                   <dt className="text-sm text-muted">{t("order")}</dt>
                   <dd>
-                    <Link href={`/admin/orders/${r.orderId}`} className="inline-flex min-h-11 items-center rounded-control font-mono font-semibold text-strong hover:text-primary hover:underline" data-testid="order-link">
+                    <Link href={`/admin/orders/${r.orderId}`} prefetch={false} className="inline-flex min-h-11 items-center rounded-control font-mono font-semibold text-strong hover:text-primary hover:underline" data-testid="order-link">
                       {r.orderNumber}
                     </Link>
                     <span className="block text-sm text-muted">
@@ -234,7 +234,7 @@ export function ReturnDetailView({ id }: { id: string }) {
                 <CardTitle>{t("replacement")}</CardTitle>
               </CardHeader>
               <CardContent>
-                <Link href={`/admin/orders/${r.replacementOrderId}`} className="inline-flex min-h-11 items-center rounded-control font-mono font-semibold text-strong hover:text-primary hover:underline" data-testid="replacement-order">
+                <Link href={`/admin/orders/${r.replacementOrderId}`} prefetch={false} className="inline-flex min-h-11 items-center rounded-control font-mono font-semibold text-strong hover:text-primary hover:underline" data-testid="replacement-order">
                   {r.replacementOrderNumber}
                 </Link>
               </CardContent>

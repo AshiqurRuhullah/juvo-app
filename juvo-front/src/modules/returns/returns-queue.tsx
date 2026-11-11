@@ -75,7 +75,7 @@ export function ReturnsQueue() {
             {
               id: "select",
               header: () => (
-                <Checkbox
+                <label className="-m-2 inline-flex size-11 cursor-pointer items-center justify-center"><Checkbox
                   aria-label={t("selectAll")}
                   checked={allOnPage ? true : someOnPage ? "indeterminate" : false}
                   onCheckedChange={(v) => setSelected((old) => {
@@ -86,11 +86,11 @@ export function ReturnsQueue() {
                     }
                     return next;
                   })}
-                />
+                /></label>
               ),
               enableSorting: false,
               meta: { label: t("selectColumn"), hideOnMobile: false },
-              cell: ({ row }) => <Checkbox aria-label={t("selectRow", { number: row.original.number })} checked={selected.has(row.original.id)} onCheckedChange={(v) => toggle(row.original.id, v === true)} />,
+              cell: ({ row }) => <label className="-m-2 inline-flex size-11 cursor-pointer items-center justify-center"><Checkbox aria-label={t("selectRow", { number: row.original.number })} checked={selected.has(row.original.id)} onCheckedChange={(v) => toggle(row.original.id, v === true)} /></label>,
             },
           ] as ColumnDef<ReturnListItem, unknown>[])
         : []),
@@ -278,7 +278,6 @@ function BulkBar({ ids, onDone }: { ids: string[]; onDone: () => void }) {
       setConfirm(null);
       setReason("");
       setReasonError(false);
-      onDone();
       if (toNumber(answer.failed) === 0) toast.success(t("allDone", { count: toNumber(answer.succeeded) }));
     } catch (e) {
       toast.error(problemMessage(e instanceof ApiError ? e.problem : null));
@@ -328,7 +327,12 @@ function BulkBar({ ids, onDone }: { ids: string[]; onDone: () => void }) {
         ) : null}
       </ConfirmDialog>
 
-      <Dialog open={result !== null} onOpenChange={(open) => !open && setResult(null)}>
+      <Dialog open={result !== null} onOpenChange={(open) => {
+          if (!open) {
+            setResult(null);
+            onDone();
+          }
+        }}>
         <ModalContent size="md" closeLabel={tc("close")}>
           <DialogTitle className="font-display text-xl font-semibold text-strong">{t("resultTitle")}</DialogTitle>
           <DialogDescription className="mt-2 text-muted">{t("resultSummary", { ok: toNumber(result?.succeeded), failed: toNumber(result?.failed) })}</DialogDescription>

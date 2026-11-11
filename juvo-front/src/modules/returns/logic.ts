@@ -233,7 +233,9 @@ export type InspectDraft = { condition: ItemCondition; restock: boolean; acceptR
 export const defaultInspect = (): InspectDraft => ({ condition: "Good", restock: true, acceptRefund: true });
 
 export function withCondition(draft: InspectDraft, condition: ItemCondition): InspectDraft {
-  return { ...draft, condition, restock: restockAllowed(condition) ? draft.restock : false };
+  if (!restockAllowed(condition)) return { ...draft, condition, restock: false };
+  // Moving back from Damaged to a sellable state offers the shelf again (the person can still switch it off).
+  return { ...draft, condition, restock: restockAllowed(draft.condition) ? draft.restock : true };
 }
 
 /** Today as yyyy-mm-dd in the local calendar, and the pickup window the API accepts (today to 60 days ahead). */

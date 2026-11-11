@@ -287,6 +287,12 @@ export function RequestFlow({ orderId }: { orderId: string }) {
         </CardContent>
       </Card>
 
+      {problem ? (
+        <Alert variant="danger" title={t("failed")} data-testid="request-problem">
+          {problem}
+        </Alert>
+      ) : null}
+
       {data.eligible ? (
         <>
           <Card>
@@ -452,12 +458,6 @@ export function RequestFlow({ orderId }: { orderId: string }) {
               <p className="text-sm text-muted">{t("estimateNote")}</p>
             </CardContent>
           </Card>
-
-          {problem ? (
-            <Alert variant="danger" title={t("failed")} data-testid="request-problem">
-              {problem}
-            </Alert>
-          ) : null}
 
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <Button asChild variant="secondary">

@@ -94,6 +94,7 @@ export type TimelineEntry = { from: string | null; to: string; reason: string | 
 export function ReturnTimeline({ entries, dateTime }: { entries: TimelineEntry[]; dateTime: (value: string) => string }) {
   const t = useTranslations("returns.status");
   const tt = useTranslations("returns.timeline");
+  const reasonLabel = useReasonLabel();
   return (
     <ol className="space-y-4" data-testid="return-timeline" aria-label={tt("label")}>
       {entries.map((entry, index) => {
@@ -109,7 +110,7 @@ export function ReturnTimeline({ entries, dateTime }: { entries: TimelineEntry[]
                 {dateTime(entry.at)}
                 {entry.actorName ? ` · ${entry.actorName}` : ""}
               </p>
-              {entry.reason ? <p className="mt-0.5 text-sm text-strong [overflow-wrap:anywhere]">{entry.reason}</p> : null}
+              {entry.reason ? <p className="mt-0.5 text-sm text-strong [overflow-wrap:anywhere]">{reasonLabel(entry.reason)}</p> : null}
             </div>
           </li>
         );

@@ -150,6 +150,8 @@ describe("staff actions", () => {
     expect(damaged.restock).toBe(false);
     const back = withCondition(damaged, "Good");
     expect(back.condition).toBe("Good");
+    expect(back.restock).toBe(true);
+    expect(withCondition({ ...defaultInspect(), restock: false }, "Unopened").restock).toBe(false);
     expect(defaultInspect()).toEqual({ condition: "Good", restock: true, acceptRefund: true });
   });
 

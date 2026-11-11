@@ -250,7 +250,7 @@
       "requested": "Requested",
       "actions": "Actions"
     },
-    "open": "Open return {number}",
+    "open": "View return {number}",
     "view": "View",
     "selectAll": "Select all returns on this page",
     "selectColumn": "Select for bulk action",
