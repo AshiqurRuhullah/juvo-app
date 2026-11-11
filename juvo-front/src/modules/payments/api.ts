@@ -57,7 +57,14 @@ export function usePaymentStatus(paymentId: string | null, token: string | null,
     queryKey: ["pay", "status", paymentId],
     enabled: !!paymentId,
     retry: false,
-    refetchInterval: (query) => (poll && (query.state.data?.status ?? "Pending") === "Pending" ? 2000 : false),
+    refetchInterval: (query) => {
+      if (!poll) return false;
+      const data = query.state.data;
+      if (!data || data.status === "Pending") return 2000;
+      // Paid but the order has not moved on yet (paid, unheld orders confirm themselves a moment later): look a few more times.
+      if (data.status === "Paid" && data.orderStatus === "Placed" && query.state.dataUpdateCount < 12) return 1500;
+      return false;
+    },
     queryFn: async () => unwrap(await api.GET("/api/v1/store/payments/{id}/status", { params: { path: { id: paymentId! }, query: token ? { token } : {} } })),
   });
 }
