@@ -42,6 +42,7 @@ async function handle(request: NextRequest, context: Context) {
   const cartToken = isCart ? request.cookies.get(COOKIES.cart)?.value : undefined;
 
   const contentType = request.headers.get("content-type") ?? undefined;
+  const idempotencyKey = request.headers.get("idempotency-key") ?? undefined;
   const hasBody = !["GET", "HEAD"].includes(request.method);
   const body = hasBody ? await request.arrayBuffer() : undefined;
 
@@ -51,7 +52,9 @@ async function handle(request: NextRequest, context: Context) {
       token,
       branch,
       client: hints,
-      headers: { ...(contentType ? { "Content-Type": contentType } : {}), ...(cartToken ? { "X-Cart-Token": cartToken } : {}) },
+      headers: { ...(contentType ? { "Content-Type": contentType } : {}), ...(cartToken ? { "X-Cart-Token": cartToken } : {}),
+        ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
+      },
       body,
     });
 
