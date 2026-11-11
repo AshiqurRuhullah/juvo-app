@@ -133,6 +133,8 @@ test.describe("silent refresh", () => {
     try {
       // The user's token is now stale; the page renews it behind the scenes and shows the new menu.
       await page.reload();
+      // The menu is a tree: the new group appears (closed) and opens with its parent row.
+      await page.getByRole("button", { name: "Payments and accounts" }).first().click();
       await expect(page.getByText("Tax and invoices").first()).toBeVisible();
     } finally {
       await api("DELETE", `/api/v1/ums/users/${s.orderManager.id}/branch-roles/${added.json.assignmentId}`, undefined, token);
@@ -180,7 +182,7 @@ test.describe("customer sign-in with a mobile number", () => {
     await page.getByRole("tab", { name: "Customer" }).click();
     await page.getByLabel("Mobile number").fill(mobile);
     await page.getByRole("button", { name: "Send code" }).click();
-    await expect(page.getByText("We sent a code to +8801712300001.")).toBeVisible();
+    await expect(page.getByText(/We sent a code by SMS to/)).toBeVisible();
 
     await page.getByLabel("Code from the SMS").fill("000000");
     await page.getByRole("button", { name: "Verify" }).click();

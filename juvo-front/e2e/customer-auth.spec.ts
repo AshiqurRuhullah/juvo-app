@@ -55,6 +55,6 @@ test.describe("Customer sign-in code", () => {
     await page.getByLabel(/^Code/).fill("000000");
     await page.getByRole("button", { name: "Verify" }).click();
     await expect(page.getByRole("alert").filter({ hasText: /code/i }).first()).toBeVisible();
-    await expect(page).not.toHaveURL(/\/account/);
+    await expect(page).toHaveURL(/\/login/); // still on the sign-in page ("/account" appears only in its ?next= address)
   });
 });
