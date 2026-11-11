@@ -59,6 +59,7 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
         {
             "categories", "home", "products", "products/facets", "products/{slug}", "search/suggest", "geo/countries", "geo/divisions", "geo/districts",
             "geo/districts/{districtId:guid}/upazilas", "delivery/quote", "coupons/validate", "cart/", "cart/items", "cart/items/{variantId:guid}", "cart/coupon", "cart/delivery-quote",
+            "checkout/quote", "checkout", "orders/track",
         }.Select(r => "/api/v{version:apiVersion}/store/" + r);
 
         var actual = ApiEndpoints().Where(e => e.AllowAnonymous).Select(e => e.Route).Distinct().Order().ToList();
@@ -71,7 +72,8 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
     {
         var ums = ApiEndpoints().Where(e => e.Route.Contains("/ums/", StringComparison.Ordinal) || e.Route.Contains("/catalog/", StringComparison.Ordinal) ||
                                             e.Route.Contains("/customers", StringComparison.Ordinal) || e.Route.Contains("/promotions/", StringComparison.Ordinal) ||
-                                            e.Route.Contains("/delivery/", StringComparison.Ordinal) && !e.Route.Contains("/store/", StringComparison.Ordinal)).ToList();
+                                            e.Route.Contains("/delivery/", StringComparison.Ordinal) && !e.Route.Contains("/store/", StringComparison.Ordinal) ||
+                                            e.Route.Contains("/v{version:apiVersion}/orders", StringComparison.Ordinal) || e.Route.Contains("/fraud/", StringComparison.Ordinal)).ToList();
 
         Assert.NotEmpty(ums);
         foreach (var endpoint in ums)
