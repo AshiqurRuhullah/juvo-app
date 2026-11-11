@@ -205,3 +205,14 @@ Last updated: 2026-11-02 (Step 1).
 | **A deactivated customer's access token keeps working until it expires** (15 minutes); only refresh and new sign-ins are refused. | Access tokens are not checked against the session table on every request (Step 3 design). | n/a |
 | **One migration for the whole step** (`StorefrontCartCustomersDelivery`): geography, delivery, addresses, wishlist, consent log, carts, coupons and `Customers.IsActive` (default true for existing rows). | A single reviewable change. | n/a |
 | **Deferred:** customer account deletion (FR-E08), abandoned-cart reminders, a per-courier delivery override, a cleanup job for expired carts, orders in `/me/summary` (zero until Step 8), coupon use counting (Step 8), product reviews. | Not needed to shop; scheduled in later steps. | n/a |
+
+## L. Step 7-b (storefront front end) decisions
+
+| Decision | Reason | How to change |
+| --- | --- | --- |
+| Guest cart token lives in the httpOnly cookie `juvo_cart` (30 days); the BFF adds `X-Cart-Token` and strips the token from answers; sign-in merges the cart and clears the cookie | Page scripts never hold the token; one place handles it | `src/app/api/bff/[...path]/route.ts`, `src/lib/auth/cookies.ts` |
+| Recently viewed is kept in browser storage only | No account data needed; works for guests | `src/modules/store/recently-viewed.tsx` |
+| Product cards: link name is hidden text, badges stay visible | WCAG label-in-name | `store-product-card.tsx` |
+| `mediaUrl` lives in `src/lib/media.ts` (server and client safe) | A client-only module cannot be called by server pages | n/a |
+| Bengali storefront texts are a first pass | Native review is planned for Step 12 | `src/messages/*.bn.json` |
+| Delivery rates and zones remain placeholders | Owner must supply real values | Admin delivery screens (Step 12) |

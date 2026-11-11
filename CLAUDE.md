@@ -106,8 +106,8 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 | 4 | Front-end foundation, brand, login, tokens | Done |
 | 5 | UMS UI | Done |
 | 6 | Catalog, media, branch inventory (6-a…6-e) | **Done** (gated 2026-11-10) on `feature/06-catalog-inventory`, not yet merged to `main` |
-| 7 | Storefront, cart, customer identity, address, delivery zones (modules A, C, E, F, G) | **Next** |
-| 8 | Checkout, orders, order processing, social desk, fraud basics (D, S, T, J) | Not started |
+| 7 | Storefront, cart, customer identity, address, delivery zones (modules A, C, E, F, G) | **Done** (gated 2026-11-11) |
+| 8 | Checkout, orders, order processing, social desk, fraud basics (D, S, T, J) | **In progress** |
 | 9 | Payments, tax/invoices, notifications (I, U, K) | Not started |
 | 10 | Couriers, real-time (SignalR), returns (H, J, L) | Not started |
 | 11A | Purchasing, expenses, support, reports (W, X, Y, P) | Not started |
