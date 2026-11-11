@@ -125,7 +125,7 @@ public sealed class ReturnRequest : AggregateRoot, IBranchScoped
 
     public int TotalQuantity => _items.Sum(i => i.Quantity);
 
-    public static ReturnRequest Request(NewReturn data, IReadOnlyList<NewReturnItem> items, Guid? byStaffId, string? byName, DateTimeOffset now)
+    public static ReturnRequest Request(NewReturn data, IReadOnlyList<NewReturnItem> items, Guid? byId, string? byName, DateTimeOffset now)
     {
         if (items.Count == 0 || items.Any(i => i.Quantity < 1))
         {
@@ -161,7 +161,7 @@ public sealed class ReturnRequest : AggregateRoot, IBranchScoped
         }
 
         request.ItemsRefund = request._items.Sum(i => i.RefundAmount);
-        request._history.Add(new ReturnStatusHistory(request.Id, null, ReturnStatus.Requested, data.ReasonCode, byStaffId, byName, now));
+        request._history.Add(new ReturnStatusHistory(request.Id, null, ReturnStatus.Requested, data.ReasonCode, byId, byName, now));
         request.Raise(new ReturnStatusChanged(now, request.Id, request.Number, request.BranchId, request.OrderId, request.OrderNumber, request.CustomerId, request.CustomerMobile, request.Kind, null,
             ReturnStatus.Requested.ToString(), data.ReasonCode));
         return request;

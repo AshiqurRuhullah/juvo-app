@@ -355,7 +355,7 @@ public sealed class OrderPlacement(
     /// <c>JV-&lt;BRANCHCODE&gt;-&lt;YYMM&gt;-&lt;6-digit sequence&gt;</c>. The counter row is incremented inside the order transaction (and locked until it ends), so numbers are
     /// unique and gap-free per branch and month: a rolled-back order gives its number back.
     /// </summary>
-    private async Task<string> NextNumberAsync(Domain.Branches.Branch branch, DateTimeOffset now, CancellationToken cancellationToken)
+    internal async Task<string> NextNumberAsync(Domain.Branches.Branch branch, DateTimeOffset now, CancellationToken cancellationToken)
     {
         var period = LocalTime(branch, now).ToString("yyMM", System.Globalization.CultureInfo.InvariantCulture);
         var branchId = branch.Id;
@@ -382,7 +382,7 @@ public sealed class OrderPlacement(
         return $"JV-{branch.OrderPrefix}-{period}-{next:D6}";
     }
 
-    private static DateTimeOffset LocalTime(Domain.Branches.Branch branch, DateTimeOffset now)
+    internal static DateTimeOffset LocalTime(Domain.Branches.Branch branch, DateTimeOffset now)
     {
         try
         {

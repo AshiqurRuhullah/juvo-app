@@ -88,6 +88,14 @@ public static class DependencyInjection
         services.AddScoped<IOutboxMessageHandler, Juvo.Application.Orders.OrderBranchReassignedHandler>();
         services.AddScoped<IOutboxMessageHandler, Juvo.Application.Orders.OrderFlaggedHandler>();
 
+        // Returns and exchanges (module L).
+        services.AddScoped<Juvo.Application.Returns.ReturnPolicy>();
+        services.AddScoped<Juvo.Application.Returns.ReturnOrderSync>();
+        services.AddScoped<Juvo.Application.Returns.ReturnStock>();
+        services.AddScoped<Juvo.Application.Returns.ReturnsService>();
+        services.AddScoped<Juvo.Application.Returns.CustomerReturnsService>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Returns.ReturnStatusChangedHandler>();
+
         // Inventory (module V).
         services.AddScoped<InventoryAccess>();
         services.AddScoped<StockLedger>();
