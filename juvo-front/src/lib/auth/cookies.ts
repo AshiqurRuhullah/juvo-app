@@ -11,7 +11,12 @@ export const COOKIES = {
   locale: "juvo_locale",
   theme: "juvo_theme",
   sidebar: "juvo_sidebar",
+  /** Guest cart token. httpOnly: the BFF adds it to cart calls, so page scripts never hold it. Cleared after sign-in (the cart is merged). */
+  cart: "juvo_cart",
 } as const;
+
+/** A guest cart lives as long as the API keeps it (30 days after the last change). */
+export const CART_COOKIE_MAX_AGE = 60 * 60 * 24 * 30;
 
 export const REFRESH_COOKIE_PATH = "/api/bff";
 

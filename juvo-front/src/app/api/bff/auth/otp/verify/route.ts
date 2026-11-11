@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
+import { COOKIES, isSecureContext } from "@/lib/auth/cookies";
 import { backendFetch, clientHintsFrom, jsonInit } from "@/lib/server/backend";
 import { badGateway, problem, readJson, relay } from "@/lib/server/bff";
 import type { TokenPair } from "@/lib/server/refresh";
@@ -26,7 +27,15 @@ export async function POST(request: NextRequest) {
   if (!response.ok) return relay(response);
 
   const tokens = (await response.json()) as TokenPair;
+
+  // A guest cart (kept in an httpOnly cookie) is merged into the customer's cart now; a failure here never blocks the sign-in.
+  const guestCart = request.cookies.get(COOKIES.cart)?.value;
+  if (guestCart && tokens.subjectType === "customer") {
+    await backendFetch("/api/v1/store/cart/merge", { method: "POST", token: tokens.accessToken, client: clientHintsFrom(request.headers), ...jsonInit({ token: guestCart }) }).catch(() => undefined);
+  }
+
   const result = NextResponse.json(publicTokenInfo(tokens), { headers: { "Cache-Control": "no-store" } });
+  if (guestCart) result.cookies.set(COOKIES.cart, "", { httpOnly: true, secure: isSecureContext(), sameSite: "lax", path: "/", maxAge: 0 });
   clearSessionCookies(result.cookies);
   writeSessionCookies(result.cookies, tokens);
   return result;

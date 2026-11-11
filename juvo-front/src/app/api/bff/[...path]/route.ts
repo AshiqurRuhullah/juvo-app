@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { COOKIES, isExpiring } from "@/lib/auth/cookies";
+import { CART_COOKIE_MAX_AGE, COOKIES, isExpiring, isSecureContext } from "@/lib/auth/cookies";
 import { backendFetch, clientHintsFrom } from "@/lib/server/backend";
 import { badGateway, problem, relay } from "@/lib/server/bff";
 import { refreshTokens, type TokenPair } from "@/lib/server/refresh";
@@ -37,6 +37,10 @@ async function handle(request: NextRequest, context: Context) {
   let access = request.cookies.get(COOKIES.access)?.value;
   let renewed: TokenPair | undefined;
 
+  // Guest cart: the token lives in an httpOnly cookie; the proxy adds it as X-Cart-Token and stores a new one from the answer.
+  const isCart = target === "/api/v1/store/cart" || target.startsWith("/api/v1/store/cart/");
+  const cartToken = isCart ? request.cookies.get(COOKIES.cart)?.value : undefined;
+
   const contentType = request.headers.get("content-type") ?? undefined;
   const hasBody = !["GET", "HEAD"].includes(request.method);
   const body = hasBody ? await request.arrayBuffer() : undefined;
@@ -47,7 +51,7 @@ async function handle(request: NextRequest, context: Context) {
       token,
       branch,
       client: hints,
-      headers: contentType ? { "Content-Type": contentType } : undefined,
+      headers: { ...(contentType ? { "Content-Type": contentType } : {}), ...(cartToken ? { "X-Cart-Token": cartToken } : {}) },
       body,
     });
 
@@ -84,7 +88,16 @@ async function handle(request: NextRequest, context: Context) {
     return badGateway();
   }
 
-  const response = await relay(upstream);
+  const cartAnswer = isCart && upstream.ok && (upstream.headers.get("content-type") ?? "").includes("json") ? upstream.clone() : null;
+  let response = await relay(upstream);
+  if (cartAnswer) {
+    const answer = (await cartAnswer.json().catch(() => null)) as { token?: unknown } | null;
+    if (answer && typeof answer.token === "string") {
+      const { token, ...rest } = answer;
+      response = NextResponse.json(rest, { status: upstream.status, headers: { "Cache-Control": "no-store" } });
+      response.cookies.set(COOKIES.cart, token, { httpOnly: true, secure: isSecureContext(), sameSite: "lax", path: "/", maxAge: CART_COOKIE_MAX_AGE });
+    }
+  }
   if (renewed) writeSessionCookies(response.cookies, renewed);
   return response;
 }
