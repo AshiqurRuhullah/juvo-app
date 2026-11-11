@@ -4084,6 +4084,10 @@ namespace Juvo.Infrastructure.Persistence.Migrations
                     b.Property<bool>("TracksStock")
                         .HasColumnType("bit");
 
+                    b.Property<decimal?>("UnitCost")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("UnitPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");

@@ -517,7 +517,7 @@ public sealed class ReturnsService(
                 }
 
                 items.Add(new NewOrderItem(variant.Id, product.Id, product.NameEn, product.NameBn, variant.Sku, variant.ColorName, variant.Size, item.ImagePath, 0m, item.Quantity,
-                    variant.WeightGramsOverride ?? product.WeightGrams ?? 0, variant.TracksStock));
+                    variant.WeightGramsOverride ?? product.WeightGrams ?? 0, variant.TracksStock, product.CostPrice));
             }
 
             var now = clock.GetUtcNow();
