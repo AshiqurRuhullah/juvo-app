@@ -29,6 +29,8 @@ internal static class ServiceCollectionExtensions
 
         services.AddJuvoProblemDetails();
         services.AddJuvoCors(configuration);
+        services.AddSignalR();
+        services.AddSingleton<Juvo.Application.Realtime.IRealtimePublisher, Juvo.Api.Realtime.SignalRRealtimePublisher>(); // replaces the null publisher of the application layer
         services.AddJuvoRateLimiting(configuration);
         services.AddJuvoVersioningAndOpenApi();
         services.AddJuvoHealthChecks();
@@ -54,7 +56,7 @@ internal static class ServiceCollectionExtensions
         services.AddCors(options => options.AddPolicy(CorsSettings.PolicyName, policy => policy
             .WithOrigins(settings.AllowedOrigins)
             .AllowAnyMethod()
-            .WithHeaders("Authorization", "Content-Type", "Accept", "Accept-Language", "X-Branch-Id", "X-Correlation-Id", "Idempotency-Key")
+            .WithHeaders("Authorization", "Content-Type", "Accept", "Accept-Language", "X-Branch-Id", "X-Correlation-Id", "Idempotency-Key", "X-SignalR-User-Agent", "X-Requested-With")
             .WithExposedHeaders("X-Correlation-Id", "Retry-After")
             .AllowCredentials()));
     }

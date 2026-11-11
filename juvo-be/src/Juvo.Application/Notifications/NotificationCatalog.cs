@@ -35,6 +35,8 @@ public static partial class NotificationCatalog
         new("order.handed-to-courier", "Order handed to the courier", NotificationCategory.Transactional, OrderVars),
         new("order.out-for-delivery", "Order out for delivery", NotificationCategory.Transactional, OrderVars),
         new("order.delivered", "Order delivered", NotificationCategory.Transactional, OrderVars),
+        new("order.delivery-failed", "Delivery attempt failed", NotificationCategory.Transactional, OrderVars),
+        new("order.returned-to-sender", "Parcel returned to the shop", NotificationCategory.Transactional, OrderVars),
         new("order.cancelled", "Order cancelled", NotificationCategory.Transactional, OrderVars),
         new("payment.received", "Payment received", NotificationCategory.Transactional, PaymentVars),
         new("payment.failed", "Payment failed", NotificationCategory.Transactional, PaymentVars),
@@ -91,6 +93,11 @@ public static partial class NotificationCatalog
         Email("order.delivered", "bn", "আপনার অর্ডার {{OrderNumber}} ডেলিভারি হয়েছে", "হ্যালো {{Name}},\n\nআপনার অর্ডার {{OrderNumber}} ডেলিভারি হয়েছে। আমাদের সঙ্গে কেনাকাটার জন্য ধন্যবাদ।\n\nজুভো বিডি"),
         Wa("order.delivered", "en", "Juvo BD: your order {{OrderNumber}} was delivered."),
         Wa("order.delivered", "bn", "জুভো বিডি: আপনার অর্ডার {{OrderNumber}} ডেলিভারি হয়েছে।"),
+
+        Sms("order.delivery-failed", "en", "Juvo BD: we could not deliver your order {{OrderNumber}}. Please keep your phone on; the courier will try again."),
+        Sms("order.delivery-failed", "bn", "জুভো বিডি: আপনার অর্ডার {{OrderNumber}} ডেলিভারি করা যায়নি। অনুগ্রহ করে ফোন চালু রাখুন, কুরিয়ার আবার চেষ্টা করবে।"),
+        Sms("order.returned-to-sender", "en", "Juvo BD: your order {{OrderNumber}} could not be delivered and came back to us. We will contact you."),
+        Sms("order.returned-to-sender", "bn", "জুভো বিডি: আপনার অর্ডার {{OrderNumber}} ডেলিভারি করা যায়নি এবং আমাদের কাছে ফিরে এসেছে। আমরা আপনার সাথে যোগাযোগ করব।"),
 
         Sms("order.cancelled", "en", "Juvo BD: your order {{OrderNumber}} was cancelled."),
         Sms("order.cancelled", "bn", "জুভো বিডি: আপনার অর্ডার {{OrderNumber}} বাতিল করা হয়েছে।"),

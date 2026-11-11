@@ -20,7 +20,7 @@ namespace Juvo.Application.Returns;
 /// </summary>
 public sealed class ReturnsService(
     IApplicationDbContext db, IUnitOfWork uow, OrderAccess access, OrderStock orderStock, ReturnStock returnStock, ReturnOrderSync orderSync, OrderPlacement placement, ReturnPolicy policy,
-    IFileStorage storage, Payments.RefundService refunds, TimeProvider clock)
+    IFileStorage storage, Payments.RefundService refunds, Couriers.ShipmentBooking shipments, TimeProvider clock)
 {
     private static Error Invalid(string field, string message) => Error.Validation(new Dictionary<string, string[]> { [field] = [message] });
 
@@ -281,15 +281,28 @@ public sealed class ReturnsService(
             return Invalid("note", "The courier can have 100 and the note 500 characters.");
         }
 
-        return await RunAsync(id, Permissions.Returns.Manage, (r, _, who, _) =>
+        return await RunAsync(id, Permissions.Returns.Manage, async (r, order, who, ct) =>
         {
             if (Guard(r, ReturnStatus.PickupScheduled) is { } refused)
             {
-                return Task.FromResult(refused);
+                return refused;
             }
 
-            r.SchedulePickup(request.Date, request.Courier, request.Note, who.Id, who.Name, clock.GetUtcNow());
-            return Task.FromResult(Result.Success());
+            var courier = request.Courier;
+            if (request.UseCourier || request.CourierId is not null)
+            {
+                // The courier collects at the customer's address and brings the parcel to the branch; its events then move the return (picked up, received).
+                var booked = await shipments.BookReturnPickupAsync(r, order, request.CourierId, request.Date, request.Note, who, ct);
+                if (booked.IsFailure)
+                {
+                    return booked.Error!;
+                }
+
+                courier = booked.Value.CourierName.Length > 100 ? booked.Value.CourierName[..100] : booked.Value.CourierName;
+            }
+
+            r.SchedulePickup(request.Date, courier, request.Note, who.Id, who.Name, clock.GetUtcNow());
+            return Result.Success();
         }, cancellationToken);
     }
 

@@ -107,6 +107,10 @@ internal static class OrdersEndpoints
             .RequirePermission(Permissions.Orders.OrderCreate).Produces<OrderDetailDto>(StatusCodes.Status201Created)
             .WithSummary("Social order desk: create an order for a customer found by mobile (Facebook, WhatsApp, phone, walk-in). Items by SKU or variant; discount and delivery override need their own permissions.");
 
+        g.MapPost("/manual/quote", async (ManualOrderRequest r, OrdersService s, CancellationToken ct) => (await s.QuoteManualAsync(r, ct)).ToHttpResult())
+            .RequirePermission(Permissions.Orders.OrderCreate).Produces<ManualQuoteDto>()
+            .WithSummary("Social order desk preview: the same checks and prices as creating the order (coupon, delivery charge, discount and override permissions, stock in the branch), nothing saved or reserved. The totals equal the order that create makes.");
+
         g.MapGet("/sources/summary", async (DateTimeOffset? from, DateTimeOffset? to, OrdersService s, CancellationToken ct) => (await s.SourceCountsAsync(from, to, ct)).ToHttpResult())
             .RequirePermission(Permissions.Orders.SourceView).Produces<IReadOnlyList<OrderSourceCountDto>>().WithSummary("Orders and value per source in a period (the owner's daily count).");
     }

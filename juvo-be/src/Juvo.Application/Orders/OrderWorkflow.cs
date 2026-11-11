@@ -53,7 +53,7 @@ public sealed class OrderAccess(ActorContext actors, IApplicationDbContext db, I
 /// Every status change of an order and what it does to stock. The methods change the aggregate and stock but do not save: the caller saves
 /// (inside its transaction). All checks are done before anything is changed, so a refused call changes nothing.
 /// </summary>
-public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, SettingsService settings, TimeProvider clock)
+public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, SettingsService settings, Couriers.ShipmentCancellation shipments, TimeProvider clock)
 {
     private static Result Refuse(string code, string message) => Error.Conflict(code, message);
 
@@ -154,6 +154,7 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
         }
 
         await GiveStockBackAsync(order, cancellationToken);
+        await shipments.CancelBookingOfOrderAsync(order, reason, who, cancellationToken); // a booked parcel nobody picked up yet is cancelled with the courier
         order.TransitionTo(OrderStatus.Cancelled, clock.GetUtcNow(), who.Id, who.Name, reason);
         if (order.PaymentStatus is PaymentStatus.Paid or PaymentStatus.PartiallyRefunded)
         {

@@ -11,6 +11,7 @@ using Juvo.Domain.Platform;
 using Juvo.Domain.Billing;
 using Juvo.Domain.Payments;
 using Juvo.Domain.Returns;
+using Juvo.Domain.Couriers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Juvo.Application.Abstractions;
@@ -133,6 +134,18 @@ public interface IApplicationDbContext
     DbSet<NotificationTemplate> NotificationTemplates { get; }
 
     DbSet<NotificationTemplateVersion> NotificationTemplateVersions { get; }
+
+    DbSet<Courier> Couriers { get; }
+
+    DbSet<Shipment> Shipments { get; }
+
+    DbSet<ShipmentEvent> ShipmentEvents { get; }
+
+    DbSet<CodSettlement> CodSettlements { get; }
+
+    DbSet<CodSettlementItem> CodSettlementItems { get; }
+
+    DbSet<SandboxConsignment> SandboxConsignments { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 

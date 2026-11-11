@@ -45,6 +45,8 @@ public sealed class OrderStatusChangedHandler(IApplicationDbContext db, Notifica
         [nameof(OrderStatus.HandedToCourier)] = "order.handed-to-courier",
         [nameof(OrderStatus.OutForDelivery)] = "order.out-for-delivery",
         [nameof(OrderStatus.Delivered)] = "order.delivered",
+        [nameof(OrderStatus.DeliveryFailed)] = "order.delivery-failed",
+        [nameof(OrderStatus.Returned)] = "order.returned-to-sender",
         [nameof(OrderStatus.Cancelled)] = "order.cancelled",
     };
 

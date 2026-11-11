@@ -81,7 +81,8 @@ public sealed record ApproveReturnRequest(string? Note);
 
 public sealed record RejectReturnRequest(string? Reason);
 
-public sealed record SchedulePickupRequest(DateOnly Date, string? Courier, string? Note);
+/// <summary>Pickup of a return. With <c>UseCourier</c> (or a <c>CourierId</c>) the system books a reverse parcel with the courier (sandbox by default) and the courier's events move the return to PickedUp and Received; without it staff do those steps by hand as before.</summary>
+public sealed record SchedulePickupRequest(DateOnly Date, string? Courier, string? Note, bool UseCourier = false, Guid? CourierId = null);
 
 public sealed record InspectLine(Guid ReturnItemId, ItemCondition Condition, bool Restock, bool? AcceptRefund);
 

@@ -16,7 +16,7 @@ namespace Juvo.Application.Orders;
 /// </summary>
 public sealed class CheckoutService(
     IApplicationDbContext db, ICurrentUser currentUser, CartService carts, DeliveryService delivery, OrderPlacement placement, SettingsService settings, IFileStorage storage,
-    Payments.PaymentSettingsService paymentSettings)
+    Payments.PaymentSettingsService paymentSettings, IUnitOfWork uow, OrderWorkflow workflow, Couriers.ShipmentViews shipments)
 {
     private static Error Invalid(string field, string message) => Error.Validation(new Dictionary<string, string[]> { [field] = [message] });
 
@@ -306,8 +306,29 @@ public sealed class CheckoutService(
     /// <summary>Order number plus the mobile used at checkout, or the tracking token shown at checkout. Anything that does not match is the same neutral "not found".</summary>
     public async Task<Result<TrackingDto>> TrackAsync(TrackRequest request, CancellationToken cancellationToken)
     {
-        var notFound = Error.NotFound(ErrorCodes.Order.NotFound, "We could not find an order with these details.");
-        IQueryable<Order> query = db.Orders.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Include(o => o.Items).Include(o => o.History);
+        var order = await FindTrackedAsync(request, false, cancellationToken);
+        return order is null ? TrackNotFound() : await ToTrackingAsync(order, cancellationToken);
+    }
+
+    private static Error TrackNotFound() => Error.NotFound(ErrorCodes.Order.NotFound, "We could not find an order with these details.");
+
+    private async Task<TrackingDto> ToTrackingAsync(Order order, CancellationToken cancellationToken) =>
+        new(order.Number, order.Status, order.PaymentStatus, order.DeliveryStatus, order.PaymentMethod, order.PlacedAt, order.ShipDistrict ?? order.ShipCity, order.GrandTotal,
+            OrderViews.Lines(order, storage), OrderViews.CustomerTimeline(order), OrderViews.CanCancel(order), await shipments.TrackingOfOrderAsync(order.Id, cancellationToken));
+
+    /// <summary>Finds an order from what the public holds: number plus mobile, or the tracking token. Null for anything that does not match (always the same neutral answer).</summary>
+    internal async Task<Order?> FindTrackedAsync(TrackRequest request, bool forUpdate, CancellationToken cancellationToken)
+    {
+        IQueryable<Order> query = db.Orders.IgnoreQueryFilters(["BranchScope"]).Include(o => o.Items).Include(o => o.History);
+        if (forUpdate)
+        {
+            query = query.Include(o => o.Notes);
+        }
+        else
+        {
+            query = query.AsNoTracking();
+        }
+
         if (!string.IsNullOrWhiteSpace(request.Token))
         {
             var hash = OrderPlacement.Hash(request.Token.Trim());
@@ -319,22 +340,56 @@ public sealed class CheckoutService(
             var number = request.Number?.Trim().ToUpperInvariant();
             if (mobile is null || string.IsNullOrEmpty(number))
             {
-                return notFound;
+                return null;
             }
 
             query = query.Where(o => o.Number == number && o.CustomerMobile == mobile);
         }
 
-        var order = await query.FirstOrDefaultAsync(cancellationToken);
-        return order is null
-            ? notFound
-            : new TrackingDto(order.Number, order.Status, order.PaymentStatus, order.DeliveryStatus, order.PaymentMethod, order.PlacedAt, order.ShipDistrict ?? order.ShipCity, order.GrandTotal,
-                OrderViews.Lines(order, storage), OrderViews.CustomerTimeline(order), OrderViews.CanCancel(order));
+        return await query.Where(o => !o.IsDeleted).FirstOrDefaultAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// A guest cancels from the tracking page (no sign-in, no code): proven by order number plus the mobile used at checkout, or by the tracking token, and only while the order may still be
+    /// cancelled (Placed, Confirmed or Packed: it has not left the shop). Reserved stock goes back at once and a booked courier parcel is cancelled with it. Rate limited by the caller.
+    /// </summary>
+    public async Task<Result<TrackingDto>> CancelTrackedAsync(TrackCancelRequest request, CancellationToken cancellationToken)
+    {
+        var reason = string.IsNullOrWhiteSpace(request.Reason) ? "Cancelled by the customer" : request.Reason.Trim();
+        if (reason.Length > 300)
+        {
+            return Invalid("reason", "The reason can have at most 300 characters.");
+        }
+
+        try
+        {
+            return await uow.ExecuteInTransactionAsync<Result<TrackingDto>>(async ct =>
+            {
+                var order = await FindTrackedAsync(new TrackRequest(request.Number, request.Mobile, request.Token), true, ct);
+                if (order is null)
+                {
+                    return TrackNotFound();
+                }
+
+                var done = await workflow.CancelAsync(order, reason, Who.Customer(order.CustomerId, order.CustomerName), ct);
+                if (done.IsFailure)
+                {
+                    return done.Error!;
+                }
+
+                await db.SaveChangesAsync(ct);
+                return await ToTrackingAsync(order, ct);
+            }, cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Error.Conflict(ErrorCodes.Order.InvalidTransition, "The order changed at the same moment. Look at it again.");
+        }
     }
 }
 
 /// <summary>The signed-in customer's own orders (FR-F02, FR-F04). Every query is filtered by the customer id in the token.</summary>
-public sealed class CustomerOrdersService(IApplicationDbContext db, IUnitOfWork uow, ICurrentUser currentUser, OrderWorkflow workflow, IFileStorage storage)
+public sealed class CustomerOrdersService(IApplicationDbContext db, IUnitOfWork uow, ICurrentUser currentUser, OrderWorkflow workflow, IFileStorage storage, Couriers.ShipmentViews shipments)
 {
     private Guid? CustomerId => currentUser is { IsAuthenticated: true, SubjectType: "customer", UserId: { } id } ? id : null;
 
@@ -381,7 +436,7 @@ public sealed class CustomerOrdersService(IApplicationDbContext db, IUnitOfWork 
 
         var order = await db.Orders.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Include(o => o.Items).Include(o => o.History).Include(o => o.Notes)
             .FirstOrDefaultAsync(o => o.Id == orderId && o.CustomerId == id && !o.IsDeleted, cancellationToken);
-        return order is null ? Error.NotFound(ErrorCodes.Order.NotFound, "Order not found.") : ToDto(order);
+        return order is null ? Error.NotFound(ErrorCodes.Order.NotFound, "Order not found.") : ToDto(order) with { Shipment = await shipments.TrackingOfOrderAsync(order.Id, cancellationToken) };
     }
 
     private MyOrderDto ToDto(Order o) =>
@@ -418,7 +473,7 @@ public sealed class CustomerOrdersService(IApplicationDbContext db, IUnitOfWork 
             }
 
             await db.SaveChangesAsync(ct);
-            return Result.Success(ToDto(order));
+            return Result.Success(ToDto(order) with { Shipment = await shipments.TrackingOfOrderAsync(order.Id, ct) });
         }, cancellationToken);
         return result;
     }

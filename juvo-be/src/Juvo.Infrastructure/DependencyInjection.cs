@@ -1,5 +1,6 @@
 using Juvo.Application.Abstractions;
 using Juvo.Application.Billing;
+using Juvo.Application.Couriers;
 using Juvo.Application.Identity;
 using Juvo.Application.Notifications;
 using Juvo.Application.Payments;
@@ -99,6 +100,19 @@ public static class DependencyInjection
         }
 
         services.AddScoped<Payments.SandboxPayService>();
+
+        // Couriers: the sandbox courier is on by default; the real companies are registered slots without credentials (Step 14).
+        services.Configure<Couriers.SandboxCourierOptions>(configuration.GetSection(Couriers.SandboxCourierOptions.SectionName));
+        services.AddScoped<ICourierProvider, Couriers.SandboxCourierProvider>();
+        foreach (var (code, name) in new[] { ("PATHAO", "Pathao"), ("STEADFAST", "Steadfast"), ("REDX", "RedX"), ("PAPERFLY", "Paperfly"), ("ECOURIER", "eCourier"), ("DHL", "DHL Express") })
+        {
+            services.AddSingleton<ICourierProvider>(_ => new NotConfiguredCourierProvider(code, name));
+        }
+
+        services.AddScoped<Couriers.CourierSeeder>();
+        services.AddOptions<Couriers.CourierSyncOptions>().Bind(configuration.GetSection(Couriers.CourierSyncOptions.SectionName)).ValidateDataAnnotations().ValidateOnStart();
+        services.AddHostedService<Couriers.CourierStatusSyncWorker>();
+        services.AddSingleton<Juvo.Application.Realtime.IRealtimeTokenService, RealtimeTokenService>();
 
         // Invoices and notifications.
         services.AddSingleton<IDocumentPdfRenderer, Billing.SkiaPdfRenderer>();
