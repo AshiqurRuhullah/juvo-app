@@ -111,8 +111,9 @@ public sealed class CustomerAccountService(IApplicationDbContext db, ICurrentUse
         var addresses = await db.Addresses.AsNoTracking().Where(a => a.CustomerId == id).OrderByDescending(a => a.IsDefault).ThenBy(a => a.CreatedAt).ToListAsync(cancellationToken);
         var wishlist = await db.WishlistItems.CountAsync(w => w.CustomerId == id, cancellationToken);
         var cartItems = await db.Carts.Where(c => c.CustomerId == id).SelectMany(c => c.Items).SumAsync(i => (int?)i.Quantity, cancellationToken) ?? 0;
-        // Orders arrive in Step 8: their counts are filled here from the orders module.
-        return new CustomerSummaryDto(addresses.Count, wishlist, cartItems, addresses.FirstOrDefault() is { } first ? ToDto(first) : null, 0, 0);
+        var orders = await db.Orders.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Where(o => o.CustomerId == id && !o.IsDeleted).Select(o => o.Status).ToListAsync(cancellationToken);
+        var active = orders.Count(s => s is not (Domain.Orders.OrderStatus.Delivered or Domain.Orders.OrderStatus.Cancelled or Domain.Orders.OrderStatus.Returned or Domain.Orders.OrderStatus.ReturnInProgress));
+        return new CustomerSummaryDto(addresses.Count, wishlist, cartItems, addresses.FirstOrDefault() is { } first ? ToDto(first) : null, active, orders.Count);
     }
 
     // ---- Addresses --------------------------------------------------------------------------------------

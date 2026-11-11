@@ -95,6 +95,34 @@ public static class Permissions
         public const string CountryEnable = "delivery.country.enable";
     }
 
+    public static class Orders
+    {
+        public const string OrderView = "orders.order.view";
+        public const string OrderCreate = "orders.order.create";
+        public const string OrderEdit = "orders.order.edit";
+        public const string OrderConfirm = "orders.order.confirm";
+        public const string OrderPack = "orders.order.pack";
+        public const string OrderCancel = "orders.order.cancel";
+        public const string OrderReassignBranch = "orders.order.reassign-branch";
+        public const string OrderNote = "orders.order.note";
+        public const string OrderBulkAction = "orders.order.bulk-action";
+        public const string OrderPrint = "orders.order.print";
+        public const string OrderApplyDiscount = "orders.order.apply-discount";
+        public const string OrderOverrideDelivery = "orders.order.override-delivery";
+        public const string SourceView = "orders.source.view";
+    }
+
+    public static class Fraud
+    {
+        public const string FlagView = "fraud.flag.view";
+        public const string ReviewDecide = "fraud.review.decide";
+        public const string BlacklistView = "fraud.blacklist.view";
+        public const string BlacklistCreate = "fraud.blacklist.create";
+        public const string BlacklistDelete = "fraud.blacklist.delete";
+        public const string RuleView = "fraud.rule.view";
+        public const string RuleEdit = "fraud.rule.edit";
+    }
+
     public static class Promotions
     {
         public const string CouponView = "promotions.coupon.view";

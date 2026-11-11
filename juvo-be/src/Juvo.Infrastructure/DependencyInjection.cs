@@ -74,6 +74,8 @@ public static class DependencyInjection
         services.AddSingleton<IImageProcessor, SkiaImageProcessor>();
         services.AddSingleton<ITabularFile, TabularFiles>();
         services.AddHostedService<OutboxProcessor>();
+        services.AddOptions<OrderJobOptions>().Bind(configuration.GetSection(OrderJobOptions.SectionName)).ValidateDataAnnotations().ValidateOnStart();
+        services.AddHostedService<OrderTimeoutWorker>();
 
         AddIdentity(services, configuration, environment);
 

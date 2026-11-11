@@ -84,6 +84,29 @@ public static class ErrorCodes
     {
         public const string StockInsufficient = "ORDER.STOCK_INSUFFICIENT";
         public const string InvalidTransition = "ORDER.INVALID_TRANSITION";
+        public const string NotFound = "ORDER.NOT_FOUND";
+        public const string CartEmpty = "ORDER.CART_EMPTY";
+        public const string TotalChanged = "ORDER.TOTAL_CHANGED";
+        public const string DuplicateSuspected = "ORDER.DUPLICATE_SUSPECTED";
+        public const string CheckoutBlocked = "ORDER.CHECKOUT_BLOCKED";
+        public const string OtpRequired = "ORDER.OTP_REQUIRED";
+        public const string PaymentMethodUnavailable = "ORDER.PAYMENT_METHOD_UNAVAILABLE";
+        public const string CodNotAvailable = "ORDER.COD_NOT_AVAILABLE";
+        public const string HeldForReview = "ORDER.HELD_FOR_REVIEW";
+        public const string AdvanceRequired = "ORDER.ADVANCE_REQUIRED";
+        public const string PaymentPending = "ORDER.PAYMENT_PENDING";
+        public const string CannotCancel = "ORDER.CANNOT_CANCEL";
+        public const string BranchNotAllowed = "ORDER.BRANCH_NOT_ALLOWED";
+        public const string DiscountTooLarge = "ORDER.DISCOUNT_TOO_LARGE";
+        public const string NothingToDo = "ORDER.NOTHING_TO_DO";
+    }
+
+    public static class Fraud
+    {
+        public const string BlacklistNotFound = "FRAUD.BLACKLIST_NOT_FOUND";
+        public const string BlacklistExists = "FRAUD.BLACKLIST_EXISTS";
+        public const string NotWaiting = "FRAUD.NOT_WAITING";
+        public const string RuleNotFound = "FRAUD.RULE_NOT_FOUND";
     }
 
     public static class Inventory

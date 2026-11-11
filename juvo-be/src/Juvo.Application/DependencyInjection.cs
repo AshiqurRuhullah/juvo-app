@@ -71,6 +71,23 @@ public static class DependencyInjection
         services.AddScoped<Juvo.Application.Customers.CustomersAdminService>();
         services.AddScoped<Juvo.Application.Delivery.DeliveryService>();
 
+        // Orders, checkout and fraud basics (Step 8).
+        services.AddScoped<Juvo.Application.Orders.SettingsService>();
+        services.AddScoped<Juvo.Application.Orders.OrderStock>();
+        services.AddScoped<Juvo.Application.Orders.OrderRouter>();
+        services.AddScoped<Juvo.Application.Orders.OrderAccess>();
+        services.AddScoped<Juvo.Application.Orders.OrderWorkflow>();
+        services.AddScoped<Juvo.Application.Orders.FraudService>();
+        services.AddScoped<Juvo.Application.Orders.OrderPlacement>();
+        services.AddScoped<Juvo.Application.Orders.CheckoutService>();
+        services.AddScoped<Juvo.Application.Orders.CustomerOrdersService>();
+        services.AddScoped<Juvo.Application.Orders.OrdersService>();
+        services.AddScoped<Juvo.Application.Orders.OrderTimeoutService>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Orders.OrderPlacedHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Orders.OrderStatusChangedHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Orders.OrderBranchReassignedHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Orders.OrderFlaggedHandler>();
+
         // Inventory (module V).
         services.AddScoped<InventoryAccess>();
         services.AddScoped<StockLedger>();

@@ -40,6 +40,18 @@ public sealed class OutboxOptions
     public int MaxDelayMinutes { get; set; } = 60;
 }
 
+/// <summary>Background jobs of the order flow. Section: <c>Orders</c>.</summary>
+public sealed class OrderJobOptions
+{
+    public const string SectionName = "Orders";
+
+    /// <summary>Run the payment-hold timeout job (BR-D2). Turn off in tests and migration runs.</summary>
+    public bool HoldJobEnabled { get; set; } = true;
+
+    [Range(1, 3600)]
+    public int HoldJobIntervalSeconds { get; set; } = 30;
+}
+
 /// <summary>Database behaviour. Section: <c>Database</c>. The connection string itself is <c>ConnectionStrings:Default</c>.</summary>
 public sealed class DatabaseOptions
 {

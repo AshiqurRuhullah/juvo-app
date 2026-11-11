@@ -55,6 +55,7 @@ internal static class WebApplicationExtensions
         app.MapStoreEndpoints();
         app.MapMeEndpoints();
         app.MapStoreAdminEndpoints();
+        app.MapOrdersEndpoints();
 
         if (app.Services.GetRequiredService<IOptions<OpenApiSettings>>().Value.Enabled)
         {

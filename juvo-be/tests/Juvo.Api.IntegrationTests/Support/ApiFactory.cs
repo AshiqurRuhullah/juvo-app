@@ -26,6 +26,7 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         ["Auth:Seed:Email"] = SeedEmail,
         ["Notifications:StoreOtpPlaintext"] = "true",
         ["RateLimiting:Enabled"] = "false",
+        ["Orders:HoldJobEnabled"] = "false",
     };
 
     public const string SeedEmail = "admin@juvo.test";

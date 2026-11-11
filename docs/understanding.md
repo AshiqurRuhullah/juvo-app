@@ -442,18 +442,18 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-C05 | Wishlist (heart): guests keep it on the device; signed-in users keep it on the account; move wishlist item to cart | S | 7 | Done | API `/me/wishlist` and `move-to-cart` (signed-in customers) | Guest wishlist on the device is front-end work in 7-b.  Front end: `src/modules/store`, `cart`, `myaccount` (Step 7-b); e2e store/cart/myaccount specs. |
 | FR-C06 | Abandoned cart reminder by SMS/email when mobile or email is known (admin can turn on) | C | 7 | Not started | | |
 | FR-C07 | Coupon codes: percentage or fixed, minimum order, expiry, usage limit | S | 7 | Done | Coupons: `/promotions/coupons` (staff), `/store/coupons/validate`, `/store/cart/coupon` | Percentage or fixed, minimum order, dates, usage limit. Use count rises in Step 8; admin screen in 7-b. |
-| FR-D01 | Checkout works with no account: mobile number plus the basic details (name, address, delivery area) are enough | M | 8 | Not started | | |
-| FR-D02 | If the mobile number matches an existing customer, offer sign-in by OTP to load saved addresses; ordering without signing in remains possib… | M | 8 | Not started | | |
-| FR-D03 | Mobile number validation: Bangladesh format 01XXXXXXXXX (11 digits) or +880...; international numbers accepted with country code | M | 8 | Not started | | |
-| FR-D04 | Optional OTP verification of the mobile number before confirming (admin switch: off, COD only, or always). Recommended on for COD to reduce… | S | 8 | Not started | | |
-| FR-D05 | Show live totals: subtotal, delivery charge, discount, tax/duty (if enabled), grand total, and amount payable now vs. on delivery | M | 8 | Not started | | |
-| FR-D06 | Re-check stock and price at "Confirm order"; if changed, show what changed and let the customer continue or edit | M | 8 | Not started | | |
-| FR-D07 | On success show order number, summary, expected delivery date range, tracking link, and a "Create my profile" prompt (module E) | M | 8 | Not started | | |
-| FR-D08 | Order note field (gift wrap, delivery instruction) | S | 8 | Not started | | |
-| FR-D09 | Duplicate-order guard: same mobile + same items within a few minutes triggers a warning | S | 8 | Not started | | |
-| FR-D10 | Order source recorded (website, admin-created, Facebook/phone order entered by staff) | M | 8 | Not started | | |
-| FR-D11 | Admin can create an order manually on behalf of a customer (for Facebook/phone orders) using the same rules | M | 8 | Not started | | |
-| FR-D12 | Terms, privacy and return policy acceptance stored with the order | M | 8 | Not started | | |
+| FR-D01 | Checkout works with no account: mobile number plus the basic details (name, address, delivery area) are enough | M | 8 | Done | CheckoutService.CheckoutAsync; POST /api/v1/store/checkout | Mobile, name and address are enough; the customer is found or created by mobile (BR-006). Backend 8-a; page in 8-b. |
+| FR-D02 | If the mobile number matches an existing customer, offer sign-in by OTP to load saved addresses; ordering without signing in remains possib… | M | 8 | Partial | OrderPlacement (customer found by mobile); OTP sign-in from Step 7 | An existing customer's guest order is attached to them without sign-in; the sign-in offer and saved-address load are front end (8-b). |
+| FR-D03 | Mobile number validation: Bangladesh format 01XXXXXXXXX (11 digits) or +880...; international numbers accepted with country code | M | 8 | Done | PhoneNumber.Normalize (Step 3) used by checkout, tracking and the order desk | 01XXXXXXXXX, +880 and international numbers. |
+| FR-D04 | Optional OTP verification of the mobile number before confirming (admin switch: off, COD only, or always). Recommended on for COD to reduce… | S | 8 | Done | SettingsService Checkout.OtpMode (Off, CodOnly, Always); CustomerAuthService.ConsumeOtpAsync | Default CodOnly. A signed-in customer with a verified mobile skips it. |
+| FR-D05 | Show live totals: subtotal, delivery charge, discount, tax/duty (if enabled), grand total, and amount payable now vs. on delivery | M | 8 | Done | POST /api/v1/store/checkout/quote | Subtotal, coupon, delivery, grand total, payNow and payOnDelivery. Prices are tax-inclusive; a duty line stays DAP text from the delivery quote. |
+| FR-D06 | Re-check stock and price at "Confirm order"; if changed, show what changed and let the customer continue or edit | M | 8 | Done | OrderPlacement (expectedTotal gives 409 ORDER.TOTAL_CHANGED; stock re-reserved at placement) | Edit/continue screen is front end (8-b). |
+| FR-D07 | On success show order number, summary, expected delivery date range, tracking link, and a "Create my profile" prompt (module E) | M | 8 | Partial | CheckoutResultDto (number, tracking token, delivery date range, offerProfile) | Confirmation page and profile prompt in 8-b. |
+| FR-D08 | Order note field (gift wrap, delivery instruction) | S | 8 | Done | CheckoutRequest.Note stored as a customer note | Shown on the packing slip. |
+| FR-D09 | Duplicate-order guard: same mobile + same items within a few minutes triggers a warning | S | 8 | Done | OrderPlacement duplicate guard (ORDER.DUPLICATE_SUSPECTED, confirmDuplicate) | Window Checkout.DuplicateWindowMinutes, default 5. |
+| FR-D10 | Order source recorded (website, admin-created, Facebook/phone order entered by staff) | M | 8 | Done | Order.Source (Web, Facebook, WhatsApp, Phone, WalkIn, Other) | Messenger is recorded as Facebook. |
+| FR-D11 | Admin can create an order manually on behalf of a customer (for Facebook/phone orders) using the same rules | M | 8 | Done | OrdersService.CreateManualAsync; POST /api/v1/orders/manual | Same placement rules: price, stock, coupon, delivery, fraud, duplicate guard. |
+| FR-D12 | Terms, privacy and return policy acceptance stored with the order | M | 8 | Partial | Order.TermsAcceptedAt (acceptTerms is required) | Policy version is not stored yet (policies arrive with the CMS in Step 12). |
 | FR-E01 | Create a quick profile in real time from the order confirmation page or the sign-in page using only mobile number and email (email optional) | M | 7 | Partial | CustomerAuthService.VerifyOtpAsync creates the quick profile; `PUT /me` sets name and email | Confirmation-page flow in Step 8. |
 | FR-E02 | A customer can also create a profile before ordering, from the sign-in page | M | 7 | Not started | | |
 | FR-E03 | Mobile number is the unique key. Orders placed as guest with the same verified mobile number are automatically attached to the profile afte… | M | 7 | Partial | Customers.Mobile unique index, PhoneNumber.Normalize | Attaching guest orders after OTP in Step 8. |
@@ -464,9 +464,9 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-E08 | Customer can delete their account; order records are kept in anonymised form for legal and accounting needs | S | 7 | Not started | | |
 | FR-E09 | Fraud signals: many orders from one device with different numbers, repeated fake/returned COD, flagged for admin review | C | 7 | Not started | | |
 | FR-F01 | Dashboard: active orders with live status, recent orders, wishlist preview, saved addresses | M | 7-8 | Partial | API `GET /me/summary`, `/me/addresses`, `/me/wishlist` | Orders part in Step 8; UI in 7-b.  Step 7-b front end added (language switch, map pin with Use my location, cart page, account dashboard); address search and BDT conversion not built. |
-| FR-F02 | My Orders: list with filters (active, delivered, cancelled, returned); order detail with items, amounts, payment status, delivery timeline,… | M | 8 | Not started | | |
+| FR-F02 | My Orders: list with filters (active, delivered, cancelled, returned); order detail with items, amounts, payment status, delivery timeline,… | M | 8 | Partial | CustomerOrdersService; GET /api/v1/me/orders (filters active, delivered, cancelled, returned) and /{id} | Items, amounts, three statuses, timeline. Invoice PDF in Step 9, courier name and tracking link in Step 10. |
 | FR-F03 | Live order tracking page with timeline and map-style progress (module J) | M | 10 | Not started | | |
-| FR-F04 | Cancel an order while allowed (before courier pickup); request a return within the return window (module L) | M | 8 | Not started | | |
+| FR-F04 | Cancel an order while allowed (before courier pickup); request a return within the return window (module L) | M | 8 | Partial | POST /api/v1/me/orders/{id}/cancel | Cancel before courier pickup is done; the return request is module L (Step 10). |
 | FR-F05 | Address book: add, edit, delete, set default; each address with a pinned map location | M | 7-8 | Done | API `/me/addresses` (add, edit, delete, default; optional latitude and longitude) | Map picker UI in 7-b.  Front end: `src/modules/store`, `cart`, `myaccount` (Step 7-b); e2e store/cart/myaccount specs. |
 | FR-F06 | Profile: name, mobile, email, photo, password, language, notification preferences | M | 7-8 | Partial | API `GET/PUT /me` (name, email) | Photo, password, language and notification preferences later.  Step 7-b front end added (language switch, map pin with Use my location, cart page, account dashboard); address search and BDT conversion not built. |
 | FR-F07 | Reorder: add all items of a past order to cart (checks stock and current price) | S | 7-8 | Not started | | |
@@ -515,7 +515,7 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-J03 | Changes push live to open customer and admin screens (no refresh); admin dashboard counters and order list update live | M | 10 | Not started | | |
 | FR-J04 | Public tracking page for guests: order number + mobile number (or secure link sent by SMS) | M | 8 | Not started | | |
 | FR-J05 | Live stock: product page and cart reflect current availability; when the last unit is reserved, other viewers see "Sold out" or "Low stock"… | M | 10 | Not started | | |
-| FR-J06 | Admin sees who changed what and when on every status (status history; BR-003) | M | 10 | Not started | | |
+| FR-J06 | Admin sees who changed what and when on every status (status history; BR-003) | M | 10 | Partial | OrderStatusHistory (append-only) on three tracks; timeline in the order detail | Courier-driven statuses arrive in Step 10. |
 | FR-J07 | "Transparency view": admin can open one order and see order, payment, courier booking and courier events side by side, with raw courier mes… | M | 10 | Not started | | |
 | FR-J08 | Estimated delivery date updated from courier data when available | S | 10 | Not started | | |
 | FR-J09 | Delay alert: orders stuck in one status longer than a set time are highlighted for admin | S | 10 | Not started | | |
@@ -596,18 +596,18 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | NFR-018 | Observability: Central logs, error tracking, uptime alerts, webhook and integration dashboards | - | 13 | Partial | Http/CorrelationIdMiddleware.cs, JSON logging, /health/live and /health/ready | Dashboards and alerts in Steps 12/14. |
 | NFR-019 | Data integrity: Stock and order creation use transactions so two buyers cannot take the last item | - | 13 | Partial | rowversion on Entity, UnitOfWork.ExecuteInTransactionAsync, tests/InterceptorTests.cs | Last-unit stock reservation is built in Step 8. |
 | NFR-020 | Scalability: Background jobs for notifications, courier calls and reports so checkout stays fast | - | 13 | Partial | Infrastructure/Outbox/OutboxProcessor.cs (transactional outbox + worker, retry, JobLogs) | Notification and courier jobs use it in Steps 9/10. |
-| FR-S01 | Quick order form for staff: customer mobile (finds existing customer), items by SKU or search, address with map, delivery, payment, source… | M | 8 | Not started | | |
-| FR-S02 | Order source tag and filter: Website, Facebook, Messenger, WhatsApp, Phone, Walk-in | M | 8 | Not started | | |
+| FR-S01 | Quick order form for staff: customer mobile (finds existing customer), items by SKU or search, address with map, delivery, payment, source… | M | 8 | Partial | OrdersService.CreateManualAsync | Backend done (mobile lookup, SKU lines, address with pin, delivery override, payment, source). The form with map and SKU search is 8-b. |
+| FR-S02 | Order source tag and filter: Website, Facebook, Messenger, WhatsApp, Phone, Walk-in | M | 8 | Done | OrderSource; GET /api/v1/orders?source= | Filter and tag. |
 | FR-S03 | Paste a customer chat message and use "Pick details" to fill name, phone, address manually into the form (staff-assisted, no automatic read… | C | 8 | Not started | | |
-| FR-S04 | Send the customer a payment link or order-confirmation link by SMS/WhatsApp after a manual order | S | 8 | Not started | | |
+| FR-S04 | Send the customer a payment link or order-confirmation link by SMS/WhatsApp after a manual order | S | 8 | Partial | OrderPlacedHandler sends the customer an SMS (sandbox log) | A payment link by SMS or WhatsApp needs the payment module (Step 9). |
 | FR-S05 | Shareable product link and "Order via WhatsApp/Messenger" buttons that carry product name and variant in the message text | S | 8 | Not started | | |
-| FR-S06 | Daily count of orders by source for the owner | S | 8 | Not started | | |
-| FR-T01 | Risk flags per order: first-time COD, high value, mismatched phone/address, many orders from one device or IP, past returns/refusals, very… | M | 8 | Not started | | |
-| FR-T02 | Customer history score: delivered vs. returned/refused count shown on the order screen | M | 8 | Not started | | |
-| FR-T03 | Blacklist by mobile, email, address text or device; blocked checkouts get a neutral message | M | 8 | Not started | | |
-| FR-T04 | Rules (admin): hold for manual review, require OTP, require advance payment, or reject | M | 8 | Not started | | |
-| FR-T05 | Review queue: approve, request advance, call customer (note), reject with reason | M | 8 | Not started | | |
-| FR-T06 | All decisions logged with staff name and reason | M | 8 | Not started | | |
+| FR-S06 | Daily count of orders by source for the owner | S | 8 | Done | GET /api/v1/orders/sources/summary | Orders and value per source in a period. |
+| FR-T01 | Risk flags per order: first-time COD, high value, mismatched phone/address, many orders from one device or IP, past returns/refusals, very… | M | 8 | Done | FraudService rules: HIGH_COD_NEW_CUSTOMER, FIRST_TIME_COD, HIGH_VALUE, DEVICE_VELOCITY, PAST_FAILED_COD, SHORT_ADDRESS, MISMATCHED_DETAILS | Mismatch means the same address text used with other mobile numbers in 30 days. |
+| FR-T02 | Customer history score: delivered vs. returned/refused count shown on the order screen | M | 8 | Done | FraudService.StatsAsync; customerStats on the order detail and GET /api/v1/fraud/customers/{id}/stats | Score 0 to 100 from delivered, returned or failed and cancelled orders. |
+| FR-T03 | Blacklist by mobile, email, address text or device; blocked checkouts get a neutral message | M | 8 | Done | BlacklistEntry; /api/v1/fraud/blacklist; checks in FraudService.EvaluateAsync | Mobile (contact or recipient), email, address text, device. The checkout answer is neutral. |
+| FR-T04 | Rules (admin): hold for manual review, require OTP, require advance payment, or reject | M | 8 | Partial | Rules with action Flag, Hold, RequireAdvance, Reject (PUT /api/v1/fraud/rules/{code}) | Require OTP is the global Checkout.OtpMode, not a per-rule action. |
+| FR-T05 | Review queue: approve, request advance, call customer (note), reject with reason | M | 8 | Done | GET /api/v1/fraud/reviews; POST /api/v1/fraud/reviews/{orderId}/decide | Approve, RequestAdvance, Call, Reject; a held order cannot be confirmed. |
+| FR-T06 | All decisions logged with staff name and reason | M | 8 | Done | FraudReviewLog (append-only) and a note on the order | Staff name, time, state change and note. |
 | FR-U01 | Tax settings: rate per category or product, tax-inclusive or tax-exclusive prices, business tax registration number (value supplied by owne… | M | 9 | Not started | | |
 | FR-U02 | Tax shown per line and in total on cart, checkout, invoice | M | 9 | Not started | | |
 | FR-U03 | Sequential invoice numbers with no gaps; invoice PDF with business details, customer, items, tax, payments | M | 9 | Not started | | |
@@ -671,12 +671,12 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 
 | ID | Rule | Status | Enforced in | Notes |
 | --- | --- | --- | --- | --- |
-| BR-001 | One order may contain many products; each product line refers to one variant (size and colour) with its own price and stock. | Not started | | |
-| BR-002 | Stock is reserved when an order is confirmed and released if the order is cancelled or payment fails. | Not started | | |
-| BR-003 | An order always has an immutable status history (who, when, from, to). | Not started | | |
-| BR-004 | Delivery charge depends on destination zone, parcel weight and courier; the customer sees the full total before confirming. | Not started | | |
-| BR-005 | Prices are stored in BDT; international display currency is a conversion for information, with the charged currency shown clearly at checko… | Not started | | |
-| BR-006 | Guest, quick-profile and registered customers can all order; the mobile number is the main customer identity. | Partial | Customers.Mobile unique, OTP sign-in, PhoneNumber.Normalize | Guest checkout identity in Steps 7-8. |
+| BR-001 | One order may contain many products; each product line refers to one variant (size and colour) with its own price and stock. | Done | Order and OrderItem (one line per variant) | Snapshot of name, SKU, colour, size, price, picture. |
+| BR-002 | Stock is reserved when an order is confirmed and released if the order is cancelled or payment fails. | Done | OrderStock (reserve at placement, release on cancel, failure, timeout or branch change, deduct at packing) | Project rule: reserve at placement (assumptions.md row 7), not at confirmation. |
+| BR-003 | An order always has an immutable status history (who, when, from, to). | Done | OrderStatusHistory is IAppendOnly | Who, when, from, to, reason. |
+| BR-004 | Delivery charge depends on destination zone, parcel weight and courier; the customer sees the full total before confirming. | Done | OrderPlacement uses the Step 7 delivery quote | Shown charge equals billed charge; staff override needs a permission. |
+| BR-005 | Prices are stored in BDT; international display currency is a conversion for information, with the charged currency shown clearly at checko… | Partial | Orders store BDT | The international display conversion is not built yet. |
+| BR-006 | Guest, quick-profile and registered customers can all order; the mobile number is the main customer identity. | Done | Customers.Mobile unique, OTP sign-in, OrderPlacement.FindOrCreateCustomerAsync | Guest, quick and full customers all order; the mobile finds or creates the profile. |
 | BR-B1 | a product can be published only if it has a name, category, price, at least one image and at least one variant with stock tracked (stock ma… | Not started | | |
 | BR-B2 | sale price must be lower than regular price. | Not started | | |
 | BR-B3 | SKU is unique across the system. | Not started | | |

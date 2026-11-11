@@ -129,9 +129,18 @@ dotnet test juvo-be                               # needs SQL Server / LocalDB
 cd juvo-front; npm test; npm run build; npm run test:e2e
 ```
 
+### Step 8-a backend result (orders, checkout, order processing, fraud basics)
+
+Branch: worktree `worktree-agent-a658e3fc833b3ffc7` (not merged, not pushed). Contract: `docs/orders-api.md`; decisions: `docs/assumptions.md` section M; traceability rows updated (Done or Partial, honest notes).
+
+- **Built:** order aggregate with three parallel tracks and the exact state machine (domain tests cover every status pair), append-only status history, domain events through the outbox (with handlers that send the customer an SMS once), idempotent and duplicate-guarded creation, gap-free order numbers `JV-<prefix>-<yyMM>-<6 digits>` per branch and month, snapshots; stock reserved with atomic conditional updates in one transaction (release on cancel, payment timeout and reassign; deduct at packing or delivery by setting) with ledger lines; routing (default, all stock, nearest, manual) and reassign before packing; `POST /store/checkout/quote`, `POST /store/checkout`, public tracking (POST and GET), `/me/orders` (list with filters, detail with timeline, cancel); staff `/orders` (list, detail, confirm, pack, cancel, delivery steps, notes, bulk, reassign, packing slip data, manual desk orders, source summary); fraud `/fraud` (rules, blacklist, history stats, review queue and decisions); payment-hold timeout worker (BR-D2); `PlatformSettings` table with safe defaults; new permissions `orders.order.apply-discount` and `orders.order.override-delivery`.
+- **Migrations:** `OrdersCheckoutFraud`, `OrderStandardDeliveryCharge`.
+- **Not in 8-a (Partial/Deferred):** the whole front end of Step 8 (checkout page, confirmation, tracking page, admin order screens, desk form, fraud screens, my orders: 8-b); payment capture and refunds (Step 9; online orders wait in Pending and time out); couriers, returns (Step 10); order splitting across branches; settings screen; policy version with the terms acceptance; FR-S03, FR-S04 payment link, FR-S05; BR-005 display conversion.
+- **Gate (2026-11-11, run and seen):** `dotnet build juvo-be --no-incremental` 0 warnings, 0 errors; `dotnet test juvo-be` 468 passed, 0 failed (domain 134, application 39, integration 295; 37 of the integration tests are the new order, stock-race, fraud and timeout tests, 20 domain tests are new); `dotnet ef migrations has-pending-model-changes` clean; `dotnet list package --vulnerable --include-transitive` clean for all 8 projects; no `JuvoDb_Test_*` database left on LocalDB. Race proof: 8 concurrent checkouts for the last unit give exactly 1 order, 7 `ORDER.STOCK_INSUFFICIENT`, reserved 1 of on-hand 1; 4 buyers of 2 units on 5 in stock give 2 orders and reserved 4.
+
 ## Next step
 
-**Step 8: Checkout, orders and order processing** (modules D, S, T basics, J basics). Orders, stock reservation and the other branch data adopt `IBranchScoped` the way stock does.
+**Step 8-b: Checkout, orders and order processing front end** (checkout page, confirmation, public tracking, my orders, admin orders, order desk, fraud screens) on top of the 8-a API; then Step 9 (payments, tax/invoices, notifications).
 
 ## Known issues / notes
 
