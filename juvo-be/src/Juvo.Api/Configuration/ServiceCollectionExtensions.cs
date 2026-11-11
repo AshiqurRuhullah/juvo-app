@@ -94,6 +94,10 @@ internal static class ServiceCollectionExtensions
                 ? RateLimitPartition.GetFixedWindowLimiter("checkout:" + ClientKey(context), _ => Window(settings.CheckoutPerMinute))
                 : RateLimitPartition.GetNoLimiter("checkout"));
 
+            options.AddPolicy(RateLimitSettings.StorefrontPolicy, context => settings.Enabled
+                ? RateLimitPartition.GetFixedWindowLimiter("storefront:" + ClientKey(context), _ => Window(settings.StorefrontPerMinute))
+                : RateLimitPartition.GetNoLimiter("storefront"));
+
             options.OnRejected = async (context, cancellationToken) =>
             {
                 var http = context.HttpContext;

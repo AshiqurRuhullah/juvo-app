@@ -73,4 +73,33 @@ public static class Permissions
         public const string ReorderView = "inventory.reorder.view";
         public const string ReorderEdit = "inventory.reorder.edit";
     }
+
+    public static class Customers
+    {
+        public const string CustomerView = "customers.customer.view";
+        public const string CustomerEdit = "customers.customer.edit";
+        public const string CustomerBlock = "customers.customer.block";
+        public const string CustomerExport = "customers.customer.export";
+        public const string CustomerViewPii = "customers.customer.view-pii";
+    }
+
+    public static class Delivery
+    {
+        public const string ZoneView = "delivery.zone.view";
+        public const string ZoneCreate = "delivery.zone.create";
+        public const string ZoneEdit = "delivery.zone.edit";
+        public const string ZoneDelete = "delivery.zone.delete";
+        public const string RateView = "delivery.rate.view";
+        public const string RateEdit = "delivery.rate.edit";
+        public const string CountryView = "delivery.country.view";
+        public const string CountryEnable = "delivery.country.enable";
+    }
+
+    public static class Promotions
+    {
+        public const string CouponView = "promotions.coupon.view";
+        public const string CouponCreate = "promotions.coupon.create";
+        public const string CouponEdit = "promotions.coupon.edit";
+        public const string CouponDelete = "promotions.coupon.delete";
+    }
 }

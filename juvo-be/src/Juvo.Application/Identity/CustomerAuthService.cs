@@ -127,6 +127,13 @@ public sealed class CustomerAuthService(
 
         otp.Consume(now);
         var customer = await db.Customers.FirstOrDefaultAsync(c => c.Mobile == mobile, cancellationToken);
+        if (customer is { IsActive: false })
+        {
+            await db.SaveChangesAsync(cancellationToken);
+            await RecordAsync(customer.Id, mobile, false, "account-disabled", client, cancellationToken);
+            return Error.Forbidden(ErrorCodes.Auth.AccountDisabled, "This account has been deactivated. Please contact the shop.");
+        }
+
         if (customer is null)
         {
             customer = new Customer(mobile, ProfileLevel.Quick);

@@ -61,6 +61,16 @@ public static class DependencyInjection
         services.AddScoped<ProductMediaService>();
         services.AddScoped<ProductImportService>();
 
+        // Storefront, cart, customers, delivery (Step 7).
+        services.AddScoped<Juvo.Application.Storefront.StockAvailability>();
+        services.AddScoped<Juvo.Application.Storefront.StorefrontCatalogService>();
+        services.AddScoped<Juvo.Application.Carts.CartService>();
+        services.AddScoped<Juvo.Application.Carts.CouponsService>();
+        services.AddScoped<Juvo.Application.Customers.CustomerAccountService>();
+        services.AddScoped<Juvo.Application.Customers.WishlistService>();
+        services.AddScoped<Juvo.Application.Customers.CustomersAdminService>();
+        services.AddScoped<Juvo.Application.Delivery.DeliveryService>();
+
         // Inventory (module V).
         services.AddScoped<InventoryAccess>();
         services.AddScoped<StockLedger>();
