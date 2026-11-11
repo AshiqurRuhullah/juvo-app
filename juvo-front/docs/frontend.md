@@ -34,6 +34,10 @@ The browser never calls the API. It calls this app, and this app calls the API w
 | `/admin/categories` (tabs: categories, brands, size charts; `?tab=`) | staff | done (Step 6-e) |
 | `/admin/inventory` (stock), `/movements`, `/transfers`, `/transfers/new`, `/transfers/[id]`, `/counts`, `/counts/[id]` | staff | done (Step 6-e) |
 | `/media/...` (product pictures from the API, public, cached for a year) | everyone | done (Step 6-e) |
+| `/checkout`, `/order/confirmed/[number]`, `/track` (`?token=` or `?number=&mobile=`) | everyone (guest with a mobile number, or signed in) | done (Step 8-b) |
+| `/account/orders`, `/account/orders/[id]` | customer | done (Step 8-b) |
+| `/admin/orders` (list, filters, bulk), `/orders/[id]`, `/orders/[id]/packing-slip`, `/orders/print?ids=`, `/orders/new` (social order desk) | staff (`orders.order.*`, checked in the order's branch) | done (Step 8-b) |
+| `/admin/fraud` (tabs: review queue, blacklist, rules) | staff (`fraud.*`) | done (Step 8-b) |
 | `/account` | customer | placeholder (Step 7) |
 | `/forbidden` (403), `/unauthorized` (401), not-found (404), error and global-error | all | done |
 | `/design` | development only (404 in production unless `ENABLE_DESIGN_PAGE=true`) | every component in every state |

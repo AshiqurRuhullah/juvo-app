@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChevronDown, Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
+import { ChevronDown, Heart, Menu, Search, ShoppingBag, Truck, User } from "lucide-react";
 import { Logo } from "@/components/layout/logo";
 import { LanguageSwitch, ThemeToggle } from "@/components/layout/preferences";
 import { Dialog, DialogTitle, DialogDescription, DialogTrigger, SheetContent, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/overlays";
@@ -120,6 +120,9 @@ function MenuDrawer({ categories, accountHref, signedIn }: { categories: StoreCa
           </Link>
           <Link href="/account/wishlist" onClick={close} className="flex min-h-11 items-center gap-2 rounded-md px-3 font-medium text-strong hover:bg-sunken">
             <Heart className="size-5" aria-hidden /> {t("wishlist")}
+          </Link>
+          <Link href="/track" onClick={close} className="flex min-h-11 items-center gap-2 rounded-md px-3 font-medium text-strong hover:bg-sunken">
+            <Truck className="size-5" aria-hidden /> {t("trackOrder")}
           </Link>
           <div className="flex items-center gap-1 px-1">
             <LanguageSwitch />

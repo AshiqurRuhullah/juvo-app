@@ -12,9 +12,10 @@
     "myAccount": "আমার অ্যাকাউন্ট",
     "signIn": "সাইন ইন",
     "wishlist": "উইশলিস্ট",
+    "trackOrder": "আমার অর্ডার ট্র্যাক করুন",
     "search": "খুঁজুন"
   },
-  "footer": { "shop": "শপ", "allProducts": "সব পণ্য", "cart": "আপনার কার্ট" },
+  "footer": { "shop": "শপ", "allProducts": "সব পণ্য", "cart": "আপনার কার্ট", "trackOrder": "অর্ডার ট্র্যাক করুন" },
   "search": {
     "label": "পণ্য খুঁজুন",
     "placeholder": "ড্রেস, জুতা, পার্স খুঁজুন…",
