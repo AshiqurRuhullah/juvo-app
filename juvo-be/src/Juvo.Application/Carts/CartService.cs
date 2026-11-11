@@ -66,6 +66,10 @@ public sealed class CartService(IApplicationDbContext db, ICurrentUser currentUs
         return (cart, fresh);
     }
 
+    /// <summary>The cart of the signed-in customer or the guest token (tracked, with its lines), or null. Used by checkout.</summary>
+    public async Task<Cart?> FindAsync(string? token, CancellationToken cancellationToken) =>
+        (await ResolveAsync(token, create: false, cancellationToken)).Cart;
+
     // ---- Reading ----------------------------------------------------------------------------------------
 
     public async Task<Result<CartView>> GetAsync(string? token, CancellationToken cancellationToken)

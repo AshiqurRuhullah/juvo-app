@@ -154,6 +154,44 @@ public sealed class CustomerAuthService(
         return tokens;
     }
 
+    /// <summary>
+    /// Checks a code and uses it up without signing anybody in (OTP before an order is confirmed, FR-D04). Wrong guesses are counted and saved at once,
+    /// so this must be called outside the order transaction.
+    /// </summary>
+    public async Task<Result> ConsumeOtpAsync(string mobile, string code, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            return new Error(ErrorCodes.Auth.OtpInvalid, "The code is not correct.", ErrorType.Validation);
+        }
+
+        var now = timeProvider.GetUtcNow();
+        var otp = await db.OtpCodes.Where(o => o.Mobile == mobile && o.ConsumedAt == null).OrderByDescending(o => o.CreatedAt).FirstOrDefaultAsync(cancellationToken);
+        if (otp is null || now >= otp.ExpiresAt)
+        {
+            return new Error(ErrorCodes.Auth.OtpExpired, "The code has expired. Ask for a new one.", ErrorType.Validation);
+        }
+
+        if (otp.Attempts >= OtpCode.MaxAttempts)
+        {
+            return new Error(ErrorCodes.Auth.OtpTooManyAttempts, "Too many wrong codes. Ask for a new one.", ErrorType.TooManyRequests);
+        }
+
+        var supplied = Hash(mobile, code.Trim());
+        if (!CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(supplied), Encoding.UTF8.GetBytes(otp.CodeHash)))
+        {
+            otp.RegisterFailedAttempt();
+            await db.SaveChangesAsync(cancellationToken);
+            return otp.Attempts >= OtpCode.MaxAttempts
+                ? new Error(ErrorCodes.Auth.OtpTooManyAttempts, "Too many wrong codes. Ask for a new one.", ErrorType.TooManyRequests)
+                : new Error(ErrorCodes.Auth.OtpInvalid, "The code is not correct.", ErrorType.Validation);
+        }
+
+        otp.Consume(now);
+        await db.SaveChangesAsync(cancellationToken);
+        return Result.Success();
+    }
+
     private async Task RecordAsync(Guid? customerId, string mobile, bool ok, string? reason, ClientInfo client, CancellationToken cancellationToken)
     {
         db.SignInHistory.Add(new SignInHistory(SubjectType.Customer, customerId, mobile, ok, reason, client.IpAddress, client.UserAgent,
