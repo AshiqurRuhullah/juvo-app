@@ -18,11 +18,9 @@ export function useMoney() {
   };
 }
 
-/** The API gives picture addresses under /files; this app serves them from /media (same origin, cached). */
-export function mediaUrl(apiUrl: string | null | undefined): string | undefined {
-  if (!apiUrl) return undefined;
-  return apiUrl.startsWith("/files/") ? `/media/${apiUrl.slice("/files/".length)}` : apiUrl;
-}
+import { mediaUrl } from "@/lib/media";
+
+export { mediaUrl };
 
 /** Address of the card (800 x 1000) or thumbnail (160 x 200) rendition of a stored picture path such as products/2611/ab/cd.webp. */
 export function renditionUrl(path: string | null | undefined, kind: "card" | "thumb" | "main" = "card"): string | undefined {
