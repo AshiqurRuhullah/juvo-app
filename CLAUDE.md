@@ -157,3 +157,9 @@ Backend (6-d): domain 94 + application 23 + integration 190, build 0 warnings. F
 - Front-end texts: add keys to the module's own message files in BOTH languages; `tests/messages.test.ts` enforces equal keys and placeholders. Error texts for API codes live in `errors.*` in `en.json`/`bn.json`.
 - Product pictures are shown from `/media/...` (see `src/modules/catalog/format.ts` `imageSrc`); never link to the API's `/files` directly.
 - Sample catalog: `Seed:SampleCatalog` (Development) seeds 16 demo products (tag `sample`); the e2e API runs in Development so tests can rely on them (for example SKU `JV-TSH-BLA-M`).
+
+## 13. Working notes learned in Steps 8 to 10
+- A .NET 11 SDK is installed next to 10.0.403, and `juvo-be/global.json` pins 10.x. Run `dotnet build`/`dotnet test` from inside `juvo-be` (from the repo root the 11 SDK is picked and the new CA2026 analyzer fails the test projects).
+- A running API from `dotnet run` locks the DLLs: stop it (by PID, `taskkill`) before building, then start it with `dotnet run --no-build`.
+- Backend work that adds migrations is done by one builder at a time (the model snapshot would conflict); front-end builders run in parallel in worktrees and merge additively (nav.ts, load.ts, messages, docs).
+- Step 8 to 10 backends: orders `docs/orders-api.md`, returns `docs/returns-api.md`, payments `docs/payments-api.md`, couriers and real-time `docs/couriers-api.md`.

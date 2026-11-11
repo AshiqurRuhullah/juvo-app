@@ -139,11 +139,11 @@ export function useReturnAction(id: string) {
       const params = { params: { path: { id } } };
       switch (vars.action) {
         case "approve":
-          return unwrap(await api.POST("/api/v1/returns/{id}/approve", { ...params, body: { note: vars.note?.trim() || null } }));
+          return unwrap(await api.POST("/api/v1/returns/{id}/approve", { ...params, body: { note: vars.note?.trim() || null, useCourier: false } }));
         case "reject":
           return unwrap(await api.POST("/api/v1/returns/{id}/reject", { ...params, body: { reason: vars.reason.trim() } }));
         case "schedulePickup":
-          return unwrap(await api.POST("/api/v1/returns/{id}/schedule-pickup", { ...params, body: { date: vars.date, courier: vars.courier?.trim() || null, note: vars.note?.trim() || null } }));
+          return unwrap(await api.POST("/api/v1/returns/{id}/schedule-pickup", { ...params, body: { date: vars.date, courier: vars.courier?.trim() || null, note: vars.note?.trim() || null, useCourier: false } }));
         case "pickedUp":
           return unwrap(await api.POST("/api/v1/returns/{id}/picked-up", params));
         case "received":
@@ -153,7 +153,7 @@ export function useReturnAction(id: string) {
         case "refund":
           return unwrap(await api.POST("/api/v1/returns/{id}/refund", { ...params, body: { method: vars.method, reference: vars.reference.trim(), amount: vars.amount } }));
         case "exchange":
-          return unwrap(await api.POST("/api/v1/returns/{id}/exchange", { ...params, body: { lines: vars.lines ?? null, note: vars.note?.trim() || null } }));
+          return unwrap(await api.POST("/api/v1/returns/{id}/exchange", { ...params, body: { lines: vars.lines ?? null, note: vars.note?.trim() || null, useCourier: false } }));
         case "rejectRefund":
           return unwrap(await api.POST("/api/v1/returns/{id}/reject-refund", { ...params, body: { reason: vars.reason.trim() } }));
       }
