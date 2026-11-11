@@ -69,3 +69,6 @@ desktop.ini
 
 # ---- Local run state of scripts/start-all.ps1 ----
 .run/
+
+# Local agent worktrees
+.claude/
