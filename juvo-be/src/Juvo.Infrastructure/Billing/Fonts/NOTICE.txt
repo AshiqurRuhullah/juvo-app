@@ -1,0 +1,13 @@
+Fonts embedded in the invoice PDFs (see docs/assumptions.md section Q)
+
+NotoSans-Regular.ttf, NotoSans-Bold.ttf
+  Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)
+  SIL Open Font License, Version 1.1 (text in OFL.txt; both font families share the same licence text).
+  Source: npm package @expo-google-fonts/noto-sans 0.4.2 (400Regular, 700Bold), licence file LICENSE_FONT checked.
+
+NotoSansBengali-Regular.ttf, NotoSansBengali-Bold.ttf
+  Copyright 2022 The Noto Project Authors (https://github.com/notofonts/bengali)
+  SIL Open Font License, Version 1.1 (OFL.txt).
+  Source: npm package @expo-google-fonts/noto-sans-bengali 0.4.4 (400Regular, 700Bold), licence file LICENSE_FONT checked.
+
+The fonts are unmodified. The OFL allows embedding them in documents and bundling them with software; they may not be sold on their own.

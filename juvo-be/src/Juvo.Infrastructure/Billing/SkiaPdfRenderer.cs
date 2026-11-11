@@ -217,9 +217,6 @@ internal sealed class SkiaPdfRenderer : IDocumentPdfRenderer
 
     public byte[] Render(PdfDocumentModel m)
     {
-        var bn = m.Language == "bn";
-        string L(string en, string bangla) => bn ? bangla : en;
-        using var pen = new TextPen();
         using var output = new MemoryStream();
         using (var document = SKDocument.CreatePdf(output, new SKDocumentPdfMetadata
         {
@@ -232,6 +229,50 @@ internal sealed class SkiaPdfRenderer : IDocumentPdfRenderer
             EncodingQuality = 90,
         }))
         {
+            Draw(m, () => document.BeginPage(PageWidth, PageHeight), document.EndPage);
+            document.Close();
+        }
+
+        return output.ToArray();
+    }
+
+    /// <summary>The first page as a PNG picture (a preview for screens, and the way the layout and the Bengali shaping are checked by eye). Later pages are laid out but not drawn.</summary>
+    public static byte[] RenderPreviewPng(PdfDocumentModel m, float scale = 1.5f)
+    {
+        SKBitmap? bitmap = null;
+        var spare = new SKBitmap(1, 1);
+        using var spareCanvas = new SKCanvas(spare);
+        try
+        {
+            Draw(m, () =>
+            {
+                if (bitmap is not null)
+                {
+                    return spareCanvas; // only the first page is kept
+                }
+
+                bitmap = new SKBitmap((int)(PageWidth * scale), (int)(PageHeight * scale));
+                var canvas = new SKCanvas(bitmap);
+                canvas.Clear(SKColors.White);
+                canvas.Scale(scale);
+                return canvas;
+            }, () => { });
+            using var image = SKImage.FromBitmap(bitmap!);
+            return image.Encode(SKEncodedImageFormat.Png, 90).ToArray();
+        }
+        finally
+        {
+            bitmap?.Dispose();
+            spare.Dispose();
+        }
+    }
+
+    private static void Draw(PdfDocumentModel m, Func<SKCanvas> beginPage, Action endPage)
+    {
+        var bn = m.Language == "bn";
+        string L(string en, string bangla) => bn ? bangla : en;
+        using var pen = new TextPen();
+        {
             SKCanvas? canvas = null;
             float y = 0;
             var pageNumber = 0;
@@ -241,10 +282,10 @@ internal sealed class SkiaPdfRenderer : IDocumentPdfRenderer
                 if (canvas is not null)
                 {
                     Footer();
-                    document.EndPage();
+                    endPage();
                 }
 
-                canvas = document.BeginPage(PageWidth, PageHeight);
+                canvas = beginPage();
                 pageNumber++;
                 using var bar = new SKPaint { Color = Red, IsAntialias = true };
                 canvas.DrawRect(0, 0, PageWidth, 8, bar);
@@ -413,10 +454,7 @@ internal sealed class SkiaPdfRenderer : IDocumentPdfRenderer
             }
 
             Footer();
-            document.EndPage();
-            document.Close();
+            endPage();
         }
-
-        return output.ToArray();
     }
 }
