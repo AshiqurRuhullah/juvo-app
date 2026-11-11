@@ -27,6 +27,8 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         ["Notifications:StoreOtpPlaintext"] = "true",
         ["RateLimiting:Enabled"] = "false",
         ["Orders:HoldJobEnabled"] = "false",
+        ["Couriers:Sync:Enabled"] = "false",
+        ["Couriers:Sandbox:WebhookSecret"] = "test-courier-webhook-secret-0123456789",
     };
 
     public const string SeedEmail = "admin@juvo.test";
@@ -71,6 +73,7 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Catalog.CatalogSeeder>().SeedAsync();
         await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Geo.GeoSeeder>().SeedAsync(); // reference categories and size charts, as at start-up
         await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Billing.BillingSeeder>().SeedAsync(); // the sample tax rule (inactive)
+        await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Couriers.CourierSeeder>().SeedAsync(); // the sandbox courier (on) and the six real slots (off)
 
         // The seeded Super Admin must change the password at first sign-in. Most tests want a usable admin, so clear that flag
         // here; tests of the forced change create a fresh user through the API instead.

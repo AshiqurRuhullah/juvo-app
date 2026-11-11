@@ -52,6 +52,8 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
             "/api/v{version:apiVersion}/auth/reset-password",
             "/api/v{version:apiVersion}/auth/otp/request",
             "/api/v{version:apiVersion}/auth/otp/verify",
+            // Courier webhook (Step 10): the courier proves itself with its signature.
+            "/api/v{version:apiVersion}/webhooks/couriers/{provider}",
         };
 
         // The public shop (Step 7). Cart merge is deliberately not here: it needs a customer token.
@@ -63,6 +65,8 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
             // Payments (Step 9): the customer proves the order with the tracking token; the webhook proves itself with the provider signature.
             "payment-methods", "payments/initiate", "payments/{id:guid}/status", "payments/{id:guid}/confirm", "payments/manual", "payments/{id:guid}/proof", "payments/webhooks/{provider}",
             "payments/sandbox/sessions/{sessionId}", "payments/sandbox/sessions/{sessionId}/complete", "payments/sandbox/pay/{sessionId}", "orders/invoice", "orders/invoice/pdf",
+            // Step 10: a guest cancels, or asks for a hub token, with the tracking token (or number plus mobile); both are rate limited.
+            "orders/track/cancel", "orders/track/realtime-token",
         }.Select(r => "/api/v{version:apiVersion}/store/" + r);
 
         var actual = ApiEndpoints().Where(e => e.AllowAnonymous).Select(e => e.Route).Distinct().Order().ToList();
@@ -78,7 +82,8 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
                                             e.Route.Contains("/delivery/", StringComparison.Ordinal) && !e.Route.Contains("/store/", StringComparison.Ordinal) ||
                                             e.Route.Contains("/v{version:apiVersion}/orders", StringComparison.Ordinal) || e.Route.Contains("/fraud/", StringComparison.Ordinal) ||
                                             e.Route.Contains("/v{version:apiVersion}/returns", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/payments", StringComparison.Ordinal) ||
-                                            e.Route.Contains("/v{version:apiVersion}/billing", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/notifications", StringComparison.Ordinal)).ToList();
+                                            e.Route.Contains("/v{version:apiVersion}/billing", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/notifications", StringComparison.Ordinal) ||
+                                            e.Route.Contains("/v{version:apiVersion}/couriers", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/shipments", StringComparison.Ordinal)).ToList();
 
         Assert.NotEmpty(ums);
         foreach (var endpoint in ums)
@@ -103,7 +108,7 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
 
         // Account endpoints of the signed-in person (/auth) and of the signed-in customer (/me, cart merge). Anything else needs a permission.
         Assert.All(onlyAuthenticated, e => Assert.True(
-            e.Contains("/auth/", StringComparison.Ordinal) || e.Contains("/me", StringComparison.Ordinal) || e.EndsWith("/store/cart/merge", StringComparison.Ordinal), e));
+            e.Contains("/auth/", StringComparison.Ordinal) || e.Contains("/me", StringComparison.Ordinal) || e.EndsWith("/store/cart/merge", StringComparison.Ordinal) || e.EndsWith("/realtime/token", StringComparison.Ordinal), e));
     }
 
     [Fact]
