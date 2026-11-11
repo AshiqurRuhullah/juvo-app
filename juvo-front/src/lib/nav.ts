@@ -73,9 +73,9 @@ export const ADMIN_NAV: NavGroup[] = [
     label: "sales",
     icon: ShoppingCart,
     items: [
-      { id: "orders", label: "orders", href: "/admin/orders", icon: ClipboardList, permission: "orders.order.view", scope: "anywhere", ready: true, bottom: true },
-      { id: "social-orders", label: "socialOrders", href: "/admin/orders/new", icon: Store, permission: "orders.order.create", scope: "anywhere", ready: true },
-      { id: "fraud", label: "fraud", href: "/admin/fraud", icon: ShieldAlert, permission: "fraud.flag.view", scope: "anywhere", ready: true },
+      { id: "orders", label: "orders", href: "/admin/orders", icon: ClipboardList, permission: "orders.order.view", ready: true, bottom: true },
+      { id: "social-orders", label: "socialOrders", href: "/admin/orders/new", icon: Store, permission: "orders.order.create", ready: true },
+      { id: "fraud", label: "fraud", href: "/admin/fraud", icon: ShieldAlert, permission: "fraud.flag.view", ready: true },
       { id: "returns", label: "returns", href: "/admin/returns", icon: RotateCcw, permission: "returns.return.view", ready: false },
     ],
   },

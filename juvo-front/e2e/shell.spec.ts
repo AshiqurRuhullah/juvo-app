@@ -184,5 +184,5 @@ test("modules that are not built yet are marked, not linked", async ({ page }) =
   const catalog = scope.getByRole("button", { name: "Catalog" });
   if ((await catalog.getAttribute("aria-expanded")) !== "true") await catalog.click();
   await expect(scope.getByText("Purchasing", { exact: true })).toBeVisible();
-  await expect(scope.getByText("Soon").first()).toBeVisible();
+  await expect(scope.locator("li", { hasText: "Purchasing" }).getByText("Soon")).toBeVisible();
 });

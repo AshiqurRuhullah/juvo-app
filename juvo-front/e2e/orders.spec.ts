@@ -443,10 +443,12 @@ test.describe("Fraud review", () => {
     await page.getByRole("dialog").getByRole("button", { name: "Call the customer" }).click();
     await expect(item).toContainText("In review");
 
+    await expect(page.getByRole("dialog")).toHaveCount(0);
     await item.getByTestId("decide-RequestAdvance").click();
     await page.getByRole("dialog").getByRole("button", { name: "Request advance" }).click();
     await expect(item).toContainText("Advance requested");
 
+    await expect(page.getByRole("dialog")).toHaveCount(0);
     await item.getByTestId("decide-Approve").click();
     await page.getByRole("dialog").getByRole("button", { name: "Approve" }).click();
     await expect(page.getByTestId("review-item").filter({ hasText: held.number })).toHaveCount(0);
