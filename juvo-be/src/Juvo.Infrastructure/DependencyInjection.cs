@@ -85,6 +85,8 @@ public static class DependencyInjection
         services.AddScoped<IdentitySeeder>();
         services.AddScoped<Catalog.CatalogSeeder>();
         services.AddScoped<Catalog.SampleCatalogSeeder>();
+        services.AddScoped<Geo.GeoSeeder>();
+        services.AddOptions<Juvo.Application.Storefront.StorefrontOptions>().Bind(configuration.GetSection(Juvo.Application.Storefront.StorefrontOptions.SectionName));
 
         return services;
     }
