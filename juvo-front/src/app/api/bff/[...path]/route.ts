@@ -38,8 +38,12 @@ async function handle(request: NextRequest, context: Context) {
   let renewed: TokenPair | undefined;
 
   // Guest cart: the token lives in an httpOnly cookie; the proxy adds it as X-Cart-Token and stores a new one from the answer.
+  // Checkout and its quote read the same cart, so they get the header too (a successful checkout spends the cart).
   const isCart = target === "/api/v1/store/cart" || target.startsWith("/api/v1/store/cart/");
-  const cartToken = isCart ? request.cookies.get(COOKIES.cart)?.value : undefined;
+  const isCheckout = target === "/api/v1/store/checkout" || target.startsWith("/api/v1/store/checkout/");
+  const cartToken = isCart || isCheckout ? request.cookies.get(COOKIES.cart)?.value : undefined;
+  // Makes a retried checkout safe: the same key returns the same order.
+  const idempotencyKey = isCheckout ? request.headers.get("idempotency-key")?.slice(0, 80) || undefined : undefined;
 
   const contentType = request.headers.get("content-type") ?? undefined;
   const hasBody = !["GET", "HEAD"].includes(request.method);
@@ -51,7 +55,7 @@ async function handle(request: NextRequest, context: Context) {
       token,
       branch,
       client: hints,
-      headers: { ...(contentType ? { "Content-Type": contentType } : {}), ...(cartToken ? { "X-Cart-Token": cartToken } : {}) },
+      headers: { ...(contentType ? { "Content-Type": contentType } : {}), ...(cartToken ? { "X-Cart-Token": cartToken } : {}), ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}) },
       body,
     });
 
@@ -98,6 +102,8 @@ async function handle(request: NextRequest, context: Context) {
       response.cookies.set(COOKIES.cart, token, { httpOnly: true, secure: isSecureContext(), sameSite: "lax", path: "/", maxAge: CART_COOKIE_MAX_AGE });
     }
   }
+  // A placed order spends the cart: forget its token so the next visit starts a fresh cart.
+  if (target === "/api/v1/store/checkout" && request.method === "POST" && upstream.status === 201) response.cookies.delete(COOKIES.cart);
   if (renewed) writeSessionCookies(response.cookies, renewed);
   return response;
 }
