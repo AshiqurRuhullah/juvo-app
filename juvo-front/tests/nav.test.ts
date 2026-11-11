@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ACCOUNT_NAV, ADMIN_NAV, activeItem, flattenNav, visibleNav } from "@/lib/nav";
+import { ACCOUNT_NAV, ADMIN_NAV, activeItem, flattenNav, isLeafGroup, visibleNav } from "@/lib/nav";
 import type { AccessView } from "@/lib/auth/permissions";
 import en from "@/messages/en.json";
 import bn from "@/messages/bn.json";
@@ -36,6 +36,16 @@ describe("menu visibility", () => {
     const nested = flattenNav(ADMIN_NAV).find((i) => i.href.split("/").length > 3);
     if (nested) expect(activeItem(ADMIN_NAV, `${nested.href}/123`)?.href).toBe(nested.href);
     expect(activeItem(ADMIN_NAV, "/admin/does-not-exist")?.href).not.toBe("/admin");
+  });
+
+  it("every group has an icon, and a one-item group is a plain link", () => {
+    for (const group of [...ADMIN_NAV, ...ACCOUNT_NAV]) {
+      expect(group.icon, `icon of ${group.id}`).toBeTruthy();
+      expect(isLeafGroup(group)).toBe(group.items.length === 1);
+    }
+    // Only groups with children become parents: the menu has both kinds.
+    expect(ADMIN_NAV.some(isLeafGroup)).toBe(true);
+    expect(ADMIN_NAV.some((g) => !isLeafGroup(g))).toBe(true);
   });
 
   it("every menu label exists in both languages", () => {

@@ -60,7 +60,7 @@ export function MovementsList() {
         cell: ({ row }) => {
           const change = toNumber(row.original.quantityChange);
           return (
-            <span className={`font-semibold tabular-nums ${change < 0 ? "text-danger" : "text-success"}`}>
+            <span className={`font-semibold tabular-nums ${change < 0 ? "text-danger-ink" : "text-success-ink"}`}>
               {change > 0 ? "+" : ""}
               {change}
               <span className="sr-only"> {change < 0 ? t("removed") : t("added")}</span>

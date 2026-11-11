@@ -71,3 +71,8 @@ test-results/
 !/docs/ui-checks/lookups/categories-360.png
 !/docs/ui-checks/lookups/import-report-1280.png
 !/docs/ui-checks/lookups/size-chart-dialog-360.png
+
+# Design refresh: the open menu in its three layouts.
+!/docs/ui-checks/nav-tree-1280.png
+!/docs/ui-checks/nav-rail-flyout-820.png
+!/docs/ui-checks/nav-drawer-360.png

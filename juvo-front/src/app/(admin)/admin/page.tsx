@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getFormatter, getTranslations } from "next-intl/server";
 import { Building2, KeyRound, ShieldCheck, UserRound } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
+import { DashboardView } from "@/modules/dashboard/dashboard-view";
+import { buildSampleDashboard } from "@/modules/dashboard/sample-data";
 import { SystemInfoCard } from "@/components/layout/system-info-card";
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/surfaces";
 import { requireSession } from "@/lib/server/session";
@@ -26,11 +28,19 @@ export default async function AdminDashboardPage() {
   const modules = codes ? Object.entries(codes.reduce<Record<string, number>>((acc, c) => ({ ...acc, [moduleOf(c)]: (acc[moduleOf(c)] ?? 0) + 1 }), {})).sort(([a], [b]) => a.localeCompare(b)) : [];
   const branch = me.branches.find((b) => b.id === active);
   const roles = Array.from(new Set(me.assignments.map((a) => a.roleName)));
+  const t2 = await getTranslations("dashboard2");
+  const format = await getFormatter();
+  const now = new Date();
+  const todayIso = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12).toISOString(); // noon: the same day in every timezone
+  const where = me.isAllBranches ? t("allBranches") : (branch?.nameEn ?? null);
 
   return (
     <>
-      <PageHeader title={t("welcome", { name: staff.fullName })} description={t("subtitle")} />
+      <PageHeader title={t("welcome", { name: staff.fullName })} description={where ? `${where} · ${format.dateTime(now, { dateStyle: "full" })}` : format.dateTime(now, { dateStyle: "full" })} />
 
+      <DashboardView data={buildSampleDashboard(todayIso)} todayIso={todayIso} />
+
+      <h2 className="mb-3 mt-10 text-lg font-medium text-strong">{t2("account")}</h2>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <Card>
           <CardHeader>

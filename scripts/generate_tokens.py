@@ -17,22 +17,33 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 LIGHT = {
-    "brand-primary": "#DB0100",        # logo swoosh red (sampled)
+    "brand-primary": "#DB0100",        # logo swoosh red (sampled): primary actions and the active state only
     "brand-primary-dark": "#A80100",   # hover/pressed, ~20% darker
     "brand-primary-soft": "#FDEDEC",   # ~8% tint
     "brand-secondary": "#1C0807",      # logo inner-disc ink
     "brand-accent": "#EBE5DB",         # logo ring/J cream
-    "surface": "#FAF7F3",
+    "surface": "#F7F5F1",              # calm warm page background
     "surface-card": "#FFFFFF",
-    "surface-sunken": "#F2ECE4",
-    "text-strong": "#1C0807",
-    "text-muted": "#625755",
+    "surface-sunken": "#F1EEE8",
+    "text-strong": "#231615",
+    "text-muted": "#645957",
     "text-on-primary": "#FFFFFF",
-    "border": "#E4DCD2",
+    "border": "#E8E2D9",
     "success": "#1F7A4D",
     "warning": "#8F5B00",
     "danger": "#9B1C1C",
     "info": "#1F5F99",
+    # Soft tints for tags, status chips and alerts: a gentle background and a readable ink of the same family.
+    "success-soft": "#E6F2EA",
+    "success-ink": "#1B6B43",
+    "info-soft": "#E6EFF8",
+    "info-ink": "#1C5A92",
+    "warning-soft": "#FBF0DA",
+    "warning-ink": "#7A4E00",
+    "danger-soft": "#FBE9E7",
+    "danger-ink": "#9B1C1C",
+    "neutral-soft": "#EEEAE4",
+    "neutral-ink": "#4F4543",
 }
 
 DARK = {
@@ -41,17 +52,27 @@ DARK = {
     "brand-primary-soft": "#3A1311",
     "brand-secondary": "#EBE5DB",
     "brand-accent": "#EBE5DB",
-    "surface": "#140807",
-    "surface-card": "#1F0F0E",
-    "surface-sunken": "#0E0504",
-    "text-strong": "#F6EFE8",
+    "surface": "#140E0D",
+    "surface-card": "#1E1514",
+    "surface-sunken": "#110A09",
+    "text-strong": "#F4EEE8",
     "text-muted": "#B9ADAA",
     "text-on-primary": "#140807",
-    "border": "#3A2623",
+    "border": "#38292A",
     "success": "#4CC38A",
     "warning": "#E5A93C",
     "danger": "#FF7A70",
     "info": "#6FB2F0",
+    "success-soft": "#16291F",
+    "success-ink": "#6FD4A0",
+    "info-soft": "#14243A",
+    "info-ink": "#8CC3F5",
+    "warning-soft": "#33260F",
+    "warning-ink": "#EDBB5C",
+    "danger-soft": "#3A1715",
+    "danger-ink": "#FF9088",
+    "neutral-soft": "#2A1E1C",
+    "neutral-ink": "#CFC4C0",
 }
 
 # (foreground, background, minimum ratio, description)
@@ -70,6 +91,15 @@ PAIRS = [
     ("warning", "surface-card", 4.5, "Warning text"),
     ("danger", "surface-card", 4.5, "Danger text"),
     ("info", "surface-card", 4.5, "Info text"),
+    ("success-ink", "success-soft", 4.5, "Success chip text"),
+    ("info-ink", "info-soft", 4.5, "Info chip text"),
+    ("warning-ink", "warning-soft", 4.5, "Warning chip text"),
+    ("danger-ink", "danger-soft", 4.5, "Danger chip text"),
+    ("neutral-ink", "neutral-soft", 4.5, "Neutral chip text"),
+    ("success-ink", "surface-card", 4.5, "Success ink on card (alerts)"),
+    ("info-ink", "surface-card", 4.5, "Info ink on card"),
+    ("warning-ink", "surface-card", 4.5, "Warning ink on card"),
+    ("danger-ink", "surface-card", 4.5, "Danger ink on card"),
     ("border", "surface", 1.0, "Hairline only (not a text colour; decorative)"),
 ]
 
@@ -108,7 +138,7 @@ def css() -> str:
   --brand-primary-glow: rgb(219 1 0 / 0.25);
   --radius-card: 16px;
   --radius-control: 12px;
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.08);
+  --shadow-card: 0 1px 2px rgb(60 40 30 / 0.04), 0 6px 20px rgb(60 40 30 / 0.06);
   --space-unit: 8px;
   --tap-min: 44px;
   --motion-fast: 150ms;
@@ -147,7 +177,7 @@ def md() -> str:
         "| Inner disc | `#1C0807` |",
         "| Ring and letter J (cream) | `#E9E3D7` / `#F0E8DD` (dominant `#EBE5DB`) |",
         "",
-        "Rules: logo colours are never altered. Only neutrals, the hover shade, the soft tint and status colours were chosen, and each text pair is verified for WCAG AA below.",
+        "Rules: logo colours are never altered. The logo red is for primary actions and the active state only; everything else is calm warm neutrals plus soft tinted chips (a gentle background with a readable ink), so the screens are colourful but easy on the eyes. Each text pair is verified for WCAG AA below.",
         "",
         "## Tokens",
         "",
@@ -166,11 +196,21 @@ def md() -> str:
         "text-strong": "Headings, body",
         "text-muted": "Secondary text",
         "text-on-primary": "Text/icons on primary",
-        "border": "Lines, input borders",
+        "border": "Lines, input borders (soft)",
         "success": "Success status",
         "warning": "Warning status",
         "danger": "Error / destructive status",
         "info": "Info status",
+        "success-soft": "Soft green background of Published, Delivered and success chips",
+        "success-ink": "Text on the soft green",
+        "info-soft": "Soft blue background of Featured, In transit and info chips",
+        "info-ink": "Text on the soft blue",
+        "warning-soft": "Soft amber background of Low stock, Best seller and warning chips",
+        "warning-ink": "Text on the soft amber",
+        "danger-soft": "Soft rose background of Failed, Returned and error chips (always with an icon and text)",
+        "danger-ink": "Text on the soft rose",
+        "neutral-soft": "Soft grey background of Draft and neutral chips",
+        "neutral-ink": "Text on the soft grey",
     }
     for k in LIGHT:
         lines.append(f"| `--{k}` | `{LIGHT[k]}` | `{DARK[k]}` | {roles[k]} |")

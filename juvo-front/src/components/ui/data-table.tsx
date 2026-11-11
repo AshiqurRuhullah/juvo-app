@@ -17,7 +17,8 @@ import { cn } from "@/lib/utils";
 
 /**
  * Column meta used by the phone layout: `primary` columns form the card title, `secondary` ones are the lines under it, columns
- * with `hideOnMobile` are only in the table, and `actions` marks the row-action column (shown at the card's end).
+ * with `hideOnMobile` are only in the table, and `actions` marks the row-action column (shown at the card's end). `numeric`
+ * columns are right-aligned with tabular figures so amounts and quantities line up.
  */
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -26,6 +27,7 @@ declare module "@tanstack/react-table" {
     secondary?: boolean;
     hideOnMobile?: boolean;
     actions?: boolean;
+    numeric?: boolean;
     label?: string;
     align?: "start" | "end";
   }
@@ -60,6 +62,8 @@ type Props<T> = {
   caption: string;
   className?: string;
 };
+
+const isEnd = (meta: { align?: "start" | "end"; numeric?: boolean } | undefined) => meta?.align === "end" || meta?.numeric === true;
 
 /**
  * Data table. Desktop: a real table with sortable headers and a sticky header row. Phones: each row becomes a card (primary and
@@ -122,7 +126,7 @@ export function DataTable<T>({
       >
         <table className="w-full border-collapse text-start text-base">
           <caption className="sr-only">{caption}</caption>
-          <thead className="sticky top-0 z-10 bg-sunken text-sm text-muted">
+          <thead className="sticky top-0 z-10 bg-sunken text-muted">
             {table.getHeaderGroups().map((group) => (
               <tr key={group.id}>
                 {group.headers.map((header) => {
@@ -134,14 +138,14 @@ export function DataTable<T>({
                       key={header.id}
                       scope="col"
                       aria-sort={sort === "asc" ? "ascending" : sort === "desc" ? "descending" : undefined}
-                      className={cn("px-4 py-3 font-semibold first:sticky first:start-0 first:bg-sunken", header.column.columnDef.meta?.align === "end" && "text-end")}
+                      className={cn("px-4 py-3 text-xs font-medium tracking-wide first:sticky first:start-0 first:bg-sunken", isEnd(header.column.columnDef.meta) && "text-end")}
                     >
                       {header.isPlaceholder ? null : sortable ? (
                         <button
                           type="button"
                           onClick={header.column.getToggleSortingHandler()}
                           aria-label={labels.sortBy(label)}
-                          className="-mx-2 inline-flex min-h-11 items-center gap-1.5 rounded-control px-2 [@media(hover:hover)]:hover:bg-card"
+                          className={cn("-mx-2 inline-flex min-h-11 items-center gap-1.5 rounded-control px-2 [@media(hover:hover)]:hover:bg-card", isEnd(header.column.columnDef.meta) && "flex-row-reverse")}
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {sort === "asc" ? <ArrowUp className="size-4" aria-hidden /> : sort === "desc" ? <ArrowDown className="size-4" aria-hidden /> : <ArrowUpDown className="size-4 opacity-50" aria-hidden />}
@@ -167,9 +171,9 @@ export function DataTable<T>({
                   </tr>
                 ))
               : rows.map((row) => (
-                  <tr key={row.id} className="border-t border-line [@media(hover:hover)]:hover:bg-sunken/60">
+                  <tr key={row.id} className="border-t border-line/70 transition-colors [@media(hover:hover)]:hover:bg-sunken/60">
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className={cn("px-4 py-3 align-middle", cell.column.columnDef.meta?.align === "end" && "text-end")}>
+                      <td key={cell.id} className={cn("px-4 py-3.5 align-middle", isEnd(cell.column.columnDef.meta) && "text-end tabular-nums")}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}

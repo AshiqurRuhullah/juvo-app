@@ -55,7 +55,7 @@ export function BranchesList() {
           </span>
         ),
       },
-      { id: "users", header: t("columns.users"), enableSorting: false, meta: { hideOnMobile: true }, cell: ({ row }) => row.original.userCount },
+      { id: "users", header: t("columns.users"), enableSorting: false, meta: { numeric: true, hideOnMobile: true }, cell: ({ row }) => row.original.userCount },
       {
         id: "actions",
         header: "",

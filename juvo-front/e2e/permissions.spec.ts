@@ -18,7 +18,7 @@ test.describe("the menu is built from permissions", () => {
     await page.goto("/admin");
 
     const text = await menuText(page);
-    for (const label of ["Sales", "Catalog", "Delivery", "Payments and accounts", "Marketing", "Content", "Reports and support", "System", "User management", "Users", "Roles", "Branches", "Audit log", "Settings"]) {
+    for (const label of ["Sales", "Catalog", "Delivery", "Payments and accounts", "Marketing", "Content", "Reports and support", "Settings", "User management", "Users", "Roles", "Branches", "Audit log", "Settings"]) {
       expect(text, `missing ${label}`).toContain(label.toLowerCase());
     }
     await expect(page.getByText("You hold every permission")).toBeVisible();

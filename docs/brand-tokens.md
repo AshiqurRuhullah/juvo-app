@@ -13,7 +13,7 @@ The logo is a 3D circular badge: red background, cream/white ring and letter **J
 | Inner disc | `#1C0807` |
 | Ring and letter J (cream) | `#E9E3D7` / `#F0E8DD` (dominant `#EBE5DB`) |
 
-Rules: logo colours are never altered. Only neutrals, the hover shade, the soft tint and status colours were chosen, and each text pair is verified for WCAG AA below.
+Rules: logo colours are never altered. The logo red is for primary actions and the active state only; everything else is calm warm neutrals plus soft tinted chips (a gentle background with a readable ink), so the screens are colourful but easy on the eyes. Each text pair is verified for WCAG AA below.
 
 ## Tokens
 
@@ -24,17 +24,27 @@ Rules: logo colours are never altered. Only neutrals, the hover shade, the soft 
 | `--brand-primary-soft` | `#FDEDEC` | `#3A1311` | Tags, selected rows, subtle fills |
 | `--brand-secondary` | `#1C0807` | `#EBE5DB` | Premium accents, footer (logo ink) |
 | `--brand-accent` | `#EBE5DB` | `#EBE5DB` | Dividers, badges backgrounds (logo cream) |
-| `--surface` | `#FAF7F3` | `#140807` | Page background (warm off-white) |
-| `--surface-card` | `#FFFFFF` | `#1F0F0E` | Cards, forms, modals |
-| `--surface-sunken` | `#F2ECE4` | `#0E0504` | Wells, table stripes |
-| `--text-strong` | `#1C0807` | `#F6EFE8` | Headings, body |
-| `--text-muted` | `#625755` | `#B9ADAA` | Secondary text |
+| `--surface` | `#F7F5F1` | `#140E0D` | Page background (warm off-white) |
+| `--surface-card` | `#FFFFFF` | `#1E1514` | Cards, forms, modals |
+| `--surface-sunken` | `#F1EEE8` | `#110A09` | Wells, table stripes |
+| `--text-strong` | `#231615` | `#F4EEE8` | Headings, body |
+| `--text-muted` | `#645957` | `#B9ADAA` | Secondary text |
 | `--text-on-primary` | `#FFFFFF` | `#140807` | Text/icons on primary |
-| `--border` | `#E4DCD2` | `#3A2623` | Lines, input borders |
+| `--border` | `#E8E2D9` | `#38292A` | Lines, input borders (soft) |
 | `--success` | `#1F7A4D` | `#4CC38A` | Success status |
 | `--warning` | `#8F5B00` | `#E5A93C` | Warning status |
 | `--danger` | `#9B1C1C` | `#FF7A70` | Error / destructive status |
 | `--info` | `#1F5F99` | `#6FB2F0` | Info status |
+| `--success-soft` | `#E6F2EA` | `#16291F` | Soft green background of Published, Delivered and success chips |
+| `--success-ink` | `#1B6B43` | `#6FD4A0` | Text on the soft green |
+| `--info-soft` | `#E6EFF8` | `#14243A` | Soft blue background of Featured, In transit and info chips |
+| `--info-ink` | `#1C5A92` | `#8CC3F5` | Text on the soft blue |
+| `--warning-soft` | `#FBF0DA` | `#33260F` | Soft amber background of Low stock, Best seller and warning chips |
+| `--warning-ink` | `#7A4E00` | `#EDBB5C` | Text on the soft amber |
+| `--danger-soft` | `#FBE9E7` | `#3A1715` | Soft rose background of Failed, Returned and error chips (always with an icon and text) |
+| `--danger-ink` | `#9B1C1C` | `#FF9088` | Text on the soft rose |
+| `--neutral-soft` | `#EEEAE4` | `#2A1E1C` | Soft grey background of Draft and neutral chips |
+| `--neutral-ink` | `#4F4543` | `#CFC4C0` | Text on the soft grey |
 
 Because the brand colour is red, `--danger` is a deeper crimson and **must always be paired with an icon and a text label**, never colour alone, so errors are not confused with primary actions.
 
@@ -42,12 +52,12 @@ Because the brand colour is red, `--danger` is a deeper crimson and **must alway
 
 | Foreground | Background | Ratio | Needed | Result | Use |
 | --- | --- | --- | --- | --- | --- |
-| `text-strong` #1C0807 | `surface` #FAF7F3 | 18.09 | 4.5 | PASS | Body text on page |
-| `text-strong` #1C0807 | `surface-card` #FFFFFF | 19.32 | 4.5 | PASS | Body text on card |
-| `text-muted` #625755 | `surface` #FAF7F3 | 6.52 | 4.5 | PASS | Secondary text on page |
-| `text-muted` #625755 | `surface-card` #FFFFFF | 6.97 | 4.5 | PASS | Secondary text on card |
-| `text-muted` #625755 | `surface-sunken` #F2ECE4 | 5.94 | 4.5 | PASS | Secondary text on sunken |
-| `brand-primary` #DB0100 | `surface` #FAF7F3 | 4.90 | 4.5 | PASS | Links / primary text on page |
+| `text-strong` #231615 | `surface` #F7F5F1 | 16.11 | 4.5 | PASS | Body text on page |
+| `text-strong` #231615 | `surface-card` #FFFFFF | 17.54 | 4.5 | PASS | Body text on card |
+| `text-muted` #645957 | `surface` #F7F5F1 | 6.20 | 4.5 | PASS | Secondary text on page |
+| `text-muted` #645957 | `surface-card` #FFFFFF | 6.76 | 4.5 | PASS | Secondary text on card |
+| `text-muted` #645957 | `surface-sunken` #F1EEE8 | 5.83 | 4.5 | PASS | Secondary text on sunken |
+| `brand-primary` #DB0100 | `surface` #F7F5F1 | 4.80 | 4.5 | PASS | Links / primary text on page |
 | `brand-primary` #DB0100 | `surface-card` #FFFFFF | 5.23 | 4.5 | PASS | Links / primary text on card |
 | `text-on-primary` #FFFFFF | `brand-primary` #DB0100 | 5.23 | 4.5 | PASS | Text on primary button |
 | `text-on-primary` #FFFFFF | `brand-primary-dark` #A80100 | 7.87 | 4.5 | PASS | Text on primary hover |
@@ -56,31 +66,53 @@ Because the brand colour is red, `--danger` is a deeper crimson and **must alway
 | `warning` #8F5B00 | `surface-card` #FFFFFF | 5.73 | 4.5 | PASS | Warning text |
 | `danger` #9B1C1C | `surface-card` #FFFFFF | 8.15 | 4.5 | PASS | Danger text |
 | `info` #1F5F99 | `surface-card` #FFFFFF | 6.66 | 4.5 | PASS | Info text |
-| `border` #E4DCD2 | `surface` #FAF7F3 | 1.27 | 1.0 | PASS | Hairline only (not a text colour; decorative) |
+| `success-ink` #1B6B43 | `success-soft` #E6F2EA | 5.65 | 4.5 | PASS | Success chip text |
+| `info-ink` #1C5A92 | `info-soft` #E6EFF8 | 6.17 | 4.5 | PASS | Info chip text |
+| `warning-ink` #7A4E00 | `warning-soft` #FBF0DA | 6.37 | 4.5 | PASS | Warning chip text |
+| `danger-ink` #9B1C1C | `danger-soft` #FBE9E7 | 6.95 | 4.5 | PASS | Danger chip text |
+| `neutral-ink` #4F4543 | `neutral-soft` #EEEAE4 | 7.74 | 4.5 | PASS | Neutral chip text |
+| `success-ink` #1B6B43 | `surface-card` #FFFFFF | 6.50 | 4.5 | PASS | Success ink on card (alerts) |
+| `info-ink` #1C5A92 | `surface-card` #FFFFFF | 7.17 | 4.5 | PASS | Info ink on card |
+| `warning-ink` #7A4E00 | `surface-card` #FFFFFF | 7.20 | 4.5 | PASS | Warning ink on card |
+| `danger-ink` #9B1C1C | `surface-card` #FFFFFF | 8.15 | 4.5 | PASS | Danger ink on card |
+| `border` #E8E2D9 | `surface` #F7F5F1 | 1.18 | 1.0 | PASS | Hairline only (not a text colour; decorative) |
 
 ## Contrast check (Dark theme)
 
 | Foreground | Background | Ratio | Needed | Result | Use |
 | --- | --- | --- | --- | --- | --- |
-| `text-strong` #F6EFE8 | `surface` #140807 | 17.26 | 4.5 | PASS | Body text on page |
-| `text-strong` #F6EFE8 | `surface-card` #1F0F0E | 16.27 | 4.5 | PASS | Body text on card |
-| `text-muted` #B9ADAA | `surface` #140807 | 9.01 | 4.5 | PASS | Secondary text on page |
-| `text-muted` #B9ADAA | `surface-card` #1F0F0E | 8.49 | 4.5 | PASS | Secondary text on card |
-| `text-muted` #B9ADAA | `surface-sunken` #0E0504 | 9.23 | 4.5 | PASS | Secondary text on sunken |
-| `brand-primary` #FF4A40 | `surface` #140807 | 5.91 | 4.5 | PASS | Links / primary text on page |
-| `brand-primary` #FF4A40 | `surface-card` #1F0F0E | 5.57 | 4.5 | PASS | Links / primary text on card |
+| `text-strong` #F4EEE8 | `surface` #140E0D | 16.61 | 4.5 | PASS | Body text on page |
+| `text-strong` #F4EEE8 | `surface-card` #1E1514 | 15.56 | 4.5 | PASS | Body text on card |
+| `text-muted` #B9ADAA | `surface` #140E0D | 8.76 | 4.5 | PASS | Secondary text on page |
+| `text-muted` #B9ADAA | `surface-card` #1E1514 | 8.20 | 4.5 | PASS | Secondary text on card |
+| `text-muted` #B9ADAA | `surface-sunken` #110A09 | 8.98 | 4.5 | PASS | Secondary text on sunken |
+| `brand-primary` #FF4A40 | `surface` #140E0D | 5.74 | 4.5 | PASS | Links / primary text on page |
+| `brand-primary` #FF4A40 | `surface-card` #1E1514 | 5.38 | 4.5 | PASS | Links / primary text on card |
 | `text-on-primary` #140807 | `brand-primary` #FF4A40 | 5.91 | 4.5 | PASS | Text on primary button |
 | `text-on-primary` #140807 | `brand-primary-dark` #FF7A70 | 7.75 | 4.5 | PASS | Text on primary hover |
 | `brand-primary-dark` #FF7A70 | `brand-primary-soft` #3A1311 | 6.45 | 4.5 | PASS | Text on selected/soft fill |
-| `success` #4CC38A | `surface-card` #1F0F0E | 8.37 | 4.5 | PASS | Success text |
-| `warning` #E5A93C | `surface-card` #1F0F0E | 8.89 | 4.5 | PASS | Warning text |
-| `danger` #FF7A70 | `surface-card` #1F0F0E | 7.30 | 4.5 | PASS | Danger text |
-| `info` #6FB2F0 | `surface-card` #1F0F0E | 8.21 | 4.5 | PASS | Info text |
-| `border` #3A2623 | `surface` #140807 | 1.39 | 1.0 | PASS | Hairline only (not a text colour; decorative) |
+| `success` #4CC38A | `surface-card` #1E1514 | 8.09 | 4.5 | PASS | Success text |
+| `warning` #E5A93C | `surface-card` #1E1514 | 8.59 | 4.5 | PASS | Warning text |
+| `danger` #FF7A70 | `surface-card` #1E1514 | 7.05 | 4.5 | PASS | Danger text |
+| `info` #6FB2F0 | `surface-card` #1E1514 | 7.93 | 4.5 | PASS | Info text |
+| `success-ink` #6FD4A0 | `success-soft` #16291F | 8.46 | 4.5 | PASS | Success chip text |
+| `info-ink` #8CC3F5 | `info-soft` #14243A | 8.37 | 4.5 | PASS | Info chip text |
+| `warning-ink` #EDBB5C | `warning-soft` #33260F | 8.33 | 4.5 | PASS | Warning chip text |
+| `danger-ink` #FF9088 | `danger-soft` #3A1715 | 7.31 | 4.5 | PASS | Danger chip text |
+| `neutral-ink` #CFC4C0 | `neutral-soft` #2A1E1C | 9.46 | 4.5 | PASS | Neutral chip text |
+| `success-ink` #6FD4A0 | `surface-card` #1E1514 | 9.89 | 4.5 | PASS | Success ink on card (alerts) |
+| `info-ink` #8CC3F5 | `surface-card` #1E1514 | 9.59 | 4.5 | PASS | Info ink on card |
+| `warning-ink` #EDBB5C | `surface-card` #1E1514 | 10.12 | 4.5 | PASS | Warning ink on card |
+| `danger-ink` #FF9088 | `surface-card` #1E1514 | 8.18 | 4.5 | PASS | Danger ink on card |
+| `border` #38292A | `surface` #140E0D | 1.38 | 1.0 | PASS | Hairline only (not a text colour; decorative) |
 
 ## Other design values (SRS section 3.3)
 
 8 px grid; cards 16 px radius; inputs and buttons 12 px radius; touch target minimum 44 px; motion 150-250 ms; soft layered shadows.
+
+## Type
+
+Roboto everywhere (self-hosted by `next/font`, weights 400, 500, 700; Apache-2.0), with Noto Sans Bengali for Bengali text. Body and UI: `'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif`. Buttons, inputs, selects, textareas and tables: `'Roboto', system-ui, sans-serif`.
 
 ## Where tokens are used
 

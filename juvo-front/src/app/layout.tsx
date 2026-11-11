@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Noto_Sans_Bengali, Playfair_Display } from "next/font/google";
+import { Noto_Sans_Bengali, Roboto } from "next/font/google";
 import { cookies } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
@@ -7,9 +7,8 @@ import { Providers } from "@/components/providers/providers";
 import { COOKIES } from "@/lib/auth/cookies";
 import "./globals.css";
 
-// Self-hosted by next/font at build time (no request to Google when a visitor opens the site). All three are SIL OFL licensed.
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair", display: "swap" });
+// Self-hosted by next/font at build time (no request to Google when a visitor opens the site). Roboto is Apache-2.0, Noto Sans Bengali is SIL OFL.
+const roboto = Roboto({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--font-roboto", display: "swap" });
 const bengali = Noto_Sans_Bengali({ subsets: ["bengali"], variable: "--font-bengali", display: "swap" });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -50,7 +49,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang={locale}
       data-theme={theme === "light" || theme === "dark" ? theme : undefined}
-      className={`${inter.variable} ${playfair.variable} ${bengali.variable}`}
+      className={`${roboto.variable} ${bengali.variable}`}
       suppressHydrationWarning
     >
       <body className="antialiased">

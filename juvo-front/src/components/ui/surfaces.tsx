@@ -37,15 +37,16 @@ export const CardFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDiv
 );
 
 /** Badges for status and storefront labels (New, Sale, Low stock, Sold out, Free delivery). Meaning is in the text, not only the colour. */
-const badgeVariants = cva("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold leading-5", {
+const badgeVariants = cva("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium leading-5", {
   variants: {
+    // Gentle tints: a soft background with a readable ink of the same family (see docs/brand-tokens.md). Only "sale" is solid.
     variant: {
-      neutral: "bg-sunken text-strong",
+      neutral: "bg-neutral-soft text-neutral-ink",
       brand: "bg-primary-soft text-primary-dark",
-      success: "bg-sunken text-success ring-1 ring-inset ring-success/30",
-      warning: "bg-sunken text-warning ring-1 ring-inset ring-warning/30",
-      danger: "bg-sunken text-danger ring-1 ring-inset ring-danger/30",
-      info: "bg-sunken text-info ring-1 ring-inset ring-info/30",
+      success: "bg-success-soft text-success-ink",
+      warning: "bg-warning-soft text-warning-ink",
+      danger: "bg-danger-soft text-danger-ink",
+      info: "bg-info-soft text-info-ink",
       sale: "bg-primary text-on-primary",
       outline: "border border-line text-muted",
     },
@@ -65,10 +66,10 @@ export function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivEl
 const alertVariants = cva("flex items-start gap-3 rounded-control border p-4 text-sm", {
   variants: {
     variant: {
-      info: "border-info/30 bg-sunken text-strong [&>svg]:text-info",
-      success: "border-success/30 bg-sunken text-strong [&>svg]:text-success",
-      warning: "border-warning/40 bg-sunken text-strong [&>svg]:text-warning",
-      danger: "border-danger/30 bg-sunken text-strong [&>svg]:text-danger",
+      info: "border-info/15 bg-info-soft text-strong [&>svg]:text-info-ink",
+      success: "border-success/15 bg-success-soft text-strong [&>svg]:text-success-ink",
+      warning: "border-warning/20 bg-warning-soft text-strong [&>svg]:text-warning-ink",
+      danger: "border-danger/15 bg-danger-soft text-strong [&>svg]:text-danger-ink",
     },
   },
   defaultVariants: { variant: "info" },
@@ -88,8 +89,8 @@ export function Alert({
     <div role={variant === "danger" ? "alert" : "status"} className={cn(alertVariants({ variant }), className)} {...props}>
       <Icon className="mt-0.5 size-5 shrink-0" aria-hidden />
       <div className="min-w-0 space-y-0.5">
-        {title ? <p className="font-semibold">{title}</p> : null}
-        <div className="text-muted [overflow-wrap:anywhere]">{children}</div>
+        {title ? <p className="font-medium">{title}</p> : null}
+        <div className="text-strong/80 [overflow-wrap:anywhere]">{children}</div>
       </div>
     </div>
   );

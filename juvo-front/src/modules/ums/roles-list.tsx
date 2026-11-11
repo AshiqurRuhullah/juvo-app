@@ -43,7 +43,7 @@ export function RolesList() {
           row.original.isSuperAdmin ? <Badge variant="danger">{t("superAdmin")}</Badge> : row.original.isSystem ? <Badge variant="info">{t("system")}</Badge> : <Badge variant="outline">{t("custom")}</Badge>,
       },
       { id: "users", header: t("columns.users"), enableSorting: false, meta: { secondary: true }, cell: ({ row }) => t("users", { count: row.original.userCount }) },
-      { id: "permissions", header: t("columns.permissions"), enableSorting: false, meta: { hideOnMobile: true }, cell: ({ row }) => (row.original.isSuperAdmin ? t("all") : row.original.permissionCount) },
+      { id: "permissions", header: t("columns.permissions"), enableSorting: false, meta: { numeric: true, hideOnMobile: true }, cell: ({ row }) => (row.original.isSuperAdmin ? t("all") : row.original.permissionCount) },
       {
         id: "actions",
         header: "",

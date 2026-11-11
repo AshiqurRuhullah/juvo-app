@@ -23,14 +23,25 @@
   --color-warning: var(--warning);
   --color-danger: var(--danger);
   --color-info: var(--info);
+  --color-success-soft: var(--success-soft);
+  --color-success-ink: var(--success-ink);
+  --color-info-soft: var(--info-soft);
+  --color-info-ink: var(--info-ink);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-ink: var(--warning-ink);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-ink: var(--danger-ink);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-neutral-ink: var(--neutral-ink);
 
-  --font-sans: var(--font-inter), var(--font-bengali), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-playfair), var(--font-bengali), ui-serif, Georgia, serif;
+  /* Roboto everywhere (the owner's font rule); Noto Sans Bengali takes over for Bengali letters. */
+  --font-sans: var(--font-roboto), "Roboto", var(--font-bengali), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-roboto), "Roboto", var(--font-bengali), system-ui, -apple-system, "Segoe UI", sans-serif;
 
   --radius-card: 1rem;
   --radius-control: 0.75rem;
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.08);
-  --shadow-pop: 0 2px 6px rgb(0 0 0 / 0.1), 0 16px 40px rgb(0 0 0 / 0.16);
+  --shadow-card: 0 1px 2px rgb(60 40 30 / 0.04), 0 6px 20px rgb(60 40 30 / 0.06);
+  --shadow-pop: 0 2px 6px rgb(60 40 30 / 0.08), 0 16px 40px rgb(60 40 30 / 0.14);
   --animate-shimmer: shimmer 1.6s ease-in-out infinite;
 
   @keyframes shimmer {
@@ -74,8 +85,28 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  letter-spacing: -0.01em;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  line-height: 1.25;
   text-wrap: balance;
+}
+
+h1 {
+  font-weight: 700;
+}
+
+/* Buttons, inputs, selects, textareas and tables use Roboto explicitly (browsers do not inherit fonts into form controls). */
+button,
+input,
+select,
+textarea,
+table {
+  font-family: var(--font-roboto), "Roboto", var(--font-bengali), system-ui, sans-serif;
+}
+
+/* Numbers that line up in columns. */
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 /* One visible keyboard focus style everywhere. */

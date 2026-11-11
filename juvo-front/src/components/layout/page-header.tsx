@@ -27,7 +27,7 @@ export function PageHeader({
               <li key={`${crumb.label}-${index}`} className="flex items-center gap-1">
                 {index > 0 ? <ChevronRight className="size-4 rtl:rotate-180" aria-hidden /> : null}
                 {crumb.href ? (
-                  <Link href={crumb.href} className="inline-flex min-h-11 items-center rounded px-1 hover:text-strong hover:underline">
+                  <Link href={crumb.href} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded px-1.5 hover:text-strong hover:underline">
                     {crumb.label}
                   </Link>
                 ) : (
@@ -42,8 +42,8 @@ export function PageHeader({
       ) : null}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold sm:text-3xl [overflow-wrap:anywhere]">{title}</h1>
-          {description ? <p className="mt-1 max-w-2xl text-muted">{description}</p> : null}
+          <h1 className="text-2xl font-bold tracking-tight sm:text-[1.75rem] [overflow-wrap:anywhere]">{title}</h1>
+          {description ? <p className="mt-1 max-w-2xl text-[0.9375rem] text-muted">{description}</p> : null}
         </div>
         {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
       </div>

@@ -9,12 +9,12 @@ import { cn } from "@/lib/utils";
  * Every size is at least 44 px tall (touch friendly, SRS 3.3). Loading shows a spinner and blocks repeat clicks.
  */
 const buttonVariants = cva(
-  "inline-flex shrink-0 select-none items-center justify-center gap-2 whitespace-nowrap rounded-control font-semibold transition-[background-color,box-shadow,border-color,color] duration-150 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:size-5 [&_svg]:shrink-0",
+  "inline-flex shrink-0 select-none items-center justify-center gap-2 whitespace-nowrap rounded-control font-medium transition-[background-color,box-shadow,border-color,color] duration-150 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:size-5 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         primary: "bg-primary text-on-primary shadow-sm [@media(hover:hover)]:hover:bg-primary-dark active:bg-primary-dark",
-        secondary: "border border-line bg-card text-strong [@media(hover:hover)]:hover:bg-sunken active:bg-sunken",
+        secondary: "border border-line bg-card text-strong shadow-[0_1px_0_rgb(60_40_30/0.03)] [@media(hover:hover)]:hover:border-strong/20 [@media(hover:hover)]:hover:bg-sunken active:bg-sunken",
         ghost: "text-strong [@media(hover:hover)]:hover:bg-sunken active:bg-sunken",
         danger: "bg-danger text-card shadow-sm [@media(hover:hover)]:hover:opacity-90 active:opacity-90",
         link: "min-h-0 px-0 text-primary underline-offset-4 [@media(hover:hover)]:hover:underline",

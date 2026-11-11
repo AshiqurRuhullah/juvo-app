@@ -53,7 +53,7 @@ export function ProductsList({ initialSearch }: { initialSearch?: string }) {
           const p = row.original;
           const thumb = renditionUrl(p.primaryImagePath, "thumb");
           return (
-            <Link href={`/admin/products/${p.id}`} className="flex min-h-11 items-center gap-3 rounded-control font-semibold text-strong hover:text-primary">
+            <Link href={`/admin/products/${p.id}`} className="flex min-h-11 min-w-56 items-center gap-3 rounded-control font-medium text-strong hover:text-primary">
               <span className="relative block h-14 w-11 shrink-0 overflow-hidden rounded-md border border-line bg-sunken">
                 {thumb ? <Image src={thumb} alt="" fill unoptimized sizes="44px" className="object-cover" /> : <ImageOff className="absolute inset-0 m-auto size-5 text-muted" aria-hidden />}
               </span>
@@ -69,12 +69,12 @@ export function ProductsList({ initialSearch }: { initialSearch?: string }) {
       {
         id: "price",
         header: t("columns.price"),
-        meta: { secondary: true },
+        meta: { numeric: true, secondary: true },
         cell: ({ row }) => {
           const p = row.original;
           const onSale = toNumber(p.effectivePrice) < toNumber(p.regularPrice);
           return (
-            <span className="flex flex-wrap items-baseline justify-end gap-x-2 md:justify-start">
+            <span className="flex flex-wrap items-baseline justify-end gap-x-2">
               <span className="font-semibold">{money(p.effectivePrice)}</span>
               {onSale ? <span className="text-sm text-muted line-through">{money(p.regularPrice)}</span> : null}
             </span>

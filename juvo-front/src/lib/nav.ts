@@ -17,6 +17,8 @@ import {
   Settings,
   Shield,
   ShoppingBag,
+  ShoppingCart,
+  Shirt,
   Store,
   Tag,
   Truck,
@@ -46,8 +48,13 @@ export type NavItem = {
 export type NavGroup = {
   id: string;
   label: string;
+  /** Icon of the parent row (shown when the group has more than one item; a one-item group is a plain link with the item's icon). */
+  icon: LucideIcon;
   items: NavItem[];
 };
+
+/** A group with a single item is shown as one top-level link; the menu has no empty parent row for it. */
+export const isLeafGroup = (group: NavGroup) => group.items.length === 1;
 
 /**
  * The admin menu, grouped by module (master prompt 5.3A). A user sees only the items their permissions allow in the active
@@ -57,11 +64,13 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     id: "overview",
     label: "overview",
+    icon: Gauge,
     items: [{ id: "dashboard", label: "dashboard", href: "/admin", icon: Gauge, ready: true, bottom: true }],
   },
   {
     id: "sales",
     label: "sales",
+    icon: ShoppingCart,
     items: [
       { id: "orders", label: "orders", href: "/admin/orders", icon: ClipboardList, permission: "orders.order.view", ready: false, bottom: true },
       { id: "social-orders", label: "socialOrders", href: "/admin/social-orders", icon: Store, permission: "orders.order.create", ready: false },
@@ -71,6 +80,7 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     id: "catalog",
     label: "catalog",
+    icon: Shirt,
     items: [
       { id: "products", label: "products", href: "/admin/products", icon: ShoppingBag, permission: "catalog.product.view", scope: "anywhere", ready: true, bottom: true },
       { id: "categories", label: "categories", href: "/admin/categories", icon: Layers, permission: "catalog.category.view", scope: "anywhere", ready: true },
@@ -81,11 +91,13 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     id: "customers",
     label: "customers",
+    icon: Users,
     items: [{ id: "customers", label: "customers", href: "/admin/customers", icon: Users, permission: "customers.customer.view", scope: "anywhere", ready: false, bottom: true }],
   },
   {
     id: "delivery",
     label: "delivery",
+    icon: Truck,
     items: [
       { id: "zones", label: "zones", href: "/admin/delivery/zones", icon: Globe, permission: "delivery.zone.view", scope: "anywhere", ready: false },
       { id: "couriers", label: "couriers", href: "/admin/couriers", icon: Truck, permission: "couriers.courier.view", ready: false },
@@ -94,6 +106,7 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     id: "money",
     label: "money",
+    icon: Wallet,
     items: [
       { id: "payments", label: "payments", href: "/admin/payments", icon: Wallet, permission: "payments.payment.view", ready: false },
       { id: "tax", label: "taxInvoices", href: "/admin/tax", icon: Receipt, permission: "tax.invoice.view", ready: false },
@@ -103,6 +116,7 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     id: "marketing",
     label: "marketing",
+    icon: Megaphone,
     items: [
       { id: "promotions", label: "promotions", href: "/admin/promotions", icon: Tag, permission: "promotions.promotion.view", scope: "anywhere", ready: false },
       { id: "campaigns", label: "campaigns", href: "/admin/marketing/campaigns", icon: Megaphone, permission: "marketing.campaign.view", scope: "anywhere", ready: false },
@@ -111,11 +125,13 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     id: "content",
     label: "content",
+    icon: FileText,
     items: [{ id: "cms", label: "cms", href: "/admin/cms", icon: FileText, permission: "cms.page.view", scope: "anywhere", ready: false }],
   },
   {
     id: "insights",
     label: "insights",
+    icon: ChartNoAxesColumn,
     items: [
       { id: "reports", label: "reports", href: "/admin/reports", icon: ChartNoAxesColumn, permission: "reports.sales.view", ready: false },
       { id: "support", label: "support", href: "/admin/support", icon: Headset, permission: "support.ticket.view", ready: false },
@@ -124,11 +140,13 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     id: "system",
     label: "system",
+    icon: Settings,
     items: [{ id: "settings", label: "settings", href: "/admin/settings", icon: Settings, permission: "settings.system.view", scope: "anywhere", ready: false }],
   },
   {
     id: "ums",
     label: "ums",
+    icon: UserCog,
     items: [
       { id: "users", label: "users", href: "/admin/ums/users", icon: UserCog, permission: "ums.user.view", scope: "anywhere", ready: true },
       { id: "roles", label: "roles", href: "/admin/ums/roles", icon: Shield, permission: "ums.role.view", scope: "anywhere", ready: true },
@@ -144,6 +162,7 @@ export const ACCOUNT_NAV: NavGroup[] = [
   {
     id: "account",
     label: "account",
+    icon: Gauge,
     items: [
       { id: "account-home", label: "accountHome", href: "/account", icon: Gauge, ready: true, bottom: true },
       { id: "account-orders", label: "myOrders", href: "/account/orders", icon: ClipboardList, ready: false, bottom: true },

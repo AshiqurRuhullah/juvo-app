@@ -110,8 +110,9 @@ test.describe("UMS screens", () => {
 
     // Menu: users and branches, nothing else of the administration group.
     const sidebar = page.getByRole("complementary", { name: "Navigation" });
-    await expect(sidebar.locator('a[href="/admin/ums/users"]')).toBeVisible();
-    await expect(sidebar.locator('a[href="/admin/ums/branches"]')).toBeVisible();
+    // (The links sit in the User management parent, which may be folded: they are attached, whether or not it is open.)
+    await expect(sidebar.locator('a[href="/admin/ums/users"]')).toBeAttached();
+    await expect(sidebar.locator('a[href="/admin/ums/branches"]')).toBeAttached();
     await expect(sidebar.locator('a[href="/admin/ums/roles"]')).toHaveCount(0);
     await expect(sidebar.locator('a[href="/admin/ums/audit"]')).toHaveCount(0);
     await expect(sidebar.locator('a[href="/admin/ums/sign-ins"]')).toHaveCount(0);
