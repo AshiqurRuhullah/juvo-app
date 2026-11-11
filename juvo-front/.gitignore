@@ -83,3 +83,8 @@ test-results/
 !/docs/ui-checks/store-home-360.png
 !/docs/ui-checks/store-product-1280.png
 !/docs/ui-checks/store-product-360.png
+/docs/ui-checks/returns/*.png
+!/docs/ui-checks/returns/request-360.png
+!/docs/ui-checks/returns/queue-1280.png
+!/docs/ui-checks/returns/admin-detail-1280.png
+!/docs/ui-checks/returns/refund-dialog-360.png
