@@ -113,7 +113,7 @@ public partial class ReturnFlowTests(StoreFactory factory) : IClassFixture<Store
         {
         }
 
-        var messages = await _r.O.WithDbAsync(db => db.NotificationLogs.AsNoTracking().Where(n => n.Recipient == "+88" + d.Mobile && n.Template == "return.status").ToListAsync(Ct));
+        var messages = await _r.O.WithDbAsync(db => db.NotificationLogs.AsNoTracking().Where(n => n.Recipient == "+88" + d.Mobile && n.Template.StartsWith("return.")).ToListAsync(Ct));
         Assert.Single(messages, m => m.Body.Contains("we received your return request", StringComparison.Ordinal));
         Assert.Single(messages, m => m.Body.Contains("is approved", StringComparison.Ordinal));
         Assert.Single(messages, m => m.Body.Contains("refund", StringComparison.Ordinal) && m.Body.Contains(requested.GetProperty("number").GetString()!, StringComparison.Ordinal));

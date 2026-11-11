@@ -611,7 +611,7 @@ public partial class OrderFlowTests(StoreFactory factory) : IClassFixture<StoreF
 
         var messages = await _o.WithDbAsync(db => db.NotificationLogs.AsNoTracking().Where(n => n.Recipient == "+88" + mobile && n.Template.StartsWith("order.")).ToListAsync(Ct));
         Assert.Single(messages, m => m.Template == "order.placed" && m.Body.Contains(placed.GetProperty("number").GetString()!, StringComparison.Ordinal));
-        Assert.Single(messages, m => m.Template == "order.status" && m.Body.Contains("is confirmed", StringComparison.Ordinal));
+        Assert.Single(messages, m => m.Template == "order.confirmed" && m.Body.Contains("is confirmed", StringComparison.Ordinal));
         Assert.All(messages, m => Assert.Equal(NotificationStatus.Sent, m.Status));
         var failed = await _o.WithDbAsync(db => db.OutboxMessages.CountAsync(m => m.Status == Juvo.Domain.Platform.OutboxStatus.Failed, Ct));
         Assert.Equal(0, failed);
