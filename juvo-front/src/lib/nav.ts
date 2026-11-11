@@ -1,5 +1,6 @@
 import {
   BadgeDollarSign,
+  Bell,
   Boxes,
   ChartNoAxesColumn,
   ClipboardList,
@@ -110,8 +111,9 @@ export const ADMIN_NAV: NavGroup[] = [
     label: "money",
     icon: Wallet,
     items: [
-      { id: "payments", label: "payments", href: "/admin/payments", icon: Wallet, permission: "payments.payment.view", ready: false },
-      { id: "tax", label: "taxInvoices", href: "/admin/tax", icon: Receipt, permission: "tax.invoice.view", ready: false },
+      { id: "payments", label: "payments", href: "/admin/payments", icon: Wallet, permission: "payments.payment.view", ready: true },
+      { id: "tax", label: "taxInvoices", href: "/admin/billing", icon: Receipt, permission: "tax.invoice.view", ready: true },
+      { id: "notifications", label: "notifications", href: "/admin/notifications", icon: Bell, permission: "notifications.template.view", ready: true },
       { id: "expenses", label: "expenses", href: "/admin/accounting/expenses", icon: Landmark, permission: "accounting.expense.view", ready: false },
     ],
   },
