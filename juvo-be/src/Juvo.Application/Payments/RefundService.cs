@@ -38,7 +38,7 @@ public sealed class RefundService(
         await invoices.IssueCreditNoteAsync(refund, order, who.Id, who.Name, cancellationToken);
         if (syncOrder)
         {
-            await SyncOrderAsync(order, who, cancellationToken);
+            await SyncOrderAsync(order, payment, who, cancellationToken);
         }
     }
 
@@ -50,9 +50,12 @@ public sealed class RefundService(
     }
 
     /// <summary>Moves the order's payment track to PartiallyRefunded or Refunded from what all its payments gave back. A track that cannot move (a cancelled order) is left alone.</summary>
-    private async Task SyncOrderAsync(Order order, Who who, CancellationToken cancellationToken)
+    private async Task SyncOrderAsync(Order order, Payment changed, Who who, CancellationToken cancellationToken)
     {
-        var rows = await db.Payments.IgnoreQueryFilters(["BranchScope"]).Where(p => p.OrderId == order.Id && MoneyStates.Contains(p.Status)).Select(p => new { p.Amount, p.RefundedAmount }).ToListAsync(cancellationToken);
+        // The payment that just changed is in memory (not saved yet): use its values, and the saved values of the order's other payments.
+        var changedId = changed.Id;
+        var saved = await db.Payments.IgnoreQueryFilters(["BranchScope"]).Where(p => p.OrderId == order.Id && p.Id != changedId && MoneyStates.Contains(p.Status)).Select(p => new { p.Amount, p.RefundedAmount }).ToListAsync(cancellationToken);
+        var rows = saved.Concat(MoneyStates.Contains(changed.Status) ? [new { changed.Amount, changed.RefundedAmount }] : []).ToList();
         var refunded = rows.Sum(r => r.RefundedAmount);
         if (rows.Count == 0 || refunded <= 0)
         {
