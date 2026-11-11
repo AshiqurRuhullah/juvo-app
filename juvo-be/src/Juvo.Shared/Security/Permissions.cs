@@ -112,6 +112,18 @@ public static class Permissions
         public const string SourceView = "orders.source.view";
     }
 
+    public static class Returns
+    {
+        public const string View = "returns.return.view";
+        public const string Approve = "returns.return.approve";
+        public const string Reject = "returns.return.reject";
+        public const string Manage = "returns.return.manage";
+        public const string Receive = "returns.return.receive";
+        public const string Inspect = "returns.return.inspect";
+        public const string Refund = "returns.return.refund";
+        public const string Exchange = "returns.return.exchange";
+    }
+
     public static class Fraud
     {
         public const string FlagView = "fraud.flag.view";

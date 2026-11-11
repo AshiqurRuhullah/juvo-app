@@ -73,7 +73,8 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
         var ums = ApiEndpoints().Where(e => e.Route.Contains("/ums/", StringComparison.Ordinal) || e.Route.Contains("/catalog/", StringComparison.Ordinal) ||
                                             e.Route.Contains("/customers", StringComparison.Ordinal) || e.Route.Contains("/promotions/", StringComparison.Ordinal) ||
                                             e.Route.Contains("/delivery/", StringComparison.Ordinal) && !e.Route.Contains("/store/", StringComparison.Ordinal) ||
-                                            e.Route.Contains("/v{version:apiVersion}/orders", StringComparison.Ordinal) || e.Route.Contains("/fraud/", StringComparison.Ordinal)).ToList();
+                                            e.Route.Contains("/v{version:apiVersion}/orders", StringComparison.Ordinal) || e.Route.Contains("/fraud/", StringComparison.Ordinal) ||
+                                            e.Route.Contains("/v{version:apiVersion}/returns", StringComparison.Ordinal)).ToList();
 
         Assert.NotEmpty(ums);
         foreach (var endpoint in ums)

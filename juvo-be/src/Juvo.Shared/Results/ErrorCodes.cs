@@ -101,6 +101,24 @@ public static class ErrorCodes
         public const string NothingToDo = "ORDER.NOTHING_TO_DO";
     }
 
+    public static class Return
+    {
+        public const string NotFound = "RETURN.NOT_FOUND";
+        public const string InvalidTransition = "RETURN.INVALID_TRANSITION";
+        public const string OrderNotEligible = "RETURN.ORDER_NOT_ELIGIBLE";
+        public const string WindowExpired = "RETURN.WINDOW_EXPIRED";
+        public const string QuantityExceeded = "RETURN.QUANTITY_EXCEEDED";
+        public const string ItemNotReturnable = "RETURN.ITEM_NOT_RETURNABLE";
+        public const string ReasonInvalid = "RETURN.REASON_INVALID";
+        public const string AlreadyRefunded = "RETURN.ALREADY_REFUNDED";
+        public const string RefundAmountMismatch = "RETURN.REFUND_AMOUNT_MISMATCH";
+        public const string NothingToRefund = "RETURN.NOTHING_TO_REFUND";
+        public const string WrongKind = "RETURN.WRONG_KIND";
+        public const string PaymentNotReceived = "RETURN.PAYMENT_NOT_RECEIVED";
+        public const string ReplacementUnavailable = "RETURN.REPLACEMENT_UNAVAILABLE";
+        public const string PhotoInvalid = "RETURN.PHOTO_INVALID";
+    }
+
     public static class Fraud
     {
         public const string BlacklistNotFound = "FRAUD.BLACKLIST_NOT_FOUND";

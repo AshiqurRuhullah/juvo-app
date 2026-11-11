@@ -103,7 +103,7 @@ public sealed class OrderStatusChangedHandler(IApplicationDbContext db, ISmsSend
     public override async Task HandleAsync(OutboxMessageContext context, CancellationToken cancellationToken)
     {
         var e = Read<OrderStatusChanged>(context);
-        if (e.Track == OrderTrack.Order && Texts.TryGetValue(e.To, out var text))
+        if (e.Track == OrderTrack.Order && e.From != nameof(OrderStatus.ReturnInProgress) && Texts.TryGetValue(e.To, out var text))
         {
             await SendOnceAsync(e.CustomerMobile, "order.status", $"Juvo BD: your order {e.Number} {text}.", cancellationToken);
         }

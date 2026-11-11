@@ -32,15 +32,15 @@ public static class DefaultRoles
 
         new(OrderManager, "Processes orders and shipments.", false,
         [
-            "orders.*", "returns.return.view", "customers.customer.view", "delivery.zone.view", "couriers.shipment.*",
+            "orders.*", "returns.*", "customers.customer.view", "delivery.zone.view", "couriers.shipment.*",
             "couriers.courier.view", "couriers.cod.view", "payments.payment.view", "reports.orders.view",
             "fraud.flag.view", "notifications.log.view", "catalog.product.view", "inventory.stock.view", "support.ticket.view",
         ],
-        ["orders.order.reassign-branch"]),
+        ["orders.order.reassign-branch", "returns.return.refund"]),
 
         new(InventoryManager, "Maintains products, stock, transfers and purchasing.", false,
         [
-            "catalog.*", "inventory.*", "purchasing.*", "orders.order.view", "reports.inventory.*",
+            "catalog.*", "inventory.*", "purchasing.*", "orders.order.view", "returns.return.view", "returns.return.receive", "returns.return.inspect", "reports.inventory.*",
         ],
         ["catalog.product.view-cost", "purchasing.payable.pay"]),
 
@@ -53,7 +53,7 @@ public static class DefaultRoles
 
         new(Support, "Answers customers and handles tickets.", false,
         [
-            "orders.order.view", "orders.order.note", "customers.customer.view", "support.*", "returns.return.view",
+            "orders.order.view", "orders.order.note", "customers.customer.view", "support.*", "returns.return.view", "returns.return.approve",
             "couriers.shipment.view", "delivery.zone.view", "notifications.log.view",
         ],
         []),
@@ -61,7 +61,7 @@ public static class DefaultRoles
         new(Accountant, "Views money data and runs finance reports.", false,
         [
             "payments.payment.view", "payments.refund.view", "payments.ledger.*", "tax.*", "accounting.*", "reports.finance.*",
-            "orders.order.view", "couriers.cod.*", "customers.customer.view", "purchasing.payable.*", "catalog.product.view",
+            "orders.order.view", "returns.return.view", "returns.return.refund", "couriers.cod.*", "customers.customer.view", "purchasing.payable.*", "catalog.product.view",
             "catalog.product.view-cost",
         ],
         []),

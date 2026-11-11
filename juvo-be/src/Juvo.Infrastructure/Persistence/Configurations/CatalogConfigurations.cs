@@ -63,6 +63,7 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(x => x.Material).HasMaxLength(200);
         builder.Property(x => x.Care).HasMaxLength(500);
         builder.Property(x => x.Tags).HasMaxLength(500);
+        builder.Property(x => x.NonReturnable).HasDefaultValue(false);
         builder.Property(x => x.LengthCm).HasPrecision(8, 2);
         builder.Property(x => x.WidthCm).HasPrecision(8, 2);
         builder.Property(x => x.HeightCm).HasPrecision(8, 2);
