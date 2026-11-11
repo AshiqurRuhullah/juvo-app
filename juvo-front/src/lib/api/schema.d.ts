@@ -12957,15 +12957,2309 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/store/checkout/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Live checkout totals for the cart and an address: items, coupon, delivery charge, grand total (prices include tax), advance for large cash on delivery orders, payment methods, whether an OTP is needed. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "X-Cart-Token"?: string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CheckoutQuoteRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CheckoutQuoteDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/store/checkout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Place the order from the cart. Guest (a mobile number is enough) or signed-in customer. Totals are recalculated; stock is reserved; the answer holds the order number and a tracking token (shown once). Send Idempotency-Key to make retries safe. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "X-Cart-Token"?: string;
+                    "Idempotency-Key"?: string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CheckoutRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CheckoutResultDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/store/orders/track": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Same as the POST form, for tracking links (?number=&mobile= or ?token=). */
+        get: {
+            parameters: {
+                query?: {
+                    number?: string;
+                    mobile?: string;
+                    token?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TrackingDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Track an order by order number and mobile number, or by tracking token. Anything that does not match answers 404. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["TrackRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TrackingDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My orders, newest first. filter: active, delivered, cancelled, returned. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    filter?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfMyOrderListItemDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/orders/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One of my orders with items, amounts, the three statuses and the timeline. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MyOrderDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/orders/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel my order while it is still in the shop (before courier pickup). Reserved stock goes back at once. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CancelOrderRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MyOrderDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Orders of the branches where you may view orders. Filters: the three status tracks, branch, source, fraud state, held, date range; search by number, mobile or name; sort placedAt (default newest), total, number, status. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    status?: components["schemas"]["OrderStatus"];
+                    paymentStatus?: components["schemas"]["PaymentStatus"];
+                    deliveryStatus?: components["schemas"]["DeliveryStatus"];
+                    branchId?: string;
+                    source?: components["schemas"]["OrderSource"];
+                    fraudState?: components["schemas"]["FraudState"];
+                    from?: string;
+                    to?: string;
+                    held?: boolean;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfOrderListItemDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One order: items, addresses, amounts, three tracks, full timeline, notes, risk flags, fraud log, customer history and the statuses it may move to. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrderDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/{id}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm an order. Refused while it is held for a fraud review, while an online payment is pending, or (advanceReceived = false) when an advance is required. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ConfirmOrderRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrderDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/{id}/pack": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pack a confirmed order. With the default setting the reserved stock leaves the shelf now (Inventory.DeductAt). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrderDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel an order that is Placed, Confirmed or Packed, with a reason. Stock is released (or returned to the shelf when already packed). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CancelOrderRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrderDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/{id}/transition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record a delivery step: HandedToCourier, InTransit, OutForDelivery, Delivered, DeliveryFailed, ReturnInProgress, Returned. Only moves the state machine allows (couriers drive this in Step 10). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["TransitionRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrderDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/{id}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add an internal note (staff only) or a customer-visible note. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["AddNoteRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrderDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/{id}/reassign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move an order to another fulfilling branch before packing: the reservation is released here and taken there (the other branch must hold every item). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReassignRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrderDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/{id}/packing-slip": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The data of the packing slip (the screen prints it). */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PackingSlipDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm, cancel or print up to 100 orders. Each order is handled on its own (permission, state, stock); the answer lists success or the error code per order. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["BulkOrderRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BulkOrderResult"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/manual": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Social order desk: create an order for a customer found by mobile (Facebook, WhatsApp, phone, walk-in). Items by SKU or variant; discount and delivery override need their own permissions. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ManualOrderRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrderDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/sources/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Orders and value per source in a period (the owner's daily count). */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrderSourceCountDto"][];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fraud/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The review queue: orders held for review (Flagged, InReview, AdvanceRequested), riskiest first, with their flags and the customer's history. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    state?: components["schemas"]["FraudState"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfReviewItemDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fraud/reviews/{orderId}/decide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decide a held order: Approve, RequestAdvance, Call (note) or Reject (reason; cancels the order). Logged with the staff name. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    orderId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["FraudDecisionRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["FraudLogDto"][];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fraud/customers/{customerId}/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Order history of a customer: delivered, cancelled, returned or failed, spend, history score. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomerOrderStatsDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fraud/blacklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Blocked mobile numbers, e-mails, address texts and devices. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    kind?: components["schemas"]["BlacklistKind"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfBlacklistDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Block a mobile, e-mail, address text or device. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["AddBlacklistRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BlacklistDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fraud/blacklist/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove an entry (who and when stay in the audit log). */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fraud/rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The fraud rules with their switch, threshold and action. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["FraudRuleDto"][];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fraud/rules/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Switch a rule on or off, set its threshold and its action (Flag, Hold, RequireAdvance, Reject). */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    code: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateFraudRuleRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["FraudRuleDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AddBlacklistRequest: {
+            kind: components["schemas"]["BlacklistKind"];
+            value: string;
+            note: null | string;
+        };
         AddCartItemRequest: {
             /** Format: uuid */
             variantId: string;
             /** Format: int32 */
             quantity: number | string;
+        };
+        AddNoteRequest: {
+            kind: components["schemas"]["NoteKind"];
+            text: string;
         };
         AddressDto: {
             /** Format: uuid */
@@ -13064,6 +15358,18 @@ export interface components {
             requiresPasswordChange: boolean;
             requiresTwoFactorSetup: boolean;
         };
+        BlacklistDto: {
+            /** Format: uuid */
+            id: string;
+            kind: components["schemas"]["BlacklistKind"];
+            value: string;
+            note: null | string;
+            /** Format: date-time */
+            createdAt: string;
+            createdByName: null | string;
+        };
+        /** @enum {unknown} */
+        BlacklistKind: "Mobile" | "Email" | "Address" | "Device";
         BranchDto: {
             /** Format: uuid */
             id: string;
@@ -13140,6 +15446,33 @@ export interface components {
             isActive: boolean;
             /** Format: int32 */
             productCount: number | string;
+        };
+        BulkItemResult: {
+            /** Format: uuid */
+            orderId: string;
+            number: null | string;
+            ok: boolean;
+            code: null | string;
+            message: null | string;
+        };
+        BulkOrderRequest: {
+            action: string;
+            ids: string[];
+            reason: null | string;
+            /** @default false */
+            advanceReceived: boolean;
+        };
+        BulkOrderResult: {
+            action: string;
+            /** Format: int32 */
+            succeeded: number | string;
+            /** Format: int32 */
+            failed: number | string;
+            results: components["schemas"]["BulkItemResult"][];
+            slips: components["schemas"]["PackingSlipDto"][];
+        };
+        CancelOrderRequest: {
+            reason: null | string;
         };
         CartCouponDto: {
             code: string;
@@ -13234,8 +15567,113 @@ export interface components {
             currentPassword: string;
             newPassword: string;
         };
+        CheckoutAddress: {
+            recipientName: string;
+            phone: null | string;
+            countryCode: null | string;
+            /** Format: uuid */
+            districtId: null | string;
+            /** Format: uuid */
+            upazilaId: null | string;
+            area: null | string;
+            addressLine: string;
+            landmark: null | string;
+            stateProvince: null | string;
+            city: null | string;
+            postalCode: null | string;
+            /** Format: double */
+            latitude: null | number | string;
+            /** Format: double */
+            longitude: null | number | string;
+        };
+        CheckoutContact: {
+            mobile: string;
+            fullName: null | string;
+            email: null | string;
+        };
+        CheckoutQuoteDto: {
+            currency: string;
+            taxIncluded: boolean;
+            lines: components["schemas"]["QuoteLineDto"][];
+            /** Format: int32 */
+            itemCount: number | string;
+            /** Format: double */
+            subtotal: number | string;
+            couponCode: null | string;
+            /** Format: double */
+            couponDiscount: number | string;
+            delivery: null | components["schemas"]["DeliveryQuoteDto"];
+            deliveryError: null | string;
+            /** Format: double */
+            deliveryCharge: number | string;
+            /** Format: double */
+            grandTotal: number | string;
+            paymentMethod: string;
+            /** Format: double */
+            advanceRequired: number | string;
+            /** Format: double */
+            payNow: number | string;
+            /** Format: double */
+            payOnDelivery: number | string;
+            otpRequired: boolean;
+            paymentMethods: components["schemas"]["PaymentMethodDto"][];
+            problems: string[];
+            canPlace: boolean;
+        };
+        CheckoutQuoteRequest: {
+            /** Format: uuid */
+            addressId: null | string;
+            address: null | components["schemas"]["CheckoutAddress"];
+            paymentMethod: null | string;
+            mobile: null | string;
+        };
+        CheckoutRequest: {
+            contact: components["schemas"]["CheckoutContact"];
+            /** Format: uuid */
+            addressId: null | string;
+            address: null | components["schemas"]["CheckoutAddress"];
+            saveAddress: boolean;
+            paymentMethod: string;
+            note: null | string;
+            acceptTerms: boolean;
+            otpCode: null | string;
+            confirmDuplicate: boolean;
+            /** Format: double */
+            expectedTotal: null | number | string;
+            idempotencyKey: null | string;
+            deviceId: null | string;
+        };
+        CheckoutResultDto: {
+            /** Format: uuid */
+            orderId: string;
+            number: string;
+            trackingToken: null | string;
+            status: string;
+            paymentStatus: string;
+            paymentMethod: string;
+            /** Format: double */
+            grandTotal: number | string;
+            /** Format: double */
+            advanceRequired: number | string;
+            /** Format: double */
+            payNow: number | string;
+            /** Format: double */
+            payOnDelivery: number | string;
+            /** Format: date */
+            earliestDelivery: null | string;
+            /** Format: date */
+            latestDelivery: null | string;
+            offerProfile: boolean;
+            replayed: boolean;
+            /** Format: date-time */
+            paymentDeadline: null | string;
+        };
         CloneRoleRequest: {
             name: string;
+        };
+        ConfirmOrderRequest: {
+            /** @default false */
+            advanceReceived: boolean;
         };
         ConsentDto: {
             type: string;
@@ -13436,6 +15874,24 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
         };
+        CustomerOrderStatsDto: {
+            /** Format: int32 */
+            totalOrders: number | string;
+            /** Format: int32 */
+            delivered: number | string;
+            /** Format: int32 */
+            cancelled: number | string;
+            /** Format: int32 */
+            returnedOrFailed: number | string;
+            /** Format: int32 */
+            open: number | string;
+            /** Format: double */
+            totalSpent: number | string;
+            /** Format: date-time */
+            firstOrderAt: null | string;
+            /** Format: int32 */
+            score: number | string;
+        };
         CustomerProfileDto: {
             /** Format: uuid */
             id: string;
@@ -13503,6 +15959,8 @@ export interface components {
             /** Format: int32 */
             weightGrams: null | number | string;
         };
+        /** @enum {unknown} */
+        DeliveryStatus: "NotShipped" | "ReadyToShip" | "HandedToCourier" | "InTransit" | "OutForDelivery" | "Delivered" | "Failed" | "Returned" | "Cancelled";
         DeliveryZoneDto: {
             /** Format: uuid */
             id: string;
@@ -13570,6 +16028,34 @@ export interface components {
         ForgotPasswordRequest: {
             email: string;
         };
+        /** @enum {unknown} */
+        FraudAction: "Approve" | "RequestAdvance" | "Call" | "Reject";
+        FraudDecisionRequest: {
+            action: components["schemas"]["FraudAction"];
+            note: null | string;
+        };
+        FraudLogDto: {
+            action: components["schemas"]["FraudAction"];
+            fromState: components["schemas"]["FraudState"];
+            toState: components["schemas"]["FraudState"];
+            note: null | string;
+            actorName: null | string;
+            /** Format: date-time */
+            at: string;
+        };
+        FraudRuleDto: {
+            code: string;
+            description: string;
+            enabled: boolean;
+            /** Format: double */
+            threshold: number | string;
+            thresholdMeaning: string;
+            action: components["schemas"]["RuleAction"];
+            /** Format: int32 */
+            score: number | string;
+        };
+        /** @enum {unknown} */
+        FraudState: "None" | "Flagged" | "InReview" | "AdvanceRequested" | "Approved" | "Rejected";
         /** Format: binary */
         IFormFile: string;
         ImportIssueDto: {
@@ -13624,6 +16110,33 @@ export interface components {
         LogoutRequest: {
             refreshToken: null | string;
         };
+        ManualOrderLine: {
+            /** Format: uuid */
+            variantId: null | string;
+            sku: null | string;
+            /** Format: int32 */
+            quantity: number | string;
+        };
+        ManualOrderRequest: {
+            customerMobile: string;
+            customerName: null | string;
+            customerEmail: null | string;
+            source: components["schemas"]["OrderSource"];
+            /** Format: uuid */
+            branchId: null | string;
+            address: components["schemas"]["CheckoutAddress"];
+            lines: components["schemas"]["ManualOrderLine"][];
+            paymentMethod: string;
+            couponCode: null | string;
+            /** Format: double */
+            discount: null | number | string;
+            /** Format: double */
+            deliveryChargeOverride: null | number | string;
+            customerNote: null | string;
+            internalNote: null | string;
+            idempotencyKey: null | string;
+            confirmDuplicate: boolean;
+        };
         MeResponse: {
             subjectType: string;
             staff: null | components["schemas"]["StaffProfileDto"];
@@ -13643,6 +16156,22 @@ export interface components {
         MergeCartRequest: {
             token: string;
         };
+        MoneyDto: {
+            currency: string;
+            /** Format: double */
+            subtotal: number | string;
+            /** Format: double */
+            couponDiscount: number | string;
+            couponCode: null | string;
+            /** Format: double */
+            manualDiscount: number | string;
+            /** Format: double */
+            deliveryCharge: number | string;
+            /** Format: double */
+            grandTotal: number | string;
+            /** Format: double */
+            advanceRequired: number | string;
+        };
         MoveToCartRequest: {
             /** Format: uuid */
             variantId: string;
@@ -13652,8 +16181,217 @@ export interface components {
              */
             quantity: number | string;
         };
+        MyOrderDto: {
+            /** Format: uuid */
+            id: string;
+            number: string;
+            status: components["schemas"]["OrderStatus"];
+            paymentStatus: components["schemas"]["PaymentStatus"];
+            deliveryStatus: components["schemas"]["DeliveryStatus"];
+            paymentMethod: string;
+            /** Format: date-time */
+            placedAt: string;
+            money: components["schemas"]["MoneyDto"];
+            shipping: components["schemas"]["ShippingDto"];
+            items: components["schemas"]["OrderLineDto"][];
+            timeline: components["schemas"]["TimelineDto"][];
+            notes: components["schemas"]["NoteDto"][];
+            canCancel: boolean;
+            /** Format: date-time */
+            paymentDeadline: null | string;
+        };
+        MyOrderListItemDto: {
+            /** Format: uuid */
+            id: string;
+            number: string;
+            status: components["schemas"]["OrderStatus"];
+            paymentStatus: components["schemas"]["PaymentStatus"];
+            deliveryStatus: components["schemas"]["DeliveryStatus"];
+            /** Format: date-time */
+            placedAt: string;
+            /** Format: double */
+            grandTotal: number | string;
+            /** Format: int32 */
+            itemCount: number | string;
+            firstItemName: null | string;
+            firstItemImageUrl: null | string;
+            canCancel: boolean;
+        };
+        NoteDto: {
+            /** Format: uuid */
+            id: string;
+            kind: components["schemas"]["NoteKind"];
+            text: string;
+            authorName: null | string;
+            /** Format: date-time */
+            at: string;
+        };
+        /** @enum {unknown} */
+        NoteKind: "Internal" | "Customer";
+        OrderDetailDto: {
+            /** Format: uuid */
+            id: string;
+            number: string;
+            /** Format: uuid */
+            branchId: string;
+            branchCode: string;
+            branchName: string;
+            source: components["schemas"]["OrderSource"];
+            status: components["schemas"]["OrderStatus"];
+            paymentStatus: components["schemas"]["PaymentStatus"];
+            deliveryStatus: components["schemas"]["DeliveryStatus"];
+            paymentMethod: string;
+            /** Format: uuid */
+            customerId: string;
+            customerMobile: string;
+            customerName: null | string;
+            customerEmail: null | string;
+            shipping: components["schemas"]["ShippingDto"];
+            money: components["schemas"]["MoneyDto"];
+            /** Format: int32 */
+            weightGrams: number | string;
+            zoneCode: null | string;
+            routingRule: string;
+            routingPending: boolean;
+            stockDeducted: boolean;
+            fraudState: components["schemas"]["FraudState"];
+            /** Format: int32 */
+            riskScore: number | string;
+            isHeld: boolean;
+            /** Format: date-time */
+            placedAt: string;
+            /** Format: date-time */
+            confirmedAt: null | string;
+            /** Format: date-time */
+            packedAt: null | string;
+            /** Format: date-time */
+            deliveredAt: null | string;
+            /** Format: date-time */
+            cancelledAt: null | string;
+            cancelReason: null | string;
+            /** Format: date-time */
+            paymentHoldExpiresAt: null | string;
+            otpVerified: boolean;
+            /** Format: uuid */
+            createdByStaffId: null | string;
+            items: components["schemas"]["OrderLineDto"][];
+            timeline: components["schemas"]["TimelineDto"][];
+            notes: components["schemas"]["NoteDto"][];
+            flags: components["schemas"]["RiskFlagDto"][];
+            fraudLog: components["schemas"]["FraudLogDto"][];
+            customerStats: components["schemas"]["CustomerOrderStatsDto"];
+            nextOrderStatuses: string[];
+            nextPaymentStatuses: string[];
+        };
+        OrderLineDto: {
+            /** Format: uuid */
+            variantId: string;
+            /** Format: uuid */
+            productId: string;
+            name: string;
+            nameBn: null | string;
+            sku: string;
+            colorName: null | string;
+            size: null | string;
+            imageUrl: null | string;
+            /** Format: double */
+            unitPrice: number | string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            lineTotal: number | string;
+        };
+        OrderListItemDto: {
+            /** Format: uuid */
+            id: string;
+            number: string;
+            /** Format: uuid */
+            branchId: string;
+            branchCode: string;
+            source: components["schemas"]["OrderSource"];
+            status: components["schemas"]["OrderStatus"];
+            paymentStatus: components["schemas"]["PaymentStatus"];
+            deliveryStatus: components["schemas"]["DeliveryStatus"];
+            paymentMethod: string;
+            customerName: null | string;
+            customerMobile: string;
+            district: null | string;
+            /** Format: int32 */
+            itemCount: number | string;
+            /** Format: double */
+            grandTotal: number | string;
+            fraudState: components["schemas"]["FraudState"];
+            /** Format: int32 */
+            riskScore: number | string;
+            isHeld: boolean;
+            /** Format: date-time */
+            placedAt: string;
+        };
+        /** @enum {unknown} */
+        OrderSource: "Web" | "Facebook" | "WhatsApp" | "Phone" | "WalkIn" | "Other";
+        OrderSourceCountDto: {
+            source: components["schemas"]["OrderSource"];
+            /** Format: int32 */
+            orders: number | string;
+            /** Format: double */
+            total: number | string;
+        };
+        /** @enum {unknown} */
+        OrderStatus: "Placed" | "Confirmed" | "Packed" | "HandedToCourier" | "InTransit" | "OutForDelivery" | "Delivered" | "Cancelled" | "DeliveryFailed" | "ReturnInProgress" | "Returned";
+        /** @enum {unknown} */
+        OrderTrack: "Order" | "Payment" | "Delivery";
+        PackingSlipDto: {
+            number: string;
+            /** Format: date-time */
+            placedAt: string;
+            branchName: string;
+            branchPickupAddress: null | string;
+            branchPhone: null | string;
+            shipping: components["schemas"]["ShippingDto"];
+            customerNote: null | string;
+            paymentMethod: string;
+            paymentStatus: components["schemas"]["PaymentStatus"];
+            /** Format: double */
+            subtotal: number | string;
+            /** Format: double */
+            discount: number | string;
+            /** Format: double */
+            deliveryCharge: number | string;
+            /** Format: double */
+            grandTotal: number | string;
+            /** Format: double */
+            collectOnDelivery: number | string;
+            lines: components["schemas"]["PackingSlipLineDto"][];
+            /** Format: int32 */
+            totalQuantity: number | string;
+            /** Format: int32 */
+            weightGrams: number | string;
+        };
+        PackingSlipLineDto: {
+            sku: string;
+            name: string;
+            colorName: null | string;
+            size: null | string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            unitPrice: number | string;
+            /** Format: double */
+            lineTotal: number | string;
+        };
         PagedResultOfAuditLogDto: {
             items: components["schemas"]["AuditLogDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
+        PagedResultOfBlacklistDto: {
+            items: components["schemas"]["BlacklistDto"][];
             /** Format: int32 */
             total: number | string;
             /** Format: int32 */
@@ -13718,8 +16456,41 @@ export interface components {
             /** Format: int32 */
             totalPages?: number | string;
         };
+        PagedResultOfMyOrderListItemDto: {
+            items: components["schemas"]["MyOrderListItemDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
+        PagedResultOfOrderListItemDto: {
+            items: components["schemas"]["OrderListItemDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
         PagedResultOfProductListItemDto: {
             items: components["schemas"]["ProductListItemDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
+        PagedResultOfReviewItemDto: {
+            items: components["schemas"]["ReviewItemDto"][];
             /** Format: int32 */
             total: number | string;
             /** Format: int32 */
@@ -13806,6 +16577,14 @@ export interface components {
             /** Format: int32 */
             totalPages?: number | string;
         };
+        PaymentMethodDto: {
+            code: string;
+            name: string;
+            available: boolean;
+            reason: null | string;
+        };
+        /** @enum {unknown} */
+        PaymentStatus: "Pending" | "Paid" | "Failed" | "Cancelled" | "UnderReview" | "Rejected" | "PartiallyRefunded" | "Refunded" | "CollectedByCourier" | "Settled";
         PermissionCatalogDto: {
             version: string;
             /** Format: int32 */
@@ -13964,7 +16743,31 @@ export interface components {
             /** Format: int32 */
             quantity: number | string;
         };
+        QuoteLineDto: {
+            /** Format: uuid */
+            variantId: string;
+            /** Format: uuid */
+            productId: string;
+            name: string;
+            nameBn: null | string;
+            sku: string;
+            colorName: null | string;
+            size: null | string;
+            imageUrl: null | string;
+            /** Format: double */
+            unitPrice: number | string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            lineTotal: number | string;
+            problem: null | string;
+        };
         ReasonRequest: {
+            reason: null | string;
+        };
+        ReassignRequest: {
+            /** Format: uuid */
+            branchId: string;
             reason: null | string;
         };
         RecoveryCodesResponse: {
@@ -14006,6 +16809,35 @@ export interface components {
             token: string;
             newPassword: string;
         };
+        ReviewItemDto: {
+            /** Format: uuid */
+            orderId: string;
+            number: string;
+            /** Format: uuid */
+            branchId: string;
+            state: components["schemas"]["FraudState"];
+            /** Format: int32 */
+            riskScore: number | string;
+            customerMobile: string;
+            customerName: null | string;
+            /** Format: double */
+            grandTotal: number | string;
+            paymentMethod: string;
+            orderStatus: components["schemas"]["OrderStatus"];
+            /** Format: date-time */
+            placedAt: string;
+            flags: components["schemas"]["RiskFlagDto"][];
+            customerStats: components["schemas"]["CustomerOrderStatsDto"];
+        };
+        RiskFlagDto: {
+            ruleCode: string;
+            message: string;
+            /** Format: int32 */
+            score: number | string;
+            action: components["schemas"]["RuleAction"];
+            /** Format: date-time */
+            at: string;
+        };
         RoleAssignmentDto: {
             /** Format: uuid */
             assignmentId: string;
@@ -14039,6 +16871,8 @@ export interface components {
             /** Format: int32 */
             permissionCount: number | string;
         };
+        /** @enum {unknown} */
+        RuleAction: "Flag" | "Hold" | "RequireAdvance" | "Reject";
         SaveAddressRequest: {
             label: null | string;
             recipientName: string;
@@ -14224,6 +17058,24 @@ export interface components {
         SetRolePermissionsRequest: {
             permissions: string[];
         };
+        ShippingDto: {
+            recipientName: string;
+            phone: string;
+            countryCode: string;
+            division: null | string;
+            district: null | string;
+            upazila: null | string;
+            area: null | string;
+            addressLine: string;
+            landmark: null | string;
+            stateProvince: null | string;
+            city: null | string;
+            postalCode: null | string;
+            /** Format: double */
+            latitude: null | number | string;
+            /** Format: double */
+            longitude: null | number | string;
+        };
         SignInHistoryDto: {
             /** Format: uuid */
             id: string;
@@ -14300,7 +17152,7 @@ export interface components {
             createdByName: null | string;
         };
         /** @enum {unknown} */
-        StockReason: "OpeningStock" | "Correction" | "Damage" | "Loss" | "Found" | "CustomerReturn" | "TransferOut" | "TransferIn" | "TransferCancelled" | "StockCount";
+        StockReason: "OpeningStock" | "Correction" | "Damage" | "Loss" | "Found" | "CustomerReturn" | "TransferOut" | "TransferIn" | "TransferCancelled" | "StockCount" | "OrderReserved" | "OrderReleased" | "OrderPacked" | "OrderRestocked";
         StockRowDto: {
             /** Format: uuid */
             branchId: string;
@@ -14465,6 +17317,35 @@ export interface components {
         TemporaryPasswordResponse: {
             temporaryPassword: string;
         };
+        TimelineDto: {
+            track: components["schemas"]["OrderTrack"];
+            from: null | string;
+            to: string;
+            reason: null | string;
+            actorName: null | string;
+            /** Format: date-time */
+            at: string;
+        };
+        TrackingDto: {
+            number: string;
+            status: components["schemas"]["OrderStatus"];
+            paymentStatus: components["schemas"]["PaymentStatus"];
+            deliveryStatus: components["schemas"]["DeliveryStatus"];
+            paymentMethod: string;
+            /** Format: date-time */
+            placedAt: string;
+            district: null | string;
+            /** Format: double */
+            grandTotal: number | string;
+            items: components["schemas"]["OrderLineDto"][];
+            timeline: components["schemas"]["TimelineDto"][];
+            canCancel: boolean;
+        };
+        TrackRequest: {
+            number: null | string;
+            mobile: null | string;
+            token: null | string;
+        };
         TransferDto: {
             /** Format: uuid */
             id: string;
@@ -14511,6 +17392,10 @@ export interface components {
         };
         /** @enum {unknown} */
         TransferStatus: "Requested" | "Approved" | "InTransit" | "Received" | "Cancelled" | "Rejected";
+        TransitionRequest: {
+            to: components["schemas"]["OrderStatus"];
+            reason: null | string;
+        };
         TwoFactorSetupResponse: {
             sharedKey: string;
             authenticatorUri: string;
@@ -14544,6 +17429,12 @@ export interface components {
             courierStoreIds: null | string;
             /** Format: uuid */
             defaultDeliveryZoneId: null | string;
+        };
+        UpdateFraudRuleRequest: {
+            enabled: boolean;
+            /** Format: double */
+            threshold: number | string;
+            action: components["schemas"]["RuleAction"];
         };
         UpdateImageRequest: {
             colorName: null | string;
