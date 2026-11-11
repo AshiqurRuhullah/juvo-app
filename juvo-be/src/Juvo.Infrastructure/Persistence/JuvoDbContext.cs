@@ -150,6 +150,23 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
 
     public DbSet<JobLog> JobLogs => Set<JobLog>();
 
+    public async Task AcquireTransactionLockAsync(string name, CancellationToken cancellationToken = default)
+    {
+        if (Database.CurrentTransaction is null)
+        {
+            throw new InvalidOperationException("A transaction lock can only be taken inside a transaction.");
+        }
+
+        var result = new Microsoft.Data.SqlClient.SqlParameter("@result", System.Data.SqlDbType.Int) { Direction = System.Data.ParameterDirection.Output };
+        var resource = new Microsoft.Data.SqlClient.SqlParameter("@resource", name.Length > 200 ? name[..200] : name);
+        await Database.ExecuteSqlRawAsync(
+            "EXEC @result = sp_getapplock @Resource = @resource, @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 20000", [result, resource], cancellationToken);
+        if (result.Value is not int code || code < 0)
+        {
+            throw new TimeoutException($"Could not take the lock '{name}'. Another request is holding it.");
+        }
+    }
+
     // Read by the branch-scope query filter on every query (see ModelDefaults.ApplyBranchScope).
     private bool EnforceBranchScope => _branchContext.EnforceScope;
 

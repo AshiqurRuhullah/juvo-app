@@ -135,4 +135,10 @@ public interface IApplicationDbContext
     DbSet<NotificationTemplateVersion> NotificationTemplateVersions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Takes a named exclusive lock that lasts until the current transaction ends (SQL Server application lock). Other transactions asking for the same name wait. Used to
+    /// serialise work that must happen once and in order, such as issuing the invoice of an order or taking the next document number. Needs a running transaction.
+    /// </summary>
+    Task AcquireTransactionLockAsync(string name, CancellationToken cancellationToken = default);
 }

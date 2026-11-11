@@ -12,7 +12,7 @@ internal sealed class PaymentConfiguration : IEntityTypeConfiguration<Payment>
 {
     public void Configure(EntityTypeBuilder<Payment> builder)
     {
-        builder.ToTable("Payments", t => t.HasCheckConstraint("CK_Payments_Amounts", "[Amount] > 0 AND [RefundedAmount] >= 0 AND [RefundedAmount] <= [Amount]"));
+        builder.ToTable("Payments", t => t.HasCheckConstraint("CK_Payments_Amounts", "[Amount] > 0 AND [RefundedAmount] >= 0 AND [RefundPendingAmount] >= 0 AND [RefundedAmount] + [RefundPendingAmount] <= [Amount]"));
         builder.Property(x => x.OrderNumber).HasMaxLength(40).IsRequired();
         builder.Property(x => x.Kind).HasConversion<int>();
         builder.Property(x => x.Status).HasConversion<int>();

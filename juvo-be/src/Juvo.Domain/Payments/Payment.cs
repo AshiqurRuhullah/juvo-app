@@ -106,7 +106,7 @@ public sealed class Payment : Entity, IBranchScoped
 
     public DateTimeOffset? SettledAt { get; private set; }
 
-    /// <summary>Everything given back so far, including refunds that are still Pending. Never more than <see cref="Amount"/>.</summary>
+    /// <summary>Refunds that are completed. Together with <see cref="RefundPendingAmount"/> never more than <see cref="Amount"/>.</summary>
     public decimal RefundedAmount { get; private set; }
 
     public IReadOnlyList<PaymentEvent> Events => _events;
@@ -114,7 +114,10 @@ public sealed class Payment : Entity, IBranchScoped
     /// <summary>The money is held: paid online, reported and approved, collected by the courier, or settled.</summary>
     public bool HoldsMoney => Status is PaymentStatus.Paid or PaymentStatus.PartiallyRefunded or PaymentStatus.CollectedByCourier or PaymentStatus.Settled;
 
-    public decimal Refundable => Math.Max(0m, Amount - RefundedAmount);
+    /// <summary>Refunds reserved but not finished yet (Pending).</summary>
+    public decimal RefundPendingAmount { get; private set; }
+
+    public decimal Refundable => Math.Max(0m, Amount - RefundedAmount - RefundPendingAmount);
 
     public static Payment Start(PaymentInit i, DateTimeOffset now, Guid? by, string? byName)
     {
@@ -213,35 +216,51 @@ public sealed class Payment : Entity, IBranchScoped
     /// <summary>Records the receipt reference of cash or of a settlement.</summary>
     public void RecordReceipt(string? reference) => ReceivedReference = string.IsNullOrWhiteSpace(reference) ? ReceivedReference : reference.Trim();
 
-    /// <summary>Gives back <paramref name="amount"/> (it counts at once, even while the refund is Pending) and moves to PartiallyRefunded or Refunded.</summary>
+    /// <summary>
+    /// Sets money aside for a refund that is not finished yet (Pending). The reserved amount counts against <see cref="Refundable"/> at once, so two refunds can never
+    /// give back more than was paid; the row version makes simultaneous reservations fail instead of both succeeding.
+    /// </summary>
     public void ReserveRefund(decimal amount, DateTimeOffset now, Guid? by, string? byName, string detail)
     {
-        if (amount <= 0 || amount > Refundable)
-        {
-            throw new InvalidOperationException("The refund is more than what is left to refund.");
-        }
-
         if (!HoldsMoney)
         {
             throw new InvalidOperationException("Only a payment that holds money can be refunded.");
         }
 
+        if (amount <= 0 || amount > Refundable)
+        {
+            throw new InvalidOperationException("The refund is more than what is left to refund.");
+        }
+
+        RefundPendingAmount += amount;
+        Note("RefundRequested", detail, now, by, byName);
+    }
+
+    /// <summary>A reserved refund finished: the money counts as given back and the status becomes PartiallyRefunded or Refunded.</summary>
+    public void CompleteRefund(decimal amount, DateTimeOffset now, Guid? by, string? byName, string detail)
+    {
+        if (amount <= 0 || amount > RefundPendingAmount)
+        {
+            throw new InvalidOperationException("There is no reserved refund of this amount.");
+        }
+
+        RefundPendingAmount -= amount;
         RefundedAmount += amount;
         var target = RefundedAmount >= Amount ? PaymentStatus.Refunded : PaymentStatus.PartiallyRefunded;
         if (Status != target)
         {
-            MoveTo(target, "Refund", detail, now, by, byName);
+            MoveTo(target, "Refunded", detail, now, by, byName);
         }
         else
         {
-            Note("Refund", detail, now, by, byName);
+            Note("Refunded", detail, now, by, byName);
         }
     }
 
-    /// <summary>A refund failed: its amount becomes refundable again. The status stays as it is (the refund history shows what happened).</summary>
-    public void ReleaseRefund(decimal amount, DateTimeOffset now, Guid? by, string? byName, string detail)
+    /// <summary>A reserved refund failed: the money is refundable again and the status stays as it was.</summary>
+    public void FailRefund(decimal amount, DateTimeOffset now, Guid? by, string? byName, string detail)
     {
-        RefundedAmount = Math.Max(0m, RefundedAmount - amount);
+        RefundPendingAmount = Math.Max(0m, RefundPendingAmount - amount);
         Note("RefundFailed", detail, now, by, byName);
     }
 
@@ -386,6 +405,9 @@ public sealed class Refund : Entity, IBranchScoped
     }
 
     public void LinkCreditNote(Guid creditNoteId) => CreditNoteId = creditNoteId;
+
+    /// <summary>The gateway's id of a refund it has accepted but not finished.</summary>
+    public void SetReference(string? reference) => Reference = string.IsNullOrWhiteSpace(reference) ? Reference : reference.Trim();
 }
 
 /// <summary>
