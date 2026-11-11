@@ -16,6 +16,7 @@ import {
   RotateCcw,
   Settings,
   Shield,
+  ShieldAlert,
   ShoppingBag,
   ShoppingCart,
   Shirt,
@@ -72,8 +73,9 @@ export const ADMIN_NAV: NavGroup[] = [
     label: "sales",
     icon: ShoppingCart,
     items: [
-      { id: "orders", label: "orders", href: "/admin/orders", icon: ClipboardList, permission: "orders.order.view", ready: false, bottom: true },
-      { id: "social-orders", label: "socialOrders", href: "/admin/social-orders", icon: Store, permission: "orders.order.create", ready: false },
+      { id: "orders", label: "orders", href: "/admin/orders", icon: ClipboardList, permission: "orders.order.view", ready: true, bottom: true },
+      { id: "social-orders", label: "socialOrders", href: "/admin/orders/new", icon: Store, permission: "orders.order.create", ready: true },
+      { id: "fraud", label: "fraud", href: "/admin/fraud", icon: ShieldAlert, permission: "fraud.flag.view", ready: true },
       { id: "returns", label: "returns", href: "/admin/returns", icon: RotateCcw, permission: "returns.return.view", ready: false },
     ],
   },
@@ -165,7 +167,7 @@ export const ACCOUNT_NAV: NavGroup[] = [
     icon: Gauge,
     items: [
       { id: "account-home", label: "accountHome", href: "/account", icon: Gauge, ready: true, bottom: true },
-      { id: "account-orders", label: "myOrders", href: "/account/orders", icon: ClipboardList, ready: false, bottom: true },
+      { id: "account-orders", label: "myOrders", href: "/account/orders", icon: ClipboardList, ready: true, bottom: true },
       { id: "account-addresses", label: "addresses", href: "/account/addresses", icon: Globe, ready: true, bottom: true },
       { id: "account-wishlist", label: "wishlist", href: "/account/wishlist", icon: Tag, ready: true },
     ],

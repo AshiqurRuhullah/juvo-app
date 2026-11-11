@@ -10,7 +10,8 @@ test.describe("My account", () => {
     await page.goto("/account");
     await expect(page.getByTestId("account-mobile")).toBeVisible();
     await expect(page.getByTestId("tile-addresses")).toContainText("0");
-    await expect(page.getByTestId("tile-orders")).toContainText("Orders arrive with the next update.");
+    await expect(page.getByTestId("tile-orders")).toContainText("Orders");
+    await expect(page.getByTestId("tile-orders")).toHaveAttribute("href", "/account/orders");
     await page.getByTestId("edit-profile-link").click();
     await expect(page).toHaveURL(/\/account\/profile/);
   });

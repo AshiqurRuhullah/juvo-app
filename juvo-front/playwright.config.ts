@@ -46,7 +46,7 @@ export default defineConfig({
       name: "desktop",
       use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 800 } },
       dependencies: ["setup"],
-      testMatch: /(auth|permissions|shell|ui-checks|ums|catalog|lookups|inventory|design|store|cart|myaccount)\.spec\.ts/,
+      testMatch: /(auth|permissions|shell|ui-checks|ums|catalog|lookups|inventory|design|store|cart|myaccount|orders)\.spec\.ts/,
     },
     { name: "tablet", use: { ...devices["Desktop Chrome"], viewport: { width: 820, height: 1180 }, hasTouch: true }, dependencies: ["setup"], testMatch: /(shell|devices)\.spec\.ts/ },
     { name: "android", use: mobile("Pixel 7"), dependencies: ["setup"], testMatch: /(shell|devices)\.spec\.ts/ },

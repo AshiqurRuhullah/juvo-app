@@ -74,12 +74,14 @@ test.describe("Cart", () => {
     await expect(page.getByTestId("delivery-quote")).toBeVisible();
   });
 
-  test("checkout is not open yet and says so", async ({ page, context }) => {
+  test("the checkout button opens the checkout page", async ({ page, context }) => {
     const [item] = await sampleVariants(context.request, 1);
     await addToCart(context, item!.id, 1);
     await page.goto("/cart");
-    await expect(page.getByTestId("checkout-button")).toBeDisabled();
-    await expect(page.getByTestId("checkout-note")).toHaveText("Checkout opens with the next update.");
+    await expect(page.getByTestId("checkout-note")).toHaveText("You can review everything before you place the order.");
+    await page.getByTestId("checkout-button").click();
+    await expect(page).toHaveURL(/\/checkout$/);
+    await expect(page.getByRole("heading", { name: "Checkout", level: 1 })).toBeVisible();
   });
 
   test("the cart survives a reload and is merged into the customer's cart on sign-in", async ({ page, context }) => {

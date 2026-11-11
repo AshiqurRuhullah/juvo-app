@@ -36,16 +36,7 @@ export function AccountSummary() {
         <Tile href="/account/addresses" icon={<MapPin aria-hidden />} label={t("addresses")} value={String(toNumber(s.addressCount))} testId="tile-addresses" />
         <Tile href="/account/wishlist" icon={<Heart aria-hidden />} label={t("wishlist")} value={String(toNumber(s.wishlistCount))} testId="tile-wishlist" />
         <Tile href="/cart" icon={<ShoppingBag aria-hidden />} label={t("cart")} value={String(toNumber(s.cartItemCount))} testId="tile-cart" />
-        <div className="flex min-h-11 items-center gap-3 rounded-card border border-line bg-card p-4" data-testid="tile-orders">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-sunken text-muted [&_svg]:size-5">
-            <ClipboardList aria-hidden />
-          </span>
-          <span className="min-w-0">
-            <span className="block text-sm text-muted">{t("orders")}</span>
-            <span className="block text-xl font-semibold text-strong">{String(toNumber(s.orderCount))}</span>
-            <span className="block text-xs text-muted">{t("ordersSoon")}</span>
-          </span>
-        </div>
+        <Tile href="/account/orders" icon={<ClipboardList aria-hidden />} label={t("orders")} value={String(toNumber(s.orderCount))} testId="tile-orders" />
       </div>
 
       <Card>
