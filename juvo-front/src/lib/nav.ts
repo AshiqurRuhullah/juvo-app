@@ -74,7 +74,7 @@ export const ADMIN_NAV: NavGroup[] = [
     items: [
       { id: "orders", label: "orders", href: "/admin/orders", icon: ClipboardList, permission: "orders.order.view", ready: false, bottom: true },
       { id: "social-orders", label: "socialOrders", href: "/admin/social-orders", icon: Store, permission: "orders.order.create", ready: false },
-      { id: "returns", label: "returns", href: "/admin/returns", icon: RotateCcw, permission: "returns.return.view", ready: false },
+      { id: "returns", label: "returns", href: "/admin/returns", icon: RotateCcw, permission: "returns.return.view", ready: true },
     ],
   },
   {
@@ -168,6 +168,7 @@ export const ACCOUNT_NAV: NavGroup[] = [
       { id: "account-orders", label: "myOrders", href: "/account/orders", icon: ClipboardList, ready: false, bottom: true },
       { id: "account-addresses", label: "addresses", href: "/account/addresses", icon: Globe, ready: true, bottom: true },
       { id: "account-wishlist", label: "wishlist", href: "/account/wishlist", icon: Tag, ready: true },
+      { id: "account-returns", label: "returns", href: "/account/returns", icon: RotateCcw, ready: true },
     ],
   },
 ];
