@@ -409,11 +409,11 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | ID | Requirement | Pri | Step | Status | Implemented in (file / endpoint / page) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | FR-A01 | Home page with hero slider (admin-managed), featured categories, New Arrivals, Best Sellers, Sale section, brand story strip, social links,… | M | 7 | Not started | | |
-| FR-A02 | Category pages (Clothing, Shoes, Ladies' Dresses, Purses, and any category the admin adds) with sub-categories | M | 7 | Not started | | |
-| FR-A03 | Product grid shows auto-designed premium cards (section 3.4); infinite scroll or "Load more" | M | 7 | Not started | | |
-| FR-A04 | Filters: category, price range, size, colour, brand, availability, discount; sort: newest, price low-high, price high-low, popularity | M | 7 | Not started | | |
-| FR-A05 | Search with suggestions by name, category and SKU; tolerant of small spelling mistakes (Should) | M | 7 | Not started | | |
-| FR-A06 | Product detail page: image gallery with zoom and swipe, optional video, variant selectors (colour, size), live stock note, price, delivery… | M | 7 | Not started | | |
+| FR-A02 | Category pages (Clothing, Shoes, Ladies' Dresses, Purses, and any category the admin adds) with sub-categories | M | 7 | Partial | API `GET /store/categories`, `/store/products?category=` | Backend of Step 7-a; pages in 7-b. |
+| FR-A03 | Product grid shows auto-designed premium cards (section 3.4); infinite scroll or "Load more" | M | 7 | Partial | API `GET /store/products` (paged cards with price, badges, swatches, sizes) | Backend only; the page is in 7-b. |
+| FR-A04 | Filters: category, price range, size, colour, brand, availability, discount; sort: newest, price low-high, price high-low, popularity | M | 7 | Partial | API `GET /store/products` filters category, price, size, colour, brand, inStock, onSale; sort newest, price-asc, price-desc, popular; `/products/facets` | Backend of Step 7-a; filter panel in 7-b. |
+| FR-A05 | Search with suggestions by name, category and SKU; tolerant of small spelling mistakes (Should) | M | 7 | Partial | API `GET /store/products?q=` (tolerates small spelling mistakes), `/store/search/suggest` | Name, tagline, tags, brand, category; SKU search not exposed publicly. UI in 7-b. |
+| FR-A06 | Product detail page: image gallery with zoom and swipe, optional video, variant selectors (colour, size), live stock note, price, delivery… | M | 7 | Partial | API `GET /store/products/{slug}` (variants with capped availability, pictures, size chart, related) | Backend only; the page is in 7-b. |
 | FR-A07 | Size guide popup per category (admin-editable table) | S | 7 | Not started | | |
 | FR-A08 | "Notify me when available" for sold-out variants (mobile or email) | S | 7 | Not started | | |
 | FR-A09 | Recently viewed products | C | 7 | Not started | | |
@@ -434,13 +434,13 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-B12 | Mark product as New, Featured, Best seller (manual or automatic rules) | M | 6 | Done | Labels card of the product form (New, Featured, Best seller; manual) | Automatic rules not built. |
 | FR-B13 | Product SEO fields: meta title, description, social image | S | 6 | Partial | Search and sharing tab (page title, description) | Social share image upload is not in the UI yet. |
 | FR-B14 | Every product change is written to the audit log (who, what, when, old/new) | M | 6 | Done | Audit interceptor; viewable in `/admin/ums/audit` | Step 6-a. |
-| FR-C01 | Add to cart from card (quick add) or product page with required variant selection | M | 7 | Not started | | |
-| FR-C02 | Cart drawer and full cart page: change quantity, remove, see line totals, subtotal, estimated delivery, coupon field | M | 7 | Not started | | |
-| FR-C03 | Cart is kept for guests (browser storage + server session) and merged into the account after sign-in | M | 7 | Not started | | |
-| FR-C04 | Quantity limited to available stock; clear message if stock changed since adding | M | 7 | Not started | | |
-| FR-C05 | Wishlist (heart): guests keep it on the device; signed-in users keep it on the account; move wishlist item to cart | S | 7 | Not started | | |
+| FR-C01 | Add to cart from card (quick add) or product page with required variant selection | M | 7 | Partial | API `POST /store/cart/items` (variant and quantity) | Backend of Step 7-a; buttons in 7-b. |
+| FR-C02 | Cart drawer and full cart page: change quantity, remove, see line totals, subtotal, estimated delivery, coupon field | M | 7 | Partial | API `GET/PUT/DELETE /store/cart/*`, coupon, `/store/cart/delivery-quote` | Backend only; drawer and page in 7-b. |
+| FR-C03 | Cart is kept for guests (browser storage + server session) and merged into the account after sign-in | M | 7 | Partial | Guest cart by `X-Cart-Token` (hash stored), `POST /store/cart/merge` after sign-in | Backend of Step 7-a; the browser keeps the token in 7-b. |
+| FR-C04 | Quantity limited to available stock; clear message if stock changed since adding | M | 7 | Partial | CartService re-checks availability on every read (`REDUCED`, `OUT_OF_STOCK`, price-changed marker) | Backend of Step 7-a; messages in 7-b. |
+| FR-C05 | Wishlist (heart): guests keep it on the device; signed-in users keep it on the account; move wishlist item to cart | S | 7 | Partial | API `/me/wishlist` and `move-to-cart` (signed-in customers) | Guest wishlist on the device is front-end work in 7-b. |
 | FR-C06 | Abandoned cart reminder by SMS/email when mobile or email is known (admin can turn on) | C | 7 | Not started | | |
-| FR-C07 | Coupon codes: percentage or fixed, minimum order, expiry, usage limit | S | 7 | Not started | | |
+| FR-C07 | Coupon codes: percentage or fixed, minimum order, expiry, usage limit | S | 7 | Done | Coupons: `/promotions/coupons` (staff), `/store/coupons/validate`, `/store/cart/coupon` | Percentage or fixed, minimum order, dates, usage limit. Use count rises in Step 8; admin screen in 7-b. |
 | FR-D01 | Checkout works with no account: mobile number plus the basic details (name, address, delivery area) are enough | M | 8 | Not started | | |
 | FR-D02 | If the mobile number matches an existing customer, offer sign-in by OTP to load saved addresses; ordering without signing in remains possib… | M | 8 | Not started | | |
 | FR-D03 | Mobile number validation: Bangladesh format 01XXXXXXXXX (11 digits) or +880...; international numbers accepted with country code | M | 8 | Not started | | |
@@ -453,36 +453,36 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-D10 | Order source recorded (website, admin-created, Facebook/phone order entered by staff) | M | 8 | Not started | | |
 | FR-D11 | Admin can create an order manually on behalf of a customer (for Facebook/phone orders) using the same rules | M | 8 | Not started | | |
 | FR-D12 | Terms, privacy and return policy acceptance stored with the order | M | 8 | Not started | | |
-| FR-E01 | Create a quick profile in real time from the order confirmation page or the sign-in page using only mobile number and email (email optional) | M | 7 | Partial | CustomerAuthService.VerifyOtpAsync creates the quick profile | Confirmation-page flow and optional email in Step 7. |
+| FR-E01 | Create a quick profile in real time from the order confirmation page or the sign-in page using only mobile number and email (email optional) | M | 7 | Partial | CustomerAuthService.VerifyOtpAsync creates the quick profile; `PUT /me` sets name and email | Confirmation-page flow in Step 8. |
 | FR-E02 | A customer can also create a profile before ordering, from the sign-in page | M | 7 | Not started | | |
 | FR-E03 | Mobile number is the unique key. Orders placed as guest with the same verified mobile number are automatically attached to the profile afte… | M | 7 | Partial | Customers.Mobile unique index, PhoneNumber.Normalize | Attaching guest orders after OTP in Step 8. |
-| FR-E04 | Sign-in options: mobile + OTP (default), email + OTP, email/mobile + password (if set), Google sign-in (Could) | M | 7 | Partial | POST /api/v1/auth/otp/request and /verify | Mobile + OTP done; email OTP, password and Google later. |
+| FR-E04 | Sign-in options: mobile + OTP (default), email + OTP, email/mobile + password (if set), Google sign-in (Could) | M | 7 | Partial | POST /api/v1/auth/otp/request and /verify by mobile (SMS) or email | Password and Google sign-in later. |
 | FR-E05 | OTP rules: 6 digits, expires in 5 minutes, limited attempts and resend cooldown, rate-limited per number and device | M | 7 | Done | CustomerAuthService, OtpCode, rate limit policy otp | 6 digits, 5 min, 5 attempts, 60 s cooldown, hourly cap; tested. |
 | FR-E06 | Progressive profile: ask for extra fields one at a time later, never block an order for them | S | 7 | Not started | | |
-| FR-E07 | Consent checkboxes for marketing SMS/email, stored with timestamp; transactional messages always allowed | M | 7 | Not started | | |
+| FR-E07 | Consent checkboxes for marketing SMS/email, stored with timestamp; transactional messages always allowed | M | 7 | Partial | API `GET/PUT /me/consent` (timestamped log) | Checkbox UI in 7-b. |
 | FR-E08 | Customer can delete their account; order records are kept in anonymised form for legal and accounting needs | S | 7 | Not started | | |
 | FR-E09 | Fraud signals: many orders from one device with different numbers, repeated fake/returned COD, flagged for admin review | C | 7 | Not started | | |
-| FR-F01 | Dashboard: active orders with live status, recent orders, wishlist preview, saved addresses | M | 7-8 | Not started | | |
+| FR-F01 | Dashboard: active orders with live status, recent orders, wishlist preview, saved addresses | M | 7-8 | Partial | API `GET /me/summary`, `/me/addresses`, `/me/wishlist` | Orders part in Step 8; UI in 7-b. |
 | FR-F02 | My Orders: list with filters (active, delivered, cancelled, returned); order detail with items, amounts, payment status, delivery timeline,… | M | 8 | Not started | | |
 | FR-F03 | Live order tracking page with timeline and map-style progress (module J) | M | 10 | Not started | | |
 | FR-F04 | Cancel an order while allowed (before courier pickup); request a return within the return window (module L) | M | 8 | Not started | | |
-| FR-F05 | Address book: add, edit, delete, set default; each address with a pinned map location | M | 7-8 | Not started | | |
-| FR-F06 | Profile: name, mobile, email, photo, password, language, notification preferences | M | 7-8 | Not started | | |
+| FR-F05 | Address book: add, edit, delete, set default; each address with a pinned map location | M | 7-8 | Partial | API `/me/addresses` (add, edit, delete, default; optional latitude and longitude) | Map picker UI in 7-b. |
+| FR-F06 | Profile: name, mobile, email, photo, password, language, notification preferences | M | 7-8 | Partial | API `GET/PUT /me` (name, email) | Photo, password, language and notification preferences later. |
 | FR-F07 | Reorder: add all items of a past order to cart (checks stock and current price) | S | 7-8 | Not started | | |
-| FR-F08 | Wishlist and back-in-stock requests | S | 7-8 | Not started | | |
+| FR-F08 | Wishlist and back-in-stock requests | S | 7-8 | Partial | API `/me/wishlist` | Back-in-stock requests not built. |
 | FR-F09 | Write a review for delivered items | S | 7-8 | Not started | | |
 | FR-F10 | Payment history and refund status | M | 9 | Not started | | |
 | FR-F11 | Help: contact the shop by phone/WhatsApp/message from an order page | S | 7-8 | Not started | | |
-| FR-G01 | Country selector (all countries; admin can enable/disable countries for shipping) | M | 7 | Not started | | |
-| FR-G02 | Bangladesh address uses the administrative hierarchy Division, District, Upazila/Thana, Union/Area, then house/road/landmark. Data loaded f… | M | 7 | Not started | | |
+| FR-G01 | Country selector (all countries; admin can enable/disable countries for shipping) | M | 7 | Partial | API `GET /store/geo/countries`; staff `GET/POST/PUT /delivery/countries` enable and zone | 24 countries seeded (Bangladesh and India enabled); selector UI in 7-b. |
+| FR-G02 | Bangladesh address uses the administrative hierarchy Division, District, Upazila/Thana, Union/Area, then house/road/landmark. Data loaded f… | M | 7 | Partial | API `/store/geo/divisions`, `/districts`, `/districts/{id}/upazilas`; data from nuhil/bangladesh-geocode (MIT) | 8 / 64 / 494 loaded; the union/area level is free text (`area`). |
 | FR-G03 | Map selection: customer searches an address, drops or drags a pin, or taps "Use my current location"; system fills address fields from the… | M | 7 | Not started | | |
 | FR-G04 | Address autocomplete while typing; customer can correct fields manually when the map guess is wrong (common in Bangladesh) | M | 7 | Not started | | |
 | FR-G05 | Validate that the pin lies inside the selected district/country; warn if not | S | 7 | Not started | | |
-| FR-G06 | International address form adapts to country (state/province, postal code, phone code) | M | 7 | Not started | | |
-| FR-G07 | Delivery zones (admin): Inside Dhaka, Dhaka suburbs, Major cities, Rest of Bangladesh, International regions (e.g. South Asia, Middle East,… | M | 7 | Not started | | |
-| FR-G08 | Charge rules: by weight slabs, by order value, flat rate, free-delivery threshold, per-courier override, extra remote-area surcharge | M | 7 | Not started | | |
-| FR-G09 | Show estimated delivery date range on product page (after area is known), cart and checkout | S | 7 | Not started | | |
-| FR-G10 | International: collect phone with country code, email (required), and customs details; show whether duties/taxes are prepaid or paid by the… | M | 7 | Not started | | |
+| FR-G06 | International address form adapts to country (state/province, postal code, phone code) | M | 7 | Partial | Address API: abroad needs country and city, optional state and postal code; country phone codes | Adaptive form in 7-b. |
+| FR-G07 | Delivery zones (admin): Inside Dhaka, Dhaka suburbs, Major cities, Rest of Bangladesh, International regions (e.g. South Asia, Middle East,… | M | 7 | Partial | API `/delivery/zones` (create, edit, areas, rates, delete) | Seeded zones and rates are placeholders. Admin screen in 7-b. |
+| FR-G08 | Charge rules: by weight slabs, by order value, flat rate, free-delivery threshold, per-courier override, extra remote-area surcharge | M | 7 | Partial | DeliveryPricing: base fee, weight slabs, per-extra-kg fee, free threshold, remote surcharge, max weight | Per-courier override deferred. Admin screen in 7-b. |
+| FR-G09 | Show estimated delivery date range on product page (after area is known), cart and checkout | S | 7 | Partial | API `POST /store/delivery/quote` returns earliest and latest delivery dates | Display in 7-b and 8. |
+| FR-G10 | International: collect phone with country code, email (required), and customs details; show whether duties/taxes are prepaid or paid by the… | M | 7 | Partial | Quote carries `dutiesPaidByReceiver` for international zones | Customs details and required email in Step 8. |
 | FR-G11 | Admin map view of order destinations (pins/heat-map) for planning | C | 7 | Not started | | |
 | FR-G12 | Saved addresses keep their pin so repeat orders need no map step | M | 7 | Not started | | |
 | FR-H01 | Courier adapter interface: create parcel, cancel parcel, get status, get label, get charge estimate, reconcile COD; one adapter per courier… | M | 10 | Not started | | |
@@ -683,7 +683,7 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | BR-D2 | an unpaid online-payment order is held for a limited time (admin setting, e.g. 30 minutes) and then cancelled automatically with stock rele… | Not started | | |
 | BR-D3 | order number format is readable and unique (e.g. JV-2611-000123). | Not started | | |
 | BR-G1 | an order cannot be confirmed without a deliverable address in an enabled zone. | Not started | | |
-| BR-G2 | the delivery charge shown at checkout is the charge billed; changes after confirmation need admin action and a recorded reason. | Not started | | |
-| BR-G3 | international parcels have a maximum weight and a list of restricted items, both admin-editable. | Not started | | |
+| BR-G2 | the delivery charge shown at checkout is the charge billed; changes after confirmation need admin action and a recorded reason. | Partial | One DeliveryPricing used for the quote (Step 8 will bill the same figure) | Billing and change-with-reason in Step 8. |
+| BR-G3 | international parcels have a maximum weight and a list of restricted items, both admin-editable. | Partial | Zone `MaxWeightGrams` refuses heavier parcels (`DELIVERY.OVERWEIGHT`) | Restricted-items list not built. |
 
 <!-- TRACEABILITY:END -->
