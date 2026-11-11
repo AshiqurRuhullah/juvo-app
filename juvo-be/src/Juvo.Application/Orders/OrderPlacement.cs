@@ -36,7 +36,7 @@ internal sealed class PlacementRejected(Error error) : Exception(error.Message)
 /// </summary>
 public sealed class OrderPlacement(
     IApplicationDbContext db, IUnitOfWork uow, SettingsService settings, OrderStock stock, OrderRouter router, FraudService fraud, DeliveryService delivery, CustomerAuthService otp,
-    StockAvailability availability, TimeProvider clock)
+    StockAvailability availability, Payments.PaymentSettingsService paymentSettings, Billing.TaxService taxes, TimeProvider clock)
 {
     public const string Cod = "COD";
     public const string SandboxOnline = "SANDBOX";
@@ -155,7 +155,7 @@ public sealed class OrderPlacement(
 
         // 5. Payment method.
         var method = (i.PaymentMethod ?? string.Empty).Trim().ToUpperInvariant();
-        if (!PaymentMethods.Contains(method))
+        if (Payments.PaymentMethodCatalog.Find(method) is null)
         {
             return Error.Conflict(ErrorCodes.Order.PaymentMethodUnavailable, "This payment method is not available.");
         }
@@ -163,6 +163,11 @@ public sealed class OrderPlacement(
         if (method == Cod && i.Shipping.CountryCode != "BD")
         {
             return Error.Conflict(ErrorCodes.Order.CodNotAvailable, "Cash on delivery is only available inside Bangladesh.");
+        }
+
+        if (await paymentSettings.ProblemAsync(method, i.Shipping.CountryCode, grand, cancellationToken) is { } methodProblem)
+        {
+            return Error.Conflict(method == Cod ? ErrorCodes.Order.CodNotAvailable : ErrorCodes.Order.PaymentMethodUnavailable, methodProblem);
         }
 
         var standardCharge = quote.Value.Total + quote.Value.FreeDeliveryWaiver; // what the courier costs, even when the customer got free delivery
@@ -280,6 +285,12 @@ public sealed class OrderPlacement(
                     p.Variant.Id, p.Product.Id, p.Product.NameEn, p.Product.NameBn, p.Variant.Sku, p.Variant.ColorName, p.Variant.Size, p.ImagePath, p.UnitPrice, p.Quantity,
                     p.Variant.WeightGramsOverride ?? p.Product.WeightGrams ?? 0, p.Variant.TracksStock)).ToList();
                 var placed = Order.Place(data, items, now);
+                var (taxRule, tax) = await taxes.ComputeAsync([.. items.Select(x => x.UnitPrice * x.Quantity)], couponDiscount + i.ManualDiscount, deliveryCharge, ct);
+                if (taxRule is not null)
+                {
+                    placed.ApplyTax(taxRule.Code, taxRule.RatePercent, tax.TaxTotal); // the tax inside the prices: totals do not change
+                }
+
                 if (!string.IsNullOrWhiteSpace(i.CustomerNote))
                 {
                     placed.AddNote(NoteKind.Customer, i.CustomerNote, i.Who.Id, i.Who.Name, now);

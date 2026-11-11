@@ -110,15 +110,20 @@ internal sealed class OutboxProcessor(
             // Each handler runs in its own scope (own DbContext), so a failing handler cannot leak partial changes
             // into the claim transaction. Delivery is at-least-once: handlers must be idempotent.
             await using var handlerScope = scopeFactory.CreateAsyncScope();
-            var handler = handlerScope.ServiceProvider.GetServices<IOutboxMessageHandler>()
-                .FirstOrDefault(h => string.Equals(h.MessageType, message.Type, StringComparison.Ordinal));
-            if (handler is null)
+            // Several handlers may listen to one message type (for example the customer message and the invoice for an order event). They all run; if one throws the message is
+            // retried, so every handler must be idempotent (they all are: at-least-once delivery already requires that).
+            var handlers = handlerScope.ServiceProvider.GetServices<IOutboxMessageHandler>()
+                .Where(h => string.Equals(h.MessageType, message.Type, StringComparison.Ordinal)).ToList();
+            if (handlers.Count == 0)
             {
                 throw new InvalidOperationException($"No outbox handler is registered for message type '{message.Type}'.");
             }
 
             var context = new OutboxMessageContext(message.Id, message.Type, message.Payload, message.AttemptCount + 1, message.CorrelationId);
-            await handler.HandleAsync(context, cancellationToken);
+            foreach (var handler in handlers)
+            {
+                await handler.HandleAsync(context, cancellationToken);
+            }
 
             var finished = timeProvider.GetUtcNow();
             message.MarkSucceeded(finished);

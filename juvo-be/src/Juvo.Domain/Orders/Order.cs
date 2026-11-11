@@ -136,6 +136,17 @@ public sealed class Order : AggregateRoot, IBranchScoped
     /// <summary>The part the customer must pay before the order is processed (BR-D1: COD above the threshold needs the delivery charge). Zero when none.</summary>
     public decimal AdvanceRequired { get; private set; }
 
+    /// <summary>What staff received in advance so far (module I). The order may be confirmed once this reaches <see cref="AdvanceRequired"/>.</summary>
+    public decimal AdvancePaid { get; private set; }
+
+    /// <summary>The active tax rule when the order was placed (module U); null when none was active. Prices are tax-inclusive, so the totals never change.</summary>
+    public string? TaxRuleCode { get; private set; }
+
+    public decimal? TaxRatePercent { get; private set; }
+
+    /// <summary>The tax contained in the grand total.</summary>
+    public decimal TaxAmount { get; private set; }
+
     public int WeightGrams { get; private set; }
 
     public string? ZoneCode { get; private set; }
@@ -366,6 +377,39 @@ public sealed class Order : AggregateRoot, IBranchScoped
 
         _history.Add(new OrderStatusHistory(Id, OrderTrack.Payment, from.ToString(), to.ToString(), reason, by, byName, now));
         Raise(new OrderStatusChanged(now, Id, Number, BranchId, CustomerId, CustomerMobile, OrderTrack.Payment, from.ToString(), to.ToString(), reason));
+    }
+
+    /// <summary>Stores the tax contained in the totals (module U). Does not change any amount.</summary>
+    public void ApplyTax(string? ruleCode, decimal? ratePercent, decimal taxAmount)
+    {
+        TaxRuleCode = ruleCode;
+        TaxRatePercent = ratePercent;
+        TaxAmount = taxAmount;
+    }
+
+    /// <summary>The customer switched to another online method before paying (for example after a failed attempt). Cash on delivery cannot be switched to or from.</summary>
+    public void ChangePaymentMethod(string method, DateTimeOffset now, Guid? by, string? byName)
+    {
+        if (string.Equals(PaymentMethod, method, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        if (!IsOnlinePayment || string.Equals(method, "COD", StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException("Only an online payment method can be switched to another online method.");
+        }
+
+        _notes.Add(new OrderNote(Id, NoteKind.Internal, $"Payment method changed from {PaymentMethod} to {method}.", by, byName, now));
+        PaymentMethod = method;
+    }
+
+    /// <summary>Adds an advance staff received (module I). The payment track stays Pending: the rest is paid in cash on delivery.</summary>
+    public void RecordAdvance(decimal amount, DateTimeOffset now, Guid? by, string? byName, string? detail)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+        AdvancePaid += amount;
+        _notes.Add(new OrderNote(Id, NoteKind.Internal, $"Advance of BDT {amount:0.##} received. {detail}".Trim(), by, byName, now));
     }
 
     public void MarkStockDeducted() => StockDeducted = true;

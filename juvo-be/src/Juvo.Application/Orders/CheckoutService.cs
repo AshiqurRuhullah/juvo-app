@@ -15,7 +15,8 @@ namespace Juvo.Application.Orders;
 /// customer, and public tracking by order number and mobile. Everything is calculated again on the server; the browser's numbers are never trusted.
 /// </summary>
 public sealed class CheckoutService(
-    IApplicationDbContext db, ICurrentUser currentUser, CartService carts, DeliveryService delivery, OrderPlacement placement, SettingsService settings, IFileStorage storage)
+    IApplicationDbContext db, ICurrentUser currentUser, CartService carts, DeliveryService delivery, OrderPlacement placement, SettingsService settings, IFileStorage storage,
+    Payments.PaymentSettingsService paymentSettings)
 {
     private static Error Invalid(string field, string message) => Error.Validation(new Dictionary<string, string[]> { [field] = [message] });
 
@@ -185,11 +186,7 @@ public sealed class CheckoutService(
         var verified = SignedInCustomerId is { } id && await db.Customers.AsNoTracking().AnyAsync(c => c.Id == id && c.MobileVerified, cancellationToken);
         var otpRequired = !verified && (config.OtpMode == OtpMode.Always || (config.OtpMode == OtpMode.CodOnly && method == OrderPlacement.Cod));
 
-        var methods = new List<PaymentMethodDto>
-        {
-            new(OrderPlacement.Cod, "Cash on delivery", country == "BD", country == "BD" ? null : "Cash on delivery is only available inside Bangladesh."),
-            new(OrderPlacement.SandboxOnline, "Online payment (sandbox)", true, null),
-        };
+        var methods = (await paymentSettings.MethodsAsync(country, grand, false, cancellationToken)).Select(m => new PaymentMethodDto(m.Code, m.Name, m.Available, m.Reason)).ToList();
         var problems = view.Lines.Where(l => l.Problem is not null).Select(l => l.Problem!).Distinct().ToList();
         if (view.Coupon?.Problem is { } couponProblem)
         {

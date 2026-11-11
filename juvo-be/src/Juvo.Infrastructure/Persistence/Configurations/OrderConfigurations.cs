@@ -41,6 +41,8 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(x => x.Currency).HasMaxLength(3).IsRequired();
         builder.Property(x => x.CouponCode).HasMaxLength(40);
         builder.Property(x => x.ZoneCode).HasMaxLength(40);
+        builder.Property(x => x.TaxRuleCode).HasMaxLength(30);
+        builder.Property(x => x.TaxRatePercent).HasPrecision(5, 2);
         builder.Property(x => x.RoutingRule).HasMaxLength(20).IsRequired();
         builder.Property(x => x.CancelReason).HasMaxLength(300);
         builder.Property(x => x.IdempotencyKey).HasMaxLength(80);

@@ -45,6 +45,11 @@ public sealed class Customer : SoftDeletableEntity
     /// <summary>A deactivated customer cannot sign in; their orders and history stay (soft rule, FR-N06).</summary>
     public bool IsActive { get; private set; } = true;
 
+    /// <summary>The language of messages sent to this customer: <c>en</c> or <c>bn</c>. Null means the shop default.</summary>
+    public string? PreferredLanguage { get; private set; }
+
+    public void SetPreferredLanguage(string? language) => PreferredLanguage = string.IsNullOrWhiteSpace(language) ? null : language.Trim().ToLowerInvariant();
+
     public void Deactivate() => IsActive = false;
 
     public void Activate() => IsActive = true;

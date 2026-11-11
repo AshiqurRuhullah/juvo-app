@@ -28,6 +28,7 @@ public sealed class CustomerAuthService(
     SessionIssuer sessions,
     ISmsSender smsSender,
     IEmailSender emailSender,
+    Notifications.NotificationService templates,
     TimeProvider timeProvider,
     IOptions<AuthOptions> options)
 {
@@ -77,14 +78,19 @@ public sealed class CustomerAuthService(
         db.OtpCodes.Add(new OtpCode(mobile, purpose, Hash(mobile, code), now.AddMinutes(_otp.ExpiryMinutes), client.IpAddress));
         await db.SaveChangesAsync(cancellationToken);
 
-        var text = $"Your Juvo BD verification code is {code}. It is valid for {_otp.ExpiryMinutes} minutes. Do not share it.";
+        // The text comes from the "auth.otp" template in the customer's language (module K); the built-in English text is the fallback.
+        var variables = new Dictionary<string, string> { ["Code"] = code, ["Minutes"] = _otp.ExpiryMinutes.ToString(System.Globalization.CultureInfo.InvariantCulture) };
+        var language = await templates.LanguageOfAsync(mobile, null, cancellationToken);
+        var fallback = $"Your Juvo BD verification code is {code}. It is valid for {_otp.ExpiryMinutes} minutes. Do not share it.";
         if (viaEmail)
         {
-            await emailSender.SendAsync(email!, "auth.otp", "Your Juvo BD verification code", text, cancellationToken);
+            var mail = await templates.RenderAsync("auth.otp", Domain.Notifications.NotificationChannel.Email, language, variables, cancellationToken);
+            await emailSender.SendAsync(email!, "auth.otp", mail?.Subject ?? "Your Juvo BD verification code", mail?.Body ?? fallback, cancellationToken);
         }
         else
         {
-            await smsSender.SendAsync(mobile, "auth.otp", text, cancellationToken);
+            var sms = await templates.RenderAsync("auth.otp", Domain.Notifications.NotificationChannel.Sms, language, variables, cancellationToken);
+            await smsSender.SendAsync(mobile, "auth.otp", sms?.Body ?? fallback, cancellationToken);
         }
 
         return new RequestOtpResponse(mobile, _otp.ExpiryMinutes * 60, _otp.ResendCooldownSeconds, viaEmail ? "email" : "sms",

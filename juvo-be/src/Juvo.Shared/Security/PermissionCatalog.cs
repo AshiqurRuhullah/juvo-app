@@ -100,13 +100,13 @@ public static class PermissionCatalog
         Add("couriers", "shipment", "view book cancel print-label bulk-book");
         Add("couriers", "cod", "view settle");
         Add("couriers", "webhook", "view");
-        Add("payments", "payment", "view verify");
+        Add("payments", "payment", "view verify record");
         Add("payments", "refund", "view create approve");
         Add("payments", "gateway", "view edit");
         Add("payments", "ledger", "view reconcile");
         Add("tax", "rule", "view edit");
         Add("tax", "invoice", "view issue download");
-        Add("tax", "credit-note", "create");
+        Add("tax", "credit-note", "create view");
         Add("tax", "report", "view");
 
         // ---- Marketing and growth (modules Z, AB, AC, AD, AE, K) ----
