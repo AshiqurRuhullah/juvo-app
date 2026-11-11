@@ -1,0 +1,410 @@
+{
+  "status": {
+    "Requested": "Requested",
+    "Approved": "Approved",
+    "PickupScheduled": "Pickup arranged",
+    "PickedUp": "Picked up",
+    "Received": "Received",
+    "Inspected": "Inspected",
+    "Refunded": "Refunded",
+    "Exchanged": "Exchanged",
+    "Rejected": "Not accepted",
+    "RefundRejected": "Refund declined",
+    "Cancelled": "Cancelled"
+  },
+  "kind": {
+    "Return": "Return",
+    "Exchange": "Exchange"
+  },
+  "fault": {
+    "Customer": "Customer",
+    "Seller": "Shop"
+  },
+  "reasons": {
+    "DAMAGED_ITEM": "Damaged item",
+    "WRONG_ITEM": "Wrong item sent",
+    "NOT_AS_DESCRIBED": "Not as described",
+    "QUALITY_ISSUE": "Quality problem",
+    "SIZE_FIT": "Size or fit",
+    "CHANGED_MIND": "Changed my mind",
+    "OTHER": "Other reason"
+  },
+  "common": {
+    "loadFailed": "We could not load this. Please try again.",
+    "cancel": "Cancel",
+    "close": "Close",
+    "search": "Search",
+    "noMatch": "No match",
+    "anyBranch": "All branches",
+    "branch": "Branch",
+    "clear": "Clear filters",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {pages}",
+    "condition": {
+      "Unopened": "Unopened",
+      "Good": "Good",
+      "Damaged": "Damaged"
+    },
+    "method": {
+      "OriginalPayment": "Original payment method",
+      "Cash": "Cash",
+      "BankTransfer": "Bank transfer",
+      "Wallet": "Wallet"
+    }
+  },
+  "refund": {
+    "items": "Items",
+    "deliveryCharge": "Delivery charge",
+    "returnCharge": "Return charge",
+    "totalEstimate": "Estimated refund",
+    "totalFinal": "Refund",
+    "estimateNote": "This is an estimate. The final amount is fixed after the shop has checked the items."
+  },
+  "timeline": {
+    "label": "History of this request"
+  },
+  "overview": {
+    "label": "Returns",
+    "inProgress": "{count} in progress"
+  },
+  "orderLink": {
+    "label": "Return or exchange items"
+  },
+  "request": {
+    "title": "Return or exchange",
+    "crumb": "New request",
+    "subtitle": "Choose what you want to send back and tell us why.",
+    "noOrder": "No order chosen",
+    "noOrderHelp": "Open a delivered order and choose \"Return or exchange items\".",
+    "myReturns": "My returns",
+    "orderNotFound": "We could not find that order.",
+    "orderTitle": "Order {number}",
+    "delivered": "Delivered {date}",
+    "deadline": "You can ask for a return until {date} ({days, plural, one {# day} other {# days}} after delivery).",
+    "notEligible": "This order cannot be returned",
+    "itemsTitle": "What do you want to send back?",
+    "itemsHelp": "Set the quantity for each item you are sending back. Leave the others at 0.",
+    "lineFacts": "Bought {bought} · in other requests {already} · refund per unit {price}",
+    "canReturn": "You can return up to {count}",
+    "quantityFor": "Quantity to send back for {name}",
+    "decrease": "One less",
+    "increase": "One more",
+    "blocked": {
+      "NON_RETURNABLE": "This item cannot be returned.",
+      "ALL_RETURNED": "Every unit of this item is already in a return request.",
+      "ORDER_NOT_ELIGIBLE": "This item cannot be returned now."
+    },
+    "itemsRequired": "Choose at least one item to send back.",
+    "kindTitle": "Return or exchange?",
+    "kind": {
+      "Return": "Return for a refund",
+      "Exchange": "Exchange for another size or colour"
+    },
+    "kindHelp": {
+      "Return": "You send the item back and we refund you after we check it.",
+      "Exchange": "You send the item back and we send a replacement after we check it."
+    },
+    "replacement": "Replacement",
+    "replacementHint": "Pick the size or colour you want instead (only items in stock are listed).",
+    "replacementSame": "Only this item is available as a replacement.",
+    "sameItem": "Same item",
+    "reasonTitle": "Why are you sending it back?",
+    "reasonRequired": "Choose a reason.",
+    "faultSeller": "The shop covers the return in this case.",
+    "faultCustomer": "A return charge may apply if the shop has set one.",
+    "details": "Tell us more (optional)",
+    "detailsHint": "For example: the zip is broken at the bottom.",
+    "photosTitle": "Photos (optional)",
+    "photosHelp": "Photos help us decide faster. Up to {count} pictures: JPEG, PNG or WebP, at least 1000 pixels on the long side, 10 MB at most each.",
+    "addPhotos": "Add photos",
+    "photoLimit": "You can add up to {count} photos.",
+    "photoAlt": "Your photo {number}",
+    "removePhoto": "Remove photo {number}",
+    "uploading": "Uploading...",
+    "uploaded": "Ready",
+    "photoUploadFailed": "The photo could not be uploaded.",
+    "photoError": {
+      "type": "Use a JPEG, PNG or WebP picture.",
+      "size": "This picture is larger than 10 MB.",
+      "dimensions": "This picture is too small. It needs at least 1000 pixels on the long side.",
+      "upload": "Upload failed. Remove it and try again."
+    },
+    "nextTitle": "What happens next",
+    "nextHelp": "You will see every step in My returns.",
+    "steps": {
+      "review": "We review your request and tell you by SMS.",
+      "pickup": "If it is approved, we arrange a pickup.",
+      "check": "We check the items when they arrive.",
+      "refund": "We refund you. The final amount depends on the check.",
+      "replacement": "We send your replacement."
+    },
+    "estimate": "Estimated refund",
+    "exchangeNote": "An exchange has no refund. The replacement is sent after the check.",
+    "estimateNote": "The final amount is fixed after the shop has checked the items.",
+    "failed": "Your request was not sent",
+    "submit": "Send request",
+    "sent": "Your request {number} was sent."
+  },
+  "mine": {
+    "title": "My returns",
+    "help": "Your return and exchange requests and where they stand.",
+    "filterLabel": "Show",
+    "filter": {
+      "active": "In progress",
+      "closed": "Closed"
+    },
+    "emptyActive": "No returns in progress",
+    "emptyClosed": "No closed returns yet",
+    "emptyHelp": "When you return or exchange something from a delivered order, it appears here.",
+    "kind": {
+      "Return": "Return",
+      "Exchange": "Exchange"
+    },
+    "summary": "{name} ({count, plural, one {# item} other {# items}})",
+    "order": "Order {number}",
+    "refundAbout": "Refund: {amount}",
+    "paging": "Pages"
+  },
+  "mineDetail": {
+    "crumb": "Return",
+    "notFound": "We could not find that return.",
+    "back": "Back to my returns",
+    "title": "Return {number}",
+    "cancel": "Cancel request",
+    "cancelled": "Your request was cancelled.",
+    "whereTitle": "Where it stands",
+    "nextStep": {
+      "Requested": "We have your request. We will review it and tell you by SMS.",
+      "Approved": "Your request is approved. We will arrange the pickup.",
+      "PickupScheduled": "A pickup is arranged. Please keep the items ready, in their packaging if you have it.",
+      "PickedUp": "The items are on their way back to the shop.",
+      "Received": "The shop has your items and will check them now.",
+      "Inspected": "The check is done. The refund or replacement is being prepared.",
+      "Refunded": "Your refund has been paid.",
+      "Exchanged": "Your replacement order has been placed.",
+      "Rejected": "We could not accept this request.",
+      "RefundRejected": "After the check, we could not refund or exchange these items.",
+      "Cancelled": "You cancelled this request."
+    },
+    "rejectReason": "Reason: {reason}",
+    "items": "Items",
+    "quantity": "Quantity: {count}",
+    "replacementSku": "Replacement: {sku}",
+    "reason": "Reason",
+    "requestedAt": "Requested",
+    "details": "What you wrote",
+    "photos": "Your photos",
+    "openPhoto": "Open photo {number}",
+    "pickup": "Pickup",
+    "pickupDate": "Pickup day",
+    "pickupCourier": "Courier",
+    "pickupNote": "Note",
+    "refund": "Refund",
+    "refundPaidTitle": "Refund paid",
+    "refundPaid": "{amount} by {method} on {date}.",
+    "refundReference": "Reference: {reference}",
+    "replacement": "Replacement",
+    "replacementOrder": "Your replacement is order {number}.",
+    "history": "History",
+    "confirmCancel": {
+      "title": "Cancel this request?",
+      "description": "Request {number} will be closed. You can ask again later while the return period lasts.",
+      "confirm": "Cancel request",
+      "keep": "Keep request"
+    },
+    "cancelReason": "Reason (optional)",
+    "cancelReasonHint": "Tell us why you are cancelling."
+  },
+  "queue": {
+    "title": "Returns",
+    "subtitle": "Return and exchange requests, from approval to refund.",
+    "summary": "Returns by stage",
+    "chips": {
+      "open": "Open",
+      "awaitingApproval": "To approve",
+      "awaitingPickup": "To arrange pickup",
+      "inTransit": "On the way back",
+      "awaitingInspection": "To inspect",
+      "awaitingRefund": "To refund",
+      "awaitingExchange": "To exchange"
+    },
+    "search": "Search returns",
+    "searchPlaceholder": "Return number, order, mobile or name",
+    "anyStatus": "Any status",
+    "anyKind": "Return and exchange",
+    "anyFault": "Any fault",
+    "fault": "Fault",
+    "from": "Requested from",
+    "to": "Requested until",
+    "columns": {
+      "number": "Return",
+      "status": "Status",
+      "customer": "Customer",
+      "order": "Order",
+      "kind": "Type",
+      "reason": "Reason",
+      "quantity": "Units",
+      "refund": "Refund",
+      "branch": "Branch",
+      "requested": "Requested",
+      "actions": "Actions"
+    },
+    "open": "Open return {number}",
+    "view": "View",
+    "selectAll": "Select all returns on this page",
+    "selectColumn": "Select for bulk action",
+    "selectRow": "Select return {number}"
+  },
+  "bulk": {
+    "label": "Bulk actions",
+    "selected": "{count, plural, one {# return selected} other {# returns selected}}",
+    "approve": "Approve selected",
+    "reject": "Reject selected",
+    "clear": "Clear selection",
+    "approveTitle": "Approve {count, plural, one {# return} other {# returns}}?",
+    "approveDescription": "Each return is checked on its own. Those that are not waiting for approval are skipped and listed afterwards.",
+    "rejectTitle": "Reject {count, plural, one {# return} other {# returns}}?",
+    "rejectDescription": "The customers see the reason you write. Each return is checked on its own.",
+    "reason": "Reason for the customers",
+    "reasonHint": "Required. It is shown to every customer.",
+    "reasonRequired": "Write a reason.",
+    "allDone": "Done for {count, plural, one {# return} other {# returns}}.",
+    "resultTitle": "Result",
+    "resultSummary": "{ok} done, {failed} not done.",
+    "resultOk": "Done"
+  },
+  "detail": {
+    "crumb": "Return",
+    "notFound": "We could not find that return.",
+    "back": "Back to returns",
+    "subtitle": "Order {order} · branch {branch}",
+    "nextStep": "Next step",
+    "noPermission": "This return is waiting for a step you do not have permission for.",
+    "rejectedTitle": "Request rejected",
+    "refundRejectedTitle": "Refund declined after the check",
+    "items": "Items",
+    "lineFacts": "Quantity {quantity} · price {price} · refund {refund}",
+    "replacementSku": "Replacement asked for: {sku}",
+    "condition": "Condition: {condition}",
+    "restocked": "Back on the shelf",
+    "notRestocked": "Not restocked",
+    "notAccepted": "Not accepted",
+    "photos": "Customer photos",
+    "openPhoto": "Open photo {number}",
+    "history": "History",
+    "customer": "Customer and order",
+    "name": "Name",
+    "mobile": "Mobile",
+    "order": "Order",
+    "orderFacts": "{status} · payment {payment} · total {total}",
+    "reason": "Reason",
+    "fault": "Fault",
+    "requestedAt": "Requested",
+    "refund": "Refund",
+    "refundPaidTitle": "Refund recorded",
+    "refundPaid": "{amount} by {method}.",
+    "refundReference": "Reference: {reference}",
+    "refundBy": "By {name} on {date}",
+    "replacement": "Replacement order",
+    "pickup": "Pickup",
+    "pickupDate": "Pickup day",
+    "pickupCourier": "Courier",
+    "pickupNote": "Note"
+  },
+  "notes": {
+    "title": "Internal notes",
+    "internal": "Only staff see these notes.",
+    "none": "No notes yet.",
+    "label": "Add a note",
+    "add": "Add note",
+    "added": "Note added."
+  },
+  "actions": {
+    "label": "Return steps",
+    "done": {
+      "approve": "The request was approved.",
+      "reject": "The request was rejected.",
+      "schedulePickup": "The pickup was scheduled.",
+      "pickedUp": "Marked as picked up.",
+      "received": "Marked as received.",
+      "inspect": "The inspection was saved.",
+      "refund": "The refund was recorded.",
+      "exchange": "The exchange was completed and the replacement order placed.",
+      "rejectRefund": "The refund was declined."
+    },
+    "button": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "schedulePickup": "Schedule pickup",
+      "pickedUp": "Mark picked up",
+      "received": "Mark received",
+      "inspect": "Inspect items",
+      "refund": "Record refund",
+      "exchange": "Complete exchange",
+      "rejectRefund": "Decline refund"
+    },
+    "noteLabel": "Note (optional)",
+    "noteHint": "Only staff see this note.",
+    "reasonLabel": "Reason",
+    "reasonHint": "Required. The customer sees this reason.",
+    "reasonRequired": "Write a reason.",
+    "approve": {
+      "title": "Approve this request?",
+      "description": "Return {number} is approved and the order moves to \"return in progress\".",
+      "confirm": "Approve"
+    },
+    "reject": {
+      "title": "Reject this request?",
+      "description": "The customer is told the request is not accepted and sees your reason.",
+      "confirm": "Reject request"
+    },
+    "rejectRefund": {
+      "title": "Decline the refund?",
+      "description": "Nothing is refunded or exchanged. Use this when the items fail the check. The customer sees your reason.",
+      "confirm": "Decline refund"
+    },
+    "schedulePickup": {
+      "title": "Schedule the pickup",
+      "description": "Write down when and how the items will be collected from the customer.",
+      "confirm": "Schedule pickup",
+      "date": "Pickup day",
+      "dateRequired": "Choose a day from today to 60 days ahead.",
+      "courier": "Courier name",
+      "note": "Note for the pickup"
+    },
+    "inspect": {
+      "title": "Inspect the items",
+      "description": "Record what came back. Good items can go back on the shelf; the refund is worked out from your answers.",
+      "confirm": "Save inspection",
+      "lines": "Items to inspect",
+      "condition": "Condition",
+      "restock": "Put back on the shelf",
+      "damagedNoRestock": "A damaged item cannot be restocked.",
+      "acceptRefund": "Accept this item for a refund",
+      "acceptExchange": "Accept this item for the exchange",
+      "fault": "Who is at fault",
+      "faultHint": "Shop fault returns the delivery charge. Customer fault may take off a return charge.",
+      "note": "Inspection note (optional)"
+    },
+    "refund": {
+      "title": "Record the refund",
+      "description": "Send the money yourself, then write down the reference here. The amount comes from the inspection and cannot be changed.",
+      "confirm": "Record refund",
+      "amount": "Refund amount",
+      "amountHint": "Set by the inspection.",
+      "method": "Paid by",
+      "reference": "Reference",
+      "referenceHint": "Receipt, transaction or transfer number.",
+      "referenceRequired": "Write the reference of the payment."
+    },
+    "exchange": {
+      "title": "Complete the exchange",
+      "description": "A replacement order is placed for the customer with the same address. Check the replacement for each item.",
+      "confirm": "Complete exchange",
+      "lines": "Replacements",
+      "replacement": "Replacement item",
+      "requested": "Replacement asked for: {sku}"
+    }
+  }
+}
