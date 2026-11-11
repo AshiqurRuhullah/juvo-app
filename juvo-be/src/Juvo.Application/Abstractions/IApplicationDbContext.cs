@@ -6,6 +6,7 @@ using Juvo.Domain.Customers;
 using Juvo.Domain.Inventory;
 using Juvo.Domain.Identity;
 using Juvo.Domain.Notifications;
+using Juvo.Domain.Orders;
 using Juvo.Domain.Platform;
 using Microsoft.EntityFrameworkCore;
 
@@ -77,6 +78,24 @@ public interface IApplicationDbContext
     DbSet<Cart> Carts { get; }
 
     DbSet<Coupon> Coupons { get; }
+
+    DbSet<Order> Orders { get; }
+
+    DbSet<OrderItem> OrderItems { get; }
+
+    DbSet<OrderStatusHistory> OrderStatusHistory { get; }
+
+    DbSet<OrderNote> OrderNotes { get; }
+
+    DbSet<OrderRiskFlag> OrderRiskFlags { get; }
+
+    DbSet<FraudReviewLog> FraudReviewLogs { get; }
+
+    DbSet<OrderSequence> OrderSequences { get; }
+
+    DbSet<BlacklistEntry> BlacklistEntries { get; }
+
+    DbSet<PlatformSetting> PlatformSettings { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

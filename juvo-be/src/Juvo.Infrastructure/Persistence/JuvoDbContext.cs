@@ -7,6 +7,7 @@ using Juvo.Domain.Customers;
 using Juvo.Domain.Inventory;
 using Juvo.Domain.Identity;
 using Juvo.Domain.Notifications;
+using Juvo.Domain.Orders;
 using Juvo.Domain.Platform;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -89,6 +90,24 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
     public DbSet<Cart> Carts => Set<Cart>();
 
     public DbSet<Coupon> Coupons => Set<Coupon>();
+
+    public DbSet<Order> Orders => Set<Order>();
+
+    public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+
+    public DbSet<OrderStatusHistory> OrderStatusHistory => Set<OrderStatusHistory>();
+
+    public DbSet<OrderNote> OrderNotes => Set<OrderNote>();
+
+    public DbSet<OrderRiskFlag> OrderRiskFlags => Set<OrderRiskFlag>();
+
+    public DbSet<FraudReviewLog> FraudReviewLogs => Set<FraudReviewLog>();
+
+    public DbSet<OrderSequence> OrderSequences => Set<OrderSequence>();
+
+    public DbSet<BlacklistEntry> BlacklistEntries => Set<BlacklistEntry>();
+
+    public DbSet<PlatformSetting> PlatformSettings => Set<PlatformSetting>();
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
