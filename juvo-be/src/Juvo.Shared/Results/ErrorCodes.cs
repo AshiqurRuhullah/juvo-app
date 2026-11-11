@@ -90,7 +90,6 @@ public static class ErrorCodes
         public const string DuplicateSuspected = "ORDER.DUPLICATE_SUSPECTED";
         public const string CheckoutBlocked = "ORDER.CHECKOUT_BLOCKED";
         public const string OtpRequired = "ORDER.OTP_REQUIRED";
-        public const string TermsRequired = "ORDER.TERMS_REQUIRED";
         public const string PaymentMethodUnavailable = "ORDER.PAYMENT_METHOD_UNAVAILABLE";
         public const string CodNotAvailable = "ORDER.COD_NOT_AVAILABLE";
         public const string HeldForReview = "ORDER.HELD_FOR_REVIEW";
@@ -99,7 +98,6 @@ public static class ErrorCodes
         public const string CannotCancel = "ORDER.CANNOT_CANCEL";
         public const string BranchNotAllowed = "ORDER.BRANCH_NOT_ALLOWED";
         public const string DiscountTooLarge = "ORDER.DISCOUNT_TOO_LARGE";
-        public const string CustomerInactive = "ORDER.CUSTOMER_INACTIVE";
         public const string NothingToDo = "ORDER.NOTHING_TO_DO";
     }
 
