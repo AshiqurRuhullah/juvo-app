@@ -162,7 +162,7 @@ public sealed class NotificationTemplate : Entity
     {
     }
 
-    public NotificationTemplate(string code, NotificationChannel channel, string language, string? subject, string body, NotificationCategory category, Guid? by, string? byName, DateTimeOffset now)
+    public NotificationTemplate(string code, NotificationChannel channel, string language, string? subject, string body, NotificationCategory category, bool isActive, Guid? by, string? byName, DateTimeOffset now)
     {
         Code = code;
         Channel = channel;
@@ -171,7 +171,7 @@ public sealed class NotificationTemplate : Entity
         Body = body;
         Category = category;
         Version = 1;
-        IsActive = true;
+        IsActive = isActive;
         EditedBy = by;
         EditedByName = byName;
         EditedAt = now;
@@ -220,6 +220,10 @@ public sealed class NotificationTemplateVersion : Entity, IAppendOnly, INotAudit
     private NotificationTemplateVersion()
     {
     }
+
+    /// <summary>The built-in text a template had before staff first edited it (version 0).</summary>
+    public static NotificationTemplateVersion Original(Guid templateId, string? subject, string body, DateTimeOffset at) =>
+        new(templateId, 0, subject, body, null, "Built-in text", at);
 
     internal NotificationTemplateVersion(Guid templateId, int version, string? subject, string body, Guid? by, string? byName, DateTimeOffset at)
     {
