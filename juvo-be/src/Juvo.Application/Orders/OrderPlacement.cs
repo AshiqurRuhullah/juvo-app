@@ -23,6 +23,12 @@ public sealed record PlacementInput(
 
 public sealed record PlacedOrder(Order Order, string? TrackingToken, bool Replayed, DateOnly? EarliestDelivery, DateOnly? LatestDelivery);
 
+/// <summary>The result of a dry run of placing an order (no stock reserved, nothing saved).</summary>
+public sealed record PlacementQuote(
+    IReadOnlyList<(ProductVariant Variant, Product Product, decimal UnitPrice, int Quantity)> Lines, decimal Subtotal, int Weight, Coupon? Coupon, decimal CouponDiscount, decimal ManualDiscount,
+    decimal DeliveryCharge, decimal StandardCharge, decimal Grand, decimal Advance, string Method, Guid BranchId, string Rule, string? ZoneCode, DateOnly? Earliest, DateOnly? Latest,
+    IReadOnlyDictionary<Guid, int> Available);
+
 /// <summary>Thrown inside the order transaction to undo everything (stock, sequence, coupon use) and answer with <see cref="Error"/>.</summary>
 internal sealed class PlacementRejected(Error error) : Exception(error.Message)
 {
@@ -89,89 +95,15 @@ public sealed class OrderPlacement(
             return Invalid("acceptTerms", "Accept the terms, privacy and return policy to place the order.");
         }
 
-        // 2. Prices from the catalog, never from the client.
-        var variantIds = i.Lines.Select(l => l.VariantId).ToList();
-        var rows = await (from v in db.ProductVariants.AsNoTracking()
-                          join p in db.Products.AsNoTracking() on v.ProductId equals p.Id
-                          join c in db.Categories.AsNoTracking() on p.CategoryId equals c.Id
-                          where variantIds.Contains(v.Id) && v.IsActive && p.Status == ProductStatus.Published && c.IsActive
-                          select new { Variant = v, Product = p }).ToListAsync(cancellationToken);
-        if (rows.Count != variantIds.Count)
+        // 2-5. Prices, coupon, delivery charge, payment method and advance: one calculation shared with the staff desk preview (QuoteAsync), so the preview equals the order.
+        var pricing = await PriceAsync(i, config, now, cancellationToken);
+        if (pricing.IsFailure)
         {
-            return Error.NotFound(ErrorCodes.Cart.VariantUnavailable, "An item in your order is no longer available.");
+            return pricing.Error!;
         }
 
-        var productIds = rows.Select(r => r.Product.Id).Distinct().ToList();
-        var images = await db.ProductImages.AsNoTracking().Where(m => productIds.Contains(m.ProductId)).OrderBy(m => m.SortOrder).ToListAsync(cancellationToken);
-        var priced = i.Lines.Select(l =>
-        {
-            var row = rows.First(r => r.Variant.Id == l.VariantId);
-            var image = images.Where(m => m.ProductId == row.Product.Id)
-                .OrderBy(m => string.Equals(m.ColorName, row.Variant.ColorName, StringComparison.OrdinalIgnoreCase) ? 0 : 1).ThenBy(m => m.SortOrder).FirstOrDefault();
-            return new Priced(row.Variant, row.Product, row.Variant.PriceOverride ?? row.Product.EffectivePrice(now), l.Quantity, image?.Path);
-        }).ToList();
-        var subtotal = priced.Sum(p => p.UnitPrice * p.Quantity);
-        var weight = priced.Sum(p => (p.Variant.WeightGramsOverride ?? p.Product.WeightGrams ?? 0) * p.Quantity);
+        var (priced, subtotal, weight, coupon, couponDiscount, quote, deliveryCharge, grand, method, standardCharge, advance) = pricing.Value;
 
-        // 3. Coupon.
-        Coupon? coupon = null;
-        decimal couponDiscount = 0;
-        if (!string.IsNullOrWhiteSpace(i.CouponCode))
-        {
-            var code = Coupon.Normalize(i.CouponCode);
-            coupon = await db.Coupons.AsNoTracking().FirstOrDefaultAsync(c => c.Code == code, cancellationToken);
-            if (coupon is null)
-            {
-                return Error.NotFound(ErrorCodes.Coupon.NotFound, "This coupon code does not exist.");
-            }
-
-            var problem = coupon.Check(now, subtotal);
-            if (problem != CouponProblem.None)
-            {
-                return CouponCodes.ToError(problem, coupon);
-            }
-
-            couponDiscount = coupon.DiscountFor(subtotal);
-        }
-
-        // 4. Delivery charge: the same calculation as the quote (BR-G2: the charge shown is the charge billed); staff may override it.
-        var quote = await delivery.QuoteAmountsAsync(i.Shipping.CountryCode, i.Shipping.DistrictId, i.Shipping.UpazilaId, subtotal - couponDiscount, weight, cancellationToken);
-        if (quote.IsFailure)
-        {
-            return quote.Error!;
-        }
-
-        var deliveryCharge = i.DeliveryOverride ?? quote.Value.Total;
-        if (i.ManualDiscount < 0 || i.ManualDiscount > subtotal - couponDiscount)
-        {
-            return Error.Conflict(ErrorCodes.Order.DiscountTooLarge, "The discount cannot be more than the goods are worth.");
-        }
-
-        var grand = subtotal - couponDiscount - i.ManualDiscount + deliveryCharge;
-        if (i.ExpectedTotal is { } expected && expected != grand)
-        {
-            return Error.Conflict(ErrorCodes.Order.TotalChanged, $"The total changed to BDT {grand:0.##}. Check the order and confirm again.");
-        }
-
-        // 5. Payment method.
-        var method = (i.PaymentMethod ?? string.Empty).Trim().ToUpperInvariant();
-        if (Payments.PaymentMethodCatalog.Find(method) is null)
-        {
-            return Error.Conflict(ErrorCodes.Order.PaymentMethodUnavailable, "This payment method is not available.");
-        }
-
-        if (method == Cod && i.Shipping.CountryCode != "BD")
-        {
-            return Error.Conflict(ErrorCodes.Order.CodNotAvailable, "Cash on delivery is only available inside Bangladesh.");
-        }
-
-        if (await paymentSettings.ProblemAsync(method, i.Shipping.CountryCode, grand, cancellationToken) is { } methodProblem)
-        {
-            return Error.Conflict(method == Cod ? ErrorCodes.Order.CodNotAvailable : ErrorCodes.Order.PaymentMethodUnavailable, methodProblem);
-        }
-
-        var standardCharge = quote.Value.Total + quote.Value.FreeDeliveryWaiver; // what the courier costs, even when the customer got free delivery
-        var advance = method == Cod && grand > config.CodAdvanceThreshold ? Math.Min(standardCharge, grand) : 0m; // BR-D1
 
         // 6. Customer (read only here), blacklist and fraud rules.
         var customer = i.SignedInCustomerId is { } signedIn
@@ -278,7 +210,7 @@ public sealed class OrderPlacement(
                 }
 
                 var data = new NewOrder(
-                    number, reservedIn, i.Source, owner.Id, owner.Mobile, i.Name ?? owner.FullName, i.Email ?? owner.Email, method, rule, quote.Value.ZoneCode, "BDT", subtotal, couponDiscount, coupon?.Code,
+                    number, reservedIn, i.Source, owner.Id, owner.Mobile, i.Name ?? owner.FullName, i.Email ?? owner.Email, method, rule, quote.ZoneCode, "BDT", subtotal, couponDiscount, coupon?.Code,
                     coupon?.Id, i.ManualDiscount, deliveryCharge, standardCharge, advance, weight, i.Shipping, method == Cod ? null : now.AddMinutes(config.PaymentHoldMinutes), i.IdempotencyKey?.Trim(), fingerprint,
                     Hash(token), i.DeviceId, i.Ip, otpVerified, i.IsStaff ? null : now, i.IsStaff ? i.Who.Id : null, i.Who.Name);
                 var items = priced.Select(p => new NewOrderItem(
@@ -317,12 +249,166 @@ public sealed class OrderPlacement(
                 return placed;
             }, cancellationToken);
 
-            return new PlacedOrder(order, token, false, quote.Value.EarliestDelivery, quote.Value.LatestDelivery);
+            return new PlacedOrder(order, token, false, quote.EarliestDelivery, quote.LatestDelivery);
         }
         catch (PlacementRejected rejected)
         {
             return rejected.Error;
         }
+    }
+
+
+    /// <summary>The prices of an order, worked out from the catalog and the rules, before anything is reserved or saved.</summary>
+    private sealed record Pricing(
+        List<Priced> Priced, decimal Subtotal, int Weight, Coupon? Coupon, decimal CouponDiscount, DeliveryQuoteDto Quote, decimal DeliveryCharge, decimal Grand, string Method, decimal StandardCharge, decimal Advance);
+
+    /// <summary>
+    /// Prices from the catalog (never from the client), the coupon, the delivery charge (the same calculation as the quote, BR-G2; staff may override it), the payment method and the
+    /// advance of a large cash on delivery order (BR-D1). Changes nothing. Used by <see cref="PlaceAsync"/> and by the order desk preview <see cref="QuoteAsync"/>.
+    /// </summary>
+    private async Task<Result<Pricing>> PriceAsync(PlacementInput i, OrderSettings config, DateTimeOffset now, CancellationToken cancellationToken)
+    {
+        // 2. Prices from the catalog, never from the client.
+        var variantIds = i.Lines.Select(l => l.VariantId).ToList();
+        var rows = await (from v in db.ProductVariants.AsNoTracking()
+                          join p in db.Products.AsNoTracking() on v.ProductId equals p.Id
+                          join c in db.Categories.AsNoTracking() on p.CategoryId equals c.Id
+                          where variantIds.Contains(v.Id) && v.IsActive && p.Status == ProductStatus.Published && c.IsActive
+                          select new { Variant = v, Product = p }).ToListAsync(cancellationToken);
+        if (rows.Count != variantIds.Count)
+        {
+            return Error.NotFound(ErrorCodes.Cart.VariantUnavailable, "An item in your order is no longer available.");
+        }
+
+        var productIds = rows.Select(r => r.Product.Id).Distinct().ToList();
+        var images = await db.ProductImages.AsNoTracking().Where(m => productIds.Contains(m.ProductId)).OrderBy(m => m.SortOrder).ToListAsync(cancellationToken);
+        var priced = i.Lines.Select(l =>
+        {
+            var row = rows.First(r => r.Variant.Id == l.VariantId);
+            var image = images.Where(m => m.ProductId == row.Product.Id)
+                .OrderBy(m => string.Equals(m.ColorName, row.Variant.ColorName, StringComparison.OrdinalIgnoreCase) ? 0 : 1).ThenBy(m => m.SortOrder).FirstOrDefault();
+            return new Priced(row.Variant, row.Product, row.Variant.PriceOverride ?? row.Product.EffectivePrice(now), l.Quantity, image?.Path);
+        }).ToList();
+        var subtotal = priced.Sum(p => p.UnitPrice * p.Quantity);
+        var weight = priced.Sum(p => (p.Variant.WeightGramsOverride ?? p.Product.WeightGrams ?? 0) * p.Quantity);
+
+        // 3. Coupon.
+        Coupon? coupon = null;
+        decimal couponDiscount = 0;
+        if (!string.IsNullOrWhiteSpace(i.CouponCode))
+        {
+            var code = Coupon.Normalize(i.CouponCode);
+            coupon = await db.Coupons.AsNoTracking().FirstOrDefaultAsync(c => c.Code == code, cancellationToken);
+            if (coupon is null)
+            {
+                return Error.NotFound(ErrorCodes.Coupon.NotFound, "This coupon code does not exist.");
+            }
+
+            var problem = coupon.Check(now, subtotal);
+            if (problem != CouponProblem.None)
+            {
+                return CouponCodes.ToError(problem, coupon);
+            }
+
+            couponDiscount = coupon.DiscountFor(subtotal);
+        }
+
+        // 4. Delivery charge: the same calculation as the quote (BR-G2: the charge shown is the charge billed); staff may override it.
+        var quote = await delivery.QuoteAmountsAsync(i.Shipping.CountryCode, i.Shipping.DistrictId, i.Shipping.UpazilaId, subtotal - couponDiscount, weight, cancellationToken);
+        if (quote.IsFailure)
+        {
+            return quote.Error!;
+        }
+
+        var deliveryCharge = i.DeliveryOverride ?? quote.Value.Total;
+        if (i.ManualDiscount < 0 || i.ManualDiscount > subtotal - couponDiscount)
+        {
+            return Error.Conflict(ErrorCodes.Order.DiscountTooLarge, "The discount cannot be more than the goods are worth.");
+        }
+
+        var grand = subtotal - couponDiscount - i.ManualDiscount + deliveryCharge;
+        if (i.ExpectedTotal is { } expected && expected != grand)
+        {
+            return Error.Conflict(ErrorCodes.Order.TotalChanged, $"The total changed to BDT {grand:0.##}. Check the order and confirm again.");
+        }
+
+        // 5. Payment method.
+        var method = (i.PaymentMethod ?? string.Empty).Trim().ToUpperInvariant();
+        if (Payments.PaymentMethodCatalog.Find(method) is null)
+        {
+            return Error.Conflict(ErrorCodes.Order.PaymentMethodUnavailable, "This payment method is not available.");
+        }
+
+        if (method == Cod && i.Shipping.CountryCode != "BD")
+        {
+            return Error.Conflict(ErrorCodes.Order.CodNotAvailable, "Cash on delivery is only available inside Bangladesh.");
+        }
+
+        if (await paymentSettings.ProblemAsync(method, i.Shipping.CountryCode, grand, cancellationToken) is { } methodProblem)
+        {
+            return Error.Conflict(method == Cod ? ErrorCodes.Order.CodNotAvailable : ErrorCodes.Order.PaymentMethodUnavailable, methodProblem);
+        }
+
+        var standardCharge = quote.Value.Total + quote.Value.FreeDeliveryWaiver; // what the courier costs, even when the customer got free delivery
+        var advance = method == Cod && grand > config.CodAdvanceThreshold ? Math.Min(standardCharge, grand) : 0m; // BR-D1
+
+        return new Pricing(priced, subtotal, weight, coupon, couponDiscount, quote.Value, deliveryCharge, grand, method, standardCharge, advance);
+    }
+
+    /// <summary>
+    /// Dry run of <see cref="PlaceAsync"/> for the order desk: the same checks and the same calculation, nothing reserved, saved or counted (no coupon use, no number, no customer).
+    /// Idempotency, the duplicate guard, fraud rules and stock reservation are decided only when the order is really created.
+    /// </summary>
+    public async Task<Result<PlacementQuote>> QuoteAsync(PlacementInput i, CancellationToken cancellationToken)
+    {
+        var now = clock.GetUtcNow();
+        var config = await settings.OrdersAsync(cancellationToken);
+        if (i.Lines.Count == 0 || i.Lines.Any(l => l.Quantity < 1))
+        {
+            return Error.Conflict(ErrorCodes.Order.CartEmpty, "There is nothing to order.");
+        }
+
+        var maxPerLine = i.IsStaff ? config.MaxManualQuantity : availability.Options.MaxQuantityPerLine;
+        if (i.Lines.Any(l => l.Quantity > maxPerLine))
+        {
+            return Error.Conflict(ErrorCodes.Cart.StockInsufficient, $"At most {maxPerLine} of one item can be ordered.");
+        }
+
+        var pricing = await PriceAsync(i, config, now, cancellationToken);
+        if (pricing.IsFailure)
+        {
+            return pricing.Error!;
+        }
+
+        var p = pricing.Value;
+        var lines = i.Lines.Where(l => p.Priced.First(x => x.Variant.Id == l.VariantId).Variant.TracksStock).ToList();
+        IReadOnlyList<Guid> candidates;
+        string rule;
+        if (i.TargetBranchId is { } target)
+        {
+            candidates = [target];
+            rule = "Staff";
+        }
+        else
+        {
+            (candidates, rule) = await router.CandidatesAsync(lines, config.RoutingMode, i.Shipping.Latitude, i.Shipping.Longitude, i.Shipping.DistrictId, cancellationToken);
+        }
+
+        if (candidates.Count == 0)
+        {
+            return Error.Conflict(ErrorCodes.Order.StockInsufficient, "Not every item of this order is available together right now. Reduce the quantity or remove an item.");
+        }
+
+        var branchId = candidates[0];
+        var variantIds = p.Priced.Select(x => x.Variant.Id).ToList();
+        var available = await db.StockLevels.AsNoTracking().Where(s => s.BranchId == branchId && variantIds.Contains(s.VariantId)).ToDictionaryAsync(s => s.VariantId, s => s.OnHand - s.Reserved, cancellationToken);
+        if (lines.Any(l => available.GetValueOrDefault(l.VariantId) < l.Quantity))
+        {
+            return Error.Conflict(ErrorCodes.Order.StockInsufficient, "The branch does not have every item of this order in stock.");
+        }
+
+        return new PlacementQuote(p.Priced.Select(x => (x.Variant, x.Product, x.UnitPrice, x.Quantity)).ToList(), p.Subtotal, p.Weight, p.Coupon, p.CouponDiscount, i.ManualDiscount, p.DeliveryCharge, p.StandardCharge, p.Grand,
+            p.Advance, p.Method, branchId, rule, p.Quote.ZoneCode, p.Quote.EarliestDelivery, p.Quote.LatestDelivery, available);
     }
 
     private static string BlockedMessage(bool staff, string reason) =>

@@ -158,6 +158,17 @@ public sealed class DeliveryService(IApplicationDbContext db, TimeProvider clock
         }
 
         var rules = zone.Rules();
+        if (zone.Kind == ZoneKind.Domestic)
+        {
+            // Per-courier override (module H, decision S1): the first switched-on courier may charge the customer a flat fee instead of the zone's base and weight fees.
+            // The remote surcharge and the free-delivery threshold still apply, and the same number goes into the quote, the cart and the order (BR-G2).
+            var flat = await db.Couriers.AsNoTracking().Where(c => c.IsEnabled).OrderBy(c => c.Priority).ThenBy(c => c.Name).Select(c => c.ChargeOverride).FirstOrDefaultAsync(cancellationToken);
+            if (flat is { } fee)
+            {
+                rules = rules with { BaseFee = fee, Slabs = [], PerExtraKgFee = 0m };
+            }
+        }
+
         var charge = DeliveryPricing.Calculate(rules, subtotal, weightGrams, remote);
         if (charge is null)
         {

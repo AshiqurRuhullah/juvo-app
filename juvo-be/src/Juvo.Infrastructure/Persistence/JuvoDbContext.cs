@@ -11,6 +11,7 @@ using Juvo.Domain.Orders;
 using Juvo.Domain.Billing;
 using Juvo.Domain.Payments;
 using Juvo.Domain.Returns;
+using Juvo.Domain.Couriers;
 using Juvo.Domain.Platform;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -134,6 +135,18 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
 
     public DbSet<SandboxGatewaySession> SandboxGatewaySessions => Set<SandboxGatewaySession>();
 
+    public DbSet<Courier> Couriers => Set<Courier>();
+
+    public DbSet<Shipment> Shipments => Set<Shipment>();
+
+    public DbSet<ShipmentEvent> ShipmentEvents => Set<ShipmentEvent>();
+
+    public DbSet<CodSettlement> CodSettlements => Set<CodSettlement>();
+
+    public DbSet<CodSettlementItem> CodSettlementItems => Set<CodSettlementItem>();
+
+    public DbSet<SandboxConsignment> SandboxConsignments => Set<SandboxConsignment>();
+
     public DbSet<TaxRule> TaxRules => Set<TaxRule>();
 
     public DbSet<Invoice> Invoices => Set<Invoice>();
@@ -149,6 +162,14 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
     public DbSet<JobLog> JobLogs => Set<JobLog>();
+
+    public void DiscardUnsavedAdditions()
+    {
+        foreach (var entry in ChangeTracker.Entries().Where(e => e.State == EntityState.Added).ToList())
+        {
+            entry.State = EntityState.Detached;
+        }
+    }
 
     public async Task AcquireTransactionLockAsync(string name, CancellationToken cancellationToken = default)
     {

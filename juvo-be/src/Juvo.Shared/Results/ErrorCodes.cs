@@ -211,6 +211,49 @@ public static class ErrorCodes
         public const string SettingInvalid = "PAYMENT.SETTING_INVALID";
     }
 
+    public static class Courier
+    {
+        public const string NotFound = "COURIER.NOT_FOUND";
+        public const string CodeTaken = "COURIER.CODE_TAKEN";
+        public const string NotConfigured = "COURIER.NOT_CONFIGURED";
+        public const string Disabled = "COURIER.DISABLED";
+        public const string UnknownProvider = "COURIER.UNKNOWN_PROVIDER";
+        public const string NotServiceable = "COURIER.NOT_SERVICEABLE";
+        public const string NoCourierAvailable = "COURIER.NO_COURIER_AVAILABLE";
+        public const string CodNotSupported = "COURIER.COD_NOT_SUPPORTED";
+        public const string WeightNotAllowed = "COURIER.WEIGHT_NOT_ALLOWED";
+        public const string ProviderError = "COURIER.PROVIDER_ERROR";
+        public const string InvalidSignature = "COURIER.INVALID_SIGNATURE";
+        public const string WebhookExpired = "COURIER.WEBHOOK_EXPIRED";
+        public const string WebhookMalformed = "COURIER.WEBHOOK_MALFORMED";
+        public const string NotSimulator = "COURIER.NOT_SIMULATOR";
+        public const string SettingInvalid = "COURIER.SETTING_INVALID";
+    }
+
+    public static class Shipment
+    {
+        public const string NotFound = "SHIPMENT.NOT_FOUND";
+        public const string OrderNotReady = "SHIPMENT.ORDER_NOT_READY";
+        public const string AlreadyBooked = "SHIPMENT.ALREADY_BOOKED";
+        public const string InvalidTransition = "SHIPMENT.INVALID_TRANSITION";
+        public const string CannotCancel = "SHIPMENT.CANNOT_CANCEL";
+        public const string NothingToSettle = "SHIPMENT.NOTHING_TO_SETTLE";
+        public const string SettlementNotFound = "SHIPMENT.SETTLEMENT_NOT_FOUND";
+        public const string SettlementState = "SHIPMENT.SETTLEMENT_STATE";
+        public const string AmountInvalid = "SHIPMENT.AMOUNT_INVALID";
+        public const string NoteRequired = "SHIPMENT.NOTE_REQUIRED";
+        public const string BulkLimit = "SHIPMENT.BULK_LIMIT";
+        public const string ParcelInvalid = "SHIPMENT.PARCEL_INVALID";
+    }
+
+    public static class Realtime
+    {
+        public const string Forbidden = "REALTIME.FORBIDDEN";
+        public const string TokenInvalid = "REALTIME.TOKEN_INVALID";
+        public const string OrderNotFound = "REALTIME.ORDER_NOT_FOUND";
+        public const string BranchNotFound = "REALTIME.BRANCH_NOT_FOUND";
+    }
+
     public static class Invoice
     {
         public const string NotFound = "INVOICE.NOT_FOUND";

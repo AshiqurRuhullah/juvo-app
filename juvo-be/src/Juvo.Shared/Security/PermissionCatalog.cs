@@ -97,7 +97,7 @@ public static class PermissionCatalog
         Add("delivery", "country", "view enable");
         Add("delivery", "restricted-item", "view edit");
         Add("couriers", "courier", "view edit manage-credentials");
-        Add("couriers", "shipment", "view book cancel print-label bulk-book");
+        Add("couriers", "shipment", "view book cancel print-label bulk-book simulate");
         Add("couriers", "cod", "view settle");
         Add("couriers", "webhook", "view");
         Add("payments", "payment", "view verify record");

@@ -66,12 +66,13 @@ public sealed record MyOrderListItemDto(
 
 public sealed record MyOrderDto(
     Guid Id, string Number, OrderStatus Status, PaymentStatus PaymentStatus, DeliveryStatus DeliveryStatus, string PaymentMethod, DateTimeOffset PlacedAt, MoneyDto Money,
-    ShippingDto Shipping, IReadOnlyList<OrderLineDto> Items, IReadOnlyList<TimelineDto> Timeline, IReadOnlyList<NoteDto> Notes, bool CanCancel, DateTimeOffset? PaymentDeadline);
+    ShippingDto Shipping, IReadOnlyList<OrderLineDto> Items, IReadOnlyList<TimelineDto> Timeline, IReadOnlyList<NoteDto> Notes, bool CanCancel, DateTimeOffset? PaymentDeadline,
+    Couriers.TrackingShipmentDto? Shipment = null);
 
 /// <summary>What anyone with the order number and mobile (or the tracking token) may see: no street address, no contact details.</summary>
 public sealed record TrackingDto(
     string Number, OrderStatus Status, PaymentStatus PaymentStatus, DeliveryStatus DeliveryStatus, string PaymentMethod, DateTimeOffset PlacedAt, string? District, decimal GrandTotal,
-    IReadOnlyList<OrderLineDto> Items, IReadOnlyList<TimelineDto> Timeline, bool CanCancel);
+    IReadOnlyList<OrderLineDto> Items, IReadOnlyList<TimelineDto> Timeline, bool CanCancel, Couriers.TrackingShipmentDto? Shipment = null);
 
 public sealed record CancelOrderRequest(string? Reason);
 
@@ -123,3 +124,12 @@ public sealed record ManualOrderRequest(
     string? CouponCode, decimal? Discount, decimal? DeliveryChargeOverride, string? CustomerNote, string? InternalNote, string? IdempotencyKey, bool ConfirmDuplicate);
 
 public sealed record OrderSourceCountDto(OrderSource Source, int Orders, decimal Total);
+// ---- Public cancel, manual quote ----------------------------------------------------------------------------
+
+public sealed record TrackCancelRequest(string? Number, string? Mobile, string? Token, string? Reason);
+
+public sealed record ManualQuoteDto(
+    string Currency, decimal Subtotal, decimal CouponDiscount, string? CouponCode, decimal ManualDiscount, decimal DeliveryCharge, decimal StandardDeliveryCharge, decimal GrandTotal, decimal AdvanceRequired,
+    int WeightGrams, string? ZoneCode, string PaymentMethod, Guid BranchId, string RoutingRule, IReadOnlyList<ManualQuoteLineDto> Lines, DateOnly? EarliestDelivery, DateOnly? LatestDelivery);
+
+public sealed record ManualQuoteLineDto(Guid VariantId, string Sku, string Name, string? ColorName, string? Size, decimal UnitPrice, int Quantity, decimal LineTotal, int AvailableInBranch);

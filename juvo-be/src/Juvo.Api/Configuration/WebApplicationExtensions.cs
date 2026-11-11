@@ -59,6 +59,8 @@ internal static class WebApplicationExtensions
         app.MapReturnsEndpoints();
         app.MapPaymentsEndpoints();
         app.MapBillingEndpoints();
+        app.MapCouriersEndpoints();
+        app.MapHub<Juvo.Api.Realtime.OrdersHub>(Juvo.Api.Realtime.RealtimeAuth.HubPath);
         app.MapNotificationsEndpoints();
 
         if (app.Services.GetRequiredService<IOptions<OpenApiSettings>>().Value.Enabled)
@@ -86,6 +88,7 @@ internal static class WebApplicationExtensions
         await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Catalog.CatalogSeeder>().SeedAsync();
         await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Geo.GeoSeeder>().SeedAsync();
         await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Billing.BillingSeeder>().SeedAsync();
+        await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Couriers.CourierSeeder>().SeedAsync();
         if (app.Configuration.GetValue<bool>("Seed:SampleCatalog"))
         {
             await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Catalog.SampleCatalogSeeder>().SeedAsync();

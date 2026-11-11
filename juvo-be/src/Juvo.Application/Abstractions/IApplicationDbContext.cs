@@ -11,6 +11,7 @@ using Juvo.Domain.Platform;
 using Juvo.Domain.Billing;
 using Juvo.Domain.Payments;
 using Juvo.Domain.Returns;
+using Juvo.Domain.Couriers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Juvo.Application.Abstractions;
@@ -134,6 +135,18 @@ public interface IApplicationDbContext
 
     DbSet<NotificationTemplateVersion> NotificationTemplateVersions { get; }
 
+    DbSet<Courier> Couriers { get; }
+
+    DbSet<Shipment> Shipments { get; }
+
+    DbSet<ShipmentEvent> ShipmentEvents { get; }
+
+    DbSet<CodSettlement> CodSettlements { get; }
+
+    DbSet<CodSettlementItem> CodSettlementItems { get; }
+
+    DbSet<SandboxConsignment> SandboxConsignments { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -141,4 +154,7 @@ public interface IApplicationDbContext
     /// serialise work that must happen once and in order, such as issuing the invoice of an order or taking the next document number. Needs a running transaction.
     /// </summary>
     Task AcquireTransactionLockAsync(string name, CancellationToken cancellationToken = default);
+
+    /// <summary>Stops tracking everything that was added but not saved. For the path where a save failed on a unique index and the caller must carry on with the context (for example to cancel an external booking).</summary>
+    void DiscardUnsavedAdditions();
 }

@@ -47,6 +47,10 @@ public sealed class AuthOptions
     [Range(1, 1440)]
     public int PasswordResetTokenMinutes { get; set; } = 60;
 
+    /// <summary>How long a real-time hub token lives (module J). It only has to survive until the browser connects; the browser asks again whenever it reconnects.</summary>
+    [Range(1, 60)]
+    public int RealtimeTokenMinutes { get; set; } = 5;
+
     public OtpOptions Otp { get; set; } = new();
 
     public SeedOptions Seed { get; set; } = new();

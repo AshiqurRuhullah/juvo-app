@@ -111,6 +111,25 @@ public static class DependencyInjection
         services.AddScoped<IOutboxMessageHandler, Juvo.Application.Notifications.NotificationDeliverHandler>();
         services.AddScoped<IOutboxMessageHandler, Juvo.Application.Orders.InvoiceOnConfirmedHandler>();
 
+        // Couriers, shipments, COD settlement (module H) and real-time updates (module J).
+        services.AddScoped<Juvo.Application.Couriers.ICourierProviderRegistry, Juvo.Application.Couriers.CourierProviderRegistry>();
+        services.AddScoped<Juvo.Application.Couriers.CourierSelector>();
+        services.AddScoped<Juvo.Application.Couriers.CourierAdminService>();
+        services.AddScoped<Juvo.Application.Couriers.ShipmentViews>();
+        services.AddScoped<Juvo.Application.Couriers.ShipmentCancellation>();
+        services.AddScoped<Juvo.Application.Couriers.ShipmentSync>();
+        services.AddScoped<Juvo.Application.Couriers.ShipmentBooking>();
+        services.AddScoped<Juvo.Application.Couriers.ShipmentService>();
+        services.AddScoped<Juvo.Application.Couriers.CourierWebhookService>();
+        services.AddScoped<Juvo.Application.Couriers.CodSettlementService>();
+        services.AddSingleton<Juvo.Application.Realtime.IRealtimePublisher, Juvo.Application.Realtime.NullRealtimePublisher>(); // the API replaces it with the SignalR publisher
+        services.AddScoped<Juvo.Application.Realtime.RealtimeAccess>();
+        services.AddScoped<Juvo.Application.Realtime.RealtimeTokens>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Realtime.RealtimeOrderStatusHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Realtime.RealtimeOrderPlacedHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Realtime.RealtimeShipmentHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Realtime.RealtimeReturnHandler>();
+
         // Inventory (module V).
         services.AddScoped<InventoryAccess>();
         services.AddScoped<StockLedger>();

@@ -1,4 +1,5 @@
 using Juvo.Application.Abstractions;
+using Juvo.Application.Ums;
 using Juvo.Domain.Orders;
 using Juvo.Shared.Contacts;
 using Juvo.Shared.Pagination;
@@ -346,13 +347,12 @@ public sealed class OrdersService(
 
     // ---- Social order desk ------------------------------------------------------------------------------
 
-    public async Task<Result<OrderDetailDto>> CreateManualAsync(ManualOrderRequest request, CancellationToken cancellationToken)
+    /// <summary>
+    /// The checks both the real desk order and its dry-run preview make, in one place: branch and permission, source, mobile, discount and delivery override permissions, the lines, and the
+    /// address. Returns the placement input; nothing is saved.
+    /// </summary>
+    private async Task<Result<PlacementInput>> BuildManualInputAsync(ManualOrderRequest request, Actor actor, CancellationToken cancellationToken)
     {
-        if (await access.ActorAsync(cancellationToken) is not { } actor)
-        {
-            return Error.Unauthorized();
-        }
-
         // The branch of the request, else the one the staff member works in, else the default branch (a head-office user with "All branches").
         var branchId = request.BranchId ?? currentUser.BranchId
                        ?? await db.Branches.AsNoTracking().Where(b => b.IsDefault && b.IsActive).Select(b => (Guid?)b.Id).FirstOrDefaultAsync(cancellationToken);
@@ -434,11 +434,26 @@ public sealed class OrdersService(
         }
 
         var who = access.WhoIs(actor);
-        var input = new PlacementInput(
+        return new PlacementInput(
             request.Source, who, true, mobile, request.CustomerName?.Trim(), request.CustomerEmail?.Trim(), null, false, shipping.Value, merged, request.CouponCode, discount,
             request.DeliveryChargeOverride, request.PaymentMethod, request.CustomerNote?.Trim(), request.InternalNote?.Trim(), request.IdempotencyKey?.Trim(), request.ConfirmDuplicate, null, null,
             currentUser.IpAddress, null, true, targetBranch, null);
-        var placed = await placement.PlaceAsync(input, cancellationToken);
+    }
+
+    public async Task<Result<OrderDetailDto>> CreateManualAsync(ManualOrderRequest request, CancellationToken cancellationToken)
+    {
+        if (await access.ActorAsync(cancellationToken) is not { } actor)
+        {
+            return Error.Unauthorized();
+        }
+
+        var built = await BuildManualInputAsync(request, actor, cancellationToken);
+        if (built.IsFailure)
+        {
+            return built.Error!;
+        }
+
+        var placed = await placement.PlaceAsync(built.Value, cancellationToken);
         if (placed.IsFailure)
         {
             return placed.Error!;
@@ -446,6 +461,35 @@ public sealed class OrdersService(
 
         var order = await Loaded().AsNoTracking().FirstAsync(o => o.Id == placed.Value.Order.Id, cancellationToken);
         return await DetailAsync(order, cancellationToken);
+    }
+
+    /// <summary>
+    /// Dry run of <see cref="CreateManualAsync"/> for the social order desk (module S): the same permission, validation, prices, coupon, delivery charge, discount and advance, so the totals
+    /// shown while typing are the totals of the order that gets created. Nothing is saved, reserved or counted.
+    /// </summary>
+    public async Task<Result<ManualQuoteDto>> QuoteManualAsync(ManualOrderRequest request, CancellationToken cancellationToken)
+    {
+        if (await access.ActorAsync(cancellationToken) is not { } actor)
+        {
+            return Error.Unauthorized();
+        }
+
+        var built = await BuildManualInputAsync(request, actor, cancellationToken);
+        if (built.IsFailure)
+        {
+            return built.Error!;
+        }
+
+        var quoted = await placement.QuoteAsync(built.Value, cancellationToken);
+        if (quoted.IsFailure)
+        {
+            return quoted.Error!;
+        }
+
+        var q = quoted.Value;
+        return new ManualQuoteDto("BDT", q.Subtotal, q.CouponDiscount, q.Coupon?.Code, q.ManualDiscount, q.DeliveryCharge, q.StandardCharge, q.Grand, q.Advance, q.Weight, q.ZoneCode, q.Method, q.BranchId, q.Rule,
+            [.. q.Lines.Select(l => new ManualQuoteLineDto(l.Variant.Id, l.Variant.Sku, l.Product.NameEn, l.Variant.ColorName, l.Variant.Size, l.UnitPrice, l.Quantity, l.UnitPrice * l.Quantity, q.Available.GetValueOrDefault(l.Variant.Id)))],
+            q.Earliest, q.Latest);
     }
 
     /// <summary>Orders and value per source in a period, for the owner's daily count (FR-S06).</summary>

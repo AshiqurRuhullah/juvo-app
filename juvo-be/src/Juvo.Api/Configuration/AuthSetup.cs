@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Juvo.Api.Realtime;
 using Juvo.Application.Abstractions;
 using Juvo.Application.Identity;
 using Juvo.Infrastructure.Identity;
@@ -109,7 +110,8 @@ internal static class AuthSetup
 {
     public static IServiceCollection AddJuvoAuth(this IServiceCollection services)
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer().AddJwtBearer(RealtimeAuth.Scheme, _ => { });
+        services.AddRealtimeAuth();
 
         services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
             .Configure<SigningKeyProvider, IOptions<AuthOptions>, TimeProvider>((bearer, keys, auth, clock) =>
