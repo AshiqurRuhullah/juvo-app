@@ -17,6 +17,7 @@ import { ApiError } from "@/lib/api/client";
 import { toNumber, useMoney } from "@/modules/catalog/format";
 import { useOrder, useOrderAction, useOrderErrorText, problemOf, type NoteKind, type OrderAction, type OrderStatus } from "./api";
 import { AmountList, FraudBadge, OrderLines, OrderStatusBadge, PaymentStatusBadge, ProgressLine, RiskChips, Section, TrackBadges, TrackHistory, useMethodLabel, useSourceLabel } from "./common";
+import { OrderPaymentPanel } from "@/modules/payments/order-payment-panel";
 import { AddressBlock } from "./my-order-detail";
 import { useOrderPermissions } from "./permissions";
 import { actionsFrom } from "./status";
@@ -272,6 +273,8 @@ export function OrderDetail({ id }: { id: string }) {
               <p className="mt-3 text-sm text-muted">{t("method", { method: methodLabel(order.paymentMethod) })}</p>
               <p className="text-sm text-muted">{t("weight", { grams: toNumber(order.weightGrams) })}</p>
             </Section>
+
+            <OrderPaymentPanel order={order} />
 
             <Section title={t("customer")} id="od-customer">
               <dl className="space-y-1.5 text-sm">
