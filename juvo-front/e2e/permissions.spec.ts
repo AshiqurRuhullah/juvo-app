@@ -8,8 +8,8 @@ const state = () => loadState();
 const sidebar = (page: Page) => page.getByRole("complementary", { name: "Navigation" });
 
 async function menuText(page: Page) {
-  // innerText applies the CSS uppercase of group headings, so compare in lower case.
-  return (await sidebar(page).innerText()).replace(/\s+/g, " ").toLowerCase();
+  // textContent, not innerText: the children of a folded parent are invisible but still part of the menu the person is given.
+  return ((await sidebar(page).textContent()) ?? "").replace(/\s+/g, " ").toLowerCase();
 }
 
 test.describe("the menu is built from permissions", () => {
