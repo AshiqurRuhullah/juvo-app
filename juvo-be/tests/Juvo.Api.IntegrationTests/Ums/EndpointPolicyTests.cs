@@ -54,15 +54,24 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
             "/api/v{version:apiVersion}/auth/otp/verify",
         };
 
-        var actual = ApiEndpoints().Where(e => e.AllowAnonymous).Select(e => e.Route).Order().ToList();
+        // The public shop (Step 7). Cart merge is deliberately not here: it needs a customer token.
+        var shop = new[]
+        {
+            "categories", "home", "products", "products/facets", "products/{slug}", "search/suggest", "geo/countries", "geo/divisions", "geo/districts",
+            "geo/districts/{districtId:guid}/upazilas", "delivery/quote", "coupons/validate", "cart/", "cart/items", "cart/items/{variantId:guid}", "cart/coupon", "cart/delivery-quote",
+        }.Select(r => "/api/v{version:apiVersion}/store/" + r);
 
-        Assert.Equal(expected.Order().ToList(), actual);
+        var actual = ApiEndpoints().Where(e => e.AllowAnonymous).Select(e => e.Route).Distinct().Order().ToList();
+
+        Assert.Equal(expected.Concat(shop).Order().ToList(), actual);
     }
 
     [Fact]
     public void Every_admin_endpoint_requires_a_named_permission_that_exists_in_the_catalog()
     {
-        var ums = ApiEndpoints().Where(e => e.Route.Contains("/ums/", StringComparison.Ordinal) || e.Route.Contains("/catalog/", StringComparison.Ordinal)).ToList();
+        var ums = ApiEndpoints().Where(e => e.Route.Contains("/ums/", StringComparison.Ordinal) || e.Route.Contains("/catalog/", StringComparison.Ordinal) ||
+                                            e.Route.Contains("/customers", StringComparison.Ordinal) || e.Route.Contains("/promotions/", StringComparison.Ordinal) ||
+                                            e.Route.Contains("/delivery/", StringComparison.Ordinal) && !e.Route.Contains("/store/", StringComparison.Ordinal)).ToList();
 
         Assert.NotEmpty(ums);
         foreach (var endpoint in ums)
@@ -85,8 +94,9 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
             .Order()
             .ToList();
 
-        // Account endpoints of the signed-in person. Anything else needs a permission.
-        Assert.All(onlyAuthenticated, e => Assert.Contains("/auth/", e, StringComparison.Ordinal));
+        // Account endpoints of the signed-in person (/auth) and of the signed-in customer (/me, cart merge). Anything else needs a permission.
+        Assert.All(onlyAuthenticated, e => Assert.True(
+            e.Contains("/auth/", StringComparison.Ordinal) || e.Contains("/me", StringComparison.Ordinal) || e.EndsWith("/store/cart/merge", StringComparison.Ordinal), e));
     }
 
     [Fact]

@@ -95,7 +95,10 @@ public static class TextMatch
             ? []
             : [.. text.ToLowerInvariant().Split([' ', ',', '-', '_', '/', '.', '(', ')', '\t', '\n'], StringSplitOptions.RemoveEmptyEntries).Where(t => t.Length > 0)];
 
-    /// <summary>Edit distance between two words (insert, delete, replace), stopping early once it is above <paramref name="max"/>.</summary>
+    /// <summary>
+    /// Edit distance between two words (insert, delete, replace, or swap two neighbouring letters, which is a very common typing slip),
+    /// stopping early once it is above <paramref name="max"/>.
+    /// </summary>
     public static int Distance(string a, string b, int max)
     {
         if (Math.Abs(a.Length - b.Length) > max)
@@ -103,6 +106,7 @@ public static class TextMatch
             return max + 1;
         }
 
+        var beforePrevious = new int[b.Length + 1];
         var previous = new int[b.Length + 1];
         var current = new int[b.Length + 1];
         for (var j = 0; j <= b.Length; j++)
@@ -117,8 +121,14 @@ public static class TextMatch
             for (var j = 1; j <= b.Length; j++)
             {
                 var cost = a[i - 1] == b[j - 1] ? 0 : 1;
-                current[j] = Math.Min(Math.Min(current[j - 1] + 1, previous[j] + 1), previous[j - 1] + cost);
-                rowMin = Math.Min(rowMin, current[j]);
+                var value = Math.Min(Math.Min(current[j - 1] + 1, previous[j] + 1), previous[j - 1] + cost);
+                if (i > 1 && j > 1 && a[i - 1] == b[j - 2] && a[i - 2] == b[j - 1])
+                {
+                    value = Math.Min(value, beforePrevious[j - 2] + 1);
+                }
+
+                current[j] = value;
+                rowMin = Math.Min(rowMin, value);
             }
 
             if (rowMin > max)
@@ -126,14 +136,14 @@ public static class TextMatch
                 return max + 1;
             }
 
-            (previous, current) = (current, previous);
+            (beforePrevious, previous, current) = (previous, current, beforePrevious);
         }
 
         return previous[b.Length];
     }
 
-    /// <summary>One mistake is allowed in words of 4 to 6 letters, two in longer words, none in shorter ones.</summary>
-    public static int Tolerance(string word) => word.Length switch { <= 3 => 0, <= 6 => 1, _ => 2 };
+    /// <summary>One mistake is allowed in words of 4 or 5 letters, two in longer words, none in shorter ones.</summary>
+    public static int Tolerance(string word) => word.Length switch { <= 3 => 0, <= 5 => 1, _ => 2 };
 
     /// <summary>True when <paramref name="query"/> is close to a word, or a start of a word, in <paramref name="words"/>.</summary>
     public static bool Matches(string query, IEnumerable<string> words)

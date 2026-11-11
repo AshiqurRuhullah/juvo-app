@@ -67,7 +67,8 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         var db = scope.ServiceProvider.GetRequiredService<JuvoDbContext>();
         await db.Database.MigrateAsync();
         await scope.ServiceProvider.GetRequiredService<IdentitySeeder>().SeedAsync();
-        await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Catalog.CatalogSeeder>().SeedAsync(); // reference categories and size charts, as at start-up
+        await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Catalog.CatalogSeeder>().SeedAsync();
+        await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Geo.GeoSeeder>().SeedAsync(); // reference categories and size charts, as at start-up
 
         // The seeded Super Admin must change the password at first sign-in. Most tests want a usable admin, so clear that flag
         // here; tests of the forced change create a fresh user through the API instead.
