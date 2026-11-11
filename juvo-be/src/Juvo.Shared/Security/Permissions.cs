@@ -178,6 +178,19 @@ public static class Permissions
 
     public static class Cod
     {
+        public const string View = "couriers.cod.view";
         public const string Settle = "couriers.cod.settle";
+    }
+
+    public static class Couriers
+    {
+        public const string CourierView = "couriers.courier.view";
+        public const string CourierEdit = "couriers.courier.edit";
+        public const string ShipmentView = "couriers.shipment.view";
+        public const string ShipmentBook = "couriers.shipment.book";
+        public const string ShipmentBulkBook = "couriers.shipment.bulk-book";
+        public const string ShipmentCancel = "couriers.shipment.cancel";
+        public const string ShipmentPrintLabel = "couriers.shipment.print-label";
+        public const string ShipmentSimulate = "couriers.shipment.simulate";
     }
 }
