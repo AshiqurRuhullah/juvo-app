@@ -96,6 +96,21 @@ public static class DependencyInjection
         services.AddScoped<Juvo.Application.Returns.CustomerReturnsService>();
         services.AddScoped<IOutboxMessageHandler, Juvo.Application.Returns.ReturnStatusChangedHandler>();
 
+        // Payments, refunds (module I), tax and invoices (module U), notifications (module K).
+        services.AddScoped<Juvo.Application.Payments.IPaymentGatewayRegistry, Juvo.Application.Payments.PaymentGatewayRegistry>();
+        services.AddScoped<Juvo.Application.Payments.PaymentSettingsService>();
+        services.AddScoped<Juvo.Application.Payments.PaymentOutcomes>();
+        services.AddScoped<Juvo.Application.Payments.CustomerPaymentsService>();
+        services.AddScoped<Juvo.Application.Payments.PaymentWebhookService>();
+        services.AddScoped<Juvo.Application.Payments.StaffPaymentsService>();
+        services.AddScoped<Juvo.Application.Payments.RefundService>();
+        services.AddScoped<Juvo.Application.Billing.TaxService>();
+        services.AddScoped<Juvo.Application.Billing.InvoiceService>();
+        services.AddScoped<Juvo.Application.Notifications.NotificationService>();
+        services.AddScoped<Juvo.Application.Notifications.NotificationAdminService>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Notifications.NotificationDeliverHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Orders.InvoiceOnConfirmedHandler>();
+
         // Inventory (module V).
         services.AddScoped<InventoryAccess>();
         services.AddScoped<StockLedger>();

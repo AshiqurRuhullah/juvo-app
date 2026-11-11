@@ -20,7 +20,7 @@ namespace Juvo.Application.Returns;
 /// </summary>
 public sealed class ReturnsService(
     IApplicationDbContext db, IUnitOfWork uow, OrderAccess access, OrderStock orderStock, ReturnStock returnStock, ReturnOrderSync orderSync, OrderPlacement placement, ReturnPolicy policy,
-    IFileStorage storage, TimeProvider clock)
+    IFileStorage storage, Payments.RefundService refunds, TimeProvider clock)
 {
     private static Error Invalid(string field, string message) => Error.Validation(new Dictionary<string, string[]> { [field] = [message] });
 
@@ -425,6 +425,12 @@ public sealed class ReturnsService(
             }
 
             r.Refund(request.Method, reference, who.Id, who.Name, clock.GetUtcNow());
+            var money = await refunds.RecordForReturnAsync(order, r, request.Method, reference, who, ct); // the payment module: real Refund records, gateway call, credit note
+            if (money.IsFailure)
+            {
+                return money;
+            }
+
             return await orderSync.AfterRefundAsync(order, r, who, ct);
         }, cancellationToken);
     }

@@ -1,5 +1,9 @@
 using Juvo.Application.Abstractions;
+using Juvo.Application.Billing;
 using Juvo.Application.Identity;
+using Juvo.Application.Notifications;
+using Juvo.Application.Payments;
+using Juvo.Domain.Notifications;
 using Juvo.Domain.Identity;
 using Juvo.Infrastructure.Identity;
 using Juvo.Infrastructure.Options;
@@ -14,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Juvo.Infrastructure;
@@ -84,6 +89,25 @@ public static class DependencyInjection
         services.AddScoped<ISmsSender, SandboxSmsSender>();
         services.AddScoped<IEmailSender, SandboxEmailSender>();
         services.AddScoped<IAccessDeniedAuditor, AccessDeniedAuditor>();
+
+        // Payments: the sandbox gateway is on by default; the real providers are registered slots without credentials (Step 14).
+        services.Configure<Payments.SandboxGatewayOptions>(configuration.GetSection(Payments.SandboxGatewayOptions.SectionName));
+        services.AddScoped<IPaymentGateway, Payments.SandboxPaymentGateway>();
+        foreach (var (code, name) in new[] { ("BKASH", "bKash"), ("NAGAD", "Nagad"), ("SSLCOMMERZ", "SSLCommerz"), ("AAMARPAY", "aamarPay"), ("STRIPE", "Stripe"), ("PAYPAL", "PayPal") })
+        {
+            services.AddSingleton<IPaymentGateway>(_ => new NotConfiguredGateway(code, name));
+        }
+
+        services.AddScoped<Payments.SandboxPayService>();
+
+        // Invoices and notifications.
+        services.AddSingleton<IDocumentPdfRenderer, Billing.SkiaPdfRenderer>();
+        services.AddScoped<Billing.BillingSeeder>();
+        services.Configure<NotificationDeliveryOptions>(configuration.GetSection(NotificationDeliveryOptions.SectionName));
+        foreach (var channel in new[] { NotificationChannel.Sms, NotificationChannel.Email, NotificationChannel.WhatsApp })
+        {
+            services.AddScoped<INotificationSender>(provider => new Notifications.SandboxNotificationSender(channel, provider.GetRequiredService<ILogger<Notifications.SandboxNotificationSender>>()));
+        }
         services.AddScoped<IdentitySeeder>();
         services.AddScoped<Catalog.CatalogSeeder>();
         services.AddScoped<Catalog.SampleCatalogSeeder>();

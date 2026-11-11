@@ -81,12 +81,18 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
 
         if (!order.IsOnlinePayment && order.AdvanceRequired > 0 && order.PaymentStatus == PaymentStatus.Pending)
         {
-            if (!advanceReceived)
+            if (order.AdvancePaid >= order.AdvanceRequired)
             {
-                return Refuse(ErrorCodes.Order.AdvanceRequired, $"This order needs an advance of BDT {order.AdvanceRequired:0.##} first. Collect it, then confirm with advanceReceived = true.");
+                // the advance was recorded as a payment (module I): nothing more to do
             }
-
-            order.AddNote(NoteKind.Internal, $"Advance of BDT {order.AdvanceRequired:0.##} marked as received by staff.", who.Id, who.Name, clock.GetUtcNow());
+            else if (!advanceReceived)
+            {
+                return Refuse(ErrorCodes.Order.AdvanceRequired, $"This order needs an advance of BDT {order.AdvanceRequired:0.##} first. Record it as a payment (POST /payments/orders/{{id}}/advance), then confirm.");
+            }
+            else
+            {
+                order.AddNote(NoteKind.Internal, $"Advance of BDT {order.AdvanceRequired:0.##} marked as received by staff.", who.Id, who.Name, clock.GetUtcNow());
+            }
         }
 
         order.TransitionTo(OrderStatus.Confirmed, clock.GetUtcNow(), who.Id, who.Name, null);
