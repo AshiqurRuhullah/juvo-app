@@ -181,4 +181,58 @@ public static class ErrorCodes
         public const string AreaNotFound = "DELIVERY.AREA_NOT_FOUND";
         public const string UpazilaTaken = "DELIVERY.UPAZILA_TAKEN";
     }
+
+    public static class Payment
+    {
+        public const string NotFound = "PAYMENT.NOT_FOUND";
+        public const string InvalidTransition = "PAYMENT.INVALID_TRANSITION";
+        public const string MethodUnavailable = "PAYMENT.METHOD_UNAVAILABLE";
+        public const string NotConfigured = "PAYMENT.NOT_CONFIGURED";
+        public const string OrderNotPayable = "PAYMENT.ORDER_NOT_PAYABLE";
+        public const string AlreadyPaid = "PAYMENT.ALREADY_PAID";
+        public const string GatewayError = "PAYMENT.GATEWAY_ERROR";
+        public const string AmountMismatch = "PAYMENT.AMOUNT_MISMATCH";
+        public const string InvalidSignature = "PAYMENT.INVALID_SIGNATURE";
+        public const string WebhookExpired = "PAYMENT.WEBHOOK_EXPIRED";
+        public const string WebhookMalformed = "PAYMENT.WEBHOOK_MALFORMED";
+        public const string ReferenceRequired = "PAYMENT.REFERENCE_REQUIRED";
+        public const string ReferenceReused = "PAYMENT.REFERENCE_REUSED";
+        public const string NotUnderReview = "PAYMENT.NOT_UNDER_REVIEW";
+        public const string ProofInvalid = "PAYMENT.PROOF_INVALID";
+        public const string ReturnUrlInvalid = "PAYMENT.RETURN_URL_INVALID";
+        public const string NothingToCollect = "PAYMENT.NOTHING_TO_COLLECT";
+        public const string NotCod = "PAYMENT.NOT_COD";
+        public const string RefundExceedsPaid = "PAYMENT.REFUND_EXCEEDS_PAID";
+        public const string RefundNotPending = "PAYMENT.REFUND_NOT_PENDING";
+        public const string RefundFailed = "PAYMENT.REFUND_FAILED";
+        public const string RefundNotFound = "PAYMENT.REFUND_NOT_FOUND";
+        public const string NothingPaid = "PAYMENT.NOTHING_PAID";
+        public const string ConcurrentUpdate = "PAYMENT.CONCURRENT_UPDATE";
+        public const string SettingInvalid = "PAYMENT.SETTING_INVALID";
+    }
+
+    public static class Invoice
+    {
+        public const string NotFound = "INVOICE.NOT_FOUND";
+        public const string OrderNotInvoiceable = "INVOICE.ORDER_NOT_INVOICEABLE";
+        public const string CreditNoteNotFound = "INVOICE.CREDIT_NOTE_NOT_FOUND";
+        public const string TaxRuleNotFound = "INVOICE.TAX_RULE_NOT_FOUND";
+        public const string TaxRuleInvalid = "INVOICE.TAX_RULE_INVALID";
+        public const string TaxRuleCodeTaken = "INVOICE.TAX_RULE_CODE_TAKEN";
+        public const string TaxRuleUnverified = "INVOICE.TAX_RULE_UNVERIFIED";
+        public const string ExclusiveNotSupported = "INVOICE.EXCLUSIVE_NOT_SUPPORTED";
+        public const string PdfFailed = "INVOICE.PDF_FAILED";
+    }
+
+    public static class Notify
+    {
+        public const string TemplateNotFound = "NOTIFY.TEMPLATE_NOT_FOUND";
+        public const string TemplateInvalid = "NOTIFY.TEMPLATE_INVALID";
+        public const string UnknownPlaceholder = "NOTIFY.UNKNOWN_PLACEHOLDER";
+        public const string LogNotFound = "NOTIFY.LOG_NOT_FOUND";
+        public const string NotResendable = "NOTIFY.NOT_RESENDABLE";
+        public const string ChannelDisabled = "NOTIFY.CHANNEL_DISABLED";
+        public const string NoConsent = "NOTIFY.NO_CONSENT";
+        public const string LanguageInvalid = "NOTIFY.LANGUAGE_INVALID";
+    }
 }

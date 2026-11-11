@@ -139,6 +139,7 @@ internal sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         builder.Property(x => x.Mobile).HasMaxLength(20).IsRequired();
         builder.Property(x => x.Email).HasMaxLength(200);
         builder.Property(x => x.FullName).HasMaxLength(150);
+        builder.Property(x => x.PreferredLanguage).HasMaxLength(5);
         builder.Property(x => x.ProfileLevel).HasConversion<int>();
         builder.HasIndex(x => x.Mobile).IsUnique(); // the mobile number is the customer key (BR-006)
         builder.HasIndex(x => x.Email);
@@ -173,5 +174,11 @@ internal sealed class NotificationLogConfiguration : IEntityTypeConfiguration<No
         builder.Property(x => x.CorrelationId).HasMaxLength(100);
         builder.HasIndex(x => new { x.Recipient, x.SentAt });
         builder.HasIndex(x => x.Template);
+        builder.Property(x => x.Category).HasConversion<int>();
+        builder.Property(x => x.Language).HasMaxLength(5);
+        builder.Property(x => x.DedupeKey).HasMaxLength(150);
+        builder.Property(x => x.LastError).HasMaxLength(500);
+        builder.HasIndex(x => new { x.Status, x.QueuedAt });
+        builder.HasIndex(x => new { x.DedupeKey, x.Channel }).IsUnique().HasFilter("[DedupeKey] IS NOT NULL");
     }
 }

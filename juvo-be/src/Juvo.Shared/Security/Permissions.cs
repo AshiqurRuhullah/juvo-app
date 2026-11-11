@@ -142,4 +142,42 @@ public static class Permissions
         public const string CouponEdit = "promotions.coupon.edit";
         public const string CouponDelete = "promotions.coupon.delete";
     }
+
+    public static class Payments
+    {
+        public const string PaymentView = "payments.payment.view";
+        public const string PaymentVerify = "payments.payment.verify";
+        public const string PaymentRecord = "payments.payment.record";
+        public const string RefundView = "payments.refund.view";
+        public const string RefundCreate = "payments.refund.create";
+        public const string RefundApprove = "payments.refund.approve";
+        public const string GatewayView = "payments.gateway.view";
+        public const string GatewayEdit = "payments.gateway.edit";
+        public const string LedgerView = "payments.ledger.view";
+    }
+
+    public static class Tax
+    {
+        public const string RuleView = "tax.rule.view";
+        public const string RuleEdit = "tax.rule.edit";
+        public const string InvoiceView = "tax.invoice.view";
+        public const string InvoiceIssue = "tax.invoice.issue";
+        public const string InvoiceDownload = "tax.invoice.download";
+        public const string CreditNoteCreate = "tax.credit-note.create";
+        public const string CreditNoteView = "tax.credit-note.view";
+    }
+
+    public static class Notifications
+    {
+        public const string TemplateView = "notifications.template.view";
+        public const string TemplateEdit = "notifications.template.edit";
+        public const string LogView = "notifications.log.view";
+        public const string LogRetry = "notifications.log.retry";
+        public const string ChannelEdit = "notifications.channel.edit";
+    }
+
+    public static class Cod
+    {
+        public const string Settle = "couriers.cod.settle";
+    }
 }

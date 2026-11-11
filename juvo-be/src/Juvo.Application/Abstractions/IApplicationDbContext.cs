@@ -8,6 +8,8 @@ using Juvo.Domain.Identity;
 using Juvo.Domain.Notifications;
 using Juvo.Domain.Orders;
 using Juvo.Domain.Platform;
+using Juvo.Domain.Billing;
+using Juvo.Domain.Payments;
 using Juvo.Domain.Returns;
 using Microsoft.EntityFrameworkCore;
 
@@ -111,6 +113,26 @@ public interface IApplicationDbContext
     DbSet<ReturnRefund> ReturnRefunds { get; }
 
     DbSet<ReturnSequence> ReturnSequences { get; }
+
+    DbSet<Payment> Payments { get; }
+
+    DbSet<PaymentEvent> PaymentEvents { get; }
+
+    DbSet<Refund> Refunds { get; }
+
+    DbSet<SandboxGatewaySession> SandboxGatewaySessions { get; }
+
+    DbSet<TaxRule> TaxRules { get; }
+
+    DbSet<Invoice> Invoices { get; }
+
+    DbSet<CreditNote> CreditNotes { get; }
+
+    DbSet<DocumentSequence> DocumentSequences { get; }
+
+    DbSet<NotificationTemplate> NotificationTemplates { get; }
+
+    DbSet<NotificationTemplateVersion> NotificationTemplateVersions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

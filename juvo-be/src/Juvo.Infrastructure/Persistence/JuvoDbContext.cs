@@ -8,6 +8,8 @@ using Juvo.Domain.Inventory;
 using Juvo.Domain.Identity;
 using Juvo.Domain.Notifications;
 using Juvo.Domain.Orders;
+using Juvo.Domain.Billing;
+using Juvo.Domain.Payments;
 using Juvo.Domain.Returns;
 using Juvo.Domain.Platform;
 using Microsoft.AspNetCore.Identity;
@@ -123,6 +125,26 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
     public DbSet<ReturnRefund> ReturnRefunds => Set<ReturnRefund>();
 
     public DbSet<ReturnSequence> ReturnSequences => Set<ReturnSequence>();
+
+    public DbSet<Payment> Payments => Set<Payment>();
+
+    public DbSet<PaymentEvent> PaymentEvents => Set<PaymentEvent>();
+
+    public DbSet<Refund> Refunds => Set<Refund>();
+
+    public DbSet<SandboxGatewaySession> SandboxGatewaySessions => Set<SandboxGatewaySession>();
+
+    public DbSet<TaxRule> TaxRules => Set<TaxRule>();
+
+    public DbSet<Invoice> Invoices => Set<Invoice>();
+
+    public DbSet<CreditNote> CreditNotes => Set<CreditNote>();
+
+    public DbSet<DocumentSequence> DocumentSequences => Set<DocumentSequence>();
+
+    public DbSet<NotificationTemplate> NotificationTemplates => Set<NotificationTemplate>();
+
+    public DbSet<NotificationTemplateVersion> NotificationTemplateVersions => Set<NotificationTemplateVersion>();
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
