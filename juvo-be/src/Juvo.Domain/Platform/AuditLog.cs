@@ -10,6 +10,9 @@ public enum AuditAction
 
     /// <summary>A request was refused (wrong branch, missing permission). Written so attempts can be reviewed.</summary>
     AccessDenied = 4,
+
+    /// <summary>Personal data (mobile, email, addresses) was shown to staff (NFR-012, FR-E08 access log).</summary>
+    Viewed = 5,
 }
 
 /// <summary>Who changed what and when. Append-only; staff cannot edit it (NFR-012). Global table; every row records the branch.</summary>

@@ -42,6 +42,13 @@ public sealed class Customer : SoftDeletableEntity
 
     public DateTimeOffset? LastLoginAt { get; private set; }
 
+    /// <summary>A deactivated customer cannot sign in; their orders and history stay (soft rule, FR-N06).</summary>
+    public bool IsActive { get; private set; } = true;
+
+    public void Deactivate() => IsActive = false;
+
+    public void Activate() => IsActive = true;
+
     public void VerifyMobile(DateTimeOffset now)
     {
         MobileVerified = true;

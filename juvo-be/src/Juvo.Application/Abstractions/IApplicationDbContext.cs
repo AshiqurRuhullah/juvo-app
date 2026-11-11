@@ -1,3 +1,5 @@
+using Juvo.Domain.Carts;
+using Juvo.Domain.Delivery;
 using Juvo.Domain.Branches;
 using Juvo.Domain.Catalog;
 using Juvo.Domain.Customers;
@@ -55,6 +57,26 @@ public interface IApplicationDbContext
     DbSet<StockTransfer> StockTransfers { get; }
 
     DbSet<StockCount> StockCounts { get; }
+
+    DbSet<Country> Countries { get; }
+
+    DbSet<Division> Divisions { get; }
+
+    DbSet<District> Districts { get; }
+
+    DbSet<Upazila> Upazilas { get; }
+
+    DbSet<DeliveryZone> DeliveryZones { get; }
+
+    DbSet<Address> Addresses { get; }
+
+    DbSet<WishlistItem> WishlistItems { get; }
+
+    DbSet<ConsentLog> ConsentLogs { get; }
+
+    DbSet<Cart> Carts { get; }
+
+    DbSet<Coupon> Coupons { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
