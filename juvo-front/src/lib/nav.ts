@@ -166,8 +166,8 @@ export const ACCOUNT_NAV: NavGroup[] = [
     items: [
       { id: "account-home", label: "accountHome", href: "/account", icon: Gauge, ready: true, bottom: true },
       { id: "account-orders", label: "myOrders", href: "/account/orders", icon: ClipboardList, ready: false, bottom: true },
-      { id: "account-addresses", label: "addresses", href: "/account/addresses", icon: Globe, ready: false, bottom: true },
-      { id: "account-wishlist", label: "wishlist", href: "/account/wishlist", icon: Tag, ready: false },
+      { id: "account-addresses", label: "addresses", href: "/account/addresses", icon: Globe, ready: true, bottom: true },
+      { id: "account-wishlist", label: "wishlist", href: "/account/wishlist", icon: Tag, ready: true },
     ],
   },
 ];

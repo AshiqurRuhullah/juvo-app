@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { SessionsCard } from "@/components/layout/sessions-card";
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/surfaces";
 import { requireSession } from "@/lib/server/session";
+import { AccountSummary } from "@/modules/myaccount/account-summary";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("account");
@@ -49,6 +50,7 @@ export default async function AccountPage() {
             </dl>
           </CardContent>
         </Card>
+        <AccountSummary />
         <SessionsCard />
       </div>
     </>
