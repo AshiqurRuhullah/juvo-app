@@ -61,7 +61,7 @@ export function AppShell({ area, initialCollapsed, children }: { area: Area; ini
       {/* Sidebar / rail (tablet and desktop) */}
       <aside
         aria-label={t("sidebar")}
-        className="fixed inset-y-0 start-0 z-30 hidden w-[4.5rem] flex-col border-e border-line bg-card md:flex lg:group-data-[collapsed=false]/shell:w-[17.5rem]"
+        className="print:hidden! fixed inset-y-0 start-0 z-30 hidden w-[4.5rem] flex-col border-e border-line bg-card md:flex lg:group-data-[collapsed=false]/shell:w-[17.5rem]"
       >
         <div className="flex h-16 shrink-0 items-center justify-center border-b border-line px-3 lg:group-data-[collapsed=false]/shell:justify-start">
           <Link href={home} aria-label="Juvo BD" className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2.5 rounded-control">
@@ -85,8 +85,8 @@ export function AppShell({ area, initialCollapsed, children }: { area: Area; ini
       </aside>
 
       {/* Content column */}
-      <div className="flex min-h-dvh flex-col md:ps-[4.5rem] lg:group-data-[collapsed=false]/shell:ps-[17.5rem]">
-        <header className="safe-top sticky top-0 z-20 flex h-16 items-center gap-2 border-b border-line bg-card/95 px-3 backdrop-blur sm:px-5">
+      <div className="flex min-h-dvh flex-col md:ps-[4.5rem] lg:group-data-[collapsed=false]/shell:ps-[17.5rem] print:ps-0!">
+        <header className="print:hidden safe-top sticky top-0 z-20 flex h-16 items-center gap-2 border-b border-line bg-card/95 px-3 backdrop-blur sm:px-5">
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setDrawer(true)} aria-label={t("openMenu")} aria-haspopup="dialog">
             <Menu aria-hidden />
           </Button>
@@ -104,13 +104,13 @@ export function AppShell({ area, initialCollapsed, children }: { area: Area; ini
           <UserMenu profileHref={profileHref} />
         </header>
 
-        <main id="main" tabIndex={-1} className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 pb-28 sm:px-6 md:pb-10">
+        <main id="main" tabIndex={-1} className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 pb-28 sm:px-6 md:pb-10 print:max-w-none print:p-0">
           {children}
         </main>
       </div>
 
       {/* Phone bottom bar */}
-      <nav aria-label={t("quickNav")} className="safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-line bg-card/95 backdrop-blur md:hidden">
+      <nav aria-label={t("quickNav")} className="print:hidden safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-line bg-card/95 backdrop-blur md:hidden">
         <ul className="mx-auto grid max-w-md grid-flow-col auto-cols-fr">
           {bottomItems.map((item) => {
             const Icon = item.icon;

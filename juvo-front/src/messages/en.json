@@ -33,7 +33,7 @@
     "items": {
       "dashboard": "Dashboard",
       "orders": "Orders",
-      "socialOrders": "Social order desk",
+      "socialOrders": "Social orders",
       "fraud": "Fraud review",
       "returns": "Returns",
       "products": "Products",

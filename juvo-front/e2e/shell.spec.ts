@@ -179,10 +179,10 @@ test("modules that are not built yet are marked, not linked", async ({ page }) =
   const scope = layout === "desktop" ? page.getByRole("complementary", { name: "Navigation" }) : page.getByRole("dialog", { name: "Menu" });
 
   await expect(scope.getByRole("link", { name: "Dashboard" })).toBeVisible();
-  await expect(scope.locator('a[href="/admin/orders"]')).toHaveCount(0); // no dead link
-  // Orders is a child of the Sales parent, which is closed until it is opened.
-  const sales = scope.getByRole("button", { name: "Sales" });
-  if ((await sales.getAttribute("aria-expanded")) !== "true") await sales.click();
-  await expect(scope.getByText("Orders", { exact: true })).toBeVisible();
+  await expect(scope.locator('a[href="/admin/purchasing"]')).toHaveCount(0); // no dead link
+  // Purchasing (a later step) is a child of the Catalog parent, which is closed until it is opened.
+  const catalog = scope.getByRole("button", { name: "Catalog" });
+  if ((await catalog.getAttribute("aria-expanded")) !== "true") await catalog.click();
+  await expect(scope.getByText("Purchasing", { exact: true })).toBeVisible();
   await expect(scope.getByText("Soon").first()).toBeVisible();
 });
