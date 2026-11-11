@@ -54,7 +54,7 @@ public static class PermissionCatalog
         Add("ums", "audit", "view");
 
         // ---- Orders, social desk, returns (modules D, J, L, S) ----
-        Add("orders", "order", "view create edit confirm pack cancel reassign-branch export note bulk-action print");
+        Add("orders", "order", "view create edit confirm pack cancel reassign-branch export note bulk-action print apply-discount override-delivery");
         Add("orders", "source", "view");
         Add("returns", "return", "view approve reject receive refund exchange");
 

@@ -15,6 +15,18 @@ public enum StockReason
     TransferIn = 8,
     TransferCancelled = 9,
     StockCount = 10,
+
+    /// <summary>Units promised to an order (on-hand does not change: quantity change is zero).</summary>
+    OrderReserved = 11,
+
+    /// <summary>A reservation given back (order cancelled, timed out or moved to another branch; quantity change is zero).</summary>
+    OrderReleased = 12,
+
+    /// <summary>Units left the shelf because the order was packed (or delivered, by setting).</summary>
+    OrderPacked = 13,
+
+    /// <summary>Units of a packed order went back on the shelf because the order was cancelled or returned.</summary>
+    OrderRestocked = 14,
 }
 
 /// <summary>
