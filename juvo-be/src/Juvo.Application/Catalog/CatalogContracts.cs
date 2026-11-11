@@ -50,14 +50,14 @@ public sealed record ProductDetailDto(
     decimal? CostPrice, bool CostHidden, bool IsNew, bool IsFeatured, bool IsBestSeller, Guid? SizeChartId, string? MetaTitle,
     string? MetaDescription, string? SocialImagePath, string? VideoUrl, DateTimeOffset? PublishedAt, DateTimeOffset CreatedAt,
     DateTimeOffset? UpdatedAt, byte[] RowVersion, IReadOnlyList<VariantDto> Variants, IReadOnlyList<ProductImageDto> Images,
-    IReadOnlyList<string> PublishProblems);
+    IReadOnlyList<string> PublishProblems, bool NonReturnable = false);
 
 public sealed record SaveProductRequest(
     string NameEn, string? NameBn, string? Slug, Guid CategoryId, Guid? BrandId, string? ShortDescription, string? Description,
     string? Material, string? Care, string? Tags, TargetGroup TargetGroup, int? WeightGrams, decimal? LengthCm, decimal? WidthCm,
     decimal? HeightCm, decimal RegularPrice, decimal? SalePrice, DateTimeOffset? SaleStart, DateTimeOffset? SaleEnd, decimal? CostPrice,
     bool IsNew, bool IsFeatured, bool IsBestSeller, Guid? SizeChartId, string? MetaTitle, string? MetaDescription, string? SocialImagePath,
-    string? VideoUrl);
+    string? VideoUrl, bool? NonReturnable = null);
 
 public sealed record SaveVariantRequest(
     string Sku, string? ColorName, string? ColorHex, string? Size, decimal? PriceOverride, string? Barcode, int? WeightGramsOverride,

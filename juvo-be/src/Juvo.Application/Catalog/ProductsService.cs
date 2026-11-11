@@ -107,6 +107,11 @@ public sealed partial class ProductsService(IApplicationDbContext db, ActorConte
         }
 
         var product = new Product(details.Value);
+        if (request.NonReturnable is { } nonReturnable)
+        {
+            product.SetNonReturnable(nonReturnable);
+        }
+
         db.Products.Add(product);
         await db.SaveChangesAsync(cancellationToken);
         return await ToDetailAsync(product, cancellationToken);
@@ -130,6 +135,11 @@ public sealed partial class ProductsService(IApplicationDbContext db, ActorConte
         var canSeeCost = actor?.Access.HasAnywhere(Permissions.Catalog.ProductViewCost) == true;
         var next = canSeeCost ? details.Value : details.Value with { CostPrice = product.CostPrice }; // staff who cannot see the cost cannot change it either
         product.Update(next);
+        if (request.NonReturnable is { } nonReturnable)
+        {
+            product.SetNonReturnable(nonReturnable);
+        }
+
         await db.SaveChangesAsync(cancellationToken);
         return await ToDetailAsync(product, cancellationToken);
     }
@@ -220,6 +230,7 @@ public sealed partial class ProductsService(IApplicationDbContext db, ActorConte
             source.RegularPrice, source.SalePrice, source.SaleStart, source.SaleEnd, source.CostPrice, false, false, false, source.SizeChartId,
             source.MetaTitle, source.MetaDescription, source.SocialImagePath, source.VideoUrl);
         var copy = new Product(details);
+        copy.SetNonReturnable(source.NonReturnable);
         db.Products.Add(copy);
 
         foreach (var variant in source.Variants.OrderBy(v => v.SortOrder))
@@ -531,7 +542,7 @@ public sealed partial class ProductsService(IApplicationDbContext db, ActorConte
             p.SocialImagePath, p.VideoUrl, p.PublishedAt, p.CreatedAt, p.UpdatedAt, p.RowVersion,
             [.. p.Variants.Where(v => !v.IsDeleted).OrderBy(v => v.SortOrder).ThenBy(v => v.Sku).Select(ToDto)],
             [.. p.Images.OrderBy(i => i.SortOrder).Select(i => ProductMediaService.ToDto(i, storage))],
-            PublishProblems(p));
+            PublishProblems(p), p.NonReturnable);
     }
 
     private static VariantDto ToDto(ProductVariant v) =>

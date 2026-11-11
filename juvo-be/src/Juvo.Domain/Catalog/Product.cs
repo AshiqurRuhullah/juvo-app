@@ -110,6 +110,11 @@ public sealed class Product : SoftDeletableEntity
 
     public bool IsBestSeller { get; private set; }
 
+    /// <summary>Hygiene or final-sale items that cannot be returned (module L). Kept apart from <see cref="ProductDetails"/> so older callers keep working.</summary>
+    public bool NonReturnable { get; private set; }
+
+    public void SetNonReturnable(bool value) => NonReturnable = value;
+
     public Guid? SizeChartId { get; private set; }
 
     public string? MetaTitle { get; private set; }
