@@ -151,7 +151,7 @@ export function BulkSlipsView({ ids }: { ids: string[] }) {
       {ids.length === 0 ? (
         <Alert variant="warning">
           {t("bulkNone")}{" "}
-          <Link href="/admin/orders" className="inline-flex min-h-11 items-center font-semibold text-primary underline-offset-4 hover:underline">
+          <Link href="/admin/orders" className="inline-flex min-h-11 items-center font-semibold text-strong underline underline-offset-4">
             {t("backToOrders")}
           </Link>
         </Alert>

@@ -160,7 +160,7 @@ export function MyOrderDetail({ id }: { id: string }) {
         <Alert variant="info" title={t("helpTitle")}>
           <span className="flex flex-wrap items-center gap-x-2">
             <MessageCircle className="size-4" aria-hidden /> {t("helpText", { number: order.number })}{" "}
-            <a className="inline-flex min-h-11 items-center font-semibold text-primary underline-offset-4 hover:underline" href="mailto:juvobd@gmail.com">
+            <a className="inline-flex min-h-11 items-center font-semibold text-strong underline underline-offset-4" href="mailto:juvobd@gmail.com">
               juvobd@gmail.com
             </a>
           </span>

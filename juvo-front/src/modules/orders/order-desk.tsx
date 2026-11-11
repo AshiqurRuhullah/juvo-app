@@ -87,10 +87,10 @@ function ItemPicker({ chosen, onAdd }: { chosen: ReadonlySet<string>; onAdd: (li
                     <Button
                       variant="secondary"
                       disabled={added}
-                      aria-label={t("addVariant", { sku: v.sku })}
                       onClick={() => onAdd({ variantId: v.id, productId: picked.id, sku: v.sku, name: picked.nameEn, detail: [v.colorName, v.size].filter(Boolean).join(" · "), price })}
                     >
                       <Plus aria-hidden /> {added ? t("added") : t("add")}
+                      <span className="sr-only"> {v.sku}</span>
                     </Button>
                   </li>
                 );
@@ -313,7 +313,7 @@ export function OrderDesk() {
             {(["COD", "SANDBOX"] as const).map((m) => (
               <div key={m} className="flex min-h-12 items-start gap-3 rounded-control border border-line bg-card p-3 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary-soft">
                 <RadioItem id={`desk-pay-${m}`} value={m} className="mt-0.5" />
-                <Label htmlFor={`desk-pay-${m}`} className="flex-1 cursor-pointer font-normal">
+                <Label htmlFor={`desk-pay-${m}`} className="min-h-11 flex-1 cursor-pointer font-normal">
                   <span className="block font-semibold text-strong">{t(`payment.${m}`)}</span>
                   <span className="block text-sm text-muted">{t(`payment.help.${m}`)}</span>
                 </Label>

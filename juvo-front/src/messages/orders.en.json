@@ -468,7 +468,6 @@
       "none": "No published product matches “{term}”.",
       "results": "Matching products",
       "other": "Another product",
-      "addVariant": "Add {sku}",
       "added": "Added",
       "add": "Add",
       "chosen": "Items in this order",

@@ -173,7 +173,7 @@ export function OrderDetail({ id }: { id: string }) {
           <Alert variant="danger" title={t("held.title")} data-testid="held-banner">
             {t("held.text")}{" "}
             {perms.fraudView ? (
-              <Link href="/admin/fraud" className="inline-flex min-h-11 items-center font-semibold text-primary underline-offset-4 hover:underline">
+              <Link href="/admin/fraud" className="inline-flex min-h-11 items-center font-semibold text-strong underline underline-offset-4">
                 {t("held.open")}
               </Link>
             ) : null}

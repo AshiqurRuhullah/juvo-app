@@ -124,9 +124,9 @@ export function OrdersList() {
           return (
             <span className="flex items-start gap-1">
               {perms.bulk ? (
-                <span className="-ms-2 flex size-11 shrink-0 items-center justify-center">
+                <label className="-ms-2 flex size-11 shrink-0 cursor-pointer items-center justify-center">
                   <Checkbox checked={selected.has(o.id)} onCheckedChange={(v) => toggle(o.id, v === true)} aria-label={t("select", { number: o.number })} />
-                </span>
+                </label>
               ) : null}
               <span className="min-w-0 space-y-1">
                 <Link href={`/admin/orders/${o.id}`} className="inline-flex min-h-11 items-center rounded-control font-semibold text-strong hover:text-primary hover:underline" data-testid="order-link">

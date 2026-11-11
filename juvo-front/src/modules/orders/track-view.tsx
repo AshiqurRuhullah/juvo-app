@@ -108,7 +108,7 @@ export function TrackView({ initialToken, initialNumber, initialMobile }: { init
 
           <Alert variant="info">
             {data.canCancel ? t("cancelHelp") : t("help2")}{" "}
-            <Link href={signInUrl("/account/orders")} className="inline-flex min-h-11 items-center font-semibold text-primary underline-offset-4 hover:underline">
+            <Link href={signInUrl("/account/orders")} className="inline-flex min-h-11 items-center font-semibold text-strong underline underline-offset-4">
               {t("signIn")}
             </Link>
           </Alert>

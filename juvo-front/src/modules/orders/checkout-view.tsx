@@ -242,7 +242,7 @@ export function CheckoutView() {
               </div>
               <p className="text-sm text-muted">
                 {t("contact.haveAccount")}{" "}
-                <Link href={signInUrl("/checkout")} className="inline-flex min-h-11 items-center font-semibold text-primary underline-offset-4 hover:underline">
+                <Link href={signInUrl("/checkout")} className="inline-flex min-h-11 min-w-11 items-center justify-center font-semibold text-primary underline-offset-4 hover:underline">
                   {t("contact.signIn")}
                 </Link>
               </p>
@@ -256,7 +256,7 @@ export function CheckoutView() {
               {savedList.map((a) => (
                 <div key={a.id} className="flex items-start gap-3 rounded-control border border-line bg-card p-3 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary-soft">
                   <RadioItem id={`co-addr-${a.id}`} value={a.id} className="mt-0.5" />
-                  <Label htmlFor={`co-addr-${a.id}`} className="min-w-0 flex-1 cursor-pointer font-normal">
+                  <Label htmlFor={`co-addr-${a.id}`} className="min-h-11 min-w-0 flex-1 cursor-pointer font-normal">
                     <span className="block font-semibold text-strong">
                       {a.recipientName} <span className="font-normal text-muted">{a.phone}</span>
                     </span>
@@ -266,7 +266,7 @@ export function CheckoutView() {
               ))}
               <div className="flex items-start gap-3 rounded-control border border-line bg-card p-3 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary-soft">
                 <RadioItem id="co-addr-new" value={NEW_ADDRESS} className="mt-0.5" />
-                <Label htmlFor="co-addr-new" className="flex min-h-6 flex-1 cursor-pointer items-center font-semibold text-strong">
+                <Label htmlFor="co-addr-new" className="flex min-h-11 flex-1 cursor-pointer items-center font-semibold text-strong">
                   <MapPin className="me-2 size-5 text-primary" aria-hidden /> {t("address.useNew")}
                 </Label>
               </div>
@@ -313,7 +313,7 @@ export function CheckoutView() {
             {(methods.length > 0 ? methods : [{ code: "COD", name: "Cash on delivery", available: true, reason: null }]).map((m) => (
               <div key={m.code} className="flex items-start gap-3 rounded-control border border-line bg-card p-3 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary-soft has-[[data-disabled]]:opacity-60">
                 <RadioItem id={`co-pay-${m.code}`} value={m.code} disabled={!m.available} className="mt-0.5" />
-                <Label htmlFor={`co-pay-${m.code}`} className="min-w-0 flex-1 cursor-pointer font-normal">
+                <Label htmlFor={`co-pay-${m.code}`} className="min-h-11 min-w-0 flex-1 cursor-pointer font-normal">
                   <span className="flex items-center gap-2 font-semibold text-strong">
                     {m.code === "COD" ? <Banknote className="size-5 text-primary" aria-hidden /> : <FlaskConical className="size-5 text-primary" aria-hidden />}
                     {methodLabel(m.code)}
@@ -416,7 +416,7 @@ export function CheckoutView() {
                   <li key={p}>{problemText(p)}</li>
                 ))}
               </ul>
-              <Link href="/cart" className="mt-1 inline-flex min-h-11 items-center font-semibold text-primary underline-offset-4 hover:underline">
+              <Link href="/cart" className="mt-1 inline-flex min-h-11 items-center font-semibold text-strong underline underline-offset-4">
                 {t("review.backToCart")}
               </Link>
             </Alert>
@@ -430,7 +430,7 @@ export function CheckoutView() {
 
           <div className="flex min-h-11 items-start gap-3">
             <Checkbox id="co-terms" checked={terms} onCheckedChange={(v) => setTerms(v === true)} aria-invalid={!!errors.terms} className="mt-0.5" />
-            <Label htmlFor="co-terms" className="flex-1 cursor-pointer py-2.5 font-normal">
+            <Label htmlFor="co-terms" className="flex min-h-11 flex-1 cursor-pointer items-center font-normal">
               {t("terms")}
             </Label>
           </div>
