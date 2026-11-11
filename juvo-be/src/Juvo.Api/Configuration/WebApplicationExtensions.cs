@@ -52,6 +52,9 @@ internal static class WebApplicationExtensions
         app.MapUmsEndpoints();
         app.MapCatalogEndpoints();
         app.MapInventoryEndpoints();
+        app.MapStoreEndpoints();
+        app.MapMeEndpoints();
+        app.MapStoreAdminEndpoints();
 
         if (app.Services.GetRequiredService<IOptions<OpenApiSettings>>().Value.Enabled)
         {
@@ -76,6 +79,7 @@ internal static class WebApplicationExtensions
         var seeder = scope.ServiceProvider.GetRequiredService<IdentitySeeder>();
         await seeder.SeedAsync();
         await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Catalog.CatalogSeeder>().SeedAsync();
+        await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Geo.GeoSeeder>().SeedAsync();
         if (app.Configuration.GetValue<bool>("Seed:SampleCatalog"))
         {
             await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Catalog.SampleCatalogSeeder>().SeedAsync();

@@ -37,6 +37,7 @@ public sealed class RateLimitSettings
     public const string AuthPolicy = "auth";
     public const string OtpPolicy = "otp";
     public const string CheckoutPolicy = "checkout";
+    public const string StorefrontPolicy = "storefront";
 
     public bool Enabled { get; set; } = true;
 
@@ -51,6 +52,10 @@ public sealed class RateLimitSettings
 
     [Range(1, 1000)]
     public int CheckoutPerMinute { get; set; } = 20;
+
+    /// <summary>Anonymous shop traffic that changes or searches data (cart, quote, suggestions): per client address.</summary>
+    [Range(1, 10000)]
+    public int StorefrontPerMinute { get; set; } = 120;
 }
 
 /// <summary>Interactive API documentation. Section: <c>OpenApi</c>.</summary>

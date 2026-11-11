@@ -13,7 +13,7 @@ Last updated: 2026-11-10.
 | 4 | Front-end foundation, brand, login, token handling | **Done** (branch `feature/04-front-foundation`, merged to `main`) |
 | 5 | UMS user interface | **Done** (branch `feature/05-ums-ui`) |
 | 6 | Catalog, media, branch-wise inventory | **Done** (6-a to 6-e; branch `feature/06-catalog-inventory`, not yet merged to `main`) |
-| 7 | Storefront, cart, customer identity, address, delivery zones | Not started |
+| 7 | Storefront, cart, customer identity, address, delivery zones | In progress (7-a backend done; 7-b front end next) |
 | 8 | Checkout, orders, order processing | Not started |
 | 9 | Payments, tax/invoices, notifications | Not started |
 | 10 | Couriers, real-time status, returns | Not started |
@@ -105,6 +105,15 @@ Split (the step is too large for one session); each sub-step has its own gate an
 - Work was split between three parallel builders (products, categories/import, inventory) over a shared foundation; the lead merged and verified everything.
 
 **6-e gate (run and seen):** `npx tsc --noEmit` clean; `npm run lint` clean; `npm test` 39 passed; `npm run build` succeeds; `npm run test:e2e` (desktop, tablet, Android, iPhone): **237 passed, 3 skipped (desktop-only tests on other profiles), 1 failed** = a timing flake in the inventory spec (a strict row locator saw two ledger rows before the filter applied); fixed in the spec and the inventory spec re-run: 6 of 6 passed (the "4 did not run" of that run were its later tests). New real-browser flows: product create to publish (preview, validation, variants, stock, pictures, focal point, reorder, duplicate, view-only role), categories/brands/size charts, import check and import with a bad file, inventory adjust, transfer, reject/cancel, stock count, view-only role. UI checks at 360 / 768 / 1280 px on every new page: no sideways scroll, no tap target under 44 px, no axe violations, no console errors (all passed after fixes found by these checks: switch hit areas, a crowded filter row, a long button at 360 px, a stacked action column, a focusable scroll region in the shared table). Backend unchanged in this step (build 0 warnings; domain 94, application 23, integration 190 as in 6-d). Key screenshots: `juvo-front/docs/ui-checks/`.
+
+## Step 7 (in progress): storefront, cart, customer account, delivery
+
+| Sub-step | Scope | Status |
+| --- | --- | --- |
+| 7-a | Backend: public catalog and search, cart and coupons, customer account (profile, consent, addresses, wishlist), staff customer view, delivery zones and geography | **Done** (branch `feature/07-storefront-backend`) |
+| 7-b | Front end: storefront, cart, checkout address and map, customer account, admin screens for coupons, zones and customers | Not started |
+
+**7-a result:** public `/store/*` (categories, home, products with filters/sort/fuzzy search, facets, suggestions, product detail, geography, delivery quote, coupon check, cart with guest token and merge), customer `/me/*`, staff `/customers`, `/promotions/coupons`, `/delivery/*`. Migration `StorefrontCartCustomersDelivery`. Geography from `nuhil/bangladesh-geocode` (MIT): 8 divisions, 64 districts, 494 upazilas. The seeded delivery zones and rates are **placeholders** the owner must replace. Contract: `docs/storefront-api.md`; decisions: `docs/assumptions.md` section K.
 
 ## How to run now
 

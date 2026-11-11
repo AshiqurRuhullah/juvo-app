@@ -98,4 +98,46 @@ public static class ErrorCodes
         public const string CountState = "INVENTORY.COUNT_STATE";
         public const string VariantHasStock = "INVENTORY.VARIANT_HAS_STOCK";
     }
+
+    public static class Cart
+    {
+        public const string NotFound = "CART.NOT_FOUND";
+        public const string ItemNotFound = "CART.ITEM_NOT_FOUND";
+        public const string VariantUnavailable = "CART.VARIANT_UNAVAILABLE";
+        public const string StockInsufficient = "CART.STOCK_INSUFFICIENT";
+        public const string TooManyLines = "CART.TOO_MANY_LINES";
+        public const string Empty = "CART.EMPTY";
+    }
+
+    public static class Coupon
+    {
+        public const string NotFound = "COUPON.NOT_FOUND";
+        public const string Inactive = "COUPON.INACTIVE";
+        public const string NotStarted = "COUPON.NOT_STARTED";
+        public const string Expired = "COUPON.EXPIRED";
+        public const string UsedUp = "COUPON.USED_UP";
+        public const string BelowMinimum = "COUPON.BELOW_MINIMUM";
+        public const string CodeTaken = "COUPON.CODE_TAKEN";
+    }
+
+    public static class Customer
+    {
+        public const string NotFound = "CUSTOMER.NOT_FOUND";
+        public const string AddressNotFound = "CUSTOMER.ADDRESS_NOT_FOUND";
+        public const string WishlistFull = "CUSTOMER.WISHLIST_FULL";
+        public const string WishlistItemNotFound = "CUSTOMER.WISHLIST_ITEM_NOT_FOUND";
+    }
+
+    public static class Delivery
+    {
+        public const string ZoneNotFound = "DELIVERY.ZONE_NOT_FOUND";
+        public const string ZoneCodeTaken = "DELIVERY.ZONE_CODE_TAKEN";
+        public const string NotDeliverable = "DELIVERY.NOT_DELIVERABLE";
+        public const string Overweight = "DELIVERY.OVERWEIGHT";
+        public const string CountryNotFound = "DELIVERY.COUNTRY_NOT_FOUND";
+        public const string CountryDisabled = "DELIVERY.COUNTRY_DISABLED";
+        public const string CountryCodeTaken = "DELIVERY.COUNTRY_CODE_TAKEN";
+        public const string AreaNotFound = "DELIVERY.AREA_NOT_FOUND";
+        public const string UpazilaTaken = "DELIVERY.UPAZILA_TAKEN";
+    }
 }

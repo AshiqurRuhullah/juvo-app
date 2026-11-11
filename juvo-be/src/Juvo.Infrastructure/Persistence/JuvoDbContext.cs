@@ -1,4 +1,6 @@
 using Juvo.Application.Abstractions;
+using Juvo.Domain.Carts;
+using Juvo.Domain.Delivery;
 using Juvo.Domain.Branches;
 using Juvo.Domain.Catalog;
 using Juvo.Domain.Customers;
@@ -67,6 +69,26 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
     public DbSet<StockTransfer> StockTransfers => Set<StockTransfer>();
 
     public DbSet<StockCount> StockCounts => Set<StockCount>();
+
+    public DbSet<Country> Countries => Set<Country>();
+
+    public DbSet<Division> Divisions => Set<Division>();
+
+    public DbSet<District> Districts => Set<District>();
+
+    public DbSet<Upazila> Upazilas => Set<Upazila>();
+
+    public DbSet<DeliveryZone> DeliveryZones => Set<DeliveryZone>();
+
+    public DbSet<Address> Addresses => Set<Address>();
+
+    public DbSet<WishlistItem> WishlistItems => Set<WishlistItem>();
+
+    public DbSet<ConsentLog> ConsentLogs => Set<ConsentLog>();
+
+    public DbSet<Cart> Carts => Set<Cart>();
+
+    public DbSet<Coupon> Coupons => Set<Coupon>();
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
