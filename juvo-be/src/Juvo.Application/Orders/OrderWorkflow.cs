@@ -199,7 +199,7 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
         OrderStatus.ReturnInProgress, OrderStatus.Returned,
     ];
 
-    public async Task<Result> AdvanceAsync(Order order, OrderStatus to, string? reason, Who who, CancellationToken cancellationToken)
+    public async Task<Result> AdvanceAsync(Order order, OrderStatus to, string? reason, Who who, CancellationToken cancellationToken, DateTimeOffset? at = null)
     {
         if (!DeliverySteps.Contains(to) || !OrderStateMachine.CanMove(order.Status, to))
         {
@@ -220,7 +220,7 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
             await GiveStockBackAsync(order, cancellationToken);
         }
 
-        order.TransitionTo(to, clock.GetUtcNow(), who.Id, who.Name, reason);
+        order.TransitionTo(to, at ?? clock.GetUtcNow(), who.Id, who.Name, reason);
         return Result.Success();
     }
 

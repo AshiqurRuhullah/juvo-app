@@ -154,4 +154,7 @@ public interface IApplicationDbContext
     /// serialise work that must happen once and in order, such as issuing the invoice of an order or taking the next document number. Needs a running transaction.
     /// </summary>
     Task AcquireTransactionLockAsync(string name, CancellationToken cancellationToken = default);
+
+    /// <summary>Stops tracking everything that was added but not saved. For the path where a save failed on a unique index and the caller must carry on with the context (for example to cancel an external booking).</summary>
+    void DiscardUnsavedAdditions();
 }

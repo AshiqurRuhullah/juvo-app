@@ -145,6 +145,7 @@ public sealed class ShipmentBooking(
         }
         catch (DbUpdateException)
         {
+            db.DiscardUnsavedAdditions(); // the failed save left the new parcel tracked; drop it so the courier call below can save
             await TryCancelAtCourierAsync(provider, consignment.ConsignmentId, cancellationToken);
             return Error.Conflict(ErrorCodes.Shipment.AlreadyBooked, "This order was booked with a courier at the same moment. The extra booking was cancelled.");
         }

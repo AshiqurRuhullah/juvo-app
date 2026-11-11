@@ -43,7 +43,7 @@ public sealed class ShipmentSync(IApplicationDbContext db, IUnitOfWork uow, Orde
             return new SyncOutcome(SyncKind.Duplicate, shipment.Status);
         }
 
-        var who = new Who(null, actorName ?? shipment.CourierName);
+        var who = new Who(null, shipment.CourierName); // the order history names the courier, whoever relayed its report
         var at = report.OccurredAt;
 
         if (report.Mapped is not { } target)
@@ -70,14 +70,15 @@ public sealed class ShipmentSync(IApplicationDbContext db, IUnitOfWork uow, Orde
             var step = path[i];
             var last = i == path.Count - 1;
             var description = last ? report.Note : $"Passed through {step} (the courier skipped this scan).";
-            shipment.MoveTo(step, last ? report.RawStatus : "inferred", last ? report.EventId : Inferred(report.EventId, step), description, last ? report.Location : null, at, source, actorName);
-            await FollowAsync(shipment, step, last ? report : null, who, at, cancellationToken);
+            var stepAt = at.AddMilliseconds(i - (path.Count - 1)); // steps the courier skipped come just before the reported one, so the timeline keeps its order
+            shipment.MoveTo(step, last ? report.RawStatus : "inferred", last ? report.EventId : Inferred(report.EventId, step), description, last ? report.Location : null, stepAt, source, actorName);
+            await FollowAsync(shipment, step, last ? report : null, who, stepAt, clock.GetUtcNow().AddMilliseconds(i), cancellationToken);
         }
 
         return new SyncOutcome(SyncKind.Applied, shipment.Status);
     }
 
-    private async Task FollowAsync(Shipment shipment, ShipmentStatus step, CourierEvent? report, Who who, DateTimeOffset at, CancellationToken cancellationToken)
+    private async Task FollowAsync(Shipment shipment, ShipmentStatus step, CourierEvent? report, Who who, DateTimeOffset at, DateTimeOffset recordedAt, CancellationToken cancellationToken)
     {
         if (step == ShipmentStatus.Delivered && shipment.Kind == ShipmentKind.Forward && shipment.CodAmount > 0)
         {
@@ -85,7 +86,7 @@ public sealed class ShipmentSync(IApplicationDbContext db, IUnitOfWork uow, Orde
         }
 
         string? problem = shipment.Kind == ShipmentKind.Forward
-            ? await FollowOrderAsync(shipment, step, report?.Note, who, cancellationToken)
+            ? await FollowOrderAsync(shipment, step, report?.Note, who, recordedAt, cancellationToken)
             : await FollowReturnAsync(shipment, step, who, cancellationToken);
         if (problem is not null)
         {
@@ -93,7 +94,7 @@ public sealed class ShipmentSync(IApplicationDbContext db, IUnitOfWork uow, Orde
         }
     }
 
-    private async Task<string?> FollowOrderAsync(Shipment shipment, ShipmentStatus step, string? reason, Who who, CancellationToken cancellationToken)
+    private async Task<string?> FollowOrderAsync(Shipment shipment, ShipmentStatus step, string? reason, Who who, DateTimeOffset recordedAt, CancellationToken cancellationToken)
     {
         if (ShipmentStateMachine.OrderStatusFor(step) is not { } target)
         {
@@ -116,7 +117,7 @@ public sealed class ShipmentSync(IApplicationDbContext db, IUnitOfWork uow, Orde
             return $"The order is {order.Status} and was not moved to {target}.";
         }
 
-        var moved = await workflow.AdvanceAsync(order, target, string.IsNullOrWhiteSpace(reason) ? $"{shipment.CourierName}: {step}" : reason.Trim(), who, cancellationToken);
+        var moved = await workflow.AdvanceAsync(order, target, string.IsNullOrWhiteSpace(reason) ? $"{shipment.CourierName}: {step}" : reason.Trim(), who, cancellationToken, recordedAt);
         if (moved.IsFailure)
         {
             return $"The order was not moved to {target}: {moved.Error!.Message}";

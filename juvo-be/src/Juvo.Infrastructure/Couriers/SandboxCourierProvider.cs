@@ -75,11 +75,27 @@ internal sealed class SandboxCourierProvider(JuvoDbContext db, IOptions<SandboxC
 
     public async Task<Result<CourierBooking>> BookAsync(CourierBookingRequest request, CancellationToken cancellationToken)
     {
-        var count = await db.SandboxConsignments.CountAsync(c => c.Reference == request.Reference, cancellationToken);
-        var consignment = ConsignmentFor(request.Reference, count + 1);
-        db.SandboxConsignments.Add(new SandboxConsignment(consignment, request.Reference, request.CodAmount, request.IsReturn, clock.GetUtcNow()));
-        await db.SaveChangesAsync(cancellationToken);
-        return new CourierBooking(consignment, consignment, options.Value.TrackingUrlTemplate.Replace("{consignment}", Uri.EscapeDataString(consignment), StringComparison.Ordinal), null);
+        // The id is the order's hash plus a running count. Two simultaneous bookings of one order both read the same count; the unique index lets one win and the other takes the next number.
+        for (var attempt = 0; attempt < 8; attempt++)
+        {
+            var count = await db.SandboxConsignments.CountAsync(c => c.Reference == request.Reference, cancellationToken);
+            var consignment = ConsignmentFor(request.Reference, count + 1);
+            var row = new SandboxConsignment(consignment, request.Reference, request.CodAmount, request.IsReturn, clock.GetUtcNow());
+            db.SandboxConsignments.Add(row);
+            try
+            {
+                await db.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException) when (attempt < 7)
+            {
+                db.Entry(row).State = EntityState.Detached;
+                continue;
+            }
+
+            return new CourierBooking(consignment, consignment, options.Value.TrackingUrlTemplate.Replace("{consignment}", Uri.EscapeDataString(consignment), StringComparison.Ordinal), null);
+        }
+
+        return Error.Failure(ErrorCodes.Courier.ProviderError, "The sandbox courier could not make a consignment number. Try again.");
     }
 
     public async Task<Result> CancelAsync(string consignmentId, CancellationToken cancellationToken)

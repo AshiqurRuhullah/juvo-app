@@ -163,6 +163,14 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
 
     public DbSet<JobLog> JobLogs => Set<JobLog>();
 
+    public void DiscardUnsavedAdditions()
+    {
+        foreach (var entry in ChangeTracker.Entries().Where(e => e.State == EntityState.Added).ToList())
+        {
+            entry.State = EntityState.Detached;
+        }
+    }
+
     public async Task AcquireTransactionLockAsync(string name, CancellationToken cancellationToken = default)
     {
         if (Database.CurrentTransaction is null)
