@@ -334,6 +334,22 @@ public sealed class Order : AggregateRoot, IBranchScoped
         }
     }
 
+    /// <summary>
+    /// Module L compensation: an order moved to ReturnInProgress for a return that ended without taking every item back (cancelled, rejected or only part of the
+    /// order returned) goes back to Delivered. Not a normal transition, so it is not in the state machine; it is written to the history like any other.
+    /// </summary>
+    public void ReopenAsDelivered(DateTimeOffset now, Guid? by, string? byName, string? reason)
+    {
+        if (Status != OrderStatus.ReturnInProgress)
+        {
+            throw new InvalidOperationException("Only an order with a return in progress can go back to Delivered.");
+        }
+
+        Status = OrderStatus.Delivered;
+        _history.Add(new OrderStatusHistory(Id, OrderTrack.Order, OrderStatus.ReturnInProgress.ToString(), OrderStatus.Delivered.ToString(), reason, by, byName, now));
+        Raise(new OrderStatusChanged(now, Id, Number, BranchId, CustomerId, CustomerMobile, OrderTrack.Order, OrderStatus.ReturnInProgress.ToString(), OrderStatus.Delivered.ToString(), reason));
+    }
+
     public void TransitionPaymentTo(PaymentStatus to, DateTimeOffset now, Guid? by, string? byName, string? reason)
     {
         if (!OrderStateMachine.CanMove(PaymentStatus, to))

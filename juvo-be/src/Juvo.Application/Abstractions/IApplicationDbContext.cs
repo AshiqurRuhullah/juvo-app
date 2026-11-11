@@ -8,6 +8,7 @@ using Juvo.Domain.Identity;
 using Juvo.Domain.Notifications;
 using Juvo.Domain.Orders;
 using Juvo.Domain.Platform;
+using Juvo.Domain.Returns;
 using Microsoft.EntityFrameworkCore;
 
 namespace Juvo.Application.Abstractions;
@@ -96,6 +97,20 @@ public interface IApplicationDbContext
     DbSet<BlacklistEntry> BlacklistEntries { get; }
 
     DbSet<PlatformSetting> PlatformSettings { get; }
+
+    DbSet<ReturnRequest> ReturnRequests { get; }
+
+    DbSet<ReturnItem> ReturnItems { get; }
+
+    DbSet<ReturnStatusHistory> ReturnStatusHistory { get; }
+
+    DbSet<ReturnNote> ReturnNotes { get; }
+
+    DbSet<ReturnPhoto> ReturnPhotos { get; }
+
+    DbSet<ReturnRefund> ReturnRefunds { get; }
+
+    DbSet<ReturnSequence> ReturnSequences { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

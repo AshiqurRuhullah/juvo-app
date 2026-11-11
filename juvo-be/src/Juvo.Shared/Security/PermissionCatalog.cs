@@ -56,7 +56,7 @@ public static class PermissionCatalog
         // ---- Orders, social desk, returns (modules D, J, L, S) ----
         Add("orders", "order", "view create edit confirm pack cancel reassign-branch export note bulk-action print apply-discount override-delivery");
         Add("orders", "source", "view");
-        Add("returns", "return", "view approve reject receive refund exchange");
+        Add("returns", "return", "view approve reject manage receive inspect refund exchange");
 
         // ---- Customers, fraud, support (modules E, F, T, Y) ----
         Add("customers", "customer", "view edit block export view-pii");

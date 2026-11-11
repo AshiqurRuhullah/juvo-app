@@ -26,12 +26,12 @@ public static class OrderStateMachine
         [PaymentStatus.UnderReview] = [PaymentStatus.Paid, PaymentStatus.Rejected],
         [PaymentStatus.Paid] = [PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded],
         [PaymentStatus.PartiallyRefunded] = [PaymentStatus.Refunded],
-        [PaymentStatus.CollectedByCourier] = [PaymentStatus.Settled],
+        [PaymentStatus.CollectedByCourier] = [PaymentStatus.Settled, PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded],
         [PaymentStatus.Failed] = [PaymentStatus.Pending, PaymentStatus.Cancelled],
         [PaymentStatus.Cancelled] = [],
         [PaymentStatus.Rejected] = [],
         [PaymentStatus.Refunded] = [],
-        [PaymentStatus.Settled] = [],
+        [PaymentStatus.Settled] = [PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded],
     };
 
     public static IReadOnlyList<OrderStatus> NextFor(OrderStatus from) => Order[from];

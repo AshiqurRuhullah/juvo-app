@@ -8,6 +8,7 @@ using Juvo.Domain.Inventory;
 using Juvo.Domain.Identity;
 using Juvo.Domain.Notifications;
 using Juvo.Domain.Orders;
+using Juvo.Domain.Returns;
 using Juvo.Domain.Platform;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -108,6 +109,20 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
     public DbSet<BlacklistEntry> BlacklistEntries => Set<BlacklistEntry>();
 
     public DbSet<PlatformSetting> PlatformSettings => Set<PlatformSetting>();
+
+    public DbSet<ReturnRequest> ReturnRequests => Set<ReturnRequest>();
+
+    public DbSet<ReturnItem> ReturnItems => Set<ReturnItem>();
+
+    public DbSet<ReturnStatusHistory> ReturnStatusHistory => Set<ReturnStatusHistory>();
+
+    public DbSet<ReturnNote> ReturnNotes => Set<ReturnNote>();
+
+    public DbSet<ReturnPhoto> ReturnPhotos => Set<ReturnPhoto>();
+
+    public DbSet<ReturnRefund> ReturnRefunds => Set<ReturnRefund>();
+
+    public DbSet<ReturnSequence> ReturnSequences => Set<ReturnSequence>();
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
