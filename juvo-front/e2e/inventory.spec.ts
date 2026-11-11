@@ -38,6 +38,8 @@ async function seedVariant(request: APIRequestContext, label: string, stock: { b
 async function pick(page: Page, trigger: Locator, option: string | RegExp) {
   await trigger.click();
   await page.getByRole("option", { name: option }).first().click();
+  // Wait until the list has closed: a second dropdown opened while this one still fades out would offer the same options twice.
+  await expect(page.getByRole("option")).toHaveCount(0);
 }
 
 /** The row of one SKU in one branch of the stock table. */

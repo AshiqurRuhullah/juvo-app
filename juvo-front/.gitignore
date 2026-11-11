@@ -76,3 +76,10 @@ test-results/
 !/docs/ui-checks/nav-tree-1280.png
 !/docs/ui-checks/nav-rail-flyout-820.png
 !/docs/ui-checks/nav-drawer-360.png
+!/docs/ui-checks/cart-1280.png
+!/docs/ui-checks/cart-360.png
+!/docs/ui-checks/account-addresses-360.png
+!/docs/ui-checks/store-home-1280.png
+!/docs/ui-checks/store-home-360.png
+!/docs/ui-checks/store-product-1280.png
+!/docs/ui-checks/store-product-360.png
