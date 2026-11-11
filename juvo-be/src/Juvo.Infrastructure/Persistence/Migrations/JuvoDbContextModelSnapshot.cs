@@ -2738,6 +2738,10 @@ namespace Juvo.Infrastructure.Persistence.Migrations
                     b.Property<int>("Source")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("StandardDeliveryCharge")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
