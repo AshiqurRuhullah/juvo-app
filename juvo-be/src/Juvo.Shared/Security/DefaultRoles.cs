@@ -60,7 +60,7 @@ public static class DefaultRoles
 
         new(Accountant, "Views money data and runs finance reports.", false,
         [
-            "payments.payment.*", "payments.refund.*", "payments.ledger.*", "tax.*", "accounting.*", "reports.finance.*",
+            "payments.payment.view", "payments.payment.verify", "payments.refund.view", "payments.ledger.*", "tax.*", "accounting.*", "reports.finance.*",
             "orders.order.view", "returns.return.view", "returns.return.refund", "couriers.cod.*", "customers.customer.view", "purchasing.payable.*", "catalog.product.view",
             "catalog.product.view-cost",
         ],
