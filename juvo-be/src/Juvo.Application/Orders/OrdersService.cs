@@ -353,7 +353,9 @@ public sealed class OrdersService(
             return Error.Unauthorized();
         }
 
-        var branchId = request.BranchId ?? currentUser.BranchId;
+        // The branch of the request, else the one the staff member works in, else the default branch (a head-office user with "All branches").
+        var branchId = request.BranchId ?? currentUser.BranchId
+                       ?? await db.Branches.AsNoTracking().Where(b => b.IsDefault && b.IsActive).Select(b => (Guid?)b.Id).FirstOrDefaultAsync(cancellationToken);
         if (branchId is not { } targetBranch)
         {
             return Invalid("branchId", "Choose the branch that takes this order.");

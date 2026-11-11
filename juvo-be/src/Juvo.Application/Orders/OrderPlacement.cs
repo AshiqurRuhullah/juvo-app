@@ -165,7 +165,8 @@ public sealed class OrderPlacement(
             return Error.Conflict(ErrorCodes.Order.CodNotAvailable, "Cash on delivery is only available inside Bangladesh.");
         }
 
-        var advance = method == Cod && grand > config.CodAdvanceThreshold ? Math.Min(deliveryCharge, grand) : 0m; // BR-D1
+        var standardCharge = quote.Value.Total + quote.Value.FreeDeliveryWaiver; // what the courier costs, even when the customer got free delivery
+        var advance = method == Cod && grand > config.CodAdvanceThreshold ? Math.Min(standardCharge, grand) : 0m; // BR-D1
 
         // 6. Customer (read only here), blacklist and fraud rules.
         var customer = i.SignedInCustomerId is { } signedIn
@@ -273,7 +274,7 @@ public sealed class OrderPlacement(
 
                 var data = new NewOrder(
                     number, reservedIn, i.Source, owner.Id, owner.Mobile, i.Name ?? owner.FullName, i.Email ?? owner.Email, method, rule, quote.Value.ZoneCode, "BDT", subtotal, couponDiscount, coupon?.Code,
-                    coupon?.Id, i.ManualDiscount, deliveryCharge, advance, weight, i.Shipping, method == Cod ? null : now.AddMinutes(config.PaymentHoldMinutes), i.IdempotencyKey?.Trim(), fingerprint,
+                    coupon?.Id, i.ManualDiscount, deliveryCharge, standardCharge, advance, weight, i.Shipping, method == Cod ? null : now.AddMinutes(config.PaymentHoldMinutes), i.IdempotencyKey?.Trim(), fingerprint,
                     Hash(token), i.DeviceId, i.Ip, otpVerified, i.IsStaff ? null : now, i.IsStaff ? i.Who.Id : null, i.Who.Name);
                 var items = priced.Select(p => new NewOrderItem(
                     p.Variant.Id, p.Product.Id, p.Product.NameEn, p.Product.NameBn, p.Variant.Sku, p.Variant.ColorName, p.Variant.Size, p.ImagePath, p.UnitPrice, p.Quantity,
@@ -291,7 +292,7 @@ public sealed class OrderPlacement(
 
                 if (verdict.Findings.Count > 0)
                 {
-                    placed.RecordRisk(verdict.Findings, now, deliveryCharge);
+                    placed.RecordRisk(verdict.Findings, now, standardCharge);
                 }
 
                 db.Orders.Add(placed);

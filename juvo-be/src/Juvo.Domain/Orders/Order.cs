@@ -15,7 +15,7 @@ public sealed record OrderFlagged(DateTimeOffset At, Guid OrderId, string Number
 /// <summary>Everything the order needs when it is placed. The service validates it first; the aggregate only stores it.</summary>
 public sealed record NewOrder(
     string Number, Guid BranchId, OrderSource Source, Guid CustomerId, string CustomerMobile, string? CustomerName, string? CustomerEmail, string PaymentMethod,
-    string RoutingRule, string? ZoneCode, string Currency, decimal Subtotal, decimal CouponDiscount, string? CouponCode, Guid? CouponId, decimal ManualDiscount, decimal DeliveryCharge,
+    string RoutingRule, string? ZoneCode, string Currency, decimal Subtotal, decimal CouponDiscount, string? CouponCode, Guid? CouponId, decimal ManualDiscount, decimal DeliveryCharge, decimal StandardDeliveryCharge,
     decimal AdvanceRequired, int WeightGrams, ShippingSnapshot Shipping, DateTimeOffset? PaymentHoldExpiresAt, string? IdempotencyKey, string Fingerprint, string TrackingTokenHash,
     string? DeviceId, string? ClientIp, bool OtpVerified, DateTimeOffset? TermsAcceptedAt, Guid? CreatedByStaffId, string? CreatedByName);
 
@@ -125,6 +125,12 @@ public sealed class Order : AggregateRoot, IBranchScoped
 
     public decimal DeliveryCharge { get; private set; }
 
+    /// <summary>
+    /// What the delivery costs before any free-delivery waiver. The advance asked for a large cash on delivery order, or by a fraud decision, is this amount,
+    /// so it is not zero when the customer got free delivery.
+    /// </summary>
+    public decimal StandardDeliveryCharge { get; private set; }
+
     public decimal GrandTotal { get; private set; }
 
     /// <summary>The part the customer must pay before the order is processed (BR-D1: COD above the threshold needs the delivery charge). Zero when none.</summary>
@@ -225,6 +231,7 @@ public sealed class Order : AggregateRoot, IBranchScoped
             CouponId = data.CouponId,
             ManualDiscount = data.ManualDiscount,
             DeliveryCharge = data.DeliveryCharge,
+            StandardDeliveryCharge = data.StandardDeliveryCharge,
             GrandTotal = data.Subtotal - data.CouponDiscount - data.ManualDiscount + data.DeliveryCharge,
             AdvanceRequired = data.AdvanceRequired,
             WeightGrams = data.WeightGrams,

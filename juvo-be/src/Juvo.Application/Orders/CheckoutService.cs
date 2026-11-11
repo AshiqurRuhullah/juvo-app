@@ -178,7 +178,8 @@ public sealed class CheckoutService(
         var method = string.IsNullOrWhiteSpace(request.PaymentMethod) ? OrderPlacement.Cod : request.PaymentMethod.Trim().ToUpperInvariant();
         var charge = deliveryQuote?.Total ?? 0m;
         var grand = view.Total + charge;
-        var advance = method == OrderPlacement.Cod && deliveryQuote is not null && grand > config.CodAdvanceThreshold ? Math.Min(charge, grand) : 0m;
+        var standardCharge = deliveryQuote is null ? 0m : deliveryQuote.Total + deliveryQuote.FreeDeliveryWaiver;
+        var advance = method == OrderPlacement.Cod && deliveryQuote is not null && grand > config.CodAdvanceThreshold ? Math.Min(standardCharge, grand) : 0m;
         var payNow = method == OrderPlacement.Cod ? advance : grand;
 
         var verified = SignedInCustomerId is { } id && await db.Customers.AsNoTracking().AnyAsync(c => c.Id == id && c.MobileVerified, cancellationToken);

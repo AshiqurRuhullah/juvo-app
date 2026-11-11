@@ -418,7 +418,7 @@ public sealed class FraudService(IApplicationDbContext db, SettingsService setti
 
         if (request.Action == FraudAction.RequestAdvance)
         {
-            order.RequireAdvance(order.DeliveryCharge);
+            order.RequireAdvance(order.StandardDeliveryCharge);
         }
 
         if (request.Action == FraudAction.Reject)
