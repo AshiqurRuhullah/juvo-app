@@ -13,6 +13,7 @@ import type { CheckoutResult } from "./api";
 import { ORDER_STORAGE_PREFIX } from "./checkout-view";
 import { AmountList, useMethodLabel } from "./common";
 import { trackingLink } from "./status";
+import { LivePaymentPanel } from "@/modules/payments/customer-panels";
 
 const subscribe = () => () => undefined;
 
@@ -97,6 +98,8 @@ export function ConfirmationView({ number }: { number: string }) {
           ) : null}
         </Card>
       ) : null}
+
+      {result && online ? <LivePaymentPanel number={number} /> : null}
 
       {link ? (
         <Card className="space-y-3 p-4 sm:p-5" data-testid="tracking-box">

@@ -10,7 +10,8 @@ import { Alert, Card, Skeleton } from "@/components/ui/surfaces";
 import { useDateTime } from "@/components/data/list-kit";
 import { ApiError } from "@/lib/api/client";
 import { toNumber, useMoney } from "@/modules/catalog/format";
-import { signInUrl } from "@/modules/store/store-session";
+import { signInUrl, useStoreSession } from "@/modules/store/store-session";
+import { GuestInvoicePanel, PaymentPanel } from "@/modules/payments/customer-panels";
 import { useOrderErrorText, useTracking, type TrackQuery } from "./api";
 import { OrderLines, ProgressLine, Section, TrackBadges, TrackHistory } from "./common";
 import { cleanMobile, isBdMobile } from "./status";
@@ -24,6 +25,7 @@ export function TrackView({ initialToken, initialNumber, initialMobile }: { init
   const money = useMoney();
   const dateTime = useDateTime();
   const errorText = useOrderErrorText();
+  const { customer } = useStoreSession();
   const [number, setNumber] = React.useState(initialNumber ?? "");
   const [mobile, setMobile] = React.useState(initialMobile ?? "");
   const [errors, setErrors] = React.useState<{ number?: string; mobile?: string }>({});
@@ -82,7 +84,9 @@ export function TrackView({ initialToken, initialNumber, initialMobile }: { init
             </div>
             <TrackBadges status={data.status} paymentStatus={data.paymentStatus} deliveryStatus={data.deliveryStatus} />
             {data.district ? <p className="text-sm text-muted">{t("deliveringTo", { district: data.district })}</p> : null}
+            {initialToken || customer ? <PaymentPanel number={data.number} method={data.paymentMethod} paymentStatus={data.paymentStatus} orderStatus={data.status} token={initialToken} /> : null}
           </Card>
+          {initialToken ? <GuestInvoicePanel number={data.number} token={initialToken} id="track-invoice" /> : null}
 
           <div className="grid gap-5 lg:grid-cols-2">
             <Section title={t("progress")} id="track-progress">

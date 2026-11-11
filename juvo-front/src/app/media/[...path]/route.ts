@@ -7,7 +7,7 @@ import { backendFetch } from "@/lib/server/backend";
  * request time, so the API address can differ between environments without a rebuild.
  */
 const SAFE_PATH = /^[a-z0-9][a-z0-9/_.-]*$/i;
-const TYPES: Record<string, string> = { webp: "image/webp", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg" };
+const TYPES: Record<string, string> = { webp: "image/webp", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", pdf: "application/pdf" };
 
 export async function GET(_request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const { path } = await context.params;

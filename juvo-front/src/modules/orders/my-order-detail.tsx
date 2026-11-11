@@ -13,6 +13,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { useDateTime } from "@/components/data/list-kit";
 import { ApiError } from "@/lib/api/client";
 import { useCancelMyOrder, useMyOrder, useOrderErrorText, type MyOrder } from "./api";
+import { MyInvoicePanel, PaymentHistory, PaymentPanel } from "@/modules/payments/customer-panels";
 import { AmountList, OrderLines, ProgressLine, Section, TrackBadges, TrackHistory, useMethodLabel } from "./common";
 
 /** The shipping address in a few readable lines. */
@@ -101,14 +102,19 @@ export function MyOrderDetail({ id }: { id: string }) {
               {t("deadline", { time: dateTime(order.paymentDeadline) })}
             </Alert>
           ) : null}
+          <div className="mt-4">
+            <PaymentPanel number={order.number} method={order.paymentMethod} paymentStatus={order.paymentStatus} orderStatus={order.status} />
+          </div>
         </Section>
+
+        <MyInvoicePanel orderId={order.id} id="mo-invoice" />
 
         <div className="grid gap-5 lg:grid-cols-2">
           <Section title={t("progress")} id="mo-progress">
             <ProgressLine status={order.status} timeline={order.timeline} />
           </Section>
           <Section title={t("history")} id="mo-history" className="space-y-4">
-            {(["Order", "Payment", "Delivery"] as const).map((track) => (
+            {(["Order", "Delivery"] as const).map((track) => (
               <div key={track} className="space-y-2">
                 <h3 className="text-sm font-semibold text-strong">{t(`track.${track}`)}</h3>
                 <TrackHistory timeline={order.timeline} track={track} />
@@ -143,6 +149,8 @@ export function MyOrderDetail({ id }: { id: string }) {
             </Section>
           </div>
         </div>
+
+        <PaymentHistory timeline={order.timeline} id="mo-payments" />
 
         {order.notes.length > 0 ? (
           <Section title={t("notes")} id="mo-notes">
