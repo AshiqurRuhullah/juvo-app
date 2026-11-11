@@ -197,9 +197,9 @@ export function CartView() {
             </div>
           </dl>
           <div className="space-y-2">
-            <Button size="lg" className="w-full" disabled aria-describedby="checkout-note" data-testid="checkout-button">
+            <Link href="/checkout" className={cn(buttonVariants({ size: "lg" }), "w-full")} data-testid="checkout-button">
               <Lock aria-hidden /> {t("checkout.button")}
-            </Button>
+            </Link>
             <p id="checkout-note" className="text-center text-sm text-muted" data-testid="checkout-note">
               {t("checkout.note")}
             </p>
@@ -223,9 +223,9 @@ export function CartView() {
           <p className="text-xs text-muted">{t("summary.total")}</p>
           <p className="text-lg font-semibold text-strong">{money(total)}</p>
         </div>
-        <Button disabled size="lg">
+        <Link href="/checkout" className={buttonVariants({ size: "lg" })} data-testid="checkout-button-bar">
           <Lock aria-hidden /> {t("checkout.button")}
-        </Button>
+        </Link>
       </div>
     </div>
   );

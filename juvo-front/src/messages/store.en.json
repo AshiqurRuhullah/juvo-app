@@ -12,9 +12,10 @@
     "myAccount": "My account",
     "signIn": "Sign in",
     "wishlist": "Wishlist",
+    "trackOrder": "Track my order",
     "search": "Search"
   },
-  "footer": { "shop": "Shop", "allProducts": "All products", "cart": "Your cart" },
+  "footer": { "shop": "Shop", "allProducts": "All products", "cart": "Your cart", "trackOrder": "Track an order" },
   "search": {
     "label": "Search products",
     "placeholder": "Search dresses, shoes, purses…",

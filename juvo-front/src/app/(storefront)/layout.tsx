@@ -80,6 +80,11 @@ export default async function StorefrontLayout({ children }: { children: React.R
                     {s("cart")}
                   </Link>
                 </li>
+                <li>
+                  <Link className={footerLink} href="/track">
+                    {s("trackOrder")}
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>

@@ -31,7 +31,7 @@
   },
   "checkout": {
     "button": "Checkout",
-    "note": "Checkout opens with the next update."
+    "note": "You can review everything before you place the order."
   },
   "trust": {
     "cod": "Cash on delivery inside Bangladesh",
