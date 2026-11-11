@@ -43,7 +43,7 @@ async function handle(request: NextRequest, context: Context) {
   const isCheckout = target === "/api/v1/store/checkout" || target.startsWith("/api/v1/store/checkout/");
   const cartToken = isCart || isCheckout ? request.cookies.get(COOKIES.cart)?.value : undefined;
   // Makes a retried checkout safe: the same key returns the same order.
-  const idempotencyKey = isCheckout ? request.headers.get("idempotency-key")?.slice(0, 80) || undefined : undefined;
+  const idempotencyKey = isCheckout || target === "/api/v1/me/returns" ? request.headers.get("idempotency-key")?.slice(0, 80) || undefined : undefined;
 
   const contentType = request.headers.get("content-type") ?? undefined;
   const hasBody = !["GET", "HEAD"].includes(request.method);
