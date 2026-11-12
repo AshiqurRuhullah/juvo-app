@@ -46,7 +46,8 @@ export function useSourceLabel() {
 
 export function useMethodLabel() {
   const t = useTranslations("orders.method");
-  return (method: string) => (t.has(method) ? t(method) : method);
+  const pay = useTranslations("payments.method");
+  return (method: string) => (t.has(method) ? t(method) : pay.has(method) ? pay(method) : method);
 }
 
 /** The reasons an order was flagged, one chip each with the rule's own message. */

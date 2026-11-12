@@ -16,7 +16,7 @@ export async function dhakaDistrictId(request: APIRequestContext): Promise<strin
  * Places an order through the BFF exactly like the shop does (cart, sandbox code for a guest, checkout), without drawing any page.
  * A signed-in request context (customer cookies) needs no code. Use a fresh request context for every guest.
  */
-type CheckoutOptions = { lines: { variantId: string; quantity: number }[]; mobile?: string; method?: "COD" | "SANDBOX"; signedIn?: boolean; confirmDuplicate?: boolean };
+type CheckoutOptions = { lines: { variantId: string; quantity: number }[]; mobile?: string; method?: "COD" | "SANDBOX" | "MANUAL"; signedIn?: boolean; confirmDuplicate?: boolean };
 
 export async function apiCheckout(request: APIRequestContext, options: CheckoutOptions): Promise<Placed> {
   const mobile = options.mobile ?? newMobile();

@@ -15,7 +15,7 @@ Last updated: 2026-11-10.
 | 6 | Catalog, media, branch-wise inventory | **Done** (6-a to 6-e; branch `feature/06-catalog-inventory`, not yet merged to `main`) |
 | 7 | Storefront, cart, customer identity, address, delivery zones | **Done** (7-a backend, 7-b front end; gated 2026-11-11) |
 | 8 | Checkout, orders, order processing | In progress |
-| 9 | Payments, tax/invoices, notifications | In progress (9-a backend done on a worktree branch, see "Step 9-a backend result"; front end 9-b not started) |
+| 9 | Payments, tax/invoices, notifications | In progress (9-a backend done on a worktree branch, see "Step 9-a backend result"; front end 9-b done on a worktree branch, see "Step 9-b front-end result") |
 | 10 | Couriers, real-time status, returns | Not started |
 | 11A | Operations part 1: purchasing, expenses, support, reports | Not started |
 | 11B | Operations part 2: promotions, pre-order, loyalty, marketing, reseller, POS | Not started |
@@ -196,6 +196,19 @@ Branch: worktree `worktree-agent-ac1a4217fc6b100ee` (built on the merged Orders,
 **Step 10 front end** (courier admin, booking and COD screens, live updates) on top of the Step 10-a API, then Step 11A.
 
 **Step 9: payments, tax/invoices, notifications** (the sandbox online method gets its payment page; Step 8-b is done).
+### Step 9-b front-end result (payments, invoices, notifications screens)
+
+Branch: worktree `worktree-agent-a788228963b632773` (built on the merged 9-a backend; not merged, not pushed). Decisions: `docs/assumptions.md` section R (with the contract gaps found); routes in `juvo-front/docs/frontend.md`; traceability rows FR-F10, FR-I02, I03, I06 to I10, FR-K01, K04, K05, K07, FR-U01, U03, U04 updated.
+
+- **Customer:** checkout sends online and transfer orders to `/pay/[number]` (starts the payment); branded sandbox page `/pay/sandbox/[session]` (pay, fail, cancel; no `PayPageUrl` setting needed); `/pay/return` (address is only a locator, asks the server, polls, Paid / Failed / Cancelled / Under review, retry, 30 minute hold timer); manual transfer form with optional proof upload; "Pay now" and payment-under-review panels on the confirmation, tracking and My order pages; payment history section (the payment track) and invoice panel (English and Bengali PDF links, expandable data) for signed-in customers and private-link guests; all `PAYMENT_*`, `INVOICE_*`, `NOTIFY_*` error texts.
+- **Staff:** `/admin/payments` (payments with filters and the transfer review queue, refunds, ledger, settings), `/admin/payments/[id]` (events, proof, approve, reject, refund, complete or fail refund, settle), payment and invoice panel on the order page (record advance, cash collected, cash handed over, issue invoice), `/admin/billing` (invoices, credit notes, tax rules with the unverified acknowledgement; detail pages and PDFs), `/admin/notifications` (templates with preview and history, delivery log with resend, channels). Menu items Payments, Tax and invoices (now `/admin/billing`) and Notifications are ready.
+- **Also fixed on the way:** missing inventory movement reason texts (OrderReserved, OrderReleased, OrderPacked, OrderRestocked) that broke the inventory movements screen once orders existed; the existing auth and permissions specs now expect the Order Manager to see Tax and invoices (the default role has `tax.invoice.view`); `/media` serves PDFs (transfer proofs).
+- **Not built / Partial:** the customer paying the COD advance online (the API refuses), a customer list of payments and refunds under `/me` (no endpoint), a hold countdown for guests returning later (no data), invoice for a guest who tracks by number and mobile (needs the token), a resend of a Failed/DeadLetter notification tested end to end (the real stack cannot produce one honestly; only the button's absence on Sent rows is tested), sorting of the notification log, Bengali texts are a first pass (Step 12), real gateways and senders (Step 14).
+- **Gate (2026-11-11 and 12, run and seen):** see the numbers in the final report below this block's commit; `npx tsc --noEmit` clean, `npx eslint src e2e tests` clean, `npm test` 70 passed (12 new in `tests/payments.test.ts`), `npm run build` ok.
+
+## Next step
+
+**Step 10 remainder and Step 11A** (couriers, live updates, returns front end; then purchasing, expenses, support, reports). Step 9 is complete once this branch is merged.
 
 ## Known issues / notes
 

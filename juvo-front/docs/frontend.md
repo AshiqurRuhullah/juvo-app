@@ -38,6 +38,10 @@ The browser never calls the API. It calls this app, and this app calls the API w
 | `/account/orders`, `/account/orders/[id]` | customer | done (Step 8-b) |
 | `/admin/orders` (list, filters, bulk), `/orders/[id]`, `/orders/[id]/packing-slip`, `/orders/print?ids=`, `/orders/new` (social order desk) | staff (`orders.order.*`, checked in the order's branch) | done (Step 8-b) |
 | `/admin/fraud` (tabs: review queue, blacklist, rules) | staff (`fraud.*`) | done (Step 8-b) |
+| `/pay/[number]` (starts the payment, `?token=`, `?retry=1`), `/pay/sandbox/[session]` (branded sandbox page, `?payment=`), `/pay/return?order=` (asks the server, never trusts the address) | everyone (proof: private link, token kept in the tab, or signed in) | done (Step 9-b) |
+| `/admin/payments` (tabs: payments, refunds, ledger, settings; `?tab=`), `/admin/payments/[id]` | staff (`payments.*`, `couriers.cod.settle`) | done (Step 9-b) |
+| `/admin/billing` (tabs: invoices, credit notes, tax rules), `/billing/invoices/[id]`, `/billing/credit-notes/[id]` | staff (`tax.*`) | done (Step 9-b) |
+| `/admin/notifications` (tabs: templates, delivery log, channels) | staff (`notifications.*`) | done (Step 9-b) |
 | `/account` | customer | placeholder (Step 7) |
 | `/forbidden` (403), `/unauthorized` (401), not-found (404), error and global-error | all | done |
 | `/design` | development only (404 in production unless `ENABLE_DESIGN_PAGE=true`) | every component in every state |
@@ -57,7 +61,7 @@ Items for screens that do not exist yet are shown muted with a "Soon" tag, never
 | | Purchasing | `purchasing.po.view` | active | 11A |
 | Customers | Customers | `customers.customer.view` | anywhere | 12 |
 | Delivery | Zones; Couriers | `delivery.zone.view` (anywhere); `couriers.courier.view` | | 7; 10 |
-| Money | Payments; Tax and invoices; Expenses | `payments.payment.view`; `tax.invoice.view`; `accounting.expense.view` | active | 9; 9; 11A |
+| Money | Payments; Tax and invoices (`/admin/billing`); Notifications; Expenses | `payments.payment.view`; `tax.invoice.view`; `notifications.template.view`; `accounting.expense.view` | active | 9; 9; 9; 11A |
 | Marketing | Promotions; Campaigns | `promotions.promotion.view`; `marketing.campaign.view` | anywhere | 11B |
 | Content | CMS | `cms.page.view` | anywhere | 12 |
 | Insights | Reports; Support | `reports.sales.view`; `support.ticket.view` | active | 11A |

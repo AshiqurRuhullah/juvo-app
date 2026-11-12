@@ -26,7 +26,11 @@
     "TransferOut": "Transfer out",
     "TransferIn": "Transfer in",
     "TransferCancelled": "Transfer cancelled",
-    "StockCount": "Stock count"
+    "StockCount": "Stock count",
+    "OrderReserved": "Reserved for an order",
+    "OrderReleased": "Reservation released",
+    "OrderPacked": "Packed for an order",
+    "OrderRestocked": "Put back on the shelf"
   },
   "transferStatus": {
     "Requested": "Requested",

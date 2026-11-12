@@ -158,7 +158,7 @@
     "payment": {
       "title": "4. Payment",
       "unavailable": "Not available for this order.",
-      "help": { "COD": "Pay in cash when the parcel arrives.", "ONLINE": "Test payment: no real money moves. Payment pages arrive in a later update, so this order is cancelled if it is not paid within 30 minutes." }
+      "help": { "COD": "Pay in cash when the parcel arrives.", "ONLINE": "Pay now on the payment page. If it is not paid within 30 minutes the order is cancelled. The sandbox method moves no real money.", "MANUAL": "Send the money by bank or mobile transfer, then enter the reference on the next page." }
     },
     "advance": { "title": "Advance needed", "text": "Because this order is large, please pay {advance} in advance. You pay the remaining {rest} when it arrives." },
     "otp": {

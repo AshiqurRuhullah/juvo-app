@@ -24,7 +24,7 @@ test.describe("the menu is built from permissions", () => {
     await expect(page.getByText("You hold every permission")).toBeVisible();
   });
 
-  test("an Order Manager sees sales and delivery but not settings, user management or tax", async ({ page, context }) => {
+  test("an Order Manager sees sales and delivery but not settings or user management", async ({ page, context }) => {
     await signInViaBff(context, state().orderManager.email, state().orderManager.password);
     await page.goto("/admin");
 
@@ -32,7 +32,7 @@ test.describe("the menu is built from permissions", () => {
     expect(text).toContain("orders");
     expect(text).toContain("couriers");
     expect(text).toContain("dashboard");
-    for (const hidden of ["User management", "Settings", "Roles", "Audit log", "Tax and invoices", "Promotions"]) {
+    for (const hidden of ["User management", "Settings", "Roles", "Audit log", "Promotions", "Expenses"]) {
       expect(text, `${hidden} must be hidden`).not.toContain(hidden.toLowerCase());
     }
     await expect(page.getByText("User management is not available to you.")).toBeVisible();

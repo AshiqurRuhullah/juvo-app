@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Banknote, FlaskConical, Lock, MapPin, ShoppingBag, Truck } from "lucide-react";
+import { FlaskConical, Lock, MapPin, ShoppingBag, Truck } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Checkbox, Field, Input, Label, RadioGroup, RadioItem, Textarea } from "@/components/ui/form";
@@ -20,7 +20,9 @@ import { useStoreSession, signInUrl } from "@/modules/store/store-session";
 import { addressErrors, emptyDraft, placeOf, toCheckoutAddress, type AddressDraft } from "./address";
 import { AddressFields } from "./address-fields";
 import { useCheckoutQuote, useOrderErrorText, usePlaceOrder, useRequestOrderOtp, useSavedAddresses, type CheckoutQuote, type CheckoutRequest } from "./api";
-import { AmountList, Section, useMethodLabel } from "./common";
+import { AmountList, Section } from "./common";
+import { MethodIcon, usePayMethodLabel } from "@/modules/payments/common";
+import { payPath } from "@/modules/payments/status";
 import { cleanMobile, getDeviceId, isBdMobile, newKey } from "./status";
 
 const NEW_ADDRESS = "__new";
@@ -47,7 +49,7 @@ export function CheckoutView() {
   const { customer } = useStoreSession();
   const errorText = useOrderErrorText();
   const problemText = useProblemText();
-  const methodLabel = useMethodLabel();
+  const methodLabel = usePayMethodLabel();
   const pick = usePickName();
 
   const cart = useCart();
@@ -178,7 +180,8 @@ export function CheckoutView() {
       } catch {
         // Without storage the confirmation page still shows the number; only the one-time tracking link is lost.
       }
-      router.push(`/order/confirmed/${encodeURIComponent(result.number)}`);
+      const toPay = result.paymentMethod !== "COD";
+      router.push(toPay ? payPath(result.number) : `/order/confirmed/${encodeURIComponent(result.number)}`);
     } catch (failure) {
       const problem = failure instanceof ApiError ? failure.problem : null;
       const code = problem?.code ?? "";
@@ -315,10 +318,10 @@ export function CheckoutView() {
                 <RadioItem id={`co-pay-${m.code}`} value={m.code} disabled={!m.available} className="mt-0.5" />
                 <Label htmlFor={`co-pay-${m.code}`} className="min-h-11 min-w-0 flex-1 cursor-pointer font-normal">
                   <span className="flex items-center gap-2 font-semibold text-strong">
-                    {m.code === "COD" ? <Banknote className="size-5 text-primary" aria-hidden /> : <FlaskConical className="size-5 text-primary" aria-hidden />}
-                    {methodLabel(m.code)}
+                    <MethodIcon code={m.code} className="size-5 text-primary" />
+                    {methodLabel(m.code, m.name)}
                   </span>
-                  <span className="block text-sm text-muted">{m.available ? t(`payment.help.${m.code === "COD" ? "COD" : "ONLINE"}`) : (m.reason ?? t("payment.unavailable"))}</span>
+                  <span className="block text-sm text-muted">{m.available ? t(`payment.help.${m.code === "COD" ? "COD" : m.code === "MANUAL" ? "MANUAL" : "ONLINE"}`) : (m.reason ?? t("payment.unavailable"))}</span>
                 </Label>
               </div>
             ))}

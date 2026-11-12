@@ -17,6 +17,9 @@ import { ApiError } from "@/lib/api/client";
 import { toNumber, useMoney } from "@/modules/catalog/format";
 import { useOrder, useOrderAction, useOrderErrorText, problemOf, type NoteKind, type OrderAction, type OrderStatus } from "./api";
 import { AmountList, FraudBadge, OrderLines, OrderStatusBadge, PaymentStatusBadge, ProgressLine, RiskChips, Section, TrackBadges, TrackHistory, useMethodLabel, useSourceLabel } from "./common";
+import { useOrderPayments } from "@/modules/payments/api";
+import { OrderPaymentPanel } from "@/modules/payments/order-payment-panel";
+import { usePaymentPermissions } from "@/modules/payments/permissions";
 import { AddressBlock } from "./my-order-detail";
 import { useOrderPermissions } from "./permissions";
 import { actionsFrom } from "./status";
@@ -39,6 +42,8 @@ export function OrderDetail({ id }: { id: string }) {
   const order = query.data;
   const perms = useOrderPermissions(order?.branchId);
   const act = useOrderAction(id);
+  const payPerms = usePaymentPermissions(order?.branchId);
+  const orderPayments = useOrderPayments(id, payPerms.view);
 
   const [dialog, setDialog] = React.useState<Dialogs>(null);
   const [reason, setReason] = React.useState("");
@@ -100,7 +105,8 @@ export function OrderDetail({ id }: { id: string }) {
   };
 
   const allowed = actionsFrom(order.nextOrderStatuses);
-  const advanceDue = toNumber(order.money.advanceRequired) > 0 && order.paymentStatus !== "Paid";
+  const advancePaid = (orderPayments.data ?? []).filter((p) => p.kind === "Advance" && p.status === "Paid").reduce((sum, p) => sum + toNumber(p.amount), 0);
+  const advanceDue = toNumber(order.money.advanceRequired) > 0 && order.paymentStatus !== "Paid" && advancePaid < toNumber(order.money.advanceRequired);
   const branches = me.branches.filter((b) => b.isActive && b.id !== order.branchId);
   const canReassign = perms.reassign && order.status !== "Packed" && ["Placed", "Confirmed"].includes(order.status);
   const noActions = !(allowed.confirm && perms.confirm) && !(allowed.pack && perms.pack) && !(allowed.cancel && perms.cancel) && !(allowed.steps.length > 0 && perms.edit) && !canReassign;
@@ -272,6 +278,8 @@ export function OrderDetail({ id }: { id: string }) {
               <p className="mt-3 text-sm text-muted">{t("method", { method: methodLabel(order.paymentMethod) })}</p>
               <p className="text-sm text-muted">{t("weight", { grams: toNumber(order.weightGrams) })}</p>
             </Section>
+
+            <OrderPaymentPanel order={order} />
 
             <Section title={t("customer")} id="od-customer">
               <dl className="space-y-1.5 text-sm">
