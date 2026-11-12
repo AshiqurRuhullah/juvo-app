@@ -12,6 +12,9 @@ using Juvo.Domain.Billing;
 using Juvo.Domain.Payments;
 using Juvo.Domain.Returns;
 using Juvo.Domain.Couriers;
+using Juvo.Domain.Accounting;
+using Juvo.Domain.Purchasing;
+using Juvo.Domain.Support;
 using Juvo.Domain.Platform;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -146,6 +149,30 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
     public DbSet<CodSettlementItem> CodSettlementItems => Set<CodSettlementItem>();
 
     public DbSet<SandboxConsignment> SandboxConsignments => Set<SandboxConsignment>();
+
+    public DbSet<FinanceAccount> FinanceAccounts => Set<FinanceAccount>();
+
+    public DbSet<LedgerEntry> LedgerEntries => Set<LedgerEntry>();
+
+    public DbSet<ExpenseCategory> ExpenseCategories => Set<ExpenseCategory>();
+
+    public DbSet<Expense> Expenses => Set<Expense>();
+
+    public DbSet<RecurringExpense> RecurringExpenses => Set<RecurringExpense>();
+
+    public DbSet<Supplier> Suppliers => Set<Supplier>();
+
+    public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
+
+    public DbSet<PurchaseOrderLine> PurchaseOrderLines => Set<PurchaseOrderLine>();
+
+    public DbSet<GoodsReceipt> GoodsReceipts => Set<GoodsReceipt>();
+
+    public DbSet<GoodsReceiptLine> GoodsReceiptLines => Set<GoodsReceiptLine>();
+
+    public DbSet<PurchasePayment> PurchasePayments => Set<PurchasePayment>();
+
+    public DbSet<GlobalSequence> GlobalSequences => Set<GlobalSequence>();
 
     public DbSet<TaxRule> TaxRules => Set<TaxRule>();
 

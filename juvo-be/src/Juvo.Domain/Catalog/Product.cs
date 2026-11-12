@@ -137,6 +137,9 @@ public sealed class Product : SoftDeletableEntity
 
     public void Update(ProductDetails details) => Apply(details);
 
+    /// <summary>Sets the cost price (purchasing: a goods receipt updates it by the configured cost method).</summary>
+    public void SetCostPrice(decimal? cost) => CostPrice = cost is { } c ? Math.Round(Math.Max(0m, c), 2, MidpointRounding.AwayFromZero) : null;
+
     public void Publish(DateTimeOffset now)
     {
         Status = ProductStatus.Published;
