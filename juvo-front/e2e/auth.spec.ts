@@ -120,7 +120,7 @@ test.describe("silent refresh", () => {
     await signInViaBff(context, s.orderManager.email, s.orderManager.password);
     await page.goto("/admin");
     await expect(page.getByRole("navigation", { name: "Main menu" }).first()).toBeVisible();
-    await expect(page.getByText("Tax and invoices")).toHaveCount(0); // an Order Manager has no tax permissions
+    await expect(page.getByText("Expenses")).toHaveCount(0); // an Order Manager has no accounting permissions
 
     // The administrator also makes this user an Accountant.
     const admin = await api<{ accessToken: string }>("POST", "/api/v1/auth/login", { identifier: s.admin.email, password: s.admin.password });
@@ -135,7 +135,7 @@ test.describe("silent refresh", () => {
       await page.reload();
       // The menu is a tree: the new group appears (closed) and opens with its parent row.
       await page.getByRole("button", { name: "Payments and accounts" }).first().click();
-      await expect(page.getByText("Tax and invoices").first()).toBeVisible();
+      await expect(page.getByText("Expenses").first()).toBeVisible();
     } finally {
       await api("DELETE", `/api/v1/ums/users/${s.orderManager.id}/branch-roles/${added.json.assignmentId}`, undefined, token);
     }

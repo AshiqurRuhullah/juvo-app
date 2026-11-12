@@ -68,7 +68,7 @@ for (const width of WIDTHS) {
       const errors = watch(page);
       await page.getByRole("button", { name: "Edit order.placed, SMS, English" }).click();
       await expect(page.getByTestId("template-preview-body")).not.toHaveText("...");
-      await expect(page.getByTestId("template-history").locator("li").first()).toBeVisible();
+      await expect(page.getByTestId("template-history").locator("li").first().or(page.getByTestId("template-history-empty"))).toBeVisible();
       await checks(page, width, errors, keep("notifications-editor"));
     });
 

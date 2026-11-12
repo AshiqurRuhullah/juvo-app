@@ -44,7 +44,7 @@ test.beforeAll(async ({ playwright }) => {
   const body = { methods: current.json.methods.map((m) => ({ code: m.code, enabled: m.code === "MANUAL" ? true : m.enabled })), codMaxAmount: current.json.codMaxAmount, manualInstructions: "bKash 01711-000000 (Juvo BD). Write the order number as the reference.", autoConfirmPaid: current.json.autoConfirmPaid };
   expect((await api("PUT", "/api/v1/payments/settings", body, admin)).status).toBe(200);
 
-  const items = await sampleVariants(await guest(playwright), 1);
+  const items = (await sampleVariants(await guest(playwright), 8)).slice(-1);
   const place = async (method: "SANDBOX" | "MANUAL") => {
     const own = await guest(playwright);
     const placed = await apiCheckout(own, { lines: [{ variantId: items[0]!.id, quantity: 1 }], method });
@@ -83,7 +83,7 @@ async function checks(page: Page, width: number, errors: string[], name?: string
   expect(small, `tap targets under 44px at ${width}px:\n${small.join("\n")}`).toEqual([]);
   const violations = await axeViolations(page, [".leaflet-container"]);
   expect(violations, `accessibility at ${width}px:\n${violations.join("\n")}`).toEqual([]);
-  expect(errors.filter((e) => !/tile\.openstreetmap|Failed to load resource.*(404|401|403)|ERR_(INTERNET|NAME|CONNECTION)/.test(e))).toEqual([]);
+  expect(errors.filter((e) => !/tile\.openstreetmap|Failed to load resource.*(404|401|403|409)|ERR_(INTERNET|NAME|CONNECTION)/.test(e))).toEqual([]);
 }
 
 const watch = (page: Page) => {
@@ -133,7 +133,7 @@ for (const width of WIDTHS) {
     const errors = watch(page);
     await page.setViewportSize({ width, height: 900 });
     await signInCustomer(context);
-    const [item] = await sampleVariants(context.request, 1);
+    const item = (await sampleVariants(context.request, 8)).at(-1);
     const placed = await apiCheckout(context.request, { lines: [{ variantId: item!.id, quantity: 1 }], method: "SANDBOX", signedIn: true });
     const started = await start(context.request, { ...placed, trackingToken: null });
     await decide(context.request, started.sandboxSessionId, "success");

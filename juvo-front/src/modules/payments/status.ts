@@ -97,6 +97,9 @@ export function savePayState(storage: Pick<Storage, "setItem"> | null, number: s
   }
 }
 
+/** An order has an invoice once it was confirmed: not while it is only placed, and never when it was cancelled before that. Asking earlier would only get a refusal. */
+export const invoiceable = (orderStatus: string) => orderStatus !== "Placed" && orderStatus !== "Cancelled";
+
 /** The proof file of a manual transfer: JPEG, PNG, WebP or PDF up to 5 MB (the API checks again). */
 export const PROOF_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
 export const PROOF_MAX_BYTES = 5 * 1024 * 1024;

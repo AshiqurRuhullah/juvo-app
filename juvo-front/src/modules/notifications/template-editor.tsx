@@ -140,6 +140,7 @@ export function TemplateEditor({ template, canEdit, onDone }: { template: Templa
           <History className="size-5 text-primary" aria-hidden /> {t("history")}
         </h3>
         {history.isLoading ? <p className="text-sm text-muted">...</p> : null}
+        {!history.isLoading && versions.length === 0 ? <p className="text-sm text-muted" data-testid="template-history-empty">{t("historyEmpty")}</p> : null}
         <ol className="space-y-2" data-testid="template-history">
           {versions.map((v) => {
             const number = Number(v.version);

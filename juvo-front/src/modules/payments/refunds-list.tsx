@@ -40,7 +40,7 @@ export function RefundsList() {
         meta: { primary: true },
         cell: ({ row }) => (
           <Link href={`/admin/payments/${row.original.paymentId}`} className="inline-flex min-h-11 items-center rounded-control font-semibold text-strong hover:text-primary hover:underline">
-            <span className="font-mono [overflow-wrap:anywhere]">{row.original.orderNumber}</span>
+            <span className="whitespace-nowrap font-mono">{row.original.orderNumber}</span>
           </Link>
         ),
       },

@@ -107,7 +107,7 @@ export function MyOrderDetail({ id }: { id: string }) {
           </div>
         </Section>
 
-        <MyInvoicePanel orderId={order.id} id="mo-invoice" />
+        <MyInvoicePanel orderId={order.id} id="mo-invoice" status={order.status} />
 
         <div className="grid gap-5 lg:grid-cols-2">
           <Section title={t("progress")} id="mo-progress">

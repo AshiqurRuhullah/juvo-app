@@ -86,7 +86,7 @@ export function TrackView({ initialToken, initialNumber, initialMobile }: { init
             {data.district ? <p className="text-sm text-muted">{t("deliveringTo", { district: data.district })}</p> : null}
             {initialToken || customer ? <PaymentPanel number={data.number} method={data.paymentMethod} paymentStatus={data.paymentStatus} orderStatus={data.status} token={initialToken} /> : null}
           </Card>
-          {initialToken ? <GuestInvoicePanel number={data.number} token={initialToken} id="track-invoice" /> : null}
+          {initialToken ? <GuestInvoicePanel number={data.number} token={initialToken} id="track-invoice" status={data.status} /> : null}
 
           <div className="grid gap-5 lg:grid-cols-2">
             <Section title={t("progress")} id="track-progress">

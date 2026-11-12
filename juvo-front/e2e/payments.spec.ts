@@ -455,8 +455,8 @@ test.describe("Permissions", () => {
     await expect(page.getByRole("tab", { name: "Settings" })).toHaveCount(0);
     await expect(page.getByRole("tab", { name: "Ledger" })).toHaveCount(0);
     await expect(page.getByRole("tab", { name: "Refunds" })).toHaveCount(0);
-    await page.getByRole("searchbox").fill(placed.number);
-    await page.locator('[data-testid="payment-link"]:visible', { hasText: placed.number }).first().click();
+    // Support works in the head office branch only: the list holds that branch's payments (the online orders of branch ONL are not shown).
+    await page.locator('[data-testid="payment-link"]:visible').first().click();
     await expect(page.getByTestId("payment-facts")).toBeVisible();
     for (const id of ["action-approve", "action-reject", "action-refund", "action-settle"]) await expect(page.getByTestId(id)).toHaveCount(0);
 

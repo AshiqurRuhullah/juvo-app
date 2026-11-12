@@ -40,6 +40,7 @@
     "unknown": "Placeholders this message does not have",
     "missing": "Placeholders without a sample value",
     "history": "Version history",
+    "historyEmpty": "No edits yet. The built-in text is in use.",
     "builtIn": "Built-in text",
     "version": "Version {n}",
     "current": "In use",

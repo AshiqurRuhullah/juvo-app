@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { actionSet, countdown, isOnlineMethod, loadPayState, needsPayment, outcomeOf, payPath, proofProblem, returnPath, sandboxPath, savePayState, secondsLeft, withParam } from "@/modules/payments/status";
+import { actionSet, countdown, invoiceable, isOnlineMethod, loadPayState, needsPayment, outcomeOf, payPath, proofProblem, returnPath, sandboxPath, savePayState, secondsLeft, withParam } from "@/modules/payments/status";
 
 describe("payment methods", () => {
   it("COD and MANUAL are not gateway methods, everything else is", () => {
@@ -100,6 +100,15 @@ describe("proof file", () => {
     expect(proofProblem({ type: "application/pdf", size: 5 * 1024 * 1024 })).toBeNull();
     expect(proofProblem({ type: "image/gif", size: 1000 })).toBe("type");
     expect(proofProblem({ type: "image/jpeg", size: 5 * 1024 * 1024 + 1 })).toBe("size");
+  });
+});
+
+describe("invoices", () => {
+  it("are only asked for once the order moved past placed", () => {
+    expect(invoiceable("Placed")).toBe(false);
+    expect(invoiceable("Cancelled")).toBe(false);
+    expect(invoiceable("Confirmed")).toBe(true);
+    expect(invoiceable("Delivered")).toBe(true);
   });
 });
 

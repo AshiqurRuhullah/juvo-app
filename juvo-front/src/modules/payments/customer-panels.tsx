@@ -16,7 +16,7 @@ import { guestInvoicePdfUrl, myInvoicePdfUrl, useGuestInvoice, useMyInvoice, typ
 import { useTracking } from "@/modules/orders/api";
 import { usePayMethodLabel } from "./common";
 import { useOrderAccess } from "./order-access";
-import { needsPayment, payPath } from "./status";
+import { invoiceable, needsPayment, payPath } from "./status";
 import type { PaymentStatus } from "./api";
 
 /**
@@ -142,9 +142,9 @@ function InvoiceBody({ invoice, href }: { invoice: Invoice; href: (lang: "en" | 
 }
 
 /** Shown when the order has an invoice; nothing otherwise (an order that is not confirmed yet has none). */
-export function MyInvoicePanel({ orderId, id }: { orderId: string; id: string }) {
+export function MyInvoicePanel({ orderId, id, status }: { orderId: string; id: string; status: string }) {
   const t = useTranslations("payments.invoice");
-  const invoice = useMyInvoice(orderId, true);
+  const invoice = useMyInvoice(orderId, invoiceable(status));
   if (!invoice.data) return null;
   return (
     <Section title={t("title")} id={id}>
@@ -157,9 +157,9 @@ export function MyInvoicePanel({ orderId, id }: { orderId: string; id: string })
 }
 
 /** The same for someone tracking with the private link: the tracking token proves the order. */
-export function GuestInvoicePanel({ number, token, id }: { number: string; token: string | null; id: string }) {
+export function GuestInvoicePanel({ number, token, id, status }: { number: string; token: string | null; id: string; status: string }) {
   const t = useTranslations("payments.invoice");
-  const invoice = useGuestInvoice(number, token, true);
+  const invoice = useGuestInvoice(number, token, invoiceable(status));
   if (!token || !invoice.data) return null;
   return (
     <Section title={t("title")} id={id}>
