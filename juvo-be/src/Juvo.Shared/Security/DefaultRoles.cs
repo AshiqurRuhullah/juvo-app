@@ -34,13 +34,13 @@ public static class DefaultRoles
         [
             "orders.*", "returns.*", "customers.customer.view", "delivery.zone.view", "couriers.shipment.*",
             "couriers.courier.view", "couriers.cod.view", "payments.payment.view", "payments.payment.record", "tax.invoice.view", "tax.invoice.download", "tax.invoice.issue", "reports.orders.view",
-            "fraud.flag.view", "notifications.log.view", "catalog.product.view", "inventory.stock.view", "support.ticket.view",
+            "fraud.flag.view", "notifications.log.view", "catalog.product.view", "inventory.stock.view", "support.ticket.*", "support.canned-reply.view", "reports.dashboard.view", "reports.sales.view", "reports.orders.export", "reports.courier.view",
         ],
         ["orders.order.reassign-branch", "returns.return.refund"]),
 
         new(InventoryManager, "Maintains products, stock, transfers and purchasing.", false,
         [
-            "catalog.*", "inventory.*", "purchasing.*", "orders.order.view", "returns.return.view", "returns.return.receive", "returns.return.inspect", "reports.inventory.*",
+            "catalog.*", "inventory.*", "purchasing.*", "orders.order.view", "returns.return.view", "returns.return.receive", "returns.return.inspect", "reports.inventory.*", "reports.dashboard.view",
         ],
         ["catalog.product.view-cost", "purchasing.payable.pay"]),
 
@@ -54,7 +54,7 @@ public static class DefaultRoles
         new(Support, "Answers customers and handles tickets.", false,
         [
             "orders.order.view", "orders.order.note", "customers.customer.view", "support.*", "returns.return.view", "returns.return.approve",
-            "couriers.shipment.view", "delivery.zone.view", "notifications.log.view", "payments.payment.view", "tax.invoice.view", "tax.invoice.download",
+            "couriers.shipment.view", "delivery.zone.view", "notifications.log.view", "payments.payment.view", "tax.invoice.view", "tax.invoice.download", "reports.dashboard.view",
         ],
         []),
 
@@ -62,7 +62,7 @@ public static class DefaultRoles
         [
             "payments.payment.view", "payments.payment.verify", "payments.refund.view", "payments.ledger.*", "tax.*", "accounting.*", "reports.finance.*",
             "orders.order.view", "returns.return.view", "returns.return.refund", "couriers.cod.*", "customers.customer.view", "purchasing.payable.*", "catalog.product.view",
-            "catalog.product.view-cost",
+            "catalog.product.view-cost", "purchasing.supplier.view", "purchasing.po.view", "purchasing.receipt.view", "reports.dashboard.view", "reports.sales.*", "reports.orders.view", "reports.courier.view", "reports.customers.view", "reports.inventory.view",
         ],
         []),
     ];

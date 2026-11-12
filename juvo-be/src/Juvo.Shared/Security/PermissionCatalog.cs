@@ -86,7 +86,7 @@ public static class PermissionCatalog
         Add("purchasing", "po", "view create edit send receive cancel");
         Add("purchasing", "receipt", "view create");
         Add("purchasing", "payable", "view pay");
-        Add("accounting", "expense", "view create edit delete");
+        Add("accounting", "expense", "view create edit delete approve");
         Add("accounting", "cashbook", "view edit");
         Add("accounting", "pnl", "view");
         Add("accounting", "export", "run");

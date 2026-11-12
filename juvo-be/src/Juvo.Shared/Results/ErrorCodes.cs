@@ -278,4 +278,65 @@ public static class ErrorCodes
         public const string NoConsent = "NOTIFY.NO_CONSENT";
         public const string LanguageInvalid = "NOTIFY.LANGUAGE_INVALID";
     }
+
+    public static class Purchase
+    {
+        public const string NotFound = "PURCHASE.NOT_FOUND";
+        public const string SupplierNotFound = "PURCHASE.SUPPLIER_NOT_FOUND";
+        public const string SupplierInactive = "PURCHASE.SUPPLIER_INACTIVE";
+        public const string SupplierNameTaken = "PURCHASE.SUPPLIER_NAME_TAKEN";
+        public const string InvalidTransition = "PURCHASE.INVALID_TRANSITION";
+        public const string VariantNotFound = "PURCHASE.VARIANT_NOT_FOUND";
+        public const string OverReceipt = "PURCHASE.OVER_RECEIPT";
+        public const string NothingReceived = "PURCHASE.NOTHING_RECEIVED";
+        public const string PaymentNotAllowed = "PURCHASE.PAYMENT_NOT_ALLOWED";
+        public const string PaymentExceedsDue = "PURCHASE.PAYMENT_EXCEEDS_DUE";
+        public const string InvoiceNotAllowed = "PURCHASE.INVOICE_NOT_ALLOWED";
+        public const string ReceiptNotFound = "PURCHASE.RECEIPT_NOT_FOUND";
+        public const string CostNotAllowed = "PURCHASE.COST_NOT_ALLOWED";
+        public const string AttachmentInvalid = "PURCHASE.ATTACHMENT_INVALID";
+    }
+
+    public static class Expense
+    {
+        public const string NotFound = "EXPENSE.NOT_FOUND";
+        public const string InvalidTransition = "EXPENSE.INVALID_TRANSITION";
+        public const string CategoryNotFound = "EXPENSE.CATEGORY_NOT_FOUND";
+        public const string CategoryInactive = "EXPENSE.CATEGORY_INACTIVE";
+        public const string CategoryNameTaken = "EXPENSE.CATEGORY_NAME_TAKEN";
+        public const string CategoryInUse = "EXPENSE.CATEGORY_IN_USE";
+        public const string AccountNotFound = "EXPENSE.ACCOUNT_NOT_FOUND";
+        public const string AccountInactive = "EXPENSE.ACCOUNT_INACTIVE";
+        public const string AccountBranchMismatch = "EXPENSE.ACCOUNT_BRANCH_MISMATCH";
+        public const string NotEditable = "EXPENSE.NOT_EDITABLE";
+        public const string SelfApproval = "EXPENSE.SELF_APPROVAL";
+        public const string RecurringNotFound = "EXPENSE.RECURRING_NOT_FOUND";
+        public const string AttachmentInvalid = "EXPENSE.ATTACHMENT_INVALID";
+        public const string TransferInvalid = "EXPENSE.TRANSFER_INVALID";
+        public const string InsufficientBalance = "EXPENSE.INSUFFICIENT_BALANCE";
+    }
+
+    public static class Ticket
+    {
+        public const string NotFound = "TICKET.NOT_FOUND";
+        public const string InvalidTransition = "TICKET.INVALID_TRANSITION";
+        public const string ReopenWindowExpired = "TICKET.REOPEN_WINDOW_EXPIRED";
+        public const string RateLimited = "TICKET.RATE_LIMITED";
+        public const string OrderNotFound = "TICKET.ORDER_NOT_FOUND";
+        public const string OrderMismatch = "TICKET.ORDER_MISMATCH";
+        public const string AssigneeNotFound = "TICKET.ASSIGNEE_NOT_FOUND";
+        public const string CannedReplyNotFound = "TICKET.CANNED_REPLY_NOT_FOUND";
+        public const string AttachmentInvalid = "TICKET.ATTACHMENT_INVALID";
+        public const string ClosedTicket = "TICKET.CLOSED";
+        public const string BulkLimit = "TICKET.BULK_LIMIT";
+    }
+
+    public static class Report
+    {
+        public const string Unknown = "REPORT.UNKNOWN";
+        public const string RangeInvalid = "REPORT.RANGE_INVALID";
+        public const string RangeTooLarge = "REPORT.RANGE_TOO_LARGE";
+        public const string FormatInvalid = "REPORT.FORMAT_INVALID";
+        public const string CostHidden = "REPORT.COST_HIDDEN";
+    }
 }
