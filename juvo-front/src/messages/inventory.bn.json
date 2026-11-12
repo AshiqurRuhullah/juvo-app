@@ -26,7 +26,11 @@
     "TransferOut": "ট্রান্সফারে বের হয়েছে",
     "TransferIn": "ট্রান্সফারে ঢুকেছে",
     "TransferCancelled": "ট্রান্সফার বাতিল",
-    "StockCount": "স্টক গণনা"
+    "StockCount": "স্টক গণনা",
+    "OrderReserved": "অর্ডারের জন্য রাখা হয়েছে",
+    "OrderReleased": "রাখা মাল ছাড়া হয়েছে",
+    "OrderPacked": "অর্ডারের জন্য প্যাক হয়েছে",
+    "OrderRestocked": "আবার তাকে রাখা হয়েছে"
   },
   "transferStatus": {
     "Requested": "অনুরোধ করা হয়েছে",
