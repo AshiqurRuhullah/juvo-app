@@ -82,6 +82,8 @@ public static class DependencyInjection
         services.AddHostedService<OutboxProcessor>();
         services.AddOptions<OrderJobOptions>().Bind(configuration.GetSection(OrderJobOptions.SectionName)).ValidateDataAnnotations().ValidateOnStart();
         services.AddHostedService<OrderTimeoutWorker>();
+        services.AddOptions<OperationsJobOptions>().Bind(configuration.GetSection(OperationsJobOptions.SectionName)).ValidateDataAnnotations().ValidateOnStart();
+        services.AddHostedService<RecurringExpenseWorker>();
 
         AddIdentity(services, configuration, environment);
 
