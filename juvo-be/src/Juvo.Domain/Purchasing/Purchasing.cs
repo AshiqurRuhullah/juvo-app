@@ -239,7 +239,7 @@ public sealed class PurchaseOrder : Entity, IBranchScoped
             MoveTo(PurchaseStatus.Received, "Everything was received", now, by, byName);
             CompletedAt = now;
         }
-        else if (Status == PurchaseStatus.Sent)
+        else if (Status == PurchaseStatus.Sent && _lines.Any(l => l.ReceivedQuantity > 0))
         {
             MoveTo(PurchaseStatus.PartlyReceived, "First delivery received", now, by, byName);
         }

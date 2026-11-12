@@ -139,6 +139,8 @@ public static class DependencyInjection
         services.AddScoped<Juvo.Application.Accounting.ExpenseCore>();
         services.AddScoped<Juvo.Application.Accounting.ExpensesService>();
         services.AddScoped<Juvo.Application.Accounting.RecurringExpenseService>();
+        services.AddScoped<Juvo.Application.Purchasing.SuppliersService>();
+        services.AddScoped<Juvo.Application.Purchasing.PurchasingService>();
 
         // Inventory (module V).
         services.AddScoped<InventoryAccess>();
