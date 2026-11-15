@@ -91,7 +91,7 @@ test("returns screens in the dark theme", async ({ page, context }) => {
   const errors: string[] = [];
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
   await page.setViewportSize({ width: 1280, height: 900 });
-  await context.addCookies([{ name: "juvo_theme", value: "dark", url: "http://localhost:3100" }]);
+  await context.addCookies([{ name: "juvo_theme", value: "dark", url: `http://localhost:${process.env.E2E_WEB_PORT ?? 3100}` }]);
   const admin = loadState().admin;
   await signInViaBff(context, admin.email, admin.password);
   await page.goto(`/admin/returns/${inspected.id}`);

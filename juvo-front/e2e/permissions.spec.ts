@@ -81,7 +81,7 @@ test.describe("branch and role together", () => {
   test("a branch the user does not hold is refused by the server even if the cookie says otherwise", async ({ page, context }) => {
     const s = state();
     await signInViaBff(context, s.orderManager.email, s.orderManager.password); // only HO
-    await context.addCookies([{ name: "juvo_branch", value: s.branches.b.id, url: "http://localhost:3100" }]);
+    await context.addCookies([{ name: "juvo_branch", value: s.branches.b.id, url: `http://localhost:${process.env.E2E_WEB_PORT ?? 3100}` }]);
 
     await page.goto("/admin");
 

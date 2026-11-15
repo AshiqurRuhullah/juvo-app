@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
-export const API = "http://localhost:5081";
+export const API = `http://localhost:${process.env.E2E_API_PORT ?? 5081}`;
 export const STATE_FILE = resolve(__dirname, "../.state/state.json");
 
 export type Seeded = { email: string; password: string; id: string; name: string };
