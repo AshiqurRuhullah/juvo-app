@@ -130,6 +130,18 @@ public static class DependencyInjection
         services.AddScoped<IOutboxMessageHandler, Juvo.Application.Realtime.RealtimeShipmentHandler>();
         services.AddScoped<IOutboxMessageHandler, Juvo.Application.Realtime.RealtimeReturnHandler>();
 
+        // Purchasing (W), expenses and the cash book (X), support (Y), reports (P) share these.
+        services.AddScoped<Juvo.Application.Operations.OpsSettingsService>();
+        services.AddScoped<Juvo.Application.Operations.NumberAllocator>();
+        services.AddScoped<Juvo.Application.Operations.AttachmentStore>();
+        services.AddScoped<Juvo.Application.Accounting.LedgerWriter>();
+        services.AddScoped<Juvo.Application.Accounting.AccountsService>();
+        services.AddScoped<Juvo.Application.Accounting.ExpenseCore>();
+        services.AddScoped<Juvo.Application.Accounting.ExpensesService>();
+        services.AddScoped<Juvo.Application.Accounting.RecurringExpenseService>();
+        services.AddScoped<Juvo.Application.Purchasing.SuppliersService>();
+        services.AddScoped<Juvo.Application.Purchasing.PurchasingService>();
+
         // Inventory (module V).
         services.AddScoped<InventoryAccess>();
         services.AddScoped<StockLedger>();

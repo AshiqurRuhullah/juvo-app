@@ -215,7 +215,7 @@ public sealed class OrderPlacement(
                     Hash(token), i.DeviceId, i.Ip, otpVerified, i.IsStaff ? null : now, i.IsStaff ? i.Who.Id : null, i.Who.Name);
                 var items = priced.Select(p => new NewOrderItem(
                     p.Variant.Id, p.Product.Id, p.Product.NameEn, p.Product.NameBn, p.Variant.Sku, p.Variant.ColorName, p.Variant.Size, p.ImagePath, p.UnitPrice, p.Quantity,
-                    p.Variant.WeightGramsOverride ?? p.Product.WeightGrams ?? 0, p.Variant.TracksStock)).ToList();
+                    p.Variant.WeightGramsOverride ?? p.Product.WeightGrams ?? 0, p.Variant.TracksStock, p.Product.CostPrice)).ToList();
                 var placed = Order.Place(data, items, now);
                 var (taxRule, tax) = await taxes.ComputeAsync([.. items.Select(x => x.UnitPrice * x.Quantity)], couponDiscount + i.ManualDiscount, deliveryCharge, ct);
                 if (taxRule is not null)

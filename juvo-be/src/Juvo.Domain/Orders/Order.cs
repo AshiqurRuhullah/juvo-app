@@ -26,7 +26,7 @@ public sealed record ShippingSnapshot(
 
 /// <summary>One line of a new order with the product facts copied from the catalog at that moment (BR-001).</summary>
 public sealed record NewOrderItem(
-    Guid VariantId, Guid ProductId, string Name, string? NameBn, string Sku, string? ColorName, string? Size, string? ImagePath, decimal UnitPrice, int Quantity, int WeightGrams, bool TracksStock);
+    Guid VariantId, Guid ProductId, string Name, string? NameBn, string Sku, string? ColorName, string? Size, string? ImagePath, decimal UnitPrice, int Quantity, int WeightGrams, bool TracksStock, decimal? UnitCost = null);
 
 /// <summary>
 /// An order (module D). One order has many variant lines (BR-001) and three parallel tracks: order, payment and delivery status. Every status
@@ -512,6 +512,7 @@ public sealed class OrderItem : Entity
         LineTotal = item.UnitPrice * item.Quantity;
         WeightGrams = item.WeightGrams;
         TracksStock = item.TracksStock;
+        UnitCost = item.UnitCost;
     }
 
     public Guid OrderId { get; private set; }
@@ -540,6 +541,9 @@ public sealed class OrderItem : Entity
     public decimal LineTotal { get; private set; }
 
     public int WeightGrams { get; private set; }
+
+    /// <summary>The product cost price when the order was placed (a snapshot, so later cost changes never rewrite the profit of old orders). Null for orders placed before it existed or when the product had no cost: reports then fall back to the current cost.</summary>
+    public decimal? UnitCost { get; private set; }
 
     /// <summary>False for a variant that does not track stock: nothing is reserved for it.</summary>
     public bool TracksStock { get; private set; }

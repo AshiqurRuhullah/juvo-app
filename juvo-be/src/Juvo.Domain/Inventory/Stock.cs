@@ -27,6 +27,9 @@ public enum StockReason
 
     /// <summary>Units of a packed order went back on the shelf because the order was cancelled or returned.</summary>
     OrderRestocked = 14,
+
+    /// <summary>Units accepted from a supplier delivery (a goods receipt of a purchase order).</summary>
+    PurchaseReceipt = 15,
 }
 
 /// <summary>

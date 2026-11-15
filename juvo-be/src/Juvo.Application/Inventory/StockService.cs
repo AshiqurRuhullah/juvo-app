@@ -270,7 +270,7 @@ public sealed class StockService(IApplicationDbContext db, InventoryAccess acces
 
     private static Error? ValidateAdjust(AdjustStockRequest request)
     {
-        if (request.Reason is StockReason.TransferOut or StockReason.TransferIn or StockReason.TransferCancelled or StockReason.StockCount ||
+        if (request.Reason is StockReason.TransferOut or StockReason.TransferIn or StockReason.TransferCancelled or StockReason.StockCount or StockReason.PurchaseReceipt ||
             !Enum.IsDefined(request.Reason))
         {
             return Invalid("reason", "Choose a reason: opening stock, correction, damage, loss, found or customer return.");
