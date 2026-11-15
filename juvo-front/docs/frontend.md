@@ -42,6 +42,9 @@ The browser never calls the API. It calls this app, and this app calls the API w
 | `/admin/payments` (tabs: payments, refunds, ledger, settings; `?tab=`), `/admin/payments/[id]` | staff (`payments.*`, `couriers.cod.settle`) | done (Step 9-b) |
 | `/admin/billing` (tabs: invoices, credit notes, tax rules), `/billing/invoices/[id]`, `/billing/credit-notes/[id]` | staff (`tax.*`) | done (Step 9-b) |
 | `/admin/notifications` (tabs: templates, delivery log, channels) | staff (`notifications.*`) | done (Step 9-b) |
+| `/admin/couriers` (tabs: couriers, connections) | staff (`couriers.courier.*`) | done (Step 10) |
+| `/admin/shipments` (list, live), `/shipments/[id]`, `/shipments/[id]/label`, `/shipments/labels?ids=` | staff (`couriers.shipment.*`) | done (Step 10) |
+| `/admin/cod`, `/cod/new`, `/cod/[id]`, `/cod/[id]/print` | staff (`couriers.cod.*`) | done (Step 10) |
 | `/account` | customer | placeholder (Step 7) |
 | `/forbidden` (403), `/unauthorized` (401), not-found (404), error and global-error | all | done |
 | `/design` | development only (404 in production unless `ENABLE_DESIGN_PAGE=true`) | every component in every state |

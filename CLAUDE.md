@@ -96,20 +96,20 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 - **Adapters**: `IPaymentGateway`, `ICourierProvider`, SMS/email/WhatsApp/maps behind interfaces; Sandbox on by default; real ones (Pathao, Steadfast, RedX, Paperfly, eCourier, DHL, bKash, Nagad, SSLCommerz, aamarPay, Stripe, PayPal) are disabled slots built in Step 14 only with owner credentials.
 - Defaults decided: COD + sandbox gateway enabled; reviews verified-buyers-only and moderated; loyalty (AB) behind a feature flag default off; Leaflet/OSM maps; stock-deduct setting `Inventory.DeductAt`; Bangladesh geo dataset chosen and recorded in Step 7; invoice PDF library chosen in Step 9 after licence check (QuestPDF Community licence limits).
 
-## 8. The 14-step plan and status (details in `PROGRESS.md`)
+## 8. The 14-step plan and status (details in `PROGRESS.md`; next is Step 11A)
 
-| Step | Scope | Status (2026-11-10) |
+| Step | Scope | Status (2026-11-15) |
 | --- | --- | --- |
 | 1 | Understand business, Git, docs, brand tokens | Done |
 | 2 | Backend foundation | Done |
 | 3 | UMS backend (auth, roles, permissions, branches) | Done |
 | 4 | Front-end foundation, brand, login, tokens | Done |
 | 5 | UMS UI | Done |
-| 6 | Catalog, media, branch inventory (6-a…6-e) | **Done** (gated 2026-11-10) on `feature/06-catalog-inventory`, not yet merged to `main` |
+| 6 | Catalog, media, branch inventory (6-a…6-e) | **Done** (gated 2026-11-10), merged to `main` |
 | 7 | Storefront, cart, customer identity, address, delivery zones (modules A, C, E, F, G) | **Done** (gated 2026-11-11) |
-| 8 | Checkout, orders, order processing, social desk, fraud basics (D, S, T, J) | **In progress** |
-| 9 | Payments, tax/invoices, notifications (I, U, K) | Not started |
-| 10 | Couriers, real-time (SignalR), returns (H, J, L) | Not started |
+| 8 | Checkout, orders, order processing, social desk, fraud basics (D, S, T, J) | **Done** (8-a backend, 8-b front end) |
+| 9 | Payments, tax/invoices, notifications (I, U, K) | **Done** (9-a backend, 9-b front end) |
+| 10 | Couriers, real-time (SignalR), returns (H, J, L) | **Done** (backend and front end, gated 2026-11-15) |
 | 11A | Purchasing, expenses, support, reports (W, X, Y, P) | Not started |
 | 11B | Promotions, pre-order, loyalty, marketing, reseller, POS (Z, AA–AE) | Not started |
 | 12 | Remaining admin UI, CMS, dashboard, settings, platform services (M, N, Q, R, AF) | Not started |
@@ -162,4 +162,6 @@ Backend (6-d): domain 94 + application 23 + integration 190, build 0 warnings. F
 - A .NET 11 SDK is installed next to 10.0.403, and `juvo-be/global.json` pins 10.x. Run `dotnet build`/`dotnet test` from inside `juvo-be` (from the repo root the 11 SDK is picked and the new CA2026 analyzer fails the test projects).
 - A running API from `dotnet run` locks the DLLs: stop it (by PID, `taskkill`) before building, then start it with `dotnet run --no-build`.
 - Backend work that adds migrations is done by one builder at a time (the model snapshot would conflict); front-end builders run in parallel in worktrees and merge additively (nav.ts, load.ts, messages, docs).
+- Fast run (default of `start-all.ps1`): Release API and production web build; `-Dev` for the slow development servers. Client translations are scoped per area (`src/messages/scopes.ts`); when `tests/messages-scope.test.ts` fails, add the missing namespace to that area's list. If `next build` fails fetching Google Fonts, run it again (transient).
+- Live updates: `src/lib/realtime/use-live.ts` (SignalR, lazy); the API `Cors:AllowedOrigins` must contain the site address (the e2e config sets it).
 - Step 8 to 10 backends: orders `docs/orders-api.md`, returns `docs/returns-api.md`, payments `docs/payments-api.md`, couriers and real-time `docs/couriers-api.md`.

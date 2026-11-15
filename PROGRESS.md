@@ -1,7 +1,7 @@
 # PROGRESS
 
 Resume from this file alone. Plan: `Documents/juvo-step-prompts.md` (14 steps). Master prompt: `juvo-claude-code-prompt.md`.
-Last updated: 2026-11-10.
+Last updated: 2026-11-15.
 
 ## Status of the 14 steps
 
@@ -12,11 +12,11 @@ Last updated: 2026-11-10.
 | 3 | UMS backend: auth, roles, permissions, branches | **Done** (branch `feature/03-ums-backend`, merged to `main`) |
 | 4 | Front-end foundation, brand, login, token handling | **Done** (branch `feature/04-front-foundation`, merged to `main`) |
 | 5 | UMS user interface | **Done** (branch `feature/05-ums-ui`) |
-| 6 | Catalog, media, branch-wise inventory | **Done** (6-a to 6-e; branch `feature/06-catalog-inventory`, not yet merged to `main`) |
+| 6 | Catalog, media, branch-wise inventory | **Done** (6-a to 6-e; merged to `main`) |
 | 7 | Storefront, cart, customer identity, address, delivery zones | **Done** (7-a backend, 7-b front end; gated 2026-11-11) |
-| 8 | Checkout, orders, order processing | In progress |
-| 9 | Payments, tax/invoices, notifications | In progress (9-a backend done on a worktree branch, see "Step 9-a backend result"; front end 9-b done on a worktree branch, see "Step 9-b front-end result") |
-| 10 | Couriers, real-time status, returns | Not started |
+| 8 | Checkout, orders, order processing | **Done** (8-a backend, 8-b front end; merged to `main`) |
+| 9 | Payments, tax/invoices, notifications | **Done** (9-a backend, 9-b front end; merged to `main`) |
+| 10 | Couriers, real-time status, returns | **Done** (returns backend and front end, 10-a backend, 10-b front end: couriers, parcels, labels, COD settlement, live updates, order integration; merged to `main`, gated 2026-11-15) |
 | 11A | Operations part 1: purchasing, expenses, support, reports | Not started |
 | 11B | Operations part 2: promotions, pre-order, loyalty, marketing, reseller, POS | Not started |
 | 12 | Remaining admin UI, CMS, dashboard, settings, platform services | Not started |
@@ -191,11 +191,6 @@ Branch: worktree `worktree-agent-ac1a4217fc6b100ee` (built on the merged Orders,
 - **Not in this slice (Partial or Deferred):** the whole front end of Step 10 (courier list and settings, booking from the order screen, labels, COD settlement screens, live updates, return pickup form); real courier adapters (Step 14); encrypted credential storage; automatic retry with backoff of a failed booking; courier performance report; delay alerts and courier-based delivery estimates; live stock events; label PDF; courier fee deduction from settled cash.
 - **Gate (2026-11-11, run and seen):** `dotnet build juvo-be --no-incremental` 0 warnings, 0 errors; each test project run from its executable: domain 299 passed (283 before, 16 new), application 57 passed (54 before, 3 new), integration 412 passed (370 before, 42 new: booking and suggestions, sandbox journey to Delivered with COD collected, settlement with short and over, failed-delivery retry, return to sender with restock, cancel and re-book, bulk and concurrent booking, webhook signature, expiry, malformed, duplicate and concurrent replay, skipped scans, polling job, tracking payload, label, reverse return pickup, manual return path, courier admin, slots, charge override, permissions and branch isolation, default roles, SignalR customer, guest, staff, stale access and token expiry, manual quote equal to create, guest cancel and its rate limit); migration and package checks below.
 
-## Next step
-
-**Step 10 front end** (courier admin, booking and COD screens, live updates) on top of the Step 10-a API, then Step 11A.
-
-**Step 9: payments, tax/invoices, notifications** (the sandbox online method gets its payment page; Step 8-b is done).
 ### Step 9-b front-end result (payments, invoices, notifications screens)
 
 Branch: worktree `worktree-agent-a788228963b632773` (built on the merged 9-a backend; not merged, not pushed). Decisions: `docs/assumptions.md` section R (with the contract gaps found); routes in `juvo-front/docs/frontend.md`; traceability rows FR-F10, FR-I02, I03, I06 to I10, FR-K01, K04, K05, K07, FR-U01, U03, U04 updated.
@@ -206,9 +201,21 @@ Branch: worktree `worktree-agent-a788228963b632773` (built on the merged 9-a bac
 - **Not built / Partial:** the customer paying the COD advance online (the API refuses), a customer list of payments and refunds under `/me` (no endpoint), a hold countdown for guests returning later (no data), invoice for a guest who tracks by number and mobile (needs the token), a resend of a Failed/DeadLetter notification tested end to end (the real stack cannot produce one honestly; only the button's absence on Sent rows is tested), sorting of the notification log, Bengali texts are a first pass (Step 12), real gateways and senders (Step 14).
 - **Gate (2026-11-11 and 12, run and seen):** payments.spec 16/16 on desktop; first full run 415 tests: 386 passed, 13 failed, 9 skipped, 7 not run (causes fixed; the affected specs re-run: 124 passed, the 1 left fixed and re-run 16/16); the full suite was NOT re-run end to end after the fixes, shell.spec and the billing UI checks were not re-run after the last changes; `npx tsc --noEmit` clean, `npx eslint src e2e tests` clean, `npm test` 70 passed (12 new in `tests/payments.test.ts`), `npm run build` ok.
 
+### Step 10 front-end result (couriers, parcels, labels, COD settlement, live updates, order integration)
+
+Built by three parallel builders on top of a shared foundation and merged into `main`. Details and decisions: `docs/step10-frontend-{a,b,c}.md`, `docs/assumptions.md` section T; routes in `juvo-front/docs/frontend.md`; traceability rows FR-F03, FR-H01 to FR-H12, FR-J03, FR-J06, FR-J07, FR-L01, FR-L04, FR-S01 updated.
+
+- **Couriers and parcels:** `/admin/couriers` (courier form with every field, switch with the "not set up" explanation, archive, Connections tab), `/admin/shipments` (search, filters, server paging, live), `/shipments/[id]` (journey, facts, immutable timeline, cancel with reason, re-book, sandbox advance), single and multi **labels** with an own Code 128 barcode (A6).
+- **COD settlement:** `/admin/cod` (list with summary), `/cod/new`, `/cod/[id]` (reconcile with per-parcel differences and mandatory notes, settle with reference, cancel), `/cod/[id]/print`.
+- **Order, return and customer integration:** courier panel and book dialog on the staff order page, bulk booking (up to 50), return pickup through a courier with the reverse parcel shown, "Courier and tracking" card on tracking and account order pages, guest cancel, order desk totals from `POST /orders/manual/quote` (the Step 8-b estimate is gone).
+- **Live updates (SignalR):** parcel list and page, order list and page, return page, guest and customer tracking; connection badge; no polling; client loaded only on those screens; new-order toast for staff.
+- **Speed work:** production web build and Release API by default in `scripts/start-all.ps1` (`-Dev` for development); client translations sent per area with a guarding test (storefront HTML about 40 percent smaller); storefront layout fetches in parallel. Measured: first page view 2 to 16 s in dev mode versus 25 to 90 ms in production mode; first API call per endpoint 0.5 to 2.2 s (Debug) versus 50 to 160 ms (Release).
+- **Not built / Partial:** courier count chips and short/over counts in lists (no API fields), real courier accounts (Step 14), courier card on the order-confirmation page, a full side-by-side transparency view (FR-J07), Bengali first pass, dashboard counters still sample data (Step 12). Contract gaps found are listed in `docs/assumptions.md` section T.
+- **Gate (2026-11-15, run and seen):** `npx tsc --noEmit` clean; `npx eslint src e2e tests` 0 problems; `npm test` 144 passed in 14 files (couriers 12, couriers-admin, cod, booking, messages scope); `npm run build` ok; backend `dotnet build` in `juvo-be` 0 warnings (backend unchanged in this step). Full `npm run test:e2e` on the merged tree (desktop, tablet, Android, iPhone; 22.9 min): **492 passed, 4 failed, 9 skipped, 9 did not run**. The 4 failures were timing flakes under load (`orders-ui-checks` at 768 px, two `orders.spec` tests, one `shipments.spec` test); the three affected spec files were re-run together: **62 of 62 passed**. The 9 "did not run" tests are the rest of those files after a failure and were part of the re-run. The full suite was not run a second time end to end.
+
 ## Next step
 
-**Step 10 remainder and Step 11A** (couriers, live updates, returns front end; then purchasing, expenses, support, reports). Step 9 is complete once this branch is merged.
+**Step 11A** (purchasing, expenses, support, reports), then 11B, 12 (remaining admin UI, CMS, dashboard, settings), 13, 14. Owner decisions open: the Accountant role lacks `couriers.courier.view` (cannot pick a courier on the new COD batch screen), delivery rates and VAT are placeholders, real provider accounts for Step 14.
 
 ## Known issues / notes
 
