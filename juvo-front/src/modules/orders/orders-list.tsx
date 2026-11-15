@@ -1,11 +1,16 @@
 "use client";
 
 import * as React from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { ColumnDef } from "@tanstack/react-table";
-import { CircleAlert, CircleCheck, Plus, Printer } from "lucide-react";
+import { CircleAlert, CircleCheck, Plus, Printer, Truck } from "lucide-react";
+import { LiveBadge } from "@/components/ui/live-badge";
+import { useCourierPermissions } from "@/modules/couriers/permissions";
+import { splitBookable } from "./booking/logic";
+import { useOrdersListLive } from "./booking/use-staff-live";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DataTable } from "@/components/ui/data-table";
@@ -39,6 +44,8 @@ import { DeliveryStatusBadge, FraudBadge, OrderStatusBadge, PaymentStatusBadge, 
 import { useOrderPermissions } from "./permissions";
 import { dayRange } from "./status";
 
+const BulkBookDialog = dynamic(() => import("./booking/bulk-book-dialog"), { ssr: false });
+
 type Filters = { status?: string; paymentStatus?: string; deliveryStatus?: string; source?: string; fraudState?: string; branchId?: string; from?: string; to?: string; held?: string };
 
 /** The order list: filters for every track, branch, source, fraud state and dates; bulk actions; source summary chips. */
@@ -54,8 +61,14 @@ export function OrdersList() {
   const branches = useBranchOptions();
   const errorText = useOrderErrorText();
   const perms = useOrderPermissions();
+  const courierPerms = useCourierPermissions();
+  const live = useOrdersListLive();
   const state = useListState<Filters>({}, 20);
   const bulk = useBulkAction();
+  const [bookOpen, setBookOpen] = React.useState(false);
+  // Status of every order that was ticked, so a selection that spans pages still knows which ones are packed.
+  const [statusSeen, setStatusSeen] = React.useState<Record<string, string>>({});
+  const tb = useTranslations("booking.bulk");
 
   const [selected, setSelected] = React.useState<ReadonlySet<string>>(new Set());
   const [cancelOpen, setCancelOpen] = React.useState(false);
@@ -83,16 +96,20 @@ export function OrdersList() {
   const summary = useSourceSummary(range, perms.sources);
   const items = React.useMemo(() => query.data?.items ?? [], [query.data]);
 
-  const toggle = (id: string, on: boolean) =>
+  const toggle = (id: string, on: boolean, status: string) => {
+    setStatusSeen((old) => ({ ...old, [id]: status }));
     setSelected((old) => {
       const next = new Set(old);
       if (on) next.add(id);
       else next.delete(id);
       return next;
     });
+  };
+  const bookable = React.useMemo(() => splitBookable([...selected], (id) => statusSeen[id]).bookable, [selected, statusSeen]);
   const pageIds = items.map((o) => o.id);
   const allOnPage = pageIds.length > 0 && pageIds.every((id) => selected.has(id));
-  const toggleAll = (on: boolean) =>
+  const toggleAll = (on: boolean) => {
+    setStatusSeen((old) => ({ ...old, ...Object.fromEntries(items.map((o) => [o.id, o.status])) }));
     setSelected((old) => {
       const next = new Set(old);
       for (const id of pageIds) {
@@ -101,8 +118,9 @@ export function OrdersList() {
       }
       return next;
     });
+  };
 
-  const run = async (action: "confirm" | "cancel", extra: { reason?: string; advanceReceived?: boolean } = {}) => {
+  const run =async (action: "confirm" | "cancel", extra: { reason?: string; advanceReceived?: boolean } = {}) => {
     try {
       const answer = await bulk.mutateAsync({ action, ids: [...selected], ...extra });
       setResult(answer);
@@ -125,10 +143,10 @@ export function OrdersList() {
             <span className="flex items-start gap-1">
               {perms.bulk ? (
                 <label className="-ms-2 flex size-11 shrink-0 cursor-pointer items-center justify-center">
-                  <Checkbox checked={selected.has(o.id)} onCheckedChange={(v) => toggle(o.id, v === true)} aria-label={t("select", { number: o.number })} />
+                  <Checkbox checked={selected.has(o.id)} onCheckedChange={(v) => toggle(o.id, v === true, o.status)} aria-label={t("select", { number: o.number })} />
                 </label>
               ) : null}
-              <span className="min-w-0 space-y-1">
+              <span className="min-w-0 space-y-1 md:min-w-40">
                 <Link href={`/admin/orders/${o.id}`} className="inline-flex min-h-11 items-center rounded-control font-semibold text-strong hover:text-primary hover:underline" data-testid="order-link">
                   <span className="font-mono [overflow-wrap:anywhere]">{o.number}</span>
                 </Link>
@@ -188,6 +206,7 @@ export function OrdersList() {
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         <SearchBox className="lg:w-80" value={state.searchText} onChange={state.setSearchText} placeholder={t("searchPlaceholder")} label={t("search")} />
         <div className="flex-1" />
+        <LiveBadge status={live} className="self-start lg:self-auto" />
         {perms.create ? (
           <Button asChild>
             <Link href="/admin/orders/new">
@@ -258,6 +277,11 @@ export function OrdersList() {
           {perms.cancel ? (
             <Button variant="secondary" onClick={() => setCancelOpen(true)} data-testid="bulk-cancel">
               {t("bulk.cancel")}
+            </Button>
+          ) : null}
+          {courierPerms.bulkBook && bookable.length > 0 ? (
+            <Button variant="secondary" onClick={() => setBookOpen(true)} data-testid="bulk-book">
+              <Truck aria-hidden /> {tb("button", { count: bookable.length })}
             </Button>
           ) : null}
           {perms.print ? (
@@ -334,6 +358,8 @@ export function OrdersList() {
           <Textarea id="bulk-reason" rows={3} value={reason} onChange={(e) => setReason(e.target.value)} aria-invalid={!!reasonError} />
         </Field>
       </ConfirmDialog>
+
+      {bookOpen ? <BulkBookDialog ids={bookable} open onOpenChange={setBookOpen} onDone={() => setSelected(new Set())} /> : null}
 
       <Dialog open={!!result} onOpenChange={(open) => (open ? undefined : setResult(null))}>
         <ModalContent size="md" closeLabel={tc("close")}>

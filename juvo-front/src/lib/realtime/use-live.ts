@@ -34,7 +34,7 @@ export type LiveOptions = {
   onEvent: (event: LiveEvent) => void;
 };
 
-type HubToken = { token: string; expiresAt: string; hubPath: string };
+type HubToken = { token: string; expiresAt: string; hubPath: string; orderId?: string | null };
 
 async function fetchToken(mode: LiveOptions["mode"], proof?: GuestProof): Promise<HubToken> {
   const guest = mode === "guest";
@@ -105,7 +105,9 @@ export function useLive(options: LiveOptions): LiveStatus {
 
         const join = async () => {
           if (mode === "staff" && branch) await built.invoke("JoinBranch", branch);
-          for (const id of orders) await built.invoke("JoinOrder", id);
+          // A guest's token names the one order of the proof (the tracking answer carries no order id): it must join that group itself.
+          const follow = mode === "guest" && first.orderId ? [first.orderId] : orders;
+          for (const id of follow) await built.invoke("JoinOrder", id);
         };
         built.onreconnecting(() => !cancelled && setStatus("reconnecting"));
         built.onreconnected(async () => {

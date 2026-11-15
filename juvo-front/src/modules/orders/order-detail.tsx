@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Ban, CircleCheck, PackageCheck, Printer, ShieldAlert, Truck } from "lucide-react";
@@ -23,6 +24,11 @@ import { usePaymentPermissions } from "@/modules/payments/permissions";
 import { AddressBlock } from "./my-order-detail";
 import { useOrderPermissions } from "./permissions";
 import { actionsFrom } from "./status";
+import { LiveBadge } from "@/components/ui/live-badge";
+import { useOrderDetailLive } from "./booking/use-staff-live";
+
+// The courier panel loads after the page shell and runs its own query, so it never delays the order itself.
+const CourierPanel = dynamic(() => import("./booking/courier-panel"), { ssr: false, loading: () => <Skeleton className="h-24" aria-busy /> });
 
 type Dialogs = "confirm" | "cancel" | "reassign" | "transition" | null;
 
@@ -44,6 +50,7 @@ export function OrderDetail({ id }: { id: string }) {
   const act = useOrderAction(id);
   const payPerms = usePaymentPermissions(order?.branchId);
   const orderPayments = useOrderPayments(id, payPerms.view);
+  const live = useOrderDetailLive(id);
 
   const [dialog, setDialog] = React.useState<Dialogs>(null);
   const [reason, setReason] = React.useState("");
@@ -124,6 +131,7 @@ export function OrderDetail({ id }: { id: string }) {
             <OrderStatusBadge status={order.status} />
             <PaymentStatusBadge status={order.paymentStatus} />
             <FraudBadge state={order.fraudState} />
+            <LiveBadge status={live} />
             {allowed.confirm && perms.confirm ? (
               <Button onClick={onConfirmClick} loading={act.isPending && dialog === null} disabled={order.isHeld} data-testid="action-confirm">
                 <CircleCheck aria-hidden /> {t("actions.confirm")}
@@ -280,6 +288,8 @@ export function OrderDetail({ id }: { id: string }) {
             </Section>
 
             <OrderPaymentPanel order={order} />
+
+            <CourierPanel order={order} />
 
             <Section title={t("customer")} id="od-customer">
               <dl className="space-y-1.5 text-sm">

@@ -15,6 +15,10 @@ import { GuestInvoicePanel, PaymentPanel } from "@/modules/payments/customer-pan
 import { useOrderErrorText, useTracking, type TrackQuery } from "./api";
 import { OrderLines, ProgressLine, Section, TrackBadges, TrackHistory } from "./common";
 import { cleanMobile, isBdMobile } from "./status";
+import { LiveBadge } from "@/components/ui/live-badge";
+import { useLiveRefresh } from "@/lib/realtime/use-live";
+import { CourierTrackingCard } from "./booking/courier-card";
+import { GuestCancel } from "./booking/guest-cancel";
 
 /**
  * Public order tracking. A person can look an order up with the order number and the mobile used, or open the private link given
@@ -31,6 +35,15 @@ export function TrackView({ initialToken, initialNumber, initialMobile }: { init
   const [errors, setErrors] = React.useState<{ number?: string; mobile?: string }>({});
   const [query, setQuery] = React.useState<TrackQuery | null>(initialToken ? { token: initialToken } : initialNumber && initialMobile ? { number: initialNumber.trim(), mobile: cleanMobile(initialMobile) } : null);
   const tracking = useTracking(query);
+  // Live: the proof of the lookup opens the hub for this one order, so a status or courier scan shows without a reload.
+  const live = useLiveRefresh({
+    mode: "guest",
+    proof: query ?? undefined,
+    enabled: !!query && !!tracking.data && !tracking.isError,
+    queryKeys: [["orders", "track"]],
+    events: ["OrderStatusChanged", "PaymentStatusChanged", "ShipmentEventAdded"],
+    delayMs: 300,
+  });
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -82,11 +95,19 @@ export function TrackView({ initialToken, initialNumber, initialMobile }: { init
               </h2>
               <p className="text-sm text-muted">{t("placed", { date: dateTime(data.placedAt) })}</p>
             </div>
-            <TrackBadges status={data.status} paymentStatus={data.paymentStatus} deliveryStatus={data.deliveryStatus} />
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <TrackBadges status={data.status} paymentStatus={data.paymentStatus} deliveryStatus={data.deliveryStatus} />
+              </div>
+              <LiveBadge status={live} />
+            </div>
+            {data.canCancel && query ? <GuestCancel query={query} number={data.number} paid={data.paymentStatus === "Paid"} /> : null}
             {data.district ? <p className="text-sm text-muted">{t("deliveringTo", { district: data.district })}</p> : null}
             {initialToken || customer ? <PaymentPanel number={data.number} method={data.paymentMethod} paymentStatus={data.paymentStatus} orderStatus={data.status} token={initialToken} /> : null}
           </Card>
           {initialToken ? <GuestInvoicePanel number={data.number} token={initialToken} id="track-invoice" status={data.status} /> : null}
+
+          <CourierTrackingCard shipment={data.shipment} id="track-courier" />
 
           <div className="grid gap-5 lg:grid-cols-2">
             <Section title={t("progress")} id="track-progress">

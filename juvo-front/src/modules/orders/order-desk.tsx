@@ -16,12 +16,14 @@ import { useDebounced } from "@/lib/hooks";
 import { useProduct, useProducts } from "@/modules/catalog/api";
 import { toNumber, useMoney } from "@/modules/catalog/format";
 import { QtyInput } from "@/modules/inventory/common";
-import { addressErrors, emptyDraft, placeOf, toCheckoutAddress, type AddressDraft } from "./address";
+import { addressErrors, emptyDraft, toCheckoutAddress, type AddressDraft } from "./address";
 import { AddressFields } from "./address-fields";
-import { DESK_SOURCES, problemOf, useCreateManualOrder, useCustomerLookup, useDeskDeliveryQuote, useOrderErrorText, type OrderSource } from "./api";
-import { AmountList, Section, useSourceLabel } from "./common";
+import { DESK_SOURCES, problemOf, useCreateManualOrder, useCustomerLookup, useOrderErrorText, type OrderSource } from "./api";
+import { Section, useSourceLabel } from "./common";
 import { useOrderPermissions } from "./permissions";
-import { cleanMobile, deskTotals, isBdMobile, newKey } from "./status";
+import { cleanMobile, isBdMobile, newKey } from "./status";
+import { DeskSummary } from "./booking/desk-summary";
+import { useDeskQuote } from "./booking/use-desk-quote";
 
 type DeskLine = { variantId: string; productId: string; sku: string; name: string; detail: string; price: number; quantity: number };
 
@@ -110,6 +112,7 @@ function ItemPicker({ chosen, onAdd }: { chosen: ReadonlySet<string>; onAdd: (li
  */
 export function OrderDesk() {
   const t = useTranslations("orders.desk");
+  const tb = useTranslations("booking.desk");
   const tc = useTranslations("orders.common");
   const router = useRouter();
   const money = useMoney();
@@ -130,6 +133,7 @@ export function OrderDesk() {
   const [method, setMethod] = React.useState("COD");
   const [discount, setDiscount] = React.useState("");
   const [override, setOverride] = React.useState("");
+  const [coupon, setCoupon] = React.useState("");
   const [customerNote, setCustomerNote] = React.useState("");
   const [internalNote, setInternalNote] = React.useState("");
   const [errors, setErrors] = React.useState<Record<string, string>>({});
@@ -139,13 +143,30 @@ export function OrderDesk() {
 
   const validMobile = isBdMobile(mobile);
   const lookup = useCustomerLookup(cleanMobile(mobile), validMobile && canAnywhere(me, "customers.customer.view"));
-  const place = React.useMemo(() => placeOf(draft), [draft]);
-  const quoteItems = React.useMemo(() => lines.map((l) => ({ variantId: l.variantId, quantity: l.quantity })), [lines]);
-  const delivery = useDeskDeliveryQuote(place, quoteItems);
   const discountValue = Math.max(0, Number(discount) || 0);
-  const deliveryValue = override.trim() !== "" && perms.overrideDelivery ? Math.max(0, Number(override) || 0) : toNumber(delivery.data?.total);
-  const totals = deskTotals({ lines, discount: discountValue, delivery: deliveryValue });
+  const deliveryValue = override.trim() !== "" && perms.overrideDelivery ? Math.max(0, Number(override) || 0) : 0;
   const customer = lookup.data;
+
+  // The real totals: the server prices the desk exactly as it will when the order is saved. Asked only once the form can be priced.
+  const quoteAddress = React.useMemo(() => {
+    if (!validMobile || Object.keys(addressErrors(draft, { needPhone: false })).length > 0) return null;
+    const address = toCheckoutAddress(draft);
+    if (!address.phone) address.phone = cleanMobile(mobile);
+    return address as unknown as Record<string, unknown>;
+  }, [draft, mobile, validMobile]);
+  const quote = useDeskQuote({
+    customerMobile: cleanMobile(mobile),
+    source,
+    branchId,
+    address: quoteAddress,
+    lines: lines.map((l) => ({ variantId: l.variantId, quantity: l.quantity })),
+    paymentMethod: method,
+    couponCode: coupon,
+    discount: discountValue,
+    deliveryOverride: override,
+    canDiscount: perms.applyDiscount,
+    canOverride: perms.overrideDelivery,
+  });
 
   const addLine = (line: Omit<DeskLine, "quantity">) => setLines((old) => (old.some((l) => l.variantId === line.variantId) ? old : [...old, { ...line, quantity: 1 }]));
   const setQty = (variantId: string, value: string) => setLines((old) => old.map((l) => (l.variantId === variantId ? { ...l, quantity: Math.max(1, Math.min(Number(value) || 1, 999)) } : l)));
@@ -176,7 +197,7 @@ export function OrderDesk() {
       address,
       lines: lines.map((l) => ({ variantId: l.variantId, sku: null, quantity: l.quantity })),
       paymentMethod: method,
-      couponCode: null,
+      couponCode: coupon.trim() ? coupon.trim().toUpperCase() : null,
       discount: perms.applyDiscount && discountValue > 0 ? discountValue : null,
       deliveryChargeOverride: perms.overrideDelivery && override.trim() !== "" ? deliveryValue : null,
       customerNote: customerNote.trim() || null,
@@ -184,7 +205,7 @@ export function OrderDesk() {
       idempotencyKey: null as string | null,
       confirmDuplicate,
     };
-    const fingerprint = JSON.stringify([body.customerMobile, body.lines, body.paymentMethod, body.branchId, body.discount, body.deliveryChargeOverride]);
+    const fingerprint = JSON.stringify([body.customerMobile, body.lines, body.paymentMethod, body.branchId, body.discount, body.deliveryChargeOverride, body.couponCode]);
     if (attempt.current?.fingerprint !== fingerprint) attempt.current = { fingerprint, key: newKey() };
     body.idempotencyKey = attempt.current.key;
 
@@ -338,28 +359,22 @@ export function OrderDesk() {
       <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start" aria-label={t("summary.title")}>
         <Card className="space-y-4 p-4 sm:p-5">
           <h2 className="text-lg font-semibold text-strong">{t("summary.title")}</h2>
+          <Field label={tb("coupon")} htmlFor="desk-coupon" hint={tb("couponHint")}>
+            <Input id="desk-coupon" value={coupon} onChange={(e) => setCoupon(e.target.value)} autoComplete="off" maxLength={40} />
+          </Field>
           {perms.applyDiscount ? (
             <Field label={t("summary.discount")} htmlFor="desk-discount" hint={t("summary.discountHint")}>
               <Input id="desk-discount" inputMode="decimal" value={discount} onChange={(e) => setDiscount(e.target.value.replace(/[^\d.]/g, ""))} />
             </Field>
           ) : null}
           {perms.overrideDelivery ? (
-            <Field label={t("summary.override")} htmlFor="desk-override" hint={t("summary.overrideHint", { charge: money(delivery.data?.total ?? 0) })}>
+            <Field label={t("summary.override")} htmlFor="desk-override" hint={quote.data ? t("summary.overrideHint", { charge: money(quote.data.standardDeliveryCharge) }) : tb("overrideHintNone")}>
               <Input id="desk-override" inputMode="decimal" value={override} onChange={(e) => setOverride(e.target.value.replace(/[^\d.]/g, ""))} />
             </Field>
           ) : null}
-          <AmountList
-            className="border-t border-line pt-4"
-            rows={[
-              { key: "subtotal", label: t("summary.subtotal"), value: totals.subtotal, always: true },
-              { key: "discount", label: t("summary.discountRow"), value: totals.discount, negative: true },
-              { key: "delivery", label: t("summary.delivery"), value: totals.delivery, always: !!place && lines.length > 0, text: place && lines.length > 0 ? undefined : t("summary.needAddress") },
-              { key: "total", label: t("summary.total"), value: totals.grandTotal, strong: true },
-            ]}
-          />
-          <p className="text-sm text-muted" data-testid="desk-estimate-note">
-            {t("summary.estimate")}
-          </p>
+          <div className="border-t border-line pt-4">
+            <DeskSummary quote={quote} />
+          </div>
           {formError ? (
             <Alert variant="danger" data-testid="desk-error">
               {formError}

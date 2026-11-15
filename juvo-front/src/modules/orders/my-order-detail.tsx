@@ -15,6 +15,9 @@ import { ApiError } from "@/lib/api/client";
 import { useCancelMyOrder, useMyOrder, useOrderErrorText, type MyOrder } from "./api";
 import { ReturnOrderLink } from "@/modules/returns/return-order-link";
 import { MyInvoicePanel, PaymentHistory, PaymentPanel } from "@/modules/payments/customer-panels";
+import { LiveBadge } from "@/components/ui/live-badge";
+import { useLiveRefresh } from "@/lib/realtime/use-live";
+import { CourierTrackingCard } from "./booking/courier-card";
 import { AmountList, OrderLines, ProgressLine, Section, TrackBadges, TrackHistory, useMethodLabel } from "./common";
 
 /** The shipping address in a few readable lines. */
@@ -42,6 +45,8 @@ export function MyOrderDetail({ id }: { id: string }) {
   const methodLabel = useMethodLabel();
   const query = useMyOrder(id);
   const cancel = useCancelMyOrder(id);
+  // Live: follow this order's group; a status change or courier scan refreshes the order without a reload.
+  const live = useLiveRefresh({ mode: "customer", orderIds: [id], queryKeys: [["orders", "mine", id]], events: ["OrderStatusChanged", "PaymentStatusChanged", "ShipmentEventAdded"], delayMs: 300 });
   const [open, setOpen] = React.useState(false);
   const [reason, setReason] = React.useState("");
   const crumbs = [{ label: tn("items.accountHome"), href: "/account" }, { label: tm("title"), href: "/account/orders" }, { label: query.data?.number ?? "..." }];
@@ -88,6 +93,7 @@ export function MyOrderDetail({ id }: { id: string }) {
         crumbs={crumbs}
         actions={
           <>
+            <LiveBadge status={live} />
             {order.canCancel ? (
               <Button variant="secondary" onClick={() => setOpen(true)} data-testid="cancel-order">
                 {t("cancel")}
@@ -112,6 +118,8 @@ export function MyOrderDetail({ id }: { id: string }) {
         </Section>
 
         <MyInvoicePanel orderId={order.id} id="mo-invoice" status={order.status} />
+
+        <CourierTrackingCard shipment={order.shipment} id="mo-courier" />
 
         <div className="grid gap-5 lg:grid-cols-2">
           <Section title={t("progress")} id="mo-progress">

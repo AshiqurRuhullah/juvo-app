@@ -123,7 +123,7 @@ export function useReturn(id: string) {
 export type ActionVars =
   | { action: "approve"; note?: string }
   | { action: "reject"; reason: string }
-  | { action: "schedulePickup"; date: string; courier?: string; note?: string }
+  | { action: "schedulePickup"; date: string; courier?: string; note?: string; useCourier?: boolean; courierId?: string | null }
   | { action: "pickedUp" }
   | { action: "received" }
   | { action: "inspect"; body: Schemas["InspectReturnRequest"] }
@@ -143,7 +143,7 @@ export function useReturnAction(id: string) {
         case "reject":
           return unwrap(await api.POST("/api/v1/returns/{id}/reject", { ...params, body: { reason: vars.reason.trim() } }));
         case "schedulePickup":
-          return unwrap(await api.POST("/api/v1/returns/{id}/schedule-pickup", { ...params, body: { date: vars.date, courier: vars.courier?.trim() || null, note: vars.note?.trim() || null, useCourier: false } }));
+          return unwrap(await api.POST("/api/v1/returns/{id}/schedule-pickup", { ...params, body: { date: vars.date, courier: vars.useCourier ? null : vars.courier?.trim() || null, note: vars.note?.trim() || null, useCourier: !!vars.useCourier, courierId: vars.useCourier ? vars.courierId || null : null } }));
         case "pickedUp":
           return unwrap(await api.POST("/api/v1/returns/{id}/picked-up", params));
         case "received":
@@ -160,7 +160,7 @@ export function useReturnAction(id: string) {
     },
     onSuccess: (detail) => {
       queryClient.setQueryData(["returns", "detail", id], detail);
-      return Promise.all([queryClient.invalidateQueries({ queryKey: ["returns", "queue"] }), queryClient.invalidateQueries({ queryKey: ["returns", "summary"] }), queryClient.invalidateQueries({ queryKey: ["inventory"] })]);
+      return Promise.all([queryClient.invalidateQueries({ queryKey: ["returns", "queue"] }), queryClient.invalidateQueries({ queryKey: ["returns", "summary"] }), queryClient.invalidateQueries({ queryKey: ["inventory"] }), queryClient.invalidateQueries({ queryKey: ["couriers", "shipments"] })]);
     },
   });
 }

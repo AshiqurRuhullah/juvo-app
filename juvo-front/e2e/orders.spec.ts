@@ -374,7 +374,8 @@ test.describe("Social order desk", () => {
     await page.getByLabel("Discount (BDT)").fill("50");
     await expect(page.getByTestId("amount-discount")).toContainText("50");
     await expect(page.getByTestId("amount-delivery")).not.toContainText("Add items");
-    await expect(page.getByTestId("desk-estimate-note")).toContainText("final amounts");
+    // The totals come from the server's own preview (POST /orders/manual/quote), not from a local estimate.
+    await expect(page.getByTestId("desk-quote")).toContainText("same calculation");
 
     await page.getByTestId("desk-save").click();
     await expect(page).toHaveURL(/\/admin\/orders\/[0-9a-f-]{36}$/);
