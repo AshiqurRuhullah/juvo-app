@@ -10,8 +10,8 @@ import { defineConfig, devices } from "@playwright/test";
  * Ports: API 5081, front end 3100 (separate from the development ports 5080 and 3000).
  */
 process.env.E2E_DB ??= `JuvoDb_E2E_${Date.now()}`;
-const API_PORT = 5081;
-const WEB_PORT = 3100;
+const API_PORT = Number(process.env.E2E_API_PORT ?? 5081);
+const WEB_PORT = Number(process.env.E2E_WEB_PORT ?? 3100);
 const apiUrl = `http://localhost:${API_PORT}`;
 const sqlServer = process.env.JUVO_TEST_SQL_SERVER ?? "(localdb)\\MSSQLLocalDB";
 
