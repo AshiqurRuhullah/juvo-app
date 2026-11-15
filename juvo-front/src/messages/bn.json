@@ -43,6 +43,8 @@
       "customers": "গ্রাহক",
       "zones": "ডেলিভারি জোন",
       "couriers": "কুরিয়ার",
+      "shipments": "পার্সেল",
+      "codSettlements": "ক্যাশ অন ডেলিভারি হিসাব",
       "payments": "পেমেন্ট",
       "taxInvoices": "কর ও ইনভয়েস",
       "notifications": "বিজ্ঞপ্তি ও বার্তা",

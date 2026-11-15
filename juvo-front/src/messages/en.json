@@ -43,6 +43,8 @@
       "customers": "Customers",
       "zones": "Delivery zones",
       "couriers": "Couriers",
+      "shipments": "Parcels",
+      "codSettlements": "COD settlements",
       "payments": "Payments",
       "taxInvoices": "Tax and invoices",
       "notifications": "Notifications",

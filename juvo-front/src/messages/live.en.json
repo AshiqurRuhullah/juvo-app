@@ -1,0 +1,7 @@
+{
+  "label": "Live updates",
+  "live": "Live",
+  "connecting": "Connecting",
+  "reconnecting": "Reconnecting",
+  "offline": "Not live, refresh to update"
+}
