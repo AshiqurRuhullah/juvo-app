@@ -104,10 +104,15 @@ export function useLive(options: LiveOptions): LiveStatus {
         for (const name of LIVE_EVENTS) built.on(name, (payload: Record<string, unknown>) => handler.current({ name, ...(payload ?? {}) } as LiveEvent));
 
         const join = async () => {
-          if (mode === "staff" && branch) await built.invoke("JoinBranch", branch);
+          // Each group is joined on its own: the hub refuses a join the person has no right to (REALTIME.FORBIDDEN), and one refusal
+          // (for example a branch without order access) must not stop the other groups or mark the connection as offline.
+          const attempt = (method: string, id: string) => built.invoke(method, id).catch(() => undefined);
+          const jobs: Promise<unknown>[] = [];
+          if (mode === "staff" && branch) jobs.push(attempt("JoinBranch", branch));
           // A guest's token names the one order of the proof (the tracking answer carries no order id): it must join that group itself.
           const follow = mode === "guest" && first.orderId ? [first.orderId] : orders;
-          for (const id of follow) await built.invoke("JoinOrder", id);
+          for (const id of follow) jobs.push(attempt("JoinOrder", id));
+          await Promise.all(jobs);
         };
         built.onreconnecting(() => !cancelled && setStatus("reconnecting"));
         built.onreconnected(async () => {
