@@ -63,7 +63,8 @@
       "myOrders": "আমার অর্ডার",
       "addresses": "ঠিকানা",
       "wishlist": "পছন্দের তালিকা",
-      "signIns": "সাইন-ইনের ইতিহাস"
+      "signIns": "সাইন-ইনের ইতিহাস",
+      "shop": "শপ"
     }
   },
   "shell": {
@@ -92,7 +93,12 @@
     "chooseShort": "শাখা",
     "notifications": "বিজ্ঞপ্তি",
     "noNotifications": "নতুন কিছু নেই",
-    "noNotificationsBody": "নতুন অর্ডার, কম মজুত ও ডেলিভারি সমস্যা এখানে দেখা যাবে।"
+    "noNotificationsBody": "নতুন অর্ডার, কম মজুত ও ডেলিভারি সমস্যা এখানে দেখা যাবে।",
+    "shopNow": "কেনাকাটা শুরু করুন",
+    "shopAgain": "আবার কিনুন",
+    "shopMore": "আরও খুঁজুন",
+    "continueShopping": "কেনাকাটা চালিয়ে যান",
+    "shopHint": "নতুন কিছুর জন্য শপ ঘুরে দেখুন"
   },
   "auth": {
     "title": "সাইন ইন",

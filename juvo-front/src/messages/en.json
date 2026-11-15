@@ -63,7 +63,8 @@
       "myOrders": "My orders",
       "addresses": "Addresses",
       "wishlist": "Wishlist",
-      "signIns": "Sign-in history"
+      "signIns": "Sign-in history",
+      "shop": "Shop"
     }
   },
   "shell": {
@@ -92,7 +93,12 @@
     "chooseShort": "Branch",
     "notifications": "Notifications",
     "noNotifications": "You are all caught up",
-    "noNotificationsBody": "New orders, low stock and delivery problems will appear here."
+    "noNotificationsBody": "New orders, low stock and delivery problems will appear here.",
+    "shopNow": "Start shopping",
+    "shopAgain": "Shop again",
+    "shopMore": "Find more",
+    "continueShopping": "Continue shopping",
+    "shopHint": "Browse the shop for something new"
   },
   "auth": {
     "title": "Sign in",

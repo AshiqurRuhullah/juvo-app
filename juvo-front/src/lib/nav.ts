@@ -172,6 +172,7 @@ export const ACCOUNT_NAV: NavGroup[] = [
     label: "account",
     icon: Gauge,
     items: [
+      { id: "account-shop", label: "shop", href: "/shop", icon: ShoppingBag, ready: true, bottom: true },
       { id: "account-home", label: "accountHome", href: "/account", icon: Gauge, ready: true, bottom: true },
       { id: "account-orders", label: "myOrders", href: "/account/orders", icon: ClipboardList, ready: true, bottom: true },
       { id: "account-addresses", label: "addresses", href: "/account/addresses", icon: Globe, ready: true, bottom: true },

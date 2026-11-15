@@ -4,10 +4,10 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChevronsLeft, ChevronsRight, Ellipsis, Menu } from "lucide-react";
+import { ChevronsLeft, ChevronsRight, Ellipsis, Menu, ShoppingBag } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Dialog, DialogTitle, DialogDescription, SheetContent } from "@/components/ui/overlays";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/overlays";
 import { postJson } from "@/lib/api/post";
 import { ACCOUNT_NAV, ADMIN_NAV, activeItem, flattenNav, visibleNav } from "@/lib/nav";
@@ -22,6 +22,26 @@ import { LanguageSwitch, ThemeToggle } from "./preferences";
 import { UserMenu } from "./user-menu";
 
 type Area = "admin" | "account";
+
+/** Which friendly wording the customer's shop button gets on the page they are on. */
+export function shopLabelKey(pathname: string): "shopNow" | "shopAgain" | "shopMore" | "continueShopping" {
+  if (pathname === "/account") return "shopNow";
+  if (pathname.startsWith("/account/orders") || pathname.startsWith("/account/returns")) return "shopAgain";
+  if (pathname.startsWith("/account/wishlist")) return "shopMore";
+  return "continueShopping";
+}
+
+/** The always-visible way from any customer page back to the shop: an icon on phones, icon and words from 640 px. */
+function ShopButton({ pathname }: { pathname: string }) {
+  const t = useTranslations("shell");
+  const label = t(shopLabelKey(pathname));
+  return (
+    <Link href="/shop" aria-label={label} title={t("shopHint")} data-testid="shop-button" className={cn(buttonVariants({ variant: "primary", size: "md" }), "max-sm:size-11 max-sm:px-0 sm:px-4")}>
+      <ShoppingBag aria-hidden />
+      <span className="hidden sm:inline">{label}</span>
+    </Link>
+  );
+}
 
 /**
  * Sidebar layout for the admin panel and the customer account (master prompt 5.3A).
@@ -95,6 +115,7 @@ export function AppShell({ area, initialCollapsed, children }: { area: Area; ini
           </Link>
           {area === "admin" ? <BranchSwitcher /> : null}
           <div className="flex-1" />
+          {area === "account" ? <ShopButton pathname={pathname} /> : null}
           <CommandPalette groups={groups} profileHref={profileHref} />
           <NotificationsBell />
           <span className="hidden md:flex">

@@ -16,6 +16,26 @@ test.describe("My account", () => {
     await expect(page).toHaveURL(/\/account\/profile/);
   });
 
+  test("every customer page has a friendly shop button that leads to the shop", async ({ page, context }) => {
+    await signInCustomer(context);
+    const pages: [string, string][] = [
+      ["/account", "Start shopping"],
+      ["/account/orders", "Shop again"],
+      ["/account/wishlist", "Find more"],
+      ["/account/addresses", "Continue shopping"],
+      ["/account/profile", "Continue shopping"],
+    ];
+    for (const [path, label] of pages) {
+      await page.goto(path);
+      const button = page.getByTestId("shop-button");
+      await expect(button, path).toBeVisible();
+      await expect(button, path).toHaveAttribute("aria-label", label);
+      await expect(button, path).toHaveAttribute("href", "/shop");
+    }
+    await page.getByTestId("shop-button").click();
+    await expect(page).toHaveURL(/\/shop$/);
+  });
+
   test("the profile is saved, a bad email is refused, and a consent switch remembers its time", async ({ page, context }) => {
     await signInCustomer(context);
     await page.goto("/account/profile");
