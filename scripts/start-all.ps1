@@ -7,12 +7,18 @@
   2. Creates the database JuvoDb if needed (scripts\setup-db.ps1; safe to run again, never drops anything).
   3. Creates juvo-front\.env.local from .env.example when it is missing and runs `npm install` when packages are missing.
   4. Builds and starts the API (Development: applies migrations, seeds roles, branches, the admin and the sample catalog).
-  5. Starts the web app (development server) and waits until both answer.
+  5. Starts the web app and waits until both answer.
+  FAST MODE (default): the API runs as a Release build and the web app as an optimised production build (pages answer in tens of
+  milliseconds; the first start also builds the web app, which takes a minute or two and is skipped when nothing changed).
+  DEV MODE (-Dev): Debug API and the Next.js development server (compiles pages on first visit, so first visits are slow, but code
+  changes show at once). Use it only while changing the code.
   Output of each part goes to .run\api.log and .run\web.log. Stop everything with:  .\scripts\start-all.ps1 -Stop
 
 .EXAMPLE
   .\scripts\start-all.ps1                 # first run and every later run
   .\scripts\start-all.ps1 -Open           # also opens the login page in the browser
+  .\scripts\start-all.ps1 -Dev            # development servers (slower pages, live code reload)
+  .\scripts\start-all.ps1 -Rebuild        # force a new production build of the web app
   .\scripts\start-all.ps1 -Stop           # stops the API and the web app started by this script
   .\scripts\start-all.ps1 -Status         # shows what is running
   .\scripts\start-all.ps1 -SqlServer ".\SQLEXPRESS"   # use another SQL Server instance
@@ -23,6 +29,8 @@ param(
     [switch]$Status,
     [switch]$Open,
     [switch]$SkipInstall,
+    [switch]$Dev,
+    [switch]$Rebuild,
     [string]$SqlServer
 )
 
@@ -140,13 +148,17 @@ New-Item -ItemType Directory -Force -Path $runDir | Out-Null
 $apiLog = Join-Path $runDir "api.log"
 $webLog = Join-Path $runDir "web.log"
 $be = Join-Path $root "juvo-be"
-Say "  Building (first build takes a minute)..."
-& dotnet build (Join-Path $be "Juvo.sln") --nologo -v quiet
+$config = if ($Dev) { "Debug" } else { "Release" }
+Say "  Building the API ($config; the first build takes a minute)..."
+# Built from inside juvo-be so global.json picks the .NET 10 SDK (a newer SDK installed next to it fails the test projects), and
+# only the API and what it needs are built here, not the test projects.
+Push-Location $be
+try { & dotnet build (Join-Path $be "src\Juvo.Api") -c $config --nologo -v quiet } finally { Pop-Location }
 if ($LASTEXITCODE -ne 0) { Fail "The API did not build (see the messages above)." }
 
 $env:ASPNETCORE_ENVIRONMENT = "Development"
 $api = Start-Process -FilePath "dotnet" `
-    -ArgumentList @("run", "--no-build", "--no-launch-profile", "--project", ('"' + (Join-Path $be "src\Juvo.Api") + '"'), "--urls", $apiUrl) `
+    -ArgumentList @("run", "-c", $config, "--no-build", "--no-launch-profile", "--project", ('"' + (Join-Path $be "src\Juvo.Api") + '"'), "--urls", $apiUrl) `
     -WorkingDirectory $be -WindowStyle Hidden -RedirectStandardOutput $apiLog -RedirectStandardError "$apiLog.err" -PassThru
 Wait-Url "$apiUrl/health/ready" "The API" 180 $apiLog
 Say "  API ready at $apiUrl (interactive docs: $apiUrl/scalar/v1)" "Green"
@@ -154,14 +166,39 @@ Say "  API ready at $apiUrl (interactive docs: $apiUrl/scalar/v1)" "Green"
 # ---- 5. Web app ------------------------------------------------------------------------------------------------------
 Step "Starting the web app"
 $env:API_BASE_URL = $apiUrl
-$web = Start-Process -FilePath "cmd.exe" -ArgumentList @("/c", "npm run dev") `
+$env:NEXT_TELEMETRY_DISABLED = "1"
+$webCommand = "npm run dev"
+if (-not $Dev) {
+    $buildId = Join-Path $front ".next\BUILD_ID"
+    $stale = $Rebuild -or -not (Test-Path $buildId)
+    if (-not $stale) {
+        $built = (Get-Item $buildId).LastWriteTime
+        $newer = Get-ChildItem -Path (Join-Path $front "src"), (Join-Path $front "public") -Recurse -File -ErrorAction SilentlyContinue |
+            Where-Object { $_.LastWriteTime -gt $built } | Select-Object -First 1
+        $stale = [bool]$newer -or ((Get-Item (Join-Path $front "package.json")).LastWriteTime -gt $built) -or ((Get-Item (Join-Path $front "next.config.ts")).LastWriteTime -gt $built)
+    }
+    if ($stale) {
+        Say "  Building the optimised web app (a minute or two)..."
+        Push-Location $front
+        try {
+            & npm run build 2>&1 | Out-File (Join-Path $runDir "web-build.log")
+            # next/font downloads the fonts while building; a dropped connection fails the build once, so try a second time.
+            if ($LASTEXITCODE -ne 0) { Say "  Build failed, trying once more..." "Yellow"; & npm run build 2>&1 | Out-File (Join-Path $runDir "web-build.log") }
+            if ($LASTEXITCODE -ne 0) { Fail "The web app did not build. See .run\web-build.log." }
+        } finally { Pop-Location }
+    } else {
+        Say "  The optimised web app is up to date."
+    }
+    $webCommand = "npm run start -- -p 3000"
+}
+$web = Start-Process -FilePath "cmd.exe" -ArgumentList @("/c", $webCommand) `
     -WorkingDirectory $front -WindowStyle Hidden -RedirectStandardOutput $webLog -RedirectStandardError "$webLog.err" -PassThru
 @{ api = $api.Id; web = $web.Id; started = (Get-Date).ToString("s") } | ConvertTo-Json | Set-Content $pidFile
 Wait-Url "$webUrl/login" "The web app" 180 $webLog
 Say "  Web app ready at $webUrl" "Green"
 
 Write-Host ""
-Say "Everything is running." "Green"
+Say ("Everything is running (" + $(if ($Dev) { "development mode" } else { "fast mode: Release API, production web app" }) + ").") "Green"
 Say "  Shop and admin   $webUrl            (admin: $webUrl/login)"
 Say "  API docs         $apiUrl/scalar/v1"
 Say "  Admin sign-in    admin@juvobd.local  /  Juvo@Dev#2026   (development only; you must change the password at first sign-in)"
