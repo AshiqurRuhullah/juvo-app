@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, CircleCheck, CircleX } from "lucide-react";
@@ -19,6 +20,11 @@ import { toNumber, useMoney } from "@/modules/catalog/format";
 import { useAddReturnNote, useReturn, type ReturnDetail } from "./api";
 import { RefundBox, ReturnStatusBadge, ReturnTimeline, Thumb, VariantLine, useDay, useReasonLabel } from "./common";
 import { ReturnActions } from "./return-actions";
+import { LiveBadge } from "@/components/ui/live-badge";
+import { useReturnLive } from "@/modules/orders/booking/use-staff-live";
+
+// The reverse parcel loads after the page, in its own request.
+const ReturnParcel = dynamic(() => import("./return-parcel"), { ssr: false });
 
 /** One return for staff: who and what, the photos, the refund, the full history and the next steps this person may take. */
 export function ReturnDetailView({ id }: { id: string }) {
@@ -32,6 +38,7 @@ export function ReturnDetailView({ id }: { id: string }) {
   const day = useDay();
   const reasonLabel = useReasonLabel();
   const query = useReturn(id);
+  const live = useReturnLive(query.data?.branchId, id);
 
   const crumbs = [
     { label: tn("items.dashboard"), href: "/admin" },
@@ -79,6 +86,7 @@ export function ReturnDetailView({ id }: { id: string }) {
           <>
             <ReturnStatusBadge status={r.status} />
             <Badge variant="outline">{tk(r.kind)}</Badge>
+            <LiveBadge status={live} />
           </>
         }
       />
@@ -96,6 +104,8 @@ export function ReturnDetailView({ id }: { id: string }) {
               </CardContent>
             </Card>
           ) : null}
+
+          <ReturnParcel orderId={r.orderId} branchId={r.branchId} />
 
           {r.status === "Rejected" || r.status === "RefundRejected" ? (
             <Alert variant="danger" title={r.status === "Rejected" ? t("rejectedTitle") : t("refundRejectedTitle")} data-testid="reject-reason">

@@ -17,6 +17,7 @@ import { useProduct } from "@/modules/catalog/api";
 import { toNumber, useMoney } from "@/modules/catalog/format";
 import { useReturnAction, type ActionVars, type ReturnDetail, type ReturnItem } from "./api";
 import { VariantLine } from "./common";
+import { PickupCourierFields, noPickupCourier, type PickupCourier } from "./pickup-courier";
 import {
   CONDITIONS,
   REFUND_METHODS,
@@ -140,6 +141,7 @@ export function ReturnActions({ detail }: { detail: ReturnDetail }) {
   const [reasonError, setReasonError] = React.useState(false);
   const [date, setDate] = React.useState("");
   const [courier, setCourier] = React.useState("");
+  const [pickupCourier, setPickupCourier] = React.useState<PickupCourier>(noPickupCourier);
   const [drafts, setDrafts] = React.useState<Record<string, InspectDraft>>({});
   const [fault, setFault] = React.useState<ReturnFault>(defaultFault(detail.reasonCode));
   const [method, setMethod] = React.useState<RefundMethod>("OriginalPayment");
@@ -160,6 +162,7 @@ export function ReturnActions({ detail }: { detail: ReturnDetail }) {
     setReasonError(false);
     setDate("");
     setCourier("");
+    setPickupCourier(noPickupCourier);
     setReference("");
     setReferenceError(false);
     setDateError(false);
@@ -273,15 +276,18 @@ export function ReturnActions({ detail }: { detail: ReturnDetail }) {
             setDateError(true);
             return;
           }
-          void send({ action: "schedulePickup", date, courier, note }, "schedulePickup");
+          void send({ action: "schedulePickup", date, courier, note, useCourier: pickupCourier.use, courierId: pickupCourier.courierId || null }, "schedulePickup");
         }}
       >
         <Field label={t("schedulePickup.date")} htmlFor="act-date" required error={dateError ? t("schedulePickup.dateRequired") : undefined}>
           <Input id="act-date" type="date" value={date} min={bounds.min} max={bounds.max} onChange={(e) => { setDate(e.target.value); setDateError(false); }} />
         </Field>
-        <Field label={t("schedulePickup.courier")} htmlFor="act-courier">
-          <Input id="act-courier" value={courier} maxLength={80} onChange={(e) => setCourier(e.target.value)} autoComplete="off" />
-        </Field>
+        <PickupCourierFields branchId={detail.branchId} value={pickupCourier} onChange={setPickupCourier} />
+        {pickupCourier.use ? null : (
+          <Field label={t("schedulePickup.courier")} htmlFor="act-courier">
+            <Input id="act-courier" value={courier} maxLength={80} onChange={(e) => setCourier(e.target.value)} autoComplete="off" />
+          </Field>
+        )}
         <Field label={t("schedulePickup.note")} htmlFor="act-pnote">
           <Textarea id="act-pnote" value={note} maxLength={300} onChange={(e) => setNote(e.target.value)} className="min-h-20" />
         </Field>
