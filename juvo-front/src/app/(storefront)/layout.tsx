@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Logo } from "@/components/layout/logo";
+import { ScopedIntl } from "@/components/providers/scoped-intl";
 import { loadSession } from "@/lib/server/session";
 import { storeGet } from "@/lib/server/store";
 import type { StoreCategory } from "@/modules/store/api";
@@ -11,16 +12,21 @@ const footerLink = "inline-flex min-h-11 min-w-11 items-center text-muted hover:
 
 /** Public storefront frame: header with search, category navigation and cart; footer with contact and social links. */
 export default async function StorefrontLayout({ children }: { children: React.ReactNode }) {
-  const t = await getTranslations("storefront");
-  const s = await getTranslations("store.footer");
-  const locale = await getLocale();
-  const session = await loadSession();
+  // Independent lookups run together instead of one after another.
+  const [t, s, locale, session, categoriesRaw] = await Promise.all([
+    getTranslations("storefront"),
+    getTranslations("store.footer"),
+    getLocale(),
+    loadSession(),
+    storeGet<StoreCategory[]>("/categories"),
+  ]);
   const signedIn = session.state === "ok";
   const customer = session.state === "ok" && session.me.subjectType === "customer";
   const accountHref = session.state === "ok" ? (session.me.subjectType === "staff" ? "/admin" : "/account") : "/login?as=customer";
-  const categories = (await storeGet<StoreCategory[]>("/categories")) ?? [];
+  const categories = categoriesRaw ?? [];
 
   return (
+    <ScopedIntl scope="storefront">
     <StoreSessionProvider customer={customer}>
       <div className="flex min-h-dvh flex-col">
         <StoreHeader categories={categories} accountHref={accountHref} signedIn={signedIn} />
@@ -92,5 +98,6 @@ export default async function StorefrontLayout({ children }: { children: React.R
         </footer>
       </div>
     </StoreSessionProvider>
+    </ScopedIntl>
   );
 }

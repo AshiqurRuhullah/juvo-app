@@ -2,9 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { Noto_Sans_Bengali, Roboto } from "next/font/google";
 import { cookies } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Providers } from "@/components/providers/providers";
 import { COOKIES } from "@/lib/auth/cookies";
+import { toLocale } from "@/i18n/request";
+import { loadScopedMessages } from "@/messages/scopes";
 import "./globals.css";
 
 // Self-hosted by next/font at build time (no request to Google when a visitor opens the site). Roboto is Apache-2.0, Noto Sans Bengali is SIL OFL.
@@ -41,7 +43,9 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [locale, messages, jar] = await Promise.all([getLocale(), getMessages(), cookies()]);
+  const [locale, jar] = await Promise.all([getLocale(), cookies()]);
+  // Only the small shared set travels with every page; each area's layout adds its own texts (src/messages/scopes.ts).
+  const messages = await loadScopedMessages(toLocale(locale), "root");
   const theme = jar.get(COOKIES.theme)?.value;
   const t = await getTranslations("common");
 
@@ -59,7 +63,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           {t("skipToContent")}
         </a>
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={messages} timeZone="Asia/Dhaka">
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
       </body>

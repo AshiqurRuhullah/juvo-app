@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { AppShell } from "@/components/layout/app-shell";
+import { ScopedIntl } from "@/components/providers/scoped-intl";
 import { SessionProvider } from "@/components/providers/session-provider";
 import { COOKIES } from "@/lib/auth/cookies";
 import { requireSession } from "@/lib/server/session";
@@ -17,10 +18,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const collapsed = jar.get(COOKIES.sidebar)?.value === "collapsed";
 
   return (
-    <SessionProvider me={me}>
-      <AppShell area="admin" initialCollapsed={collapsed}>
-        {children}
-      </AppShell>
-    </SessionProvider>
+    <ScopedIntl scope="admin">
+      <SessionProvider me={me}>
+        <AppShell area="admin" initialCollapsed={collapsed}>
+          {children}
+        </AppShell>
+      </SessionProvider>
+    </ScopedIntl>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { AppShell } from "@/components/layout/app-shell";
+import { ScopedIntl } from "@/components/providers/scoped-intl";
 import { SessionProvider } from "@/components/providers/session-provider";
 import { COOKIES } from "@/lib/auth/cookies";
 import { requireSession } from "@/lib/server/session";
@@ -13,10 +14,12 @@ export default async function AccountLayout({ children }: { children: React.Reac
   const jar = await cookies();
 
   return (
-    <SessionProvider me={me}>
-      <AppShell area="account" initialCollapsed={jar.get(COOKIES.sidebar)?.value === "collapsed"}>
-        {children}
-      </AppShell>
-    </SessionProvider>
+    <ScopedIntl scope="account">
+      <SessionProvider me={me}>
+        <AppShell area="account" initialCollapsed={jar.get(COOKIES.sidebar)?.value === "collapsed"}>
+          {children}
+        </AppShell>
+      </SessionProvider>
+    </ScopedIntl>
   );
 }

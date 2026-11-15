@@ -2,12 +2,14 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { Logo } from "@/components/layout/logo";
 import { LanguageSwitch, ThemeToggle } from "@/components/layout/preferences";
+import { ScopedIntl } from "@/components/providers/scoped-intl";
 import { Card, CardContent } from "@/components/ui/surfaces";
 
 /** Centered, branded frame for sign-in and password pages. */
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const t = await getTranslations("common");
   return (
+    <ScopedIntl scope="auth">
     <div className="flex min-h-dvh flex-col">
       <header className="safe-top flex items-center justify-between gap-2 px-4 py-3 sm:px-6">
         <Logo href="/" size={44} priority />
@@ -29,5 +31,6 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
         </Link>
       </footer>
     </div>
+    </ScopedIntl>
   );
 }
