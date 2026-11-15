@@ -1,0 +1,41 @@
+/*
+ * Parcel labels are paper: always black ink on white, whatever theme the screen uses, so the barcode scans from the screen preview
+ * and from the printout. These few values re-declare the surface and text tokens inside the label only (the "paper" scope).
+ * One label is one A6 page (105 x 148 mm) when printed.
+ */
+.label-paper {
+  --surface-card: #ffffff;
+  --surface-sunken: #f2f2f2;
+  --text-strong: #000000;
+  --text-muted: #333333;
+  --border: #000000;
+  --danger: #b00020;
+  --danger-ink: #b00020;
+  background: #ffffff;
+  color: #000000;
+}
+
+@media print {
+  @page {
+    size: 105mm 148mm;
+    margin: 0;
+  }
+  .label-paper {
+    width: 105mm;
+    height: 148mm;
+    margin: 0;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    break-after: page;
+    break-inside: avoid;
+    overflow: hidden;
+  }
+  .label-paper:last-child {
+    break-after: auto;
+  }
+  .label-print-root {
+    display: block !important;
+    gap: 0 !important;
+  }
+}
