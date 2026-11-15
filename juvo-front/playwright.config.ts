@@ -69,6 +69,7 @@ export default defineConfig({
         Auth__Seed__Password: E2E.seedPassword,
         Auth__Otp__ResendCooldownSeconds: "0",
         Notifications__StoreOtpPlaintext: "true",
+        Cors__AllowedOrigins__0: E2E.webUrl, // the live-update socket connects from the browser to the API directly
         RateLimiting__Enabled: "false", // every browser reaches the API through the BFF's single address in tests
         DataProtection__KeysPath: `${process.env.TEMP ?? "/tmp"}/juvo-e2e-keys-${E2E.db}`,
         Storage__RootPath: `${process.env.TEMP ?? "/tmp"}/juvo-e2e-files-${E2E.db}`,
