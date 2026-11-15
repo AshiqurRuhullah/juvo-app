@@ -20,7 +20,9 @@ import { useMoney2 } from "./common";
 import { NOTE_MAX, pendingAmount, selectionTotals, shipmentIdsToSend } from "./logic";
 import { usePendingParcels } from "./queries";
 
-type Row = { id: string; orderId: string; orderNumber: string; consignmentId: string; deliveredAt: string | null; amount: number };
+const DEFAULT_BRANCH = "__default";
+
+type Row ={ id: string; orderId: string; orderNumber: string; consignmentId: string; deliveredAt: string | null; amount: number };
 
 /** `/admin/cod/new`: choose a courier and branch, tick the delivered cash parcels waiting for a batch, and make the batch. */
 export function NewSettlement() {
@@ -33,15 +35,15 @@ export function NewSettlement() {
   const couriers = useCouriers();
   const create = useCreateSettlement();
 
-  // Only branches where this person may settle are offered; the active branch is the default.
-  const branchOptions = React.useMemo(
-    () => me.branches.filter((b) => b.isActive && canInBranch(me, "couriers.cod.settle", b.id)).map((b) => ({ value: b.id, label: `${b.code} · ${b.nameEn}` })),
-    [me],
-  );
-  const [branchId, setBranchId] = React.useState<string | undefined>(() => {
-    const active = me.activeBranchId && branchOptions.some((o) => o.value === me.activeBranchId) ? me.activeBranchId : undefined;
-    return active ?? branchOptions[0]?.value;
-  });
+  // Only branches where this person may settle are offered. The active branch is the default; in "All branches" mode the shop's
+  // default branch is meant (the API picks it when no branch is sent).
+  const activeBranch = me.activeBranchId && !me.isAllBranches ? me.activeBranchId : undefined;
+  const branchOptions = React.useMemo(() => {
+    const own = me.branches.filter((b) => b.isActive && canInBranch(me, "couriers.cod.settle", b.id)).map((b) => ({ value: b.id, label: `${b.code} · ${b.nameEn}` }));
+    return activeBranch ? own : [{ value: DEFAULT_BRANCH, label: t("defaultBranch") }, ...own];
+  }, [me, activeBranch, t]);
+  const [branchChoice, setBranchChoice] = React.useState<string>(() => activeBranch ?? DEFAULT_BRANCH);
+  const branchId = branchChoice === DEFAULT_BRANCH ? undefined : branchChoice;
   const [courierId, setCourierId] = React.useState<string | undefined>(undefined);
   const [excluded, setExcluded] = React.useState<ReadonlySet<string>>(new Set());
   const [note, setNote] = React.useState("");
@@ -116,9 +118,9 @@ export function NewSettlement() {
             <Field label={t("branch")} htmlFor="cod-branch">
               <Select
                 id="cod-branch"
-                value={branchId}
+                value={branchChoice}
                 onValueChange={(v) => {
-                  setBranchId(v);
+                  setBranchChoice(v);
                   setExcluded(new Set());
                   setFailure(null);
                 }}
@@ -135,6 +137,13 @@ export function NewSettlement() {
             ) : null}
           </CardContent>
         </Card>
+
+        {/* Kept outside the parcel list: after a refusal the list is read again and may be empty, the reason must stay visible. */}
+        {failure ? (
+          <Alert variant="danger" data-testid="create-error">
+            {failure}
+          </Alert>
+        ) : null}
 
         {!chosenCourier ? (
           <Card>
@@ -192,8 +201,6 @@ export function NewSettlement() {
               <Field label={t("note")} htmlFor="cod-note" hint={t("noteHint")}>
                 <Textarea id="cod-note" rows={2} maxLength={NOTE_MAX} value={note} onChange={(e) => setNote(e.target.value)} />
               </Field>
-
-              {failure ? <Alert variant="danger" data-testid="create-error">{failure}</Alert> : null}
 
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                 <Button asChild variant="secondary">

@@ -66,6 +66,7 @@
     "branch": "Branch",
     "chooseCourier": "Choose a courier",
     "chooseBranch": "Choose a branch",
+    "defaultBranch": "Default branch",
     "couriersFailed": "The courier list could not be loaded. You need permission to view couriers to pick one here.",
     "pickCourierTitle": "Choose a courier",
     "pickCourierHint": "Then you will see its delivered cash on delivery parcels that are not in a batch yet.",

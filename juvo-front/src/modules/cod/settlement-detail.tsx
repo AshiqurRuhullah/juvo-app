@@ -154,8 +154,10 @@ function Stat({ label, hint, testId, children }: { label: string; hint?: string;
   return (
     <div className="min-w-0 rounded-card border border-line bg-card p-3" data-testid={testId}>
       <dt className="text-sm text-muted">{label}</dt>
-      <dd className="text-lg font-bold tabular-nums text-strong">{children}</dd>
-      {hint ? <p className="text-xs text-muted">{hint}</p> : null}
+      <dd className="text-lg font-bold tabular-nums text-strong">
+        {children}
+        {hint ? <span className="block text-xs font-normal text-muted">{hint}</span> : null}
+      </dd>
     </div>
   );
 }

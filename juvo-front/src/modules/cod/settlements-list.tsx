@@ -54,32 +54,42 @@ export function SettlementsList() {
         enableSorting: false,
         meta: { primary: true },
         cell: ({ row }) => (
-          <Link href={`/admin/cod/${row.original.id}`} className="inline-flex min-h-11 items-center rounded-control font-semibold text-strong hover:text-primary hover:underline">
-            <span className="font-mono">{row.original.number}</span>
-          </Link>
+          <span className="block">
+            <Link href={`/admin/cod/${row.original.id}`} className="inline-flex min-h-11 items-center rounded-control font-semibold text-strong hover:text-primary hover:underline">
+              <span className="font-mono">{row.original.number}</span>
+            </Link>
+            <span className="-mt-2 block text-xs text-muted">{dateTime(row.original.createdAt)}</span>
+          </span>
         ),
       },
-      { id: "status", header: t("columns.status"), enableSorting: false, meta: { secondary: true }, cell: ({ row }) => <SettlementStatusBadge status={row.original.status} /> },
-      { id: "courier", header: t("columns.courier"), enableSorting: false, meta: { secondary: true }, cell: ({ row }) => <span className="font-medium text-strong [overflow-wrap:anywhere]">{row.original.courierName}</span> },
-      { id: "branch", header: t("columns.branch"), enableSorting: false, meta: { hideOnMobile: true }, cell: ({ row }) => <span className="font-mono text-sm">{branchLabel(row.original.branchId).code}</span> },
+      {
+        id: "status",
+        header: t("columns.status"),
+        enableSorting: false,
+        meta: { secondary: true },
+        cell: ({ row }) => (
+          <span className="block space-y-0.5">
+            <SettlementStatusBadge status={row.original.status} />
+            {row.original.settledAt ? <span className="block text-xs text-muted">{dateTime(row.original.settledAt)}</span> : null}
+          </span>
+        ),
+      },
+      {
+        id: "courier",
+        header: t("columns.courier"),
+        enableSorting: false,
+        meta: { secondary: true },
+        cell: ({ row }) => (
+          <span className="block min-w-24 [overflow-wrap:anywhere]">
+            <span className="block font-medium text-strong">{row.original.courierName}</span>
+            <span className="block font-mono text-xs text-muted">{branchLabel(row.original.branchId).code}</span>
+          </span>
+        ),
+      },
       { id: "parcels", header: t("columns.parcels"), enableSorting: false, meta: { numeric: true, hideOnMobile: true }, cell: ({ row }) => <span className="tabular-nums">{num(row.original.parcels)}</span> },
       { id: "expected", header: t("columns.expected"), enableSorting: false, meta: { numeric: true, secondary: true }, cell: ({ row }) => <span className="font-medium tabular-nums">{money(row.original.expectedTotal)}</span> },
       { id: "received", header: t("columns.received"), enableSorting: false, meta: { numeric: true, secondary: true }, cell: ({ row }) => <span className="tabular-nums">{money(row.original.receivedTotal)}</span> },
       { id: "difference", header: t("columns.difference"), enableSorting: false, meta: { numeric: true, secondary: true }, cell: ({ row }) => <Difference difference={row.original.difference} /> },
-      { id: "created", header: t("columns.created"), enableSorting: false, meta: { hideOnMobile: true }, cell: ({ row }) => <span className="text-muted">{dateTime(row.original.createdAt)}</span> },
-      { id: "settled", header: t("columns.settled"), enableSorting: false, meta: { hideOnMobile: true }, cell: ({ row }) => <span className="text-muted">{dateTime(row.original.settledAt)}</span> },
-      {
-        id: "actions",
-        header: "",
-        meta: { actions: true, align: "end", label: t("columns.actions") },
-        cell: ({ row }) => (
-          <Button asChild variant="secondary">
-            <Link href={`/admin/cod/${row.original.id}`} aria-label={t("open", { number: row.original.number })}>
-              {t("view")}
-            </Link>
-          </Button>
-        ),
-      },
     ],
     [t, money, dateTime, branchLabel],
   );
