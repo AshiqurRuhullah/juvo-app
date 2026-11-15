@@ -309,6 +309,9 @@ public class CourierAdminTests(StoreFactory factory) : IClassFixture<StoreFactor
         var accountant = await PermissionsOf("Accountant");
         Assert.Contains("couriers.cod.settle", accountant);
         Assert.Contains("couriers.cod.view", accountant);
+        // The courier list is needed to choose a courier on a new settlement batch; seeing it does not allow changing it.
+        Assert.Contains("couriers.courier.view", accountant);
+        Assert.DoesNotContain("couriers.courier.edit", accountant);
         Assert.DoesNotContain("couriers.shipment.book", accountant);
 
         var support = await PermissionsOf("Support");

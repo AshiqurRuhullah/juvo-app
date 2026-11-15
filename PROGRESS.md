@@ -215,7 +215,7 @@ Built by three parallel builders on top of a shared foundation and merged into `
 
 ## Next step
 
-**Step 11A** (purchasing, expenses, support, reports), then 11B, 12 (remaining admin UI, CMS, dashboard, settings), 13, 14. Owner decisions open: the Accountant role lacks `couriers.courier.view` (cannot pick a courier on the new COD batch screen), delivery rates and VAT are placeholders, real provider accounts for Step 14.
+**Step 11A** (purchasing, expenses, support, reports), then 11B, 12 (remaining admin UI, CMS, dashboard, settings), 13, 14. Owner decisions open: delivery rates and VAT are placeholders, real provider accounts for Step 14. The Accountant default role now holds `couriers.courier.view` (new installs; existing databases keep their roles, apply it in the Roles screen). Unmerged local branches kept on purpose: `worktree-agent-ab1d1e1f524baaa0a` is the Step 11A backend (suppliers, purchase orders, expenses, cash book), `worktree-agent-a96ad2cc73a0a23b9` an earlier abandoned Step 10 front-end attempt.
 
 ## Known issues / notes
 
