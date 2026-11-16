@@ -54,7 +54,7 @@ export function OrdersList() {
         header: t("columns.number"),
         meta: { primary: true },
         cell: ({ row }) => (
-          <Link href={`/admin/purchasing/orders/${row.original.id}`} className="inline-flex min-h-11 min-w-11 items-center whitespace-nowrap rounded-control font-semibold text-strong hover:text-primary hover:underline">
+          <Link href={`/admin/purchasing/orders/${row.original.id}`} className="inline-flex min-h-11 min-w-11 items-center rounded-control font-semibold text-strong [overflow-wrap:anywhere] hover:text-primary hover:underline md:whitespace-nowrap">
             <span className="font-mono">{row.original.number}</span>
           </Link>
         ),
