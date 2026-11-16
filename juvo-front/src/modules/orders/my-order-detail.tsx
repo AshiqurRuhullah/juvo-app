@@ -14,6 +14,7 @@ import { useDateTime } from "@/components/data/list-kit";
 import { ApiError } from "@/lib/api/client";
 import { useCancelMyOrder, useMyOrder, useOrderErrorText, type MyOrder } from "./api";
 import { ReturnOrderLink } from "@/modules/returns/return-order-link";
+import { OrderHelpLink } from "@/modules/support/order-help-link";
 import { MyInvoicePanel, PaymentHistory, PaymentPanel } from "@/modules/payments/customer-panels";
 import { LiveBadge } from "@/components/ui/live-badge";
 import { useLiveRefresh } from "@/lib/realtime/use-live";
@@ -100,6 +101,7 @@ export function MyOrderDetail({ id }: { id: string }) {
               </Button>
             ) : null}
             <ReturnOrderLink orderId={order.id} orderStatus={order.status} />
+            <OrderHelpLink orderId={order.id} />
           </>
         }
       />
