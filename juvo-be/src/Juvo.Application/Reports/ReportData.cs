@@ -185,9 +185,9 @@ public sealed class ReportData(IApplicationDbContext db)
     public async Task<(decimal Receipts, decimal CodSettled, decimal Refunds)> CashReceivedAsync(ReportScope s, CancellationToken ct)
     {
         PaymentStatus[] paid = [PaymentStatus.Paid, PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded];
-        var receipts = await s.Apply(db.Payments.AsNoTracking()).Where(p => p.Kind != PaymentKind.Cod && p.PaidAt != null && p.PaidAt >= s.FromAt && p.PaidAt < s.ToAt && paid.Contains(p.Status)).SumAsync(p => (decimal?)p.Amount, ct) ?? 0m;
+        var receipts = await s.Apply(db.Payments.AsNoTracking()).Where(p => p.Kind != PaymentKind.Cod && p.Kind != PaymentKind.StoreCredit && p.PaidAt != null && p.PaidAt >= s.FromAt && p.PaidAt < s.ToAt && paid.Contains(p.Status)).SumAsync(p => (decimal?)p.Amount, ct) ?? 0m;
         var cod = await s.Apply(db.CodSettlements.AsNoTracking()).Where(x => x.Status == SettlementStatus.Settled && x.SettledAt != null && x.SettledAt >= s.FromAt && x.SettledAt < s.ToAt).SumAsync(x => x.ReceivedTotal, ct) ?? 0m;
-        var refunds = await s.Apply(db.Refunds.AsNoTracking()).Where(r => r.Status == RefundState.Completed && r.CompletedAt != null && r.CompletedAt >= s.FromAt && r.CompletedAt < s.ToAt).SumAsync(r => (decimal?)r.Amount, ct) ?? 0m;
+        var refunds = await s.Apply(db.Refunds.AsNoTracking()).Where(r => r.Status == RefundState.Completed && r.Mode != RefundMode.StoreCredit && r.CompletedAt != null && r.CompletedAt >= s.FromAt && r.CompletedAt < s.ToAt).SumAsync(r => (decimal?)r.Amount, ct) ?? 0m;
         return (receipts, cod, refunds);
     }
 }

@@ -336,7 +336,7 @@ public sealed class OrdersService(
         var branch = await db.Branches.AsNoTracking().FirstAsync(b => b.Id == order.BranchId, cancellationToken);
         var discount = order.CouponDiscount + order.ManualDiscount;
         // A confirmed order with an advance requirement had the advance marked as received (confirmation insists on it), so the courier collects the rest.
-        var advanceTaken = order.ConfirmedAt is not null ? order.AdvanceRequired : 0m;
+        var advanceTaken = Math.Max(order.ConfirmedAt is not null ? order.AdvanceRequired : 0m, order.AdvancePaid); // includes what points, credit or a gift card paid
         var collect = order.IsOnlinePayment || order.PaymentStatus == PaymentStatus.Paid ? 0m : Math.Max(0m, order.GrandTotal - advanceTaken);
         var lines = order.Items.OrderBy(i => i.CreatedAt).ThenBy(i => i.Sku).Select(i => new PackingSlipLineDto(i.Sku, i.Name, i.ColorName, i.Size, i.Quantity, i.UnitPrice, i.LineTotal)).ToList();
         var customerNote = string.Join(" / ", order.Notes.Where(n => n.Kind == NoteKind.Customer).OrderBy(n => n.At).Select(n => n.Text));

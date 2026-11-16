@@ -391,7 +391,12 @@ public sealed class ReturnsService(
         var reference = request.Reference?.Trim();
         if (!Enum.IsDefined(request.Method))
         {
-            return Invalid("method", "Choose OriginalPayment, Cash, BankTransfer or Wallet.");
+            return Invalid("method", "Choose OriginalPayment, Cash, BankTransfer, Wallet or StoreCredit.");
+        }
+
+        if (request.Method == RefundMethod.StoreCredit && string.IsNullOrEmpty(reference))
+        {
+            reference = "STORE-CREDIT"; // the refund goes into the customer's rewards ledger: there is no transfer reference to write
         }
 
         if (string.IsNullOrEmpty(reference) || reference.Length > 120)

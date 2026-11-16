@@ -176,7 +176,7 @@ public sealed class CustomerPaymentsService(
 
                 order.ChangePaymentMethod(info.Code, now, who.Id, who.Name);
                 var payment = Payment.Start(
-                    new PaymentInit(order.Id, order.Number, order.BranchId, PaymentKind.Online, info.Code, info.Code, order.GrandTotal, order.Currency, null, null, returnUrl, order.PaymentHoldExpiresAt ?? now.AddMinutes(30), null, null, null),
+                    new PaymentInit(order.Id, order.Number, order.BranchId, PaymentKind.Online, info.Code, info.Code, order.GrandTotal - order.AdvancePaid, order.Currency, null, null, returnUrl, order.PaymentHoldExpiresAt ?? now.AddMinutes(30), null, null, null),
                     now, who.Id, who.Name);
                 db.Payments.Add(payment);
                 await db.SaveChangesAsync(ct);
@@ -355,7 +355,7 @@ public sealed class CustomerPaymentsService(
                 }
 
                 order.ChangePaymentMethod(PaymentMethodCatalog.Manual, now, who.Id, who.Name);
-                var payment = Payment.Start(new PaymentInit(order.Id, order.Number, order.BranchId, PaymentKind.Manual, PaymentMethodCatalog.Manual, null, order.GrandTotal, order.Currency, null, null, null, null, null, null, null), now, who.Id, who.Name);
+                var payment = Payment.Start(new PaymentInit(order.Id, order.Number, order.BranchId, PaymentKind.Manual, PaymentMethodCatalog.Manual, null, order.GrandTotal - order.AdvancePaid, order.Currency, null, null, null, null, null, null, null), now, who.Id, who.Name);
                 payment.SubmitForReview(upper, payer, now, who.Id, who.Name);
                 db.Payments.Add(payment);
                 workflow.ChangePayment(order, PaymentStatus.UnderReview, $"Transfer reference {upper}", who);

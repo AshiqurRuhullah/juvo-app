@@ -415,11 +415,11 @@ public sealed class StaffPaymentsService(IApplicationDbContext db, IUnitOfWork u
             orders = orders.Where(o => o.BranchId == b);
         }
 
-        var received = await payments.Where(p => p.Kind != PaymentKind.Cod && MoneyStates.Contains(p.Status) && p.PaidAt >= periodStart && p.PaidAt < periodEnd)
+        var received = await payments.Where(p => p.Kind != PaymentKind.Cod && p.Kind != PaymentKind.StoreCredit && MoneyStates.Contains(p.Status) && p.PaidAt >= periodStart && p.PaidAt < periodEnd)
             .Select(p => new { p.Method, p.Amount, p.RefundedAmount }).ToListAsync(cancellationToken);
-        var onlineRefunded = await (from r in refunds join p in payments on r.PaymentId equals p.Id where r.Status == RefundState.Completed && r.CompletedAt >= periodStart && r.CompletedAt < periodEnd && p.Kind != PaymentKind.Cod select r.Amount)
+        var onlineRefunded = await (from r in refunds join p in payments on r.PaymentId equals p.Id where r.Status == RefundState.Completed && r.CompletedAt >= periodStart && r.CompletedAt < periodEnd && p.Kind != PaymentKind.Cod && p.Kind != PaymentKind.StoreCredit select r.Amount)
             .SumAsync(cancellationToken);
-        var allRefunded = await refunds.Where(r => r.Status == RefundState.Completed && r.CompletedAt >= periodStart && r.CompletedAt < periodEnd).SumAsync(r => (decimal?)r.Amount, cancellationToken) ?? 0m;
+        var allRefunded = await refunds.Where(r => r.Status == RefundState.Completed && r.Mode != RefundMode.StoreCredit && r.CompletedAt >= periodStart && r.CompletedAt < periodEnd).SumAsync(r => (decimal?)r.Amount, cancellationToken) ?? 0m;
         var cod = orders.Where(o => o.PaymentMethod == PaymentMethodCatalog.Cod && o.DeliveredAt >= periodStart && o.DeliveredAt < periodEnd &&
                                     (o.PaymentStatus == PaymentStatus.CollectedByCourier || o.PaymentStatus == PaymentStatus.Settled || o.PaymentStatus == PaymentStatus.PartiallyRefunded || o.PaymentStatus == PaymentStatus.Refunded));
         var codCollected = await cod.SumAsync(o => (decimal?)(o.GrandTotal - o.AdvancePaid), cancellationToken) ?? 0m;
