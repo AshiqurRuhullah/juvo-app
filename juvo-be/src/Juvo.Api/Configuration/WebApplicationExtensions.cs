@@ -56,6 +56,7 @@ internal static class WebApplicationExtensions
         app.MapMeEndpoints();
         app.MapStoreAdminEndpoints();
         app.MapOrdersEndpoints();
+        app.MapPromotionsEndpoints();
         app.MapReturnsEndpoints();
         app.MapPaymentsEndpoints();
         app.MapBillingEndpoints();

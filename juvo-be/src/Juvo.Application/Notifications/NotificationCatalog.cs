@@ -39,6 +39,7 @@ public static partial class NotificationCatalog
         new("order.delivery-failed", "Delivery attempt failed", NotificationCategory.Transactional, OrderVars),
         new("order.returned-to-sender", "Parcel returned to the shop", NotificationCategory.Transactional, OrderVars),
         new("order.cancelled", "Order cancelled", NotificationCategory.Transactional, OrderVars),
+        new("order.preorder-ready", "Pre-order stock arrived and was reserved for the order", NotificationCategory.Transactional, OrderVars),
         new("payment.received", "Payment received", NotificationCategory.Transactional, PaymentVars),
         new("payment.failed", "Payment failed", NotificationCategory.Transactional, PaymentVars),
         new("payment.under-review", "Transfer reference received, being checked", NotificationCategory.Transactional, PaymentVars),
@@ -102,6 +103,11 @@ public static partial class NotificationCatalog
         Sms("order.delivery-failed", "bn", "জুভো বিডি: আপনার অর্ডার {{OrderNumber}} ডেলিভারি করা যায়নি। অনুগ্রহ করে ফোন চালু রাখুন, কুরিয়ার আবার চেষ্টা করবে।"),
         Sms("order.returned-to-sender", "en", "Juvo BD: your order {{OrderNumber}} could not be delivered and came back to us. We will contact you."),
         Sms("order.returned-to-sender", "bn", "জুভো বিডি: আপনার অর্ডার {{OrderNumber}} ডেলিভারি করা যায়নি এবং আমাদের কাছে ফিরে এসেছে। আমরা আপনার সাথে যোগাযোগ করব।"),
+
+        Sms("order.preorder-ready", "en", "Juvo BD: good news! The item(s) of your pre-order {{OrderNumber}} are now in stock and reserved for you. We will confirm and ship your order soon."),
+        Sms("order.preorder-ready", "bn", "জুভো বিডি: সুখবর! আপনার প্রি-অর্ডার {{OrderNumber}}-এর পণ্য এখন স্টকে এসেছে এবং আপনার জন্য রাখা হয়েছে। শীঘ্রই অর্ডার কনফার্ম করে পাঠানো হবে।"),
+        Email("order.preorder-ready", "en", "Your pre-order {{OrderNumber}} is in stock", "Hello {{Name}},\n\nGood news: the item(s) of your pre-order {{OrderNumber}} have arrived and are reserved for you. We will confirm your order and ship it soon.\n\nJuvo BD"),
+        Email("order.preorder-ready", "bn", "আপনার প্রি-অর্ডার {{OrderNumber}} স্টকে এসেছে", "হ্যালো {{Name}},\n\nসুখবর: আপনার প্রি-অর্ডার {{OrderNumber}}-এর পণ্য এসে গেছে এবং আপনার জন্য রাখা হয়েছে। শীঘ্রই অর্ডার কনফার্ম করে পাঠানো হবে।\n\nজুভো বিডি"),
 
         Sms("order.cancelled", "en", "Juvo BD: your order {{OrderNumber}} was cancelled."),
         Sms("order.cancelled", "bn", "জুভো বিডি: আপনার অর্ডার {{OrderNumber}} বাতিল করা হয়েছে।"),

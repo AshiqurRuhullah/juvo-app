@@ -2,6 +2,8 @@ using Juvo.Api.Configuration;
 using Juvo.Api.Http;
 using Juvo.Application.Carts;
 using Juvo.Application.Delivery;
+using Juvo.Application.Promotions;
+using Juvo.Domain.Promotions;
 using Juvo.Application.Storefront;
 using Juvo.Shared.Pagination;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +35,20 @@ internal static class StoreEndpoints
         return app;
     }
 
+    /// <summary>
+    /// Like <see cref="Cacheable"/> for answers that carry promotion prices: the lifetime is cut short at the next promotion start or end, so a cached answer never shows a flash price after its window
+    /// (or misses one that just started).
+    /// </summary>
+    private static RouteHandlerBuilder CacheableWithPromotions(this RouteHandlerBuilder builder, int seconds) =>
+        builder.AddEndpointFilter(async (context, next) =>
+        {
+            var promotions = context.HttpContext.RequestServices.GetRequiredService<StorefrontPromotionsService>();
+            var change = await promotions.SecondsToNextChangeAsync(context.HttpContext.RequestAborted);
+            var age = Math.Max(0, Math.Min(seconds, change ?? seconds));
+            context.HttpContext.Response.Headers.CacheControl = age == 0 ? "no-cache" : $"public, max-age={age}";
+            return await next(context);
+        });
+
     private static RouteHandlerBuilder Cacheable(this RouteHandlerBuilder builder, int seconds) =>
         builder.AddEndpointFilter(async (context, next) =>
         {
@@ -46,19 +62,27 @@ internal static class StoreEndpoints
             .Cacheable(60).Produces<IReadOnlyList<StoreCategory>>().WithSummary("Active categories as a tree with the number of published products.");
 
         g.MapGet("/home", async (StorefrontCatalogService s, CancellationToken ct) => (await s.HomeAsync(ct)).ToHttpResult())
-            .Cacheable(30).Produces<StoreHome>().WithSummary("Home page sections: new arrivals, best sellers, featured, on sale, categories.");
+            .CacheableWithPromotions(30).Produces<StoreHome>().WithSummary("Home page sections: new arrivals, best sellers, featured, on sale, categories.");
 
         g.MapGet("/products", async ([AsParameters] ListParams list, string? category, decimal? minPrice, decimal? maxPrice, string? size, string? colour, string? brand,
                 bool? inStock, bool? onSale, string? sort, string? q, StorefrontCatalogService s, CancellationToken ct) =>
                 (await s.ListAsync(list.ToRequest(), new StoreProductQuery(category, minPrice, maxPrice, size, colour, brand, inStock, onSale, sort, q ?? list.Search), ct)).ToHttpResult())
-            .Cacheable(30).Produces<PagedResult<StoreProductCard>>()
+            .CacheableWithPromotions(30).Produces<PagedResult<StoreProductCard>>()
             .WithSummary("Published products with filters (category slug, price range, size, colour, brand, inStock, onSale), sort (newest, price-asc, price-desc, popular) and search q (small spelling mistakes are tolerated).");
 
         g.MapGet("/products/facets", async (string? category, StorefrontCatalogService s, CancellationToken ct) => (await s.FacetsAsync(category, ct)).ToHttpResult())
             .Cacheable(60).Produces<StoreFacets>().WithSummary("Sizes, colours, brands and price range available in a category, for the filter panel.");
 
         g.MapGet("/products/{slug}", async (string slug, StorefrontCatalogService s, CancellationToken ct) => (await s.DetailAsync(slug, ct)).ToHttpResult())
-            .Cacheable(15).Produces<StoreProductDetail>().WithSummary("One published product by its web address: variants with combined availability, pictures, size chart, related products.");
+            .CacheableWithPromotions(15).Produces<StoreProductDetail>().WithSummary("One published product by its web address: variants with combined availability, pictures, size chart, related products.");
+
+        g.MapGet("/campaigns/{slug}", async (string slug, StorefrontPromotionsService s, CancellationToken ct) => (await s.CampaignAsync(slug, ct)).ToHttpResult())
+            .CacheableWithPromotions(30).Produces<StoreCampaignDto>()
+            .WithSummary("A festival campaign page with its product set (cards carry the campaign price). Only while the campaign is Active; otherwise 404 PROMO.CAMPAIGN_NOT_FOUND.");
+
+        g.MapGet("/banners", async (BannerSlot? slot, string? category, StorefrontPromotionsService s, CancellationToken ct) => (await s.BannersAsync(slot, category, ct)).ToHttpResult())
+            .CacheableWithPromotions(60).Produces<IReadOnlyList<StoreBannerDto>>()
+            .WithSummary("Active campaign banners for a slot (HomeTop, ShopTop, Category; for Category pass the category web address in 'category'), highest priority first.");
 
         g.MapGet("/search/suggest", async (string? q, StorefrontCatalogService s, CancellationToken ct) => (await s.SuggestAsync(q, ct)).ToHttpResult())
             .Produces<StoreSuggestions>().WithSummary("Search suggestions while typing: products and categories.");
@@ -78,8 +102,19 @@ internal static class StoreEndpoints
         g.MapGet("/geo/districts/{districtId:guid}/upazilas", async (Guid districtId, DeliveryService s, CancellationToken ct) => Results.Ok(await s.UpazilasAsync(districtId, ct)))
             .Cacheable(3600).Produces<IReadOnlyList<UpazilaDto>>().WithSummary("Upazilas of a district.");
 
-        g.MapPost("/delivery/quote", async (DeliveryQuoteRequest r, DeliveryService s, CancellationToken ct) => (await s.QuoteAsync(r, ct)).ToHttpResult())
-            .Produces<DeliveryQuoteDto>().WithSummary("Delivery charge and estimated delivery dates for an address and goods (items, or subtotal and weight). The charge shown is the charge billed.");
+        g.MapPost("/delivery/quote", async (DeliveryQuoteRequest r, DeliveryService s, StorefrontPromotionsService promotions, CancellationToken ct) =>
+            {
+                var quote = await s.QuoteAsync(r, ct);
+                if (quote.IsFailure)
+                {
+                    return ResultHttpExtensions.ToProblem(quote.Error!);
+                }
+
+                // A running free-delivery promotion waives the charge (the cart, checkout and the order use the same rule).
+                var offers = await promotions.FreeDeliveryOffersAsync(quote.Value.Subtotal, ct);
+                return Results.Ok(Juvo.Application.Pricing.PricedDelivery.Apply(quote.Value, offers));
+            })
+            .Produces<DeliveryQuoteDto>().WithSummary("Delivery charge and estimated delivery dates for an address and goods (items, or subtotal and weight). The charge shown is the charge billed; a running free-delivery promotion makes it free.");
 
         g.MapPost("/coupons/validate", async (ValidateCouponRequest r, CartService s, CancellationToken ct) => (await s.ValidateCouponAsync(r, ct)).ToHttpResult())
             .RequireRateLimiting(RateLimitSettings.CheckoutPolicy).Produces<CouponCheckDto>().WithSummary("What a coupon code would give on a subtotal. Rate limited against code guessing.");
@@ -109,7 +144,7 @@ internal static class StoreEndpoints
         g.MapDelete("/coupon", async ([FromHeader(Name = CartTokenHeader)] string? token, CartService s, CancellationToken ct) => (await s.RemoveCouponAsync(token, ct)).ToHttpResult())
             .Produces<CartView>().WithSummary("Remove the coupon.");
 
-        g.MapPost("/delivery-quote", async ([FromHeader(Name = CartTokenHeader)] string? token, CartDeliveryRequest r, CartService carts, DeliveryService delivery, CancellationToken ct) =>
+        g.MapPost("/delivery-quote", async ([FromHeader(Name = CartTokenHeader)] string? token, CartDeliveryRequest r, CartService carts, Juvo.Application.Pricing.PricedDelivery delivery, CancellationToken ct) =>
             {
                 var cart = await carts.GetAsync(token, ct);
                 if (cart.IsFailure)
@@ -118,7 +153,7 @@ internal static class StoreEndpoints
                 }
 
                 // The free-delivery threshold is checked on what the customer pays for the goods (after a coupon).
-                return (await delivery.QuoteAmountsAsync(r.CountryCode, r.DistrictId, r.UpazilaId, cart.Value.Total, cart.Value.WeightGrams, ct)).ToHttpResult();
+                return (await delivery.QuoteAsync(r.CountryCode, r.DistrictId, r.UpazilaId, cart.Value.Total, cart.Value.WeightGrams, cart.Value.FreeDelivery, ct)).ToHttpResult();
             })
             .Produces<DeliveryQuoteDto>().WithSummary("Delivery charge for the cart's goods (after any coupon) to an address.");
     }

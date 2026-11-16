@@ -1,3 +1,4 @@
+using Juvo.Application.Pricing;
 using Juvo.Domain.Carts;
 
 namespace Juvo.Application.Carts;
@@ -9,10 +10,12 @@ namespace Juvo.Application.Carts;
 /// </summary>
 public sealed record CartLineDto(
     Guid VariantId, Guid ProductId, string Slug, string Name, string? NameBn, string Sku, string? ColorName, string? Size, string? ImageUrl,
-    decimal UnitPrice, decimal? PreviousUnitPrice, bool PriceChanged, int Quantity, int MaxQuantity, string? Problem, decimal LineTotal);
+    decimal UnitPrice, decimal? PreviousUnitPrice, bool PriceChanged, int Quantity, int MaxQuantity, string? Problem, decimal LineTotal,
+    decimal ListPrice = 0m, decimal OrderDiscount = 0m, IReadOnlyList<PriceAdjustment>? Adjustments = null, string? PromotionLabelEn = null, string? PromotionLabelBn = null,
+    bool IsPreorder = false, DateOnly? PreorderExpectedShipDate = null, string? PreorderLabelEn = null, string? PreorderLabelBn = null);
 
 /// <summary><c>Problem</c> is a coupon code such as <c>COUPON.EXPIRED</c> when the attached coupon no longer applies (the discount is then zero).</summary>
-public sealed record CartCouponDto(string Code, string? Description, decimal Discount, string? Problem);
+public sealed record CartCouponDto(string Code, string? Description, decimal Discount, string? Problem, bool Applied = true, string? NotAppliedReasonEn = null, string? NotAppliedReasonBn = null);
 
 /// <summary>
 /// The whole cart. Totals count each line at the quantity that can be ordered now (never more than is available, nothing for an
@@ -20,7 +23,8 @@ public sealed record CartCouponDto(string Code, string? Description, decimal Dis
 /// </summary>
 public sealed record CartView(
     Guid? Id, string? Token, IReadOnlyList<CartLineDto> Lines, int ItemCount, decimal Subtotal, decimal Discount, decimal Total, int WeightGrams,
-    CartCouponDto? Coupon, bool HasProblems, bool PriceChanged, DateTimeOffset? ExpiresAt);
+    CartCouponDto? Coupon, bool HasProblems, bool PriceChanged, DateTimeOffset? ExpiresAt, decimal PromotionDiscount = 0m, decimal ListSubtotal = 0m, PriceExplanation? Explanation = null,
+    IReadOnlyList<FreeDeliveryOffer>? FreeDelivery = null, bool HasPreorder = false, decimal PreorderAdvance = 0m);
 
 public sealed record AddCartItemRequest(Guid VariantId, int Quantity);
 
@@ -38,10 +42,10 @@ public sealed record CouponCheckDto(string Code, string? Description, CouponKind
 
 public sealed record CouponDto(
     Guid Id, string Code, string? Description, CouponKind Kind, decimal Value, decimal MinOrderValue, decimal? MaxDiscount, DateTimeOffset? StartsAt,
-    DateTimeOffset? EndsAt, int? UsageLimit, int UsedCount, bool IsActive);
+    DateTimeOffset? EndsAt, int? UsageLimit, int UsedCount, bool IsActive, bool StacksWithPromotions = false);
 
 public sealed record SaveCouponRequest(
     string Code, string? Description, CouponKind Kind, decimal Value, decimal MinOrderValue, decimal? MaxDiscount, DateTimeOffset? StartsAt,
-    DateTimeOffset? EndsAt, int? UsageLimit, bool IsActive = true);
+    DateTimeOffset? EndsAt, int? UsageLimit, bool IsActive = true, bool StacksWithPromotions = false);
 
 public sealed record CouponListQuery(bool? IsActive);

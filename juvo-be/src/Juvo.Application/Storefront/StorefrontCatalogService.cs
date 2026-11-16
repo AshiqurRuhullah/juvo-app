@@ -1,6 +1,8 @@
 using System.Linq.Expressions;
 using Juvo.Application.Abstractions;
 using Juvo.Application.Catalog;
+using Juvo.Application.Preorders;
+using Juvo.Application.Promotions;
 using Juvo.Domain.Catalog;
 using Juvo.Shared.Pagination;
 using Juvo.Shared.Results;
@@ -12,7 +14,7 @@ namespace Juvo.Application.Storefront;
 /// The public side of the catalog (module A): only published products with active variants in active categories, never the cost price,
 /// and only the combined stock number, never which branch holds it. Nothing here needs a sign-in.
 /// </summary>
-public sealed class StorefrontCatalogService(IApplicationDbContext db, StockAvailability stock, IFileStorage storage, TimeProvider clock)
+public sealed class StorefrontCatalogService(IApplicationDbContext db, StockAvailability stock, IFileStorage storage, PromotionCardPricing promoPricing, TimeProvider clock)
 {
     private const int CardsPerSection = 8;
     private const int FuzzyPoolLimit = 3000;
@@ -170,10 +172,16 @@ public sealed class StorefrontCatalogService(IApplicationDbContext db, StockAvai
 
         var images = product.Images.OrderBy(i => i.SortOrder).Select(i => ProductMediaService.ToDto(i, storage))
             .Select(i => new StoreImage(i.Id, i.Url, i.CardUrl, i.ThumbUrl, i.ColorName, i.AltText, i.Width, i.Height, i.BlurDataUrl)).ToList();
+        var path = PathOf(context, product.CategoryId);
         var storeVariants = variants.Select(v =>
         {
             var shown = stock.Shown(v, available);
-            return new StoreVariant(v.Id, v.Sku, v.ColorName, v.ColorHex, v.Size, VariantPrice(product, v, context.Now), shown, shown > 0, stock.IsLow(v, available));
+            var basePrice = VariantPrice(product, v, context.Now);
+            var promo = context.Promos.Best(product, v, path, basePrice, v.PriceOverride ?? product.RegularPrice);
+            var pre = PreorderRules.For(product, v);
+            var isPre = PreorderRules.IsPreorderLine(pre, v, available.GetValueOrDefault(v.Id));
+            return new StoreVariant(v.Id, v.Sku, v.ColorName, v.ColorHex, v.Size, promo?.Price ?? basePrice, shown, shown > 0, stock.IsLow(v, available), v.PriceOverride ?? product.RegularPrice, isPre,
+                isPre ? pre.ExpectedShipDate : null, isPre ? PreorderRules.LabelEn(pre.ExpectedShipDate) : null, isPre ? PreorderRules.LabelBn(pre.ExpectedShipDate) : null, promo);
         }).ToList();
 
         return new StoreProductDetail(card, product.Description, product.Material, product.Care, product.Tags, product.TargetGroup.ToString(), product.WeightGrams, product.VideoUrl,
@@ -182,7 +190,7 @@ public sealed class StorefrontCatalogService(IApplicationDbContext db, StockAvai
 
     // ---- Query building ---------------------------------------------------------------------------------
 
-    private sealed record Context(DateTimeOffset Now, List<Category> Categories, Dictionary<Guid, string> BrandNames, IQueryable<Guid> InStockVariantIds, List<Guid> ActiveCategoryIds)
+    private sealed record Context(DateTimeOffset Now, List<Category> Categories, Dictionary<Guid, string> BrandNames, IQueryable<Guid> InStockVariantIds, List<Guid> ActiveCategoryIds, PromotionSet Promos)
     {
         /// <summary>The category with this slug and all its active descendants, or null when there is no such active category.</summary>
         public List<Guid>? CategoryScope(string slug)
@@ -232,7 +240,34 @@ public sealed class StorefrontCatalogService(IApplicationDbContext db, StockAvai
         var brands = await db.Brands.AsNoTracking().Where(b => b.IsActive).ToDictionaryAsync(b => b.Id, b => b.NameEn, cancellationToken);
         var branches = await stock.BranchIdsAsync(cancellationToken);
         var inStock = db.StockLevels.AsNoTracking().Where(l => branches.Contains(l.BranchId) && l.OnHand - l.Reserved > 0).Select(l => l.VariantId);
-        return new Context(clock.GetUtcNow(), visible, brands, inStock, [.. visible.Select(c => c.Id)]);
+        var now = clock.GetUtcNow();
+        return new Context(now, visible, brands, inStock, [.. visible.Select(c => c.Id)], await promoPricing.LoadAsync(now, cancellationToken));
+    }
+
+    /// <summary>The category and its ancestors (what a category promotion target matches).</summary>
+    private static HashSet<Guid> PathOf(Context context, Guid categoryId)
+    {
+        var path = new HashSet<Guid>();
+        var current = context.Categories.FirstOrDefault(c => c.Id == categoryId);
+        for (var guard = 0; current is not null && guard < 12 && path.Add(current.Id); guard++)
+        {
+            current = current.ParentId is { } parent ? context.Categories.FirstOrDefault(c => c.Id == parent) : null;
+        }
+
+        return path;
+    }
+
+    /// <summary>Cards of specific published products (a campaign page), newest first.</summary>
+    public async Task<IReadOnlyList<StoreProductCard>> CardsByIdsAsync(IReadOnlyCollection<Guid> productIds, int limit, CancellationToken cancellationToken)
+    {
+        if (productIds.Count == 0)
+        {
+            return [];
+        }
+
+        var context = await ContextAsync(cancellationToken);
+        var ids = productIds.ToList();
+        return await CardsAsync(Published(context).Where(p => ids.Contains(p.Id)).OrderByDescending(p => p.PublishedAt).Take(limit), context, cancellationToken);
     }
 
     private IQueryable<Product> Published(Context context)
@@ -368,7 +403,9 @@ public sealed class StorefrontCatalogService(IApplicationDbContext db, StockAvai
 
     private StoreProductCard ToCard(Product product, List<ProductVariant> variants, IReadOnlyDictionary<Guid, int> available, Context context)
     {
-        var price = product.EffectivePrice(context.Now);
+        var basePrice = product.EffectivePrice(context.Now);
+        var promo = context.Promos.Best(product, null, PathOf(context, product.CategoryId), basePrice, product.RegularPrice);
+        var price = promo?.Price ?? basePrice;
         var onSale = price < product.RegularPrice;
         var images = product.Images.OrderBy(i => i.SortOrder).ToList();
         var main = images.FirstOrDefault() is { } first ? ProductMediaService.ToDto(first, storage) : null;
@@ -381,11 +418,15 @@ public sealed class StorefrontCatalogService(IApplicationDbContext db, StockAvai
             .Select(g => new StoreSize(g.Key, g.All(v => stock.Shown(v, available) <= 0))).ToList();
 
         var anySellable = variants.Any(v => stock.Shown(v, available) > 0);
+        var preorderable = variants.Where(v => v.TracksStock && PreorderRules.For(product, v).Allowed).ToList();
+        var soldOut = variants.Count > 0 && !anySellable;
+        var isPre = soldOut && preorderable.Count > 0;
+        var ship = preorderable.Select(v => PreorderRules.For(product, v).ExpectedShipDate).Where(d => d is not null).Min();
         return new StoreProductCard(product.Id, product.Slug, product.NameEn, product.NameBn, product.ShortDescription, category?.Slug ?? string.Empty, category?.NameEn ?? string.Empty,
             product.BrandId is { } brand ? context.BrandNames.GetValueOrDefault(brand) : null, product.RegularPrice, price, onSale,
             onSale && product.RegularPrice > 0 ? (int)Math.Round((product.RegularPrice - price) / product.RegularPrice * 100m, MidpointRounding.AwayFromZero) : 0,
-            main?.CardUrl, hover?.CardUrl, main?.BlurDataUrl, product.IsNew, product.IsFeatured, product.IsBestSeller, variants.Count > 0 && !anySellable,
-            variants.Any(v => stock.IsLow(v, available)), swatches, sizes);
+            main?.CardUrl, hover?.CardUrl, main?.BlurDataUrl, product.IsNew, product.IsFeatured, product.IsBestSeller, soldOut,
+            variants.Any(v => stock.IsLow(v, available)), swatches, sizes, promo, preorderable.Count > 0, isPre, isPre ? ship : null, isPre ? PreorderRules.LabelEn(ship) : null, isPre ? PreorderRules.LabelBn(ship) : null);
     }
 }
 

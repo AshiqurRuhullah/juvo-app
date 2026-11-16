@@ -69,6 +69,8 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
             "orders/track/cancel", "orders/track/realtime-token",
             // Step 11A: the public contact form (guest ticket), limited per address and per mobile number.
             "contact",
+            // Step 11B (module Z): the public campaign page and banners.
+            "campaigns/{slug}", "banners",
         }.Select(r => "/api/v{version:apiVersion}/store/" + r);
 
         var actual = ApiEndpoints().Where(e => e.AllowAnonymous).Select(e => e.Route).Distinct().Order().ToList();

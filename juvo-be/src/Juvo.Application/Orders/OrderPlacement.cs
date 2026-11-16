@@ -4,6 +4,8 @@ using Juvo.Application.Abstractions;
 using Juvo.Application.Carts;
 using Juvo.Application.Delivery;
 using Juvo.Application.Identity;
+using Juvo.Application.Preorders;
+using Juvo.Application.Pricing;
 using Juvo.Application.Storefront;
 using Juvo.Domain.Carts;
 using Juvo.Domain.Catalog;
@@ -25,9 +27,9 @@ public sealed record PlacedOrder(Order Order, string? TrackingToken, bool Replay
 
 /// <summary>The result of a dry run of placing an order (no stock reserved, nothing saved).</summary>
 public sealed record PlacementQuote(
-    IReadOnlyList<(ProductVariant Variant, Product Product, decimal UnitPrice, int Quantity)> Lines, decimal Subtotal, int Weight, Coupon? Coupon, decimal CouponDiscount, decimal ManualDiscount,
-    decimal DeliveryCharge, decimal StandardCharge, decimal Grand, decimal Advance, string Method, Guid BranchId, string Rule, string? ZoneCode, DateOnly? Earliest, DateOnly? Latest,
-    IReadOnlyDictionary<Guid, int> Available);
+    IReadOnlyList<(ProductVariant Variant, Product Product, decimal UnitPrice, int Quantity, decimal ListPrice, bool IsPreorder, IReadOnlyList<PriceAdjustment> Adjustments)> Lines, decimal Subtotal, int Weight,
+    Coupon? Coupon, decimal CouponDiscount, decimal ManualDiscount, decimal DeliveryCharge, decimal StandardCharge, decimal Grand, decimal Advance, string Method, Guid BranchId, string Rule, string? ZoneCode,
+    DateOnly? Earliest, DateOnly? Latest, IReadOnlyDictionary<Guid, int> Available, decimal PromotionDiscount = 0m, PricingResult? Pricing = null);
 
 /// <summary>Thrown inside the order transaction to undo everything (stock, sequence, coupon use) and answer with <see cref="Error"/>.</summary>
 internal sealed class PlacementRejected(Error error) : Exception(error.Message)
@@ -41,8 +43,8 @@ internal sealed class PlacementRejected(Error error) : Exception(error.Message)
 /// gap-free order number, writes the order with its snapshots and history, and clears the cart. Any failure rolls all of it back.
 /// </summary>
 public sealed class OrderPlacement(
-    IApplicationDbContext db, IUnitOfWork uow, SettingsService settings, OrderStock stock, OrderRouter router, FraudService fraud, DeliveryService delivery, CustomerAuthService otp,
-    StockAvailability availability, Payments.PaymentSettingsService paymentSettings, Billing.TaxService taxes, TimeProvider clock)
+    IApplicationDbContext db, IUnitOfWork uow, SettingsService settings, OrderStock stock, OrderRouter router, FraudService fraud, PricedDelivery delivery, CustomerAuthService otp,
+    StockAvailability availability, Payments.PaymentSettingsService paymentSettings, Billing.TaxService taxes, IPricingEngine pricing, TimeProvider clock)
 {
     public const string Cod = "COD";
     public const string SandboxOnline = "SANDBOX";
@@ -58,7 +60,10 @@ public sealed class OrderPlacement(
 
     private static string NewToken() => Convert.ToBase64String(RandomNumberGenerator.GetBytes(24)).Replace('+', '-').Replace('/', '_').TrimEnd('=');
 
-    private sealed record Priced(ProductVariant Variant, Product Product, decimal UnitPrice, int Quantity, string? ImagePath);
+    private sealed record Priced(ProductVariant Variant, Product Product, PricedLine Line, int Quantity, string? ImagePath, bool IsPreorder, PreorderInfo Pre)
+    {
+        public decimal UnitPrice => Line.UnitPrice;
+    }
 
     public async Task<Result<PlacedOrder>> PlaceAsync(PlacementInput i, CancellationToken cancellationToken)
     {
@@ -102,7 +107,7 @@ public sealed class OrderPlacement(
             return pricing.Error!;
         }
 
-        var (priced, subtotal, weight, coupon, couponDiscount, quote, deliveryCharge, grand, method, standardCharge, advance) = pricing.Value;
+        var (priced, subtotal, weight, coupon, couponDiscount, quote, deliveryCharge, grand, method, standardCharge, advance, promotionDiscount, engine) = pricing.Value;
 
 
         // 6. Customer (read only here), blacklist and fraud rules.
@@ -136,7 +141,8 @@ public sealed class OrderPlacement(
         }
 
         // 8. Where the goods come from. Orders are not split: one branch must hold every line.
-        var lines = i.Lines.Where(l => priced.First(p => p.Variant.Id == l.VariantId).Variant.TracksStock).ToList();
+        // A pre-order line (module AA) holds no stock now: it is left out of routing and reservation and waits in the pre-order queue.
+        var lines = i.Lines.Where(l => priced.First(p => p.Variant.Id == l.VariantId) is { IsPreorder: false, Variant.TracksStock: true }).ToList();
         IReadOnlyList<Guid> candidates;
         string rule;
         if (i.TargetBranchId is { } target)
@@ -209,15 +215,28 @@ public sealed class OrderPlacement(
                     }
                 }
 
+                foreach (var applied in engine.Promotions)
+                {
+                    var promotionId = applied.Id;
+                    var counted = await db.Promotions.Where(p => p.Id == promotionId && (p.UsageLimit == null || p.UsedCount < p.UsageLimit))
+                        .ExecuteUpdateAsync(set => set.SetProperty(p => p.UsedCount, p => p.UsedCount + 1), ct);
+                    if (counted == 0)
+                    {
+                        throw new PlacementRejected(Error.Conflict(ErrorCodes.Promo.UsedUp, "An offer in your order has just been used up. Check the order and confirm again."));
+                    }
+                }
+
                 var data = new NewOrder(
                     number, reservedIn, i.Source, owner.Id, owner.Mobile, i.Name ?? owner.FullName, i.Email ?? owner.Email, method, rule, quote.ZoneCode, "BDT", subtotal, couponDiscount, coupon?.Code,
                     coupon?.Id, i.ManualDiscount, deliveryCharge, standardCharge, advance, weight, i.Shipping, method == Cod ? null : now.AddMinutes(config.PaymentHoldMinutes), i.IdempotencyKey?.Trim(), fingerprint,
-                    Hash(token), i.DeviceId, i.Ip, otpVerified, i.IsStaff ? null : now, i.IsStaff ? i.Who.Id : null, i.Who.Name);
+                    Hash(token), i.DeviceId, i.Ip, otpVerified, i.IsStaff ? null : now, i.IsStaff ? i.Who.Id : null, i.Who.Name, promotionDiscount);
                 var items = priced.Select(p => new NewOrderItem(
                     p.Variant.Id, p.Product.Id, p.Product.NameEn, p.Product.NameBn, p.Variant.Sku, p.Variant.ColorName, p.Variant.Size, p.ImagePath, p.UnitPrice, p.Quantity,
-                    p.Variant.WeightGramsOverride ?? p.Product.WeightGrams ?? 0, p.Variant.TracksStock, p.Product.CostPrice)).ToList();
+                    p.Variant.WeightGramsOverride ?? p.Product.WeightGrams ?? 0, p.Variant.TracksStock, p.Product.CostPrice, p.Line.ListPrice, p.Line.OrderDiscount,
+                    [.. p.Line.Adjustments.Where(a => a.Amount > 0m).Select(a => new NewItemAdjustment(a.SourceType, a.SourceId, a.LabelEn, a.LabelBn, a.Amount, a.Level))], p.IsPreorder,
+                    p.IsPreorder ? p.Pre.ExpectedShipDate : null)).ToList();
                 var placed = Order.Place(data, items, now);
-                var (taxRule, tax) = await taxes.ComputeAsync([.. items.Select(x => x.UnitPrice * x.Quantity)], couponDiscount + i.ManualDiscount, deliveryCharge, ct);
+                var (taxRule, tax) = await taxes.ComputeAsync([.. items.Select(x => x.UnitPrice * x.Quantity)], promotionDiscount + couponDiscount + i.ManualDiscount, deliveryCharge, ct);
                 if (taxRule is not null)
                 {
                     placed.ApplyTax(taxRule.Code, taxRule.RatePercent, tax.TaxTotal); // the tax inside the prices: totals do not change
@@ -258,17 +277,18 @@ public sealed class OrderPlacement(
     }
 
 
-    /// <summary>The prices of an order, worked out from the catalog and the rules, before anything is reserved or saved.</summary>
+    /// <summary>The prices of an order, worked out by the pricing engine, before anything is reserved or saved.</summary>
     private sealed record Pricing(
-        List<Priced> Priced, decimal Subtotal, int Weight, Coupon? Coupon, decimal CouponDiscount, DeliveryQuoteDto Quote, decimal DeliveryCharge, decimal Grand, string Method, decimal StandardCharge, decimal Advance);
+        List<Priced> Priced, decimal Subtotal, int Weight, Coupon? Coupon, decimal CouponDiscount, DeliveryQuoteDto Quote, decimal DeliveryCharge, decimal Grand, string Method, decimal StandardCharge, decimal Advance,
+        decimal PromotionDiscount, PricingResult Engine);
 
     /// <summary>
-    /// Prices from the catalog (never from the client), the coupon, the delivery charge (the same calculation as the quote, BR-G2; staff may override it), the payment method and the
-    /// advance of a large cash on delivery order (BR-D1). Changes nothing. Used by <see cref="PlaceAsync"/> and by the order desk preview <see cref="QuoteAsync"/>.
+    /// Prices from the pricing engine (never from the client: list price, sale, promotions, coupon), the delivery charge (the same calculation as the quote, BR-G2; staff may override it; a free-delivery
+    /// promotion waives it), the payment method and the advance of a large cash on delivery order (BR-D1) or of pre-order lines (module AA). Changes nothing. Used by <see cref="PlaceAsync"/> and by
+    /// the order desk preview <see cref="QuoteAsync"/>.
     /// </summary>
     private async Task<Result<Pricing>> PriceAsync(PlacementInput i, OrderSettings config, DateTimeOffset now, CancellationToken cancellationToken)
     {
-        // 2. Prices from the catalog, never from the client.
         var variantIds = i.Lines.Select(l => l.VariantId).ToList();
         var rows = await (from v in db.ProductVariants.AsNoTracking()
                           join p in db.Products.AsNoTracking() on v.ProductId equals p.Id
@@ -280,59 +300,56 @@ public sealed class OrderPlacement(
             return Error.NotFound(ErrorCodes.Cart.VariantUnavailable, "An item in your order is no longer available.");
         }
 
+        var request = new PricingRequest([.. i.Lines.Select(l => new PricingLineRequest(l.VariantId, l.Quantity))], new PricingCustomer(i.SignedInCustomerId, i.Mobile),
+            string.IsNullOrWhiteSpace(i.CouponCode) ? null : [i.CouponCode], i.Source == OrderSource.Web ? PricingChannel.Web : PricingChannel.SocialDesk, now, RequireSellable: true);
+        var engineResult = await pricing.PriceAsync(request, cancellationToken);
+        if (engineResult.IsFailure)
+        {
+            return engineResult.Error!;
+        }
+
+        var engine = engineResult.Value;
+        if (engine.CouponError is { } couponError)
+        {
+            return couponError;
+        }
+
         var productIds = rows.Select(r => r.Product.Id).Distinct().ToList();
         var images = await db.ProductImages.AsNoTracking().Where(m => productIds.Contains(m.ProductId)).OrderBy(m => m.SortOrder).ToListAsync(cancellationToken);
+        var available = await availability.AvailableAsync(variantIds, cancellationToken);
         var priced = i.Lines.Select(l =>
         {
             var row = rows.First(r => r.Variant.Id == l.VariantId);
             var image = images.Where(m => m.ProductId == row.Product.Id)
                 .OrderBy(m => string.Equals(m.ColorName, row.Variant.ColorName, StringComparison.OrdinalIgnoreCase) ? 0 : 1).ThenBy(m => m.SortOrder).FirstOrDefault();
-            return new Priced(row.Variant, row.Product, row.Variant.PriceOverride ?? row.Product.EffectivePrice(now), l.Quantity, image?.Path);
+            var pre = PreorderRules.For(row.Product, row.Variant);
+            return new Priced(row.Variant, row.Product, engine.Lines.First(x => x.VariantId == l.VariantId), l.Quantity, image?.Path,
+                PreorderRules.IsPreorderLine(pre, row.Variant, available.GetValueOrDefault(l.VariantId)), pre);
         }).ToList();
-        var subtotal = priced.Sum(p => p.UnitPrice * p.Quantity);
+        var totals = engine.Totals;
         var weight = priced.Sum(p => (p.Variant.WeightGramsOverride ?? p.Product.WeightGrams ?? 0) * p.Quantity);
+        Coupon? coupon = engine.Coupon is { Applied: true, CouponId: { } couponId } ? await db.Coupons.AsNoTracking().FirstAsync(c => c.Id == couponId, cancellationToken) : null;
 
-        // 3. Coupon.
-        Coupon? coupon = null;
-        decimal couponDiscount = 0;
-        if (!string.IsNullOrWhiteSpace(i.CouponCode))
-        {
-            var code = Coupon.Normalize(i.CouponCode);
-            coupon = await db.Coupons.AsNoTracking().FirstOrDefaultAsync(c => c.Code == code, cancellationToken);
-            if (coupon is null)
-            {
-                return Error.NotFound(ErrorCodes.Coupon.NotFound, "This coupon code does not exist.");
-            }
-
-            var problem = coupon.Check(now, subtotal);
-            if (problem != CouponProblem.None)
-            {
-                return CouponCodes.ToError(problem, coupon);
-            }
-
-            couponDiscount = coupon.DiscountFor(subtotal);
-        }
-
-        // 4. Delivery charge: the same calculation as the quote (BR-G2: the charge shown is the charge billed); staff may override it.
-        var quote = await delivery.QuoteAmountsAsync(i.Shipping.CountryCode, i.Shipping.DistrictId, i.Shipping.UpazilaId, subtotal - couponDiscount, weight, cancellationToken);
+        // Delivery charge: the same calculation as the quote (BR-G2: the charge shown is the charge billed); staff may override it.
+        var quote = await delivery.QuoteAsync(i.Shipping.CountryCode, i.Shipping.DistrictId, i.Shipping.UpazilaId, totals.GoodsTotal, weight, engine.FreeDelivery, cancellationToken);
         if (quote.IsFailure)
         {
             return quote.Error!;
         }
 
         var deliveryCharge = i.DeliveryOverride ?? quote.Value.Total;
-        if (i.ManualDiscount < 0 || i.ManualDiscount > subtotal - couponDiscount)
+        if (i.ManualDiscount < 0 || i.ManualDiscount > totals.GoodsTotal)
         {
             return Error.Conflict(ErrorCodes.Order.DiscountTooLarge, "The discount cannot be more than the goods are worth.");
         }
 
-        var grand = subtotal - couponDiscount - i.ManualDiscount + deliveryCharge;
+        var grand = totals.GoodsTotal - i.ManualDiscount + deliveryCharge;
         if (i.ExpectedTotal is { } expected && expected != grand)
         {
             return Error.Conflict(ErrorCodes.Order.TotalChanged, $"The total changed to BDT {grand:0.##}. Check the order and confirm again.");
         }
 
-        // 5. Payment method.
+        // Payment method.
         var method = (i.PaymentMethod ?? string.Empty).Trim().ToUpperInvariant();
         if (Payments.PaymentMethodCatalog.Find(method) is null)
         {
@@ -350,9 +367,11 @@ public sealed class OrderPlacement(
         }
 
         var standardCharge = quote.Value.Total + quote.Value.FreeDeliveryWaiver; // what the courier costs, even when the customer got free delivery
-        var advance = method == Cod && grand > config.CodAdvanceThreshold ? Math.Min(standardCharge, grand) : 0m; // BR-D1
+        var codAdvance = method == Cod && grand > config.CodAdvanceThreshold ? Math.Min(standardCharge, grand) : 0m; // BR-D1
+        var preorderAdvance = priced.Where(p => p.IsPreorder).Sum(p => PreorderRules.Advance(p.Line.NetTotal, p.Pre.AdvancePercent)); // FR-AA02, paid through the same advance mechanism
+        var advance = method == Cod ? Math.Max(codAdvance, Math.Min(preorderAdvance, grand)) : 0m;
 
-        return new Pricing(priced, subtotal, weight, coupon, couponDiscount, quote.Value, deliveryCharge, grand, method, standardCharge, advance);
+        return new Pricing(priced, totals.Subtotal, weight, coupon, totals.CouponDiscount, quote.Value, deliveryCharge, grand, method, standardCharge, advance, totals.PromotionDiscount, engine);
     }
 
     /// <summary>
@@ -381,7 +400,7 @@ public sealed class OrderPlacement(
         }
 
         var p = pricing.Value;
-        var lines = i.Lines.Where(l => p.Priced.First(x => x.Variant.Id == l.VariantId).Variant.TracksStock).ToList();
+        var lines = i.Lines.Where(l => p.Priced.First(x => x.Variant.Id == l.VariantId) is { IsPreorder: false, Variant.TracksStock: true }).ToList();
         IReadOnlyList<Guid> candidates;
         string rule;
         if (i.TargetBranchId is { } target)
@@ -407,8 +426,8 @@ public sealed class OrderPlacement(
             return Error.Conflict(ErrorCodes.Order.StockInsufficient, "The branch does not have every item of this order in stock.");
         }
 
-        return new PlacementQuote(p.Priced.Select(x => (x.Variant, x.Product, x.UnitPrice, x.Quantity)).ToList(), p.Subtotal, p.Weight, p.Coupon, p.CouponDiscount, i.ManualDiscount, p.DeliveryCharge, p.StandardCharge, p.Grand,
-            p.Advance, p.Method, branchId, rule, p.Quote.ZoneCode, p.Quote.EarliestDelivery, p.Quote.LatestDelivery, available);
+        return new PlacementQuote(p.Priced.Select(x => (x.Variant, x.Product, x.UnitPrice, x.Quantity, x.Line.ListPrice, x.IsPreorder, x.Line.Adjustments)).ToList(), p.Subtotal, p.Weight, p.Coupon, p.CouponDiscount,
+            i.ManualDiscount, p.DeliveryCharge, p.StandardCharge, p.Grand, p.Advance, p.Method, branchId, rule, p.Quote.ZoneCode, p.Quote.EarliestDelivery, p.Quote.LatestDelivery, available, p.PromotionDiscount, p.Engine);
     }
 
     private static string BlockedMessage(bool staff, string reason) =>

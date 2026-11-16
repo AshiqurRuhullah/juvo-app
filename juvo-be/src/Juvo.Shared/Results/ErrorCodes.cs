@@ -170,16 +170,12 @@ public static class ErrorCodes
         public const string Incomplete = "PROMO.INCOMPLETE";
         public const string CampaignNotFound = "PROMO.CAMPAIGN_NOT_FOUND";
         public const string TargetNotFound = "PROMO.TARGET_NOT_FOUND";
-        public const string ImageInvalid = "PROMO.IMAGE_INVALID";
         public const string UsedUp = "PROMO.USED_UP";
     }
 
     public static class Preorder
     {
-        public const string NotAllowed = "PREORDER.NOT_ALLOWED";
         public const string AwaitingStock = "PREORDER.AWAITING_STOCK";
-        public const string NotWaiting = "PREORDER.NOT_WAITING";
-        public const string SettingsInvalid = "PREORDER.SETTINGS_INVALID";
     }
 
     public static class Customer

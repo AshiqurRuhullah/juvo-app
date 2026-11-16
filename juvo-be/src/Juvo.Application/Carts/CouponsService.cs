@@ -12,7 +12,7 @@ public sealed class CouponsService(IApplicationDbContext db)
     private static Error Invalid(string field, string message) =>
         Error.Validation(new Dictionary<string, string[]> { [field] = [message] });
 
-    private static CouponDto ToDto(Coupon c) => new(c.Id, c.Code, c.Description, c.Kind, c.Value, c.MinOrderValue, c.MaxDiscount, c.StartsAt, c.EndsAt, c.UsageLimit, c.UsedCount, c.IsActive);
+    private static CouponDto ToDto(Coupon c) => new(c.Id, c.Code, c.Description, c.Kind, c.Value, c.MinOrderValue, c.MaxDiscount, c.StartsAt, c.EndsAt, c.UsageLimit, c.UsedCount, c.IsActive, c.StacksWithPromotions);
 
     public async Task<Result<PagedResult<CouponDto>>> ListAsync(PageRequest request, CouponListQuery filter, CancellationToken cancellationToken)
     {
@@ -55,7 +55,7 @@ public sealed class CouponsService(IApplicationDbContext db)
         }
 
         var coupon = new Coupon(code, request.Kind, request.Value);
-        coupon.Update(request.Description, request.Kind, request.Value, request.MinOrderValue, request.MaxDiscount, request.StartsAt, request.EndsAt, request.UsageLimit, request.IsActive);
+        coupon.Update(request.Description, request.Kind, request.Value, request.MinOrderValue, request.MaxDiscount, request.StartsAt, request.EndsAt, request.UsageLimit, request.IsActive, request.StacksWithPromotions);
         db.Coupons.Add(coupon);
         await db.SaveChangesAsync(cancellationToken);
         return ToDto(coupon);
@@ -81,7 +81,7 @@ public sealed class CouponsService(IApplicationDbContext db)
             return Invalid("usageLimit", "The limit cannot be lower than the number of times the coupon was already used.");
         }
 
-        coupon.Update(request.Description, request.Kind, request.Value, request.MinOrderValue, request.MaxDiscount, request.StartsAt, request.EndsAt, request.UsageLimit, request.IsActive);
+        coupon.Update(request.Description, request.Kind, request.Value, request.MinOrderValue, request.MaxDiscount, request.StartsAt, request.EndsAt, request.UsageLimit, request.IsActive, request.StacksWithPromotions);
         await db.SaveChangesAsync(cancellationToken);
         return ToDto(coupon);
     }

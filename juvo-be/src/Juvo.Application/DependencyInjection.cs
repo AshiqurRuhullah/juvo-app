@@ -175,6 +175,17 @@ public static class DependencyInjection
         services.AddScoped<TransfersService>();
         services.AddScoped<CountsService>();
 
+        // Promotions and the pricing engine (module Z), pre-orders and backorders (module AA).
+        services.AddScoped<Juvo.Application.Pricing.IBasePriceSource, Juvo.Application.Pricing.CatalogBasePriceSource>();
+        services.AddScoped<Juvo.Application.Pricing.IPricingEngine, Juvo.Application.Pricing.PricingEngine>();
+        services.AddScoped<Juvo.Application.Pricing.PricedDelivery>();
+        services.AddScoped<Juvo.Application.Promotions.PromotionsService>();
+        services.AddScoped<Juvo.Application.Promotions.PromotionReportService>();
+        services.AddScoped<Juvo.Application.Promotions.PromotionCardPricing>();
+        services.AddScoped<Juvo.Application.Promotions.StorefrontPromotionsService>();
+        services.AddScoped<Juvo.Application.Preorders.PreorderAllocator>();
+        services.AddScoped<Juvo.Application.Preorders.PreorderService>();
+
         // No branch scope unless the host provides one (the API registers the per-request scope).
         services.TryAddScoped<IBranchContext>(_ => UnscopedBranchContext.Instance);
 

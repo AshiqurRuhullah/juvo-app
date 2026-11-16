@@ -69,6 +69,11 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
             return Invalid(order, OrderStatus.Confirmed);
         }
 
+        if (order.PreorderState == PreorderState.Waiting)
+        {
+            return Refuse(ErrorCodes.Preorder.AwaitingStock, "This pre-order is waiting for stock. It can be confirmed once the stock has been allocated to it.");
+        }
+
         if (order.IsHeld)
         {
             return Refuse(ErrorCodes.Order.HeldForReview, "This order is held for a fraud review. Decide it in the review queue first.");
@@ -106,6 +111,11 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
         if (!OrderStateMachine.CanMove(order.Status, OrderStatus.Packed))
         {
             return Invalid(order, OrderStatus.Packed);
+        }
+
+        if (order.PreorderState == PreorderState.Waiting)
+        {
+            return Refuse(ErrorCodes.Preorder.AwaitingStock, "This pre-order is waiting for stock and cannot be packed until the stock has been allocated to it.");
         }
 
         var config = await settings.OrdersAsync(cancellationToken);
@@ -164,6 +174,13 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
         if (order.CouponId is { } couponId)
         {
             await db.Coupons.Where(c => c.Id == couponId && c.UsedCount > 0).ExecuteUpdateAsync(set => set.SetProperty(c => c.UsedCount, c => c.UsedCount - 1), cancellationToken);
+        }
+
+        // The promotions the order used get their use back (module Z), like the coupon.
+        var promotionIds = await db.OrderItemAdjustments.Where(a => a.OrderId == order.Id && a.SourceId != null && (a.SourceType == "Promotion" || a.SourceType == "Bundle" || a.SourceType == "BuyXGetY")).Select(a => a.SourceId!.Value).Distinct().ToListAsync(cancellationToken);
+        foreach (var promotionId in promotionIds)
+        {
+            await db.Promotions.Where(p => p.Id == promotionId && p.UsedCount > 0).ExecuteUpdateAsync(set => set.SetProperty(p => p.UsedCount, p => p.UsedCount - 1), cancellationToken);
         }
 
         return Result.Success();
