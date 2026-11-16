@@ -17,6 +17,9 @@ public enum PaymentKind
 
     /// <summary>An advance staff received for a large cash-on-delivery order (BR-D1).</summary>
     Advance = 4,
+
+    /// <summary>Points, store credit or a gift card used as a tender (module AB). Paid at once: the ledger already holds the money. Not cash: reports leave it out of cash received.</summary>
+    StoreCredit = 5,
 }
 
 public enum RefundMode
@@ -26,6 +29,9 @@ public enum RefundMode
 
     /// <summary>Staff transfer the money (cash, bank, wallet) and write down the reference.</summary>
     Manual = 2,
+
+    /// <summary>The money goes back into the customer's store credit (or points) ledger and completes at once (module AB). No cash leaves the shop.</summary>
+    StoreCredit = 3,
 }
 
 /// <summary>Pending refunds finish later; Completed and Failed are final.</summary>

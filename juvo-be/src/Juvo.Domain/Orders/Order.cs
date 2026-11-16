@@ -412,6 +412,21 @@ public sealed class Order : AggregateRoot, IBranchScoped
         _notes.Add(new OrderNote(Id, NoteKind.Internal, $"Advance of BDT {amount:0.##} received. {detail}".Trim(), by, byName, now));
     }
 
+    /// <summary>
+    /// Counts what the customer paid with points, store credit or a gift card (module AB) as already received, so every "total minus advance" calculation (cash on delivery, the online
+    /// amount) leaves it out. The order total itself never changes. When the tender covers the whole total the payment track becomes Paid.
+    /// </summary>
+    public void ApplyTender(decimal amount, DateTimeOffset now, Guid? by, string? byName)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+        AdvancePaid += amount;
+        _notes.Add(new OrderNote(Id, NoteKind.Internal, $"BDT {amount:0.##} paid with points, store credit or a gift card.", by, byName, now));
+        if (AdvancePaid >= GrandTotal && PaymentStatus == PaymentStatus.Pending)
+        {
+            TransitionPaymentTo(PaymentStatus.Paid, now, by, byName, "Paid in full with points, store credit or a gift card");
+        }
+    }
+
     public void MarkStockDeducted() => StockDeducted = true;
 
     public void MarkStockRestored() => StockDeducted = false;

@@ -44,6 +44,9 @@ public enum RefundMethod
     Cash = 2,
     BankTransfer = 3,
     Wallet = 4,
+
+    /// <summary>The refund becomes store credit in the customer's loyalty account (module AB); needs no reference.</summary>
+    StoreCredit = 5,
 }
 
 /// <summary>Completed: the money went back (a staff member did it and noted the reference). Pending is kept for gateway refunds that finish later (Step 9).</summary>
