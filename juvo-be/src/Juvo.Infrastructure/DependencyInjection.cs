@@ -84,6 +84,7 @@ public static class DependencyInjection
         services.AddHostedService<OrderTimeoutWorker>();
         services.AddOptions<OperationsJobOptions>().Bind(configuration.GetSection(OperationsJobOptions.SectionName)).ValidateDataAnnotations().ValidateOnStart();
         services.AddHostedService<RecurringExpenseWorker>();
+        services.AddHostedService<TicketAutoCloseWorker>();
 
         AddIdentity(services, configuration, environment);
 

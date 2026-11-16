@@ -62,6 +62,7 @@ internal static class WebApplicationExtensions
         app.MapCouriersEndpoints();
         app.MapAccountingEndpoints();
         app.MapPurchasingEndpoints();
+        app.MapSupportEndpoints();
         app.MapHub<Juvo.Api.Realtime.OrdersHub>(Juvo.Api.Realtime.RealtimeAuth.HubPath);
         app.MapNotificationsEndpoints();
 
