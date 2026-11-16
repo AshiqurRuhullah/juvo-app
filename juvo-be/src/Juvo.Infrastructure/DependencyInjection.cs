@@ -84,6 +84,9 @@ public static class DependencyInjection
         services.AddHostedService<OrderTimeoutWorker>();
         services.AddOptions<OperationsJobOptions>().Bind(configuration.GetSection(OperationsJobOptions.SectionName)).ValidateDataAnnotations().ValidateOnStart();
         services.AddHostedService<RecurringExpenseWorker>();
+        services.AddOptions<Reports.ReportJobOptions>().Bind(configuration.GetSection(Reports.ReportJobOptions.SectionName)).ValidateDataAnnotations().ValidateOnStart();
+        services.AddHostedService<Reports.DailySummaryWorker>();
+        services.AddSingleton<Juvo.Application.Reports.IReportPdfRenderer, Reports.ReportPdfRenderer>();
 
         AddIdentity(services, configuration, environment);
 
