@@ -21,7 +21,7 @@ namespace Juvo.Application.Purchasing;
 /// </summary>
 public sealed class PurchasingService(
     IApplicationDbContext db, IUnitOfWork uow, InventoryAccess access, OrderAccess orderAccess, NumberAllocator numbers, StockLedger stock, LedgerWriter ledger, OpsSettingsService settings,
-    AttachmentStore attachments, TimeProvider clock)
+    AttachmentStore attachments, Preorders.PreorderAllocator preorders, TimeProvider clock)
 {
     private const string Folder = "purchasing";
     private const int MaxLines = 200;
@@ -543,7 +543,9 @@ public sealed class PurchasingService(
             return Error.Failure(ErrorCodes.Purchase.NothingReceived, "Nothing was received: enter an accepted or a rejected quantity on at least one line.");
         }
 
-        return await uow.ExecuteInTransactionAsync<Result<ReceiveResultDto>>(async ct =>
+        Guid receivedBranch = Guid.Empty;
+        List<Guid> receivedVariants = [];
+        var outcome = await uow.ExecuteInTransactionAsync<Result<ReceiveResultDto>>(async ct =>
         {
             var order = await Loaded().FirstOrDefaultAsync(o => o.Id == id, ct);
             if (order is null)
@@ -622,8 +624,18 @@ public sealed class PurchasingService(
             order.Receive([.. received.Select(l => new ReceivedLine(l.LineId, l.AcceptedQuantity, l.RejectedQuantity, l.Note))], now, who.Id, who.Name);
             db.GoodsReceipts.Add(receipt);
             await db.SaveChangesAsync(ct);
+            receivedBranch = order.BranchId;
+            receivedVariants = [.. received.Where(l => l.AcceptedQuantity > 0).Select(l => order.Lines.First(x => x.Id == l.LineId).VariantId).Distinct()];
             return new ReceiveResultDto(ReceiptDto(receipt), await DetailAsync(order, ct));
         }, cancellationToken);
+
+        // Module AA: the new stock goes to waiting pre-orders, oldest first. A problem here never undoes the receipt; staff can run the allocation again.
+        if (outcome.IsSuccess && receivedBranch != Guid.Empty && receivedVariants.Count > 0)
+        {
+            await preorders.AllocateAfterReceiptAsync(receivedBranch, receivedVariants, cancellationToken);
+        }
+
+        return outcome;
     }
 
     private static GoodsReceiptDto ReceiptDto(GoodsReceipt r) =>

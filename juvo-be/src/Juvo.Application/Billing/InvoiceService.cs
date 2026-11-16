@@ -97,7 +97,7 @@ public sealed class InvoiceService(
         var seller = await SellerAsync(branch, cancellationToken);
         var rule = order.TaxRuleCode is { } code ? await db.TaxRules.AsNoTracking().FirstOrDefaultAsync(r => r.Code == code, cancellationToken) : null;
         var items = order.Items.OrderBy(i => i.CreatedAt).ThenBy(i => i.Sku).ToList();
-        var discount = order.CouponDiscount + order.ManualDiscount;
+        var discount = order.PromotionDiscount + order.CouponDiscount + order.ManualDiscount; // the order's own snapshot: an invoice never reprices from live promotions
         var tax = TaxMath.ForOrder([.. items.Select(i => i.LineTotal)], discount, order.DeliveryCharge, order.TaxRatePercent ?? 0m, rule?.AppliesToDelivery ?? true);
         var lines = items.Select((i, n) => new NewInvoiceLine(i.Name, i.NameBn, i.Sku, string.Join(" / ", new[] { i.ColorName, i.Size }.Where(s => !string.IsNullOrWhiteSpace(s))) is { Length: > 0 } v ? v : null,
             i.Quantity, i.UnitPrice, i.LineTotal, tax.LineTax.Count > n ? tax.LineTax[n] : 0m)).ToList();
@@ -162,11 +162,19 @@ public sealed class InvoiceService(
         var branchCode = await db.Branches.AsNoTracking().Where(b => b.Id == i.BranchId).Select(b => b.Code).FirstAsync(cancellationToken);
         var order = await db.Orders.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Where(o => o.Id == i.OrderId).Select(o => new { o.PaymentMethod, o.PaymentStatus }).FirstAsync(cancellationToken);
         var notes = await db.CreditNotes.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Where(c => c.InvoiceId == i.Id).OrderBy(c => c.IssuedAt).ThenBy(c => c.Number).ToListAsync(cancellationToken);
+        var snapshot = await db.OrderItems.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Where(x => x.OrderId == i.OrderId).ToListAsync(cancellationToken); // list price and pre-order facts live on the order lines
         return new InvoiceDto(i.Id, i.Number, i.OrderId, i.OrderNumber, i.BranchId, branchCode, i.IssuedAt, i.Currency, new InvoiceSellerDto(i.SellerName, i.SellerAddress, i.SellerPhone, i.SellerEmail, i.SellerTaxId),
             i.CustomerName, i.CustomerMobile, i.CustomerEmail, i.BillingAddress,
-            [.. i.Lines.OrderBy(l => l.SortOrder).Select(l => new InvoiceLineDto(l.Name, l.NameBn, l.Sku, l.Variant, l.Quantity, l.UnitPrice, l.LineTotal, l.TaxAmount))],
+            [.. i.Lines.OrderBy(l => l.SortOrder).Select(l =>
+            {
+                var item = snapshot.FirstOrDefault(x => x.Sku == l.Sku);
+                return new InvoiceLineDto(l.Name, l.NameBn, l.Sku, l.Variant, l.Quantity, l.UnitPrice, l.LineTotal, l.TaxAmount, item?.ListPrice, item?.PromotionDiscount ?? 0m, item?.IsPreorder ?? false,
+                    item is { IsPreorder: true } ? item.PreorderExpectedShipDate : null, item is { IsPreorder: true } ? Preorders.PreorderRules.LabelEn(item.PreorderExpectedShipDate) : null,
+                    item is { IsPreorder: true } ? Preorders.PreorderRules.LabelBn(item.PreorderExpectedShipDate) : null);
+            })],
             i.Subtotal, i.Discount, i.DeliveryCharge, i.GrandTotal, i.TaxRuleCode, i.TaxRuleName, i.TaxRatePercent, i.DeliveryTax, i.TaxTotal, i.GrandTotal - i.TaxTotal, order.PaymentMethod, order.PaymentStatus,
-            notes.Sum(c => c.Amount), [.. notes.Select(c => new CreditNoteSummaryDto(c.Id, c.Number, c.Amount, c.TaxAmount, c.IssuedAt))]);
+            notes.Sum(c => c.Amount), [.. notes.Select(c => new CreditNoteSummaryDto(c.Id, c.Number, c.Amount, c.TaxAmount, c.IssuedAt))],
+            snapshot.Sum(x => x.PromotionDiscount), snapshot.Sum(x => x.Quantity * x.ListPrice), snapshot.Any(x => x.IsPreorder));
     }
 
     private static PdfDocumentModel ToModel(InvoiceDto d, string language)

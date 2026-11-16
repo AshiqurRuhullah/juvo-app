@@ -86,6 +86,10 @@ public interface IApplicationDbContext
 
     DbSet<Coupon> Coupons { get; }
 
+    DbSet<Juvo.Domain.Promotions.Promotion> Promotions { get; }
+
+    DbSet<Juvo.Domain.Orders.OrderItemAdjustment> OrderItemAdjustments { get; }
+
     DbSet<Order> Orders { get; }
 
     DbSet<OrderItem> OrderItems { get; }

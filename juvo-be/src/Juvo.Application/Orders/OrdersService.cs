@@ -120,7 +120,7 @@ public sealed class OrdersService(
     }
 
     private IQueryable<Order> Loaded() =>
-        db.Orders.Include(o => o.Items).Include(o => o.History).Include(o => o.Notes).Include(o => o.Flags);
+        db.Orders.Include(o => o.Items).ThenInclude(i => i.Adjustments).Include(o => o.History).Include(o => o.Notes).Include(o => o.Flags);
 
     public async Task<Result<OrderDetailDto>> GetAsync(Guid id, CancellationToken cancellationToken)
     {
@@ -150,7 +150,7 @@ public sealed class OrdersService(
             o.ConfirmedAt, o.PackedAt, o.DeliveredAt, o.CancelledAt, o.CancelReason, o.PaymentHoldExpiresAt, o.OtpVerified, o.CreatedByStaffId, OrderViews.Lines(o, storage),
             OrderViews.StaffTimeline(o), [.. o.Notes.OrderBy(n => n.At).Select(n => new NoteDto(n.Id, n.Kind, n.Text, n.AuthorName, n.At))],
             [.. o.Flags.OrderBy(f => f.At).Select(f => new RiskFlagDto(f.RuleCode, f.Message, f.Score, f.Action, f.At))], log, stats,
-            [.. OrderStateMachine.NextFor(o.Status).Select(s => s.ToString())], [.. OrderStateMachine.NextFor(o.PaymentStatus).Select(s => s.ToString())]);
+            [.. OrderStateMachine.NextFor(o.Status).Select(s => s.ToString())], [.. OrderStateMachine.NextFor(o.PaymentStatus).Select(s => s.ToString())], o.PreorderState);
     }
 
     // ---- Changing ---------------------------------------------------------------------------------------
@@ -334,7 +334,7 @@ public sealed class OrdersService(
         }
 
         var branch = await db.Branches.AsNoTracking().FirstAsync(b => b.Id == order.BranchId, cancellationToken);
-        var discount = order.CouponDiscount + order.ManualDiscount;
+        var discount = order.PromotionDiscount + order.CouponDiscount + order.ManualDiscount;
         // A confirmed order with an advance requirement had the advance marked as received (confirmation insists on it), so the courier collects the rest.
         var advanceTaken = order.ConfirmedAt is not null ? order.AdvanceRequired : 0m;
         var collect = order.IsOnlinePayment || order.PaymentStatus == PaymentStatus.Paid ? 0m : Math.Max(0m, order.GrandTotal - advanceTaken);
@@ -488,8 +488,9 @@ public sealed class OrdersService(
 
         var q = quoted.Value;
         return new ManualQuoteDto("BDT", q.Subtotal, q.CouponDiscount, q.Coupon?.Code, q.ManualDiscount, q.DeliveryCharge, q.StandardCharge, q.Grand, q.Advance, q.Weight, q.ZoneCode, q.Method, q.BranchId, q.Rule,
-            [.. q.Lines.Select(l => new ManualQuoteLineDto(l.Variant.Id, l.Variant.Sku, l.Product.NameEn, l.Variant.ColorName, l.Variant.Size, l.UnitPrice, l.Quantity, l.UnitPrice * l.Quantity, q.Available.GetValueOrDefault(l.Variant.Id)))],
-            q.Earliest, q.Latest);
+            [.. q.Lines.Select(l => new ManualQuoteLineDto(l.Variant.Id, l.Variant.Sku, l.Product.NameEn, l.Variant.ColorName, l.Variant.Size, l.UnitPrice, l.Quantity, l.UnitPrice * l.Quantity,
+                q.Available.GetValueOrDefault(l.Variant.Id), l.ListPrice, l.IsPreorder, l.Adjustments))],
+            q.Earliest, q.Latest, q.PromotionDiscount, q.Pricing?.Totals.ListSubtotal ?? 0m, q.Pricing?.Explanation);
     }
 
     /// <summary>Orders and value per source in a period, for the owner's daily count (FR-S06).</summary>

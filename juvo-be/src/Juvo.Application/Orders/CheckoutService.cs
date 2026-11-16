@@ -1,6 +1,7 @@
 using Juvo.Application.Abstractions;
 using Juvo.Application.Carts;
 using Juvo.Application.Delivery;
+using Juvo.Application.Pricing;
 using Juvo.Domain.Customers;
 using Juvo.Domain.Orders;
 using Juvo.Shared.Contacts;
@@ -15,7 +16,7 @@ namespace Juvo.Application.Orders;
 /// customer, and public tracking by order number and mobile. Everything is calculated again on the server; the browser's numbers are never trusted.
 /// </summary>
 public sealed class CheckoutService(
-    IApplicationDbContext db, ICurrentUser currentUser, CartService carts, DeliveryService delivery, OrderPlacement placement, SettingsService settings, IFileStorage storage,
+    IApplicationDbContext db, ICurrentUser currentUser, CartService carts, PricedDelivery delivery, OrderPlacement placement, SettingsService settings, IFileStorage storage,
     Payments.PaymentSettingsService paymentSettings, IUnitOfWork uow, OrderWorkflow workflow, Couriers.ShipmentViews shipments)
 {
     private static Error Invalid(string field, string message) => Error.Validation(new Dictionary<string, string[]> { [field] = [message] });
@@ -165,7 +166,7 @@ public sealed class CheckoutService(
         string? deliveryError = null;
         if (country != "BD" || districtId is not null || upazilaId is not null)
         {
-            var quote = await delivery.QuoteAmountsAsync(country, districtId, upazilaId, view.Total, view.WeightGrams, cancellationToken);
+            var quote = await delivery.QuoteAsync(country, districtId, upazilaId, view.Total, view.WeightGrams, view.FreeDelivery, cancellationToken);
             if (quote.IsSuccess)
             {
                 deliveryQuote = quote.Value;
@@ -180,7 +181,8 @@ public sealed class CheckoutService(
         var charge = deliveryQuote?.Total ?? 0m;
         var grand = view.Total + charge;
         var standardCharge = deliveryQuote is null ? 0m : deliveryQuote.Total + deliveryQuote.FreeDeliveryWaiver;
-        var advance = method == OrderPlacement.Cod && deliveryQuote is not null && grand > config.CodAdvanceThreshold ? Math.Min(standardCharge, grand) : 0m;
+        var codAdvance = method == OrderPlacement.Cod && deliveryQuote is not null && grand > config.CodAdvanceThreshold ? Math.Min(standardCharge, grand) : 0m;
+        var advance = method == OrderPlacement.Cod ? Math.Max(codAdvance, Math.Min(view.PreorderAdvance, grand)) : 0m; // a pre-order's advance share (module AA) uses the same advance mechanism
         var payNow = method == OrderPlacement.Cod ? advance : grand;
 
         var verified = SignedInCustomerId is { } id && await db.Customers.AsNoTracking().AnyAsync(c => c.Id == id && c.MobileVerified, cancellationToken);
@@ -194,10 +196,12 @@ public sealed class CheckoutService(
         }
 
         var lines = view.Lines.Select(l => new QuoteLineDto(l.VariantId, l.ProductId, l.Name, l.NameBn, l.Sku, l.ColorName, l.Size, l.ImageUrl, l.UnitPrice,
-            Math.Min(l.Quantity, l.MaxQuantity), l.LineTotal, l.Problem)).ToList();
+            Math.Min(l.Quantity, l.MaxQuantity), l.LineTotal, l.Problem, l.ListPrice, l.OrderDiscount, l.Adjustments, l.PromotionLabelEn, l.PromotionLabelBn, l.IsPreorder, l.PreorderExpectedShipDate,
+            l.PreorderLabelEn, l.PreorderLabelBn)).ToList();
         var methodOk = methods.Any(m => m.Code == method && m.Available);
         return new CheckoutQuoteDto("BDT", true, lines, view.ItemCount, view.Subtotal, view.Coupon?.Code, view.Discount, deliveryQuote, deliveryError, charge, grand, method, advance, payNow,
-            grand - payNow, otpRequired, methods, problems, view.ItemCount > 0 && deliveryQuote is not null && methodOk && problems.Count == 0);
+            grand - payNow, otpRequired, methods, problems, view.ItemCount > 0 && deliveryQuote is not null && methodOk && problems.Count == 0, view.PromotionDiscount, view.ListSubtotal, view.Explanation, view.Coupon,
+            view.HasPreorder);
     }
 
     // ---- Checkout ---------------------------------------------------------------------------------------
@@ -298,7 +302,7 @@ public sealed class CheckoutService(
     {
         var payNow = o.IsOnlinePayment ? o.GrandTotal : o.AdvanceRequired;
         return new CheckoutResultDto(o.Id, o.Number, token, o.Status.ToString(), o.PaymentStatus.ToString(), o.PaymentMethod, o.GrandTotal, o.AdvanceRequired, payNow, o.GrandTotal - payNow,
-            earliest, latest, !replayed && SignedInCustomerId is null, replayed, o.PaymentHoldExpiresAt);
+            earliest, latest, !replayed && SignedInCustomerId is null, replayed, o.PaymentHoldExpiresAt, o.PreorderState != PreorderState.None);
     }
 
     // ---- Public tracking --------------------------------------------------------------------------------
@@ -314,12 +318,12 @@ public sealed class CheckoutService(
 
     private async Task<TrackingDto> ToTrackingAsync(Order order, CancellationToken cancellationToken) =>
         new(order.Number, order.Status, order.PaymentStatus, order.DeliveryStatus, order.PaymentMethod, order.PlacedAt, order.ShipDistrict ?? order.ShipCity, order.GrandTotal,
-            OrderViews.Lines(order, storage), OrderViews.CustomerTimeline(order), OrderViews.CanCancel(order), await shipments.TrackingOfOrderAsync(order.Id, cancellationToken));
+            OrderViews.Lines(order, storage), OrderViews.CustomerTimeline(order), OrderViews.CanCancel(order), await shipments.TrackingOfOrderAsync(order.Id, cancellationToken), order.PreorderState);
 
     /// <summary>Finds an order from what the public holds: number plus mobile, or the tracking token. Null for anything that does not match (always the same neutral answer).</summary>
     internal async Task<Order?> FindTrackedAsync(TrackRequest request, bool forUpdate, CancellationToken cancellationToken)
     {
-        IQueryable<Order> query = db.Orders.IgnoreQueryFilters(["BranchScope"]).Include(o => o.Items).Include(o => o.History);
+        IQueryable<Order> query = db.Orders.IgnoreQueryFilters(["BranchScope"]).Include(o => o.Items).ThenInclude(i => i.Adjustments).Include(o => o.History);
         if (forUpdate)
         {
             query = query.Include(o => o.Notes);
@@ -434,14 +438,14 @@ public sealed class CustomerOrdersService(IApplicationDbContext db, IUnitOfWork 
             return Error.Unauthorized();
         }
 
-        var order = await db.Orders.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Include(o => o.Items).Include(o => o.History).Include(o => o.Notes)
+        var order = await db.Orders.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Include(o => o.Items).ThenInclude(i => i.Adjustments).Include(o => o.History).Include(o => o.Notes)
             .FirstOrDefaultAsync(o => o.Id == orderId && o.CustomerId == id && !o.IsDeleted, cancellationToken);
         return order is null ? Error.NotFound(ErrorCodes.Order.NotFound, "Order not found.") : ToDto(order) with { Shipment = await shipments.TrackingOfOrderAsync(order.Id, cancellationToken) };
     }
 
     private MyOrderDto ToDto(Order o) =>
         new(o.Id, o.Number, o.Status, o.PaymentStatus, o.DeliveryStatus, o.PaymentMethod, o.PlacedAt, OrderViews.Money(o), OrderViews.Shipping(o), OrderViews.Lines(o, storage),
-            OrderViews.CustomerTimeline(o), OrderViews.CustomerNotes(o), OrderViews.CanCancel(o), o.PaymentHoldExpiresAt);
+            OrderViews.CustomerTimeline(o), OrderViews.CustomerNotes(o), OrderViews.CanCancel(o), o.PaymentHoldExpiresAt, PreorderState: o.PreorderState);
 
     /// <summary>The customer cancels while the order is still in the shop (before courier pickup). Stock goes back at once.</summary>
     public async Task<Result<MyOrderDto>> CancelAsync(Guid orderId, CancelOrderRequest request, CancellationToken cancellationToken)
@@ -459,7 +463,7 @@ public sealed class CustomerOrdersService(IApplicationDbContext db, IUnitOfWork 
 
         var result = await uow.ExecuteInTransactionAsync(async ct =>
         {
-            var order = await db.Orders.IgnoreQueryFilters(["BranchScope"]).Include(o => o.Items).Include(o => o.History).Include(o => o.Notes)
+            var order = await db.Orders.IgnoreQueryFilters(["BranchScope"]).Include(o => o.Items).ThenInclude(i => i.Adjustments).Include(o => o.History).Include(o => o.Notes)
                 .FirstOrDefaultAsync(o => o.Id == orderId && o.CustomerId == id && !o.IsDeleted, ct);
             if (order is null)
             {

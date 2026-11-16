@@ -25,7 +25,7 @@ public sealed record DeliveryQuoteRequest(string? CountryCode, Guid? DistrictId,
 public sealed record DeliveryQuoteDto(
     string ZoneCode, string ZoneNameEn, string? ZoneNameBn, string Kind, string Currency, decimal Subtotal, int WeightGrams, decimal BaseFee, decimal WeightFee,
     decimal RemoteSurcharge, decimal FreeDeliveryWaiver, decimal Total, bool IsFree, decimal? AmountToFreeDelivery, int DaysMin, int DaysMax,
-    DateOnly EarliestDelivery, DateOnly LatestDelivery, bool DutiesPaidByReceiver);
+    DateOnly EarliestDelivery, DateOnly LatestDelivery, bool DutiesPaidByReceiver, string? PromotionLabelEn = null, string? PromotionLabelBn = null);
 
 // ---- Admin ---------------------------------------------------------------------------------------------------
 

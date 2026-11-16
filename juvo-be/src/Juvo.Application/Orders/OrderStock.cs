@@ -107,7 +107,7 @@ public sealed class OrderStock(IApplicationDbContext db)
 
     /// <summary>The lines of an order that hold stock (variants that do not track stock hold nothing).</summary>
     public static List<StockLine> LinesOf(Order order) =>
-        [.. order.Items.Where(i => i.TracksStock).GroupBy(i => i.VariantId).Select(g => new StockLine(g.Key, g.Sum(i => i.Quantity)))];
+        [.. order.Items.Where(i => i.TracksStock && i.BackorderedQuantity == 0).GroupBy(i => i.VariantId).Select(g => new StockLine(g.Key, g.Sum(i => i.Quantity)))];
 }
 
 /// <summary>The fulfilling-branch choice (SRS 4A.3): default branch, a branch that holds every line, the nearest such branch, or manual.</summary>

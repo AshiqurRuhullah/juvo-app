@@ -100,7 +100,7 @@ public sealed class ReportData(IApplicationDbContext db)
                select new Line
                {
                    OrderId = o.Id, ProductId = i.ProductId, VariantId = i.VariantId, Name = i.Name, Size = i.Size, ColorName = i.ColorName, Quantity = i.Quantity, LineTotal = i.LineTotal, UnitCost = i.UnitCost,
-                   OrderSubtotal = o.Subtotal, OrderDiscount = o.CouponDiscount + o.ManualDiscount, Source = o.Source, ZoneCode = o.ZoneCode, PaymentMethod = o.PaymentMethod,
+                   OrderSubtotal = o.Subtotal, OrderDiscount = o.PromotionDiscount + o.CouponDiscount + o.ManualDiscount, Source = o.Source, ZoneCode = o.ZoneCode, PaymentMethod = o.PaymentMethod,
                    Day = (int)((o.PlacedAt.ToUnixTimeSeconds() + 21600L) / 86400L),
                    CategoryId = p == null ? (Guid?)null : p.CategoryId,
                };
@@ -109,7 +109,7 @@ public sealed class ReportData(IApplicationDbContext db)
     public async Task<List<OrderAgg<TKey>>> OrderGroupsAsync<TKey>(ReportScope s, Expression<Func<Order, TKey>> key, CancellationToken ct) =>
         await Orders(s).GroupBy(key).Select(g => new OrderAgg<TKey>
         {
-            Key = g.Key, Orders = g.Count(), Gross = g.Sum(o => o.Subtotal), Discount = g.Sum(o => o.CouponDiscount + o.ManualDiscount), Delivery = g.Sum(o => o.DeliveryCharge),
+            Key = g.Key, Orders = g.Count(), Gross = g.Sum(o => o.Subtotal), Discount = g.Sum(o => o.PromotionDiscount + o.CouponDiscount + o.ManualDiscount), Delivery = g.Sum(o => o.DeliveryCharge),
         }).ToListAsync(ct);
 
     public async Task<List<ItemAgg<TKey>>> ItemGroupsAsync<TKey>(ReportScope s, Expression<Func<Line, TKey>> key, CancellationToken ct) =>

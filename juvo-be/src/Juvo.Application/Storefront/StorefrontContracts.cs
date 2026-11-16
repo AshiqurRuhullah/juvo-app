@@ -1,4 +1,5 @@
 using Juvo.Application.Catalog;
+using Juvo.Application.Promotions;
 
 namespace Juvo.Application.Storefront;
 
@@ -12,10 +13,13 @@ public sealed record StoreCategory(Guid Id, string Slug, string NameEn, string? 
 public sealed record StoreProductCard(
     Guid Id, string Slug, string NameEn, string? NameBn, string? Tagline, string CategorySlug, string CategoryName, string? Brand,
     decimal RegularPrice, decimal Price, bool OnSale, int DiscountPercent, string? ImageUrl, string? HoverImageUrl, string? BlurDataUrl,
-    bool IsNew, bool IsFeatured, bool IsBestSeller, bool SoldOut, bool LowStock, IReadOnlyList<StoreSwatch> Swatches, IReadOnlyList<StoreSize> Sizes);
+    bool IsNew, bool IsFeatured, bool IsBestSeller, bool SoldOut, bool LowStock, IReadOnlyList<StoreSwatch> Swatches, IReadOnlyList<StoreSize> Sizes,
+    StorePromotionInfo? Promotion = null, bool AllowPreorder = false, bool IsPreorder = false, DateOnly? PreorderExpectedShipDate = null, string? PreorderLabelEn = null, string? PreorderLabelBn = null);
 
 /// <summary><c>Available</c> is the combined number across the branches that sell online, capped (10 means ten or more).</summary>
-public sealed record StoreVariant(Guid Id, string Sku, string? ColorName, string? ColorHex, string? Size, decimal Price, int Available, bool InStock, bool LowStock);
+public sealed record StoreVariant(
+    Guid Id, string Sku, string? ColorName, string? ColorHex, string? Size, decimal Price, int Available, bool InStock, bool LowStock, decimal ListPrice = 0m, bool IsPreorder = false,
+    DateOnly? PreorderExpectedShipDate = null, string? PreorderLabelEn = null, string? PreorderLabelBn = null, StorePromotionInfo? Promotion = null);
 
 public sealed record StoreImage(Guid Id, string Url, string CardUrl, string ThumbUrl, string? ColorName, string? AltText, int Width, int Height, string? BlurDataUrl);
 
