@@ -184,6 +184,22 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
 
     public DbSet<CannedReply> CannedReplies => Set<CannedReply>();
 
+    public DbSet<Juvo.Domain.Loyalty.LoyaltyAccount> LoyaltyAccounts => Set<Juvo.Domain.Loyalty.LoyaltyAccount>();
+
+    public DbSet<Juvo.Domain.Loyalty.PointsLedgerEntry> PointsLedgerEntries => Set<Juvo.Domain.Loyalty.PointsLedgerEntry>();
+
+    public DbSet<Juvo.Domain.Loyalty.CreditLedgerEntry> CreditLedgerEntries => Set<Juvo.Domain.Loyalty.CreditLedgerEntry>();
+
+    public DbSet<Juvo.Domain.Loyalty.OrderTender> OrderTenders => Set<Juvo.Domain.Loyalty.OrderTender>();
+
+    public DbSet<Juvo.Domain.Loyalty.GiftCard> GiftCards => Set<Juvo.Domain.Loyalty.GiftCard>();
+
+    public DbSet<Juvo.Domain.Loyalty.GiftCardEntry> GiftCardEntries => Set<Juvo.Domain.Loyalty.GiftCardEntry>();
+
+    public DbSet<Juvo.Domain.Loyalty.ReferralCode> ReferralCodes => Set<Juvo.Domain.Loyalty.ReferralCode>();
+
+    public DbSet<Juvo.Domain.Loyalty.Referral> Referrals => Set<Juvo.Domain.Loyalty.Referral>();
+
     public DbSet<TaxRule> TaxRules => Set<TaxRule>();
 
     public DbSet<Invoice> Invoices => Set<Invoice>();

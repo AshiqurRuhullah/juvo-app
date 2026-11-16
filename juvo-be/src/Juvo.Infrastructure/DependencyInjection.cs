@@ -88,6 +88,8 @@ public static class DependencyInjection
         services.AddHostedService<Reports.DailySummaryWorker>();
         services.AddSingleton<Juvo.Application.Reports.IReportPdfRenderer, Reports.ReportPdfRenderer>();
         services.AddHostedService<TicketAutoCloseWorker>();
+        services.AddOptions<LoyaltyJobOptions>().Bind(configuration.GetSection(LoyaltyJobOptions.SectionName)).ValidateDataAnnotations().ValidateOnStart();
+        services.AddHostedService<PointsExpiryWorker>();
 
         AddIdentity(services, configuration, environment);
 

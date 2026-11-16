@@ -184,6 +184,22 @@ public interface IApplicationDbContext
 
     DbSet<CannedReply> CannedReplies { get; }
 
+    DbSet<Juvo.Domain.Loyalty.LoyaltyAccount> LoyaltyAccounts { get; }
+
+    DbSet<Juvo.Domain.Loyalty.PointsLedgerEntry> PointsLedgerEntries { get; }
+
+    DbSet<Juvo.Domain.Loyalty.CreditLedgerEntry> CreditLedgerEntries { get; }
+
+    DbSet<Juvo.Domain.Loyalty.OrderTender> OrderTenders { get; }
+
+    DbSet<Juvo.Domain.Loyalty.GiftCard> GiftCards { get; }
+
+    DbSet<Juvo.Domain.Loyalty.GiftCardEntry> GiftCardEntries { get; }
+
+    DbSet<Juvo.Domain.Loyalty.ReferralCode> ReferralCodes { get; }
+
+    DbSet<Juvo.Domain.Loyalty.Referral> Referrals { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
