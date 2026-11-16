@@ -15,6 +15,7 @@ using Juvo.Domain.Couriers;
 using Juvo.Domain.Accounting;
 using Juvo.Domain.Purchasing;
 using Juvo.Domain.Support;
+using Juvo.Domain.Marketing;
 using Microsoft.EntityFrameworkCore;
 
 namespace Juvo.Application.Abstractions;
@@ -183,6 +184,16 @@ public interface IApplicationDbContext
     DbSet<TicketStatusHistory> TicketStatusHistories { get; }
 
     DbSet<CannedReply> CannedReplies { get; }
+
+    DbSet<CustomerSegment> CustomerSegments { get; }
+
+    DbSet<Campaign> Campaigns { get; }
+
+    DbSet<CampaignRecipient> CampaignRecipients { get; }
+
+    DbSet<Automation> Automations { get; }
+
+    DbSet<BackInStockSubscription> BackInStockSubscriptions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 

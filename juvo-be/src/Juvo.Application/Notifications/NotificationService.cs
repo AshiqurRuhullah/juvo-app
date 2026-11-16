@@ -23,7 +23,7 @@ public static class NotificationSettingKeys
 /// message that delivers it later with retry and backoff. Transactional messages (orders, payments, sign-in codes) are always allowed; marketing messages need the customer's
 /// consent and are otherwise logged as Skipped.
 /// </summary>
-public sealed class NotificationService(IApplicationDbContext db, IOutboxWriter outbox, SettingsService settings, ICurrentUser currentUser, TimeProvider clock)
+public sealed partial class NotificationService(IApplicationDbContext db, IOutboxWriter outbox, SettingsService settings, ICurrentUser currentUser, TimeProvider clock)
 {
     public static string NormalizeLanguage(string? language) => string.Equals(language?.Trim(), "bn", StringComparison.OrdinalIgnoreCase) ? "bn" : string.Equals(language?.Trim(), "en", StringComparison.OrdinalIgnoreCase) ? "en" : string.Empty;
 

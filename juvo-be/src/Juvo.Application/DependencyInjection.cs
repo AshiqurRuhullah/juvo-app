@@ -175,6 +175,22 @@ public static class DependencyInjection
         services.AddScoped<TransfersService>();
         services.AddScoped<CountsService>();
 
+        // Marketing (module AC): segments, campaigns, automations, unsubscribe, back in stock.
+        services.AddOptions<Juvo.Application.Marketing.MarketingOptions>();
+        services.AddScoped<Juvo.Application.Marketing.MarketingSettingsService>();
+        services.AddScoped<Juvo.Application.Marketing.SegmentQueryBuilder>();
+        services.AddScoped<Juvo.Application.Marketing.SegmentsService>();
+        services.AddScoped<Juvo.Application.Marketing.MarketingMessenger>();
+        services.AddScoped<Juvo.Application.Marketing.AttributionService>();
+        services.AddScoped<Juvo.Application.Marketing.CustomerFacts>();
+        services.AddScoped<Juvo.Application.Marketing.CampaignDispatchService>();
+        services.AddScoped<Juvo.Application.Marketing.CampaignsService>();
+        services.AddScoped<Juvo.Application.Marketing.AutomationSeeder>();
+        services.AddScoped<Juvo.Application.Marketing.AutomationEngine>();
+        services.AddScoped<Juvo.Application.Marketing.AutomationsService>();
+        services.AddScoped<Juvo.Application.Marketing.UnsubscribeService>();
+        services.AddScoped<Juvo.Application.Marketing.BackInStockService>();
+
         // No branch scope unless the host provides one (the API registers the per-request scope).
         services.TryAddScoped<IBranchContext>(_ => UnscopedBranchContext.Instance);
 
