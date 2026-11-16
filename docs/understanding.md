@@ -554,13 +554,13 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-O04 | Hide cost price, profit and settings from roles without permission | M | 3 | Partial | Permissions catalog.product.view-cost, reports.finance.*, accounting.pnl.view; Manager/Order Manager lack them | Enforced where cost and profit are read (Steps 6, 11A). |
 | FR-O05 | Session timeout, forced sign-out, sign-in history, lock after repeated failed attempts | M | 3 | Done | Lockout, sign-in history (/ums/sign-in-history), forced logout, session list/revoke, token expiry | Idle timeout is the 15-minute access token plus refresh policy. |
 | FR-O06 | Deactivate a staff account instantly without deleting history | M | 3 | Done | UsersService.DeactivateAsync (revokes tokens, bumps permission version) | Access ends at once; history kept. |
-| FR-P01 | Sales: by day/week/month, product, category, size/colour, channel, zone, payment method | M | 11A | Not started | | |
-| FR-P02 | Orders: funnel (placed, confirmed, delivered, cancelled, returned) and cancellation/return reasons | M | 11A | Not started | | |
-| FR-P03 | Inventory: current stock value, low stock, movement, dead stock | M | 11A | Not started | | |
-| FR-P04 | Finance: revenue, discounts, delivery charges collected vs. paid to couriers, gateway fees, refunds, COD pending/settled, gross profit (nee… | M | 11A | Not started | | |
-| FR-P05 | Courier: performance and COD settlement | S | 11A | Not started | | |
-| FR-P06 | Customers: new vs. returning, top spenders, guest-to-profile conversion | S | 11A | Not started | | |
-| FR-P07 | All reports exportable to Excel/PDF; scheduled email of daily summary to owner | S | 11A | Not started | | |
+| FR-P01 | Sales: by day/week/month, product, category, size/colour, channel, zone, payment method | M | 11A | Done | | Step 11A: sales by day, week, month, product, category, size, colour, channel, zone and payment method. |
+| FR-P02 | Orders: funnel (placed, confirmed, delivered, cancelled, returned) and cancellation/return reasons | M | 11A | Done | | Step 11A: order funnel with rates, cancellation and return reasons. |
+| FR-P03 | Inventory: current stock value, low stock, movement, dead stock | M | 11A | Done | | Step 11A: stock value at cost and price, low stock, movements, dead stock after N days. |
+| FR-P04 | Finance: revenue, discounts, delivery charges collected vs. paid to couriers, gateway fees, refunds, COD pending/settled, gross profit (nee… | M | 11A | Partial | | Step 11A: revenue, discounts, delivery collected versus paid, refunds, COD pending and settled, gross profit; gateway fees are not recorded by the system so they show as not recorded. |
+| FR-P05 | Courier: performance and COD settlement | S | 11A | Done | | Step 11A: courier delivered, failed and returned rates, average delivery time, cost per parcel, COD collected versus settled. |
+| FR-P06 | Customers: new vs. returning, top spenders, guest-to-profile conversion | S | 11A | Done | | Step 11A: new versus returning customers, top spenders, guest-to-profile conversion. |
+| FR-P07 | All reports exportable to Excel/PDF; scheduled email of daily summary to owner | S | 11A | Done | | Step 11A: exports CSV, Excel and PDF (English or Bengali); daily summary email worker is off until the owner sets an address (settings screen in Step 12). |
 | FR-Q01 | About Juvo page with sections editable in admin: brand story, mission and values, what we sell, quality promise, founder/team note (optiona… | M | 12 | Not started | | |
 | FR-Q02 | Brand details block: business name, logo, address or pickup location, phone/WhatsApp, email (juvobd@gmail.com), working hours | M | 12 | Not started | | |
 | FR-Q03 | Social links in header/footer/About/product pages: Facebook (facebook.com/juvobd), plus Instagram, TikTok, YouTube, WhatsApp as the owner e… | M | 12 | Not started | | |
@@ -620,21 +620,21 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-V04 | Reorder level and suggested reorder quantity from sales speed | S | 6 | Partial | Low-stock level per variant and branch; low-stock filter on `/admin/inventory` | Suggested reorder quantity from sales speed needs orders (later). |
 | FR-V05 | Reserved, available, damaged and returned-pending quantities shown separately | M | 6 | Partial | Reserved, available and on hand shown separately on `/admin/inventory` and the product stock grid | Damage is a ledger reason; returned-pending arrives with returns (Step 10). |
 | FR-V06 | Dead-stock and slow-mover list with a markdown suggestion | C | 6 | Not started | | |
-| FR-W01 | Supplier list: name, contact, address, payment terms, notes | M | 11A | Not started | | |
-| FR-W02 | Purchase order: choose supplier, items, quantity, cost, expected date; statuses Draft, Sent, Partly received, Received, Cancelled | M | 11A | Not started | | |
-| FR-W03 | Goods receipt: receive full or partial, record damage, auto-increase stock, optional new cost price (average or latest, owner decides) | M | 11A | Not started | | |
-| FR-W04 | Supplier payments and balance due | S | 11A | Not started | | |
-| FR-W05 | Purchase history per product and supplier | S | 11A | Not started | | |
-| FR-X01 | Expense entry: date, category (rent, salary, packaging, ads, courier, gateway fee, other), amount, payment method, attachment (receipt phot… | M | 11A | Not started | | |
-| FR-X02 | Automatic entries from the system: courier charges, gateway fees, refunds, purchases | M | 11A | Not started | | |
-| FR-X03 | Daily cash book and bank/wallet balances (manual opening balance, then movements) | S | 11A | Not started | | |
-| FR-X04 | Profit and loss by period: revenue, cost of goods, delivery, fees, expenses, net profit | M | 11A | Not started | | |
-| FR-X05 | Export for the external accountant; the platform is not a full accounting system (out of scope: ledgers, payroll) | S | 11A | Not started | | |
-| FR-Y01 | Support ticket created from the customer panel, contact form, or by staff; linked to order and customer | M | 11A | Not started | | |
-| FR-Y02 | Ticket statuses: Open, In progress, Waiting for customer, Resolved, Closed; assignee and priority | M | 11A | Not started | | |
-| FR-Y03 | Canned replies in English and Bengali | S | 11A | Not started | | |
-| FR-Y04 | Customer sees ticket updates in the panel and by SMS/email | S | 11A | Not started | | |
-| FR-Y05 | Support report: open tickets, average resolution time, top issue types | C | 11A | Not started | | |
+| FR-W01 | Supplier list: name, contact, address, payment terms, notes | M | 11A | Done | | Step 11A: suppliers list, create, edit, switch on or off, payment terms (backend and screens). |
+| FR-W02 | Purchase order: choose supplier, items, quantity, cost, expected date; statuses Draft, Sent, Partly received, Received, Cancelled | M | 11A | Done | | Step 11A: purchase orders with the five statuses, lines by product search, send, cancel with reason, attachments, print view. |
+| FR-W03 | Goods receipt: receive full or partial, record damage, auto-increase stock, optional new cost price (average or latest, owner decides) | M | 11A | Done | | Step 11A: partial and full receipts with damaged quantities, over-receipt refused, close short, stock and cost updated, apply cost for people with the cost permission. |
+| FR-W04 | Supplier payments and balance due | S | 11A | Done | | Step 11A: supplier invoice and payments recorded on the purchase order, balance due shown; there is no separate payables or ageing screen. |
+| FR-W05 | Purchase history per product and supplier | S | 11A | Partial | | Step 11A: purchase orders per supplier and receipts per order; no per-product purchase history (the API has none). |
+| FR-X01 | Expense entry: date, category (rent, salary, packaging, ads, courier, gateway fee, other), amount, payment method, attachment (receipt phot… | M | 11A | Done | | Step 11A: expenses with categories, receipt upload, approval by another person, repeating expenses with run now. |
+| FR-X02 | Automatic entries from the system: courier charges, gateway fees, refunds, purchases | M | 11A | Done | | Step 11A: courier charges, refunds and purchases are read from system data into profit and loss and the day book (never copied into the ledger); gateway fees are not recorded by the system and show as flagged not recorded. |
+| FR-X03 | Daily cash book and bank/wallet balances (manual opening balance, then movements) | S | 11A | Done | | Step 11A: cash and bank accounts with balances as of a date, entries, transfers, adjustments with reason, day book. |
+| FR-X04 | Profit and loss by period: revenue, cost of goods, delivery, fees, expenses, net profit | M | 11A | Done | | Step 11A: profit and loss by day, week or month for one branch or consolidated, with expenses by category. |
+| FR-X05 | Export for the external accountant; the platform is not a full accounting system (out of scope: ledgers, payroll) | S | 11A | Done | | Step 11A: accountant export of the day book, expenses, profit and loss, payables and purchases as CSV or Excel. |
+| FR-Y01 | Support ticket created from the customer panel, contact form, or by staff; linked to order and customer | M | 11A | Done | | Step 11A: tickets from the customer panel, the public contact form and staff, with an order link. |
+| FR-Y02 | Ticket statuses: Open, In progress, Waiting for customer, Resolved, Closed; assignee and priority | M | 11A | Done | | Step 11A: statuses, assignee, priority, internal notes, history, bulk actions, reopen window, auto-close after 7 days. |
+| FR-Y03 | Canned replies in English and Bengali | S | 11A | Done | | Step 11A: canned replies in English and Bengali with placeholders and preview; no texts are seeded. |
+| FR-Y04 | Customer sees ticket updates in the panel and by SMS/email | S | 11A | Done | | Step 11A: customers get received, replied and resolved messages by SMS or email in their language; guests cannot read tickets online. |
+| FR-Y05 | Support report: open tickets, average resolution time, top issue types | C | 11A | Done | | Step 11A: support report with open tickets, response and resolution times, top categories, per assignee. |
 | FR-Z01 | Flash sale with start/end time and countdown on cards | S | 11B | Not started | | |
 | FR-Z02 | Bundle/combo price; buy X get Y; free delivery above an amount | S | 11B | Not started | | |
 | FR-Z03 | Festival campaigns (Eid, Pohela Boishakh, others): campaign page, banner slot, product set, schedule | S | 11B | Not started | | |
