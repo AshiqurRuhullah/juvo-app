@@ -142,6 +142,23 @@ public static class DependencyInjection
         services.AddScoped<Juvo.Application.Purchasing.SuppliersService>();
         services.AddScoped<Juvo.Application.Purchasing.PurchasingService>();
 
+        // Reports (module P) and the profit and loss (module X).
+        services.AddScoped<Juvo.Application.Reports.ReportAccess>();
+        services.AddScoped<Juvo.Application.Reports.ReportData>();
+        services.AddScoped<Juvo.Application.Reports.FinanceBuilder>();
+        services.AddScoped<Juvo.Application.Reports.PnlService>();
+        services.AddScoped<Juvo.Application.Reports.FinanceReportService>();
+        services.AddScoped<Juvo.Application.Reports.SalesReportService>();
+        services.AddScoped<Juvo.Application.Reports.OrdersReportService>();
+        services.AddScoped<Juvo.Application.Reports.InventoryReportService>();
+        services.AddScoped<Juvo.Application.Reports.CourierReportService>();
+        services.AddScoped<Juvo.Application.Reports.CustomersReportService>();
+        services.AddScoped<Juvo.Application.Reports.DashboardService>();
+        services.AddScoped<Juvo.Application.Reports.ReportFileWriter>();
+        services.AddScoped<Juvo.Application.Reports.ReportExportService>();
+        services.AddScoped<Juvo.Application.Reports.AccountantExportService>();
+        services.AddScoped<Juvo.Application.Reports.DailySummaryService>();
+
         // Inventory (module V).
         services.AddScoped<InventoryAccess>();
         services.AddScoped<StockLedger>();
