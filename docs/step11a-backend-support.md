@@ -50,6 +50,9 @@ Contract: `docs/support-api.md`. This file holds the decisions (with how to chan
 - **FE contract note**: enums travel as strings; ticket ids are GUIDs; the staff list has no totals per status (use `/support/tickets/summary`). New OpenAPI types need `npm run gen:api` in the front end (not done here by instruction).
 - No new error codes were needed.
 
-## 5. Gate
+## 5. Gate (run on the builder branch, SDK 10 from inside juvo-be)
 
-See the final report of the builder for the numbers that were actually run (build, three test projects, migration check, vulnerable packages, leftover test databases).
+- `dotnet build --no-incremental`: 0 warnings, 0 errors.
+- Domain tests 339, application tests 78, integration tests 500 (the new support classes: tickets 32, automation 8, canned replies 9, report 5; endpoint policy inventory updated for the public `/store/contact`).
+- Integration run: 499 passed, 1 failed: `ExpenseTests.Customer_payments_and_refunds_are_read_into_the_day_book_but_never_copied_into_the_cash_book`. It is not part of this module: it compares the day book total out with refunds only, so it fails whenever another test of the same class has booked an expense outflow on the same day, and it passes on its own (run alone: 1/1). Left untouched (purchasing and expenses code of the earlier round).
+- `dotnet ef migrations has-pending-model-changes`: no changes. `dotnet list package --vulnerable --include-transitive`: none. No leftover `JuvoDb_Test_*` databases.
