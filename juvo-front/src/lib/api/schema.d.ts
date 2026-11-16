@@ -26540,6 +26540,3566 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/reports/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Admin dashboard: today and a 14 day series of orders and sales, orders by status, pending actions, top products and COD pending. branchId limits it to one branch. */
+        get: {
+            parameters: {
+                query?: {
+                    branchId?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["DashboardDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/sales": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Sales (FR-P01). groupBy: day (default), week, month, product, category, size, color, channel, zone or payment. Orders, units, gross, discount, net, delivery, total. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    groupBy?: string;
+                    limit?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SalesReportDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Order funnel (FR-P02): placed, confirmed, packed, shipped, delivered, cancelled, returned with counts and rates, plus cancellation and return reasons. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    limit?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrdersReportDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/inventory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Inventory (FR-P03): stock value at cost (with cost permission) and at price, low stock, movements of the period, dead stock (no sale for days, default 60). */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    days?: number | string;
+                    limit?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["InventoryReportDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/finance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Finance (FR-P04): revenue, discounts, delivery collected versus paid to couriers, gateway fees (not recorded), refunds, COD pending versus settled, gross profit (cost permission). */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    groupBy?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["FinanceReportDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/courier": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Courier performance and COD settlement (FR-P05): delivered, failed and returned rates, average delivery time, cost per parcel, cash collected versus settled. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CourierReportDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/customers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Customers (FR-P06): new versus returning, top spenders, guest to profile conversion. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    limit?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomersReportDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/sales/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export the sales report as csv, xlsx or pdf (lang en or bn). Same filters as the report; CSV and Excel hold one table (section picks it), the PDF holds all. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    groupBy?: string;
+                    limit?: number | string;
+                    days?: number | string;
+                    format?: string;
+                    lang?: string;
+                    section?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/orders/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export the orders report as csv, xlsx or pdf (lang en or bn). Same filters as the report; CSV and Excel hold one table (section picks it), the PDF holds all. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    groupBy?: string;
+                    limit?: number | string;
+                    days?: number | string;
+                    format?: string;
+                    lang?: string;
+                    section?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/inventory/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export the inventory report as csv, xlsx or pdf (lang en or bn). Same filters as the report; CSV and Excel hold one table (section picks it), the PDF holds all. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    groupBy?: string;
+                    limit?: number | string;
+                    days?: number | string;
+                    format?: string;
+                    lang?: string;
+                    section?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/finance/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export the finance report as csv, xlsx or pdf (lang en or bn). Same filters as the report; CSV and Excel hold one table (section picks it), the PDF holds all. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    groupBy?: string;
+                    limit?: number | string;
+                    days?: number | string;
+                    format?: string;
+                    lang?: string;
+                    section?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/courier/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export the courier report as csv, xlsx or pdf (lang en or bn). Same filters as the report; CSV and Excel hold one table (section picks it), the PDF holds all. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    groupBy?: string;
+                    limit?: number | string;
+                    days?: number | string;
+                    format?: string;
+                    lang?: string;
+                    section?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/customers/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export the customers report as csv, xlsx or pdf (lang en or bn). Same filters as the report; CSV and Excel hold one table (section picks it), the PDF holds all. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    groupBy?: string;
+                    limit?: number | string;
+                    days?: number | string;
+                    format?: string;
+                    lang?: string;
+                    section?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accounting/pnl": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Profit and loss (FR-X04): period total and series by day, week or month, expenses by category. Cost of goods, gross and net profit are null without the cost permission. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    groupBy?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PnlDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accounting/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Accountant export (FR-X05): kind daybook, expenses, pnl, payables or purchases; format csv (UTF-8 with BOM) or xlsx. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                    kind?: string;
+                    format?: string;
+                    groupBy?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/tickets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tickets of the branches where you may view them, plus global ones, most recent activity first. Filters: status, priority, assignee, unassigned, branch, order number, channel, category, overdue, active, created from/to; search number, subject, customer name or mobile; sort created, activity, priority, status, number, due. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    status?: components["schemas"]["TicketStatus"];
+                    priority?: components["schemas"]["TicketPriority"];
+                    assigneeId?: string;
+                    branchId?: string;
+                    orderNumber?: string;
+                    channel?: components["schemas"]["TicketChannel"];
+                    category?: string;
+                    from?: string;
+                    to?: string;
+                    unassigned?: boolean;
+                    overdue?: boolean;
+                    active?: boolean;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfTicketListItemDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Open a ticket on behalf of a customer (phone, WhatsApp, Facebook, e-mail). An order number ties it to that order's branch; without one it is global. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["StaffCreateTicketRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TicketDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/tickets/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Counts per status, active, unassigned, overdue and assigned to me, over the tickets you may see. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TicketSummaryDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/tickets/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One ticket with the whole thread (internal notes included) and its status history. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TicketDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/tickets/uploads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload a picture or PDF (JPEG, PNG, WebP or PDF, up to 8 MB). Send the returned path in attachmentPaths when creating a ticket or replying. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "multipart/form-data": {
+                        file: components["schemas"]["IFormFile"];
+                    };
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TicketUploadDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/tickets/{id}/reply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Answer the customer (internal=false; tells them) or write a note for staff only (internal=true). A first reply moves an Open ticket to InProgress; setStatus changes the status after the message. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["StaffReplyRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TicketDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/tickets/{id}/assign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Assign the ticket to a staff member who may work on its branch, or send assigneeId=null to unassign. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["AssignTicketRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TicketDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/tickets/{id}/priority": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Change the priority; the due times are recalculated from the creation time. */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ChangePriorityRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TicketDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/tickets/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move the ticket to another status. Closing and reopening also need the close permission; a reopening after the reopen window answers TICKET.REOPEN_WINDOW_EXPIRED. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ChangeStatusRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TicketDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/tickets/{id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark the ticket Resolved (the customer is told). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReasonRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TicketDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/tickets/{id}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Close the ticket. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReasonRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TicketDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/tickets/{id}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reopen a Resolved or Closed ticket inside the reopen window (setting Support.ReopenDays). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReasonRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TicketDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/tickets/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Assign or close up to 50 tickets at once. Every ticket is checked on its own (permission, branch, state); the answer says which succeeded. More than 50 answers TICKET.BULK_LIMIT. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["BulkTicketsRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BulkResultDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/canned-replies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Canned replies, by language (en, bn) and title. */
+        get: {
+            parameters: {
+                query?: {
+                    language?: string;
+                    category?: string;
+                    includeInactive?: boolean;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CannedReplyDto"][];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Add a canned reply. Placeholders: {customerName}, {orderNumber}, {ticketNumber}; any other {word} is refused. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SaveCannedReplyRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CannedReplyDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/canned-replies/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Change a canned reply or switch it off with isActive=false. */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SaveCannedReplyRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CannedReplyDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        /** Remove a canned reply. */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/canned-replies/render": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview a canned reply (cannedReplyId) or any text (body) with the placeholders filled from a ticket you may read (ticketId). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RenderCannedReplyRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RenderedReplyDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/support/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Open tickets by status and priority, new and resolved per day, average and median first response and resolution time, tickets per category and per assignee, the oldest open ones. Days are Bangladesh days (default: the last 30). Without branchId it is the consolidated view of every branch you may report on. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branchId?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SupportReportDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/store/contact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** The public contact form: name, mobile, optional email, subject and message (and an order number only together with the mobile that placed it). Answers the ticket number. Limited per client address and per mobile number per hour (TICKET.RATE_LIMITED). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ContactRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ContactReceiptDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/tickets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My tickets, most recent activity first. Filter by status; search number, subject, order number. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    status?: components["schemas"]["TicketStatus"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfMyTicketListItemDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Write to support. An order number must be one of my own orders (TICKET.ORDER_MISMATCH otherwise). Limited per mobile number per hour. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateMyTicketRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MyTicketDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/tickets/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One of my tickets with the conversation. Internal notes are never included; staff appear as 'Juvo BD Support'. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MyTicketDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/tickets/uploads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload a picture or PDF (JPEG, PNG, WebP or PDF, up to 8 MB). Send the returned path in attachmentPaths. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "multipart/form-data": {
+                        file: components["schemas"]["IFormFile"];
+                    };
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TicketUploadDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/tickets/{id}/reply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a message. It moves a Waiting ticket back to InProgress and reopens a Resolved one (inside the reopen window). A closed ticket answers TICKET.CLOSED. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CustomerReplyRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MyTicketDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/tickets/{id}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Close my ticket. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MyTicketDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/tickets/{id}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reopen a Resolved or Closed ticket inside the reopen window (TICKET.REOPEN_WINDOW_EXPIRED after it). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MyTicketDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/notifications/templates": {
         parameters: {
             query?: never;
@@ -27514,11 +31074,26 @@ export interface components {
             upazilaId: null | string;
             isRemote: boolean;
         };
+        AssigneeLoadDto: {
+            /** Format: uuid */
+            assigneeId: null | string;
+            name: string;
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            open: number | string;
+            /** Format: int32 */
+            resolved: number | string;
+        };
         AssignmentRequest: {
             /** Format: uuid */
             branchId: null | string;
             /** Format: uuid */
             roleId: string;
+        };
+        AssignTicketRequest: {
+            /** Format: uuid */
+            assigneeId: null | string;
         };
         AttachmentUploadDto: {
             path: string;
@@ -27685,6 +31260,13 @@ export interface components {
             failed: number | string;
             results: components["schemas"]["BulkBookItemResult"][];
         };
+        BulkItemDto: {
+            /** Format: uuid */
+            id: string;
+            ok: boolean;
+            code: null | string;
+            message: null | string;
+        };
         BulkItemResult: {
             /** Format: uuid */
             orderId: string;
@@ -27709,6 +31291,15 @@ export interface components {
             results: components["schemas"]["BulkItemResult"][];
             slips: components["schemas"]["PackingSlipDto"][];
         };
+        BulkResultDto: {
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            succeeded: number | string;
+            /** Format: int32 */
+            failed: number | string;
+            items: components["schemas"]["BulkItemDto"][];
+        };
         BulkReturnItemResult: {
             /** Format: uuid */
             id: string;
@@ -27730,6 +31321,13 @@ export interface components {
             failed: number | string;
             results: components["schemas"]["BulkReturnItemResult"][];
         };
+        BulkTicketsRequest: {
+            ids: null | string[];
+            action: null | string;
+            /** Format: uuid */
+            assigneeId: null | string;
+            reason: null | string;
+        };
         CancelOrderRequest: {
             reason: null | string;
         };
@@ -27741,6 +31339,16 @@ export interface components {
         };
         CancelShipmentRequest: {
             reason: null | string;
+        };
+        CannedReplyDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            body: string;
+            language: string;
+            category: null | string;
+            isActive: boolean;
+            placeholders: string[];
         };
         CartCouponDto: {
             code: string;
@@ -27834,6 +31442,13 @@ export interface components {
         ChangePasswordRequest: {
             currentPassword: string;
             newPassword: string;
+        };
+        ChangePriorityRequest: {
+            priority: components["schemas"]["TicketPriority"];
+        };
+        ChangeStatusRequest: {
+            status: components["schemas"]["TicketStatus"];
+            reason: null | string;
         };
         ChannelSettingsDto: {
             smsEnabled: boolean;
@@ -27945,6 +31560,16 @@ export interface components {
         CloneRoleRequest: {
             name: string;
         };
+        CodBlockDto: {
+            /** Format: double */
+            collected: number | string;
+            /** Format: double */
+            settled: number | string;
+            /** Format: double */
+            pendingWithCouriers: number | string;
+            /** Format: double */
+            inTransit: number | string;
+        };
         CodCollectRequest: {
             /** Format: double */
             amount: null | number | string;
@@ -27968,6 +31593,18 @@ export interface components {
         };
         /** @enum {unknown} */
         ConsentType: "MarketingSms" | "MarketingEmail" | "PrivacyPolicy";
+        ContactReceiptDto: {
+            number: string;
+        };
+        ContactRequest: {
+            name: null | string;
+            mobile: null | string;
+            email: null | string;
+            subject: null | string;
+            message: null | string;
+            category: null | string;
+            orderNumber: null | string;
+        };
         CountDto: {
             summary: components["schemas"]["CountListItemDto"];
             lines: components["schemas"]["CountLineDto"][];
@@ -28110,6 +31747,45 @@ export interface components {
             isConfigured: boolean;
             isSimulator: boolean;
         };
+        CourierReportDto: {
+            filters: components["schemas"]["ReportFiltersDto"];
+            /** Format: date-time */
+            generatedAt: string;
+            totals: components["schemas"]["CourierRowDto"];
+            rows: components["schemas"]["CourierRowDto"][];
+            notes: string[];
+        };
+        CourierRowDto: {
+            /** Format: uuid */
+            courierId: string;
+            courier: string;
+            /** Format: int32 */
+            parcels: number | string;
+            /** Format: int32 */
+            delivered: number | string;
+            /** Format: double */
+            deliveredRate: number | string;
+            /** Format: double */
+            avgDeliveryHours: null | number | string;
+            /** Format: int32 */
+            failed: number | string;
+            /** Format: double */
+            failedRate: number | string;
+            /** Format: int32 */
+            returned: number | string;
+            /** Format: double */
+            returnedRate: number | string;
+            /** Format: double */
+            totalCost: number | string;
+            /** Format: double */
+            costPerParcel: number | string;
+            /** Format: double */
+            codCollected: number | string;
+            /** Format: double */
+            codSettled: number | string;
+            /** Format: double */
+            codPending: number | string;
+        };
         CourierSuggestionDto: {
             /** Format: uuid */
             courierId: string;
@@ -28156,6 +31832,13 @@ export interface components {
         CreatedUserResponse: {
             user: components["schemas"]["UserDetailDto"];
             temporaryPassword: null | string;
+        };
+        CreateMyTicketRequest: {
+            subject: null | string;
+            message: null | string;
+            category: null | string;
+            orderNumber: null | string;
+            attachmentPaths: null | string[];
         };
         CreateRefundRequest: {
             /** Format: double */
@@ -28314,6 +31997,37 @@ export interface components {
             profileLevel: string;
             mobileVerified: boolean;
         };
+        CustomerReplyRequest: {
+            text: null | string;
+            attachmentPaths: null | string[];
+        };
+        CustomersReportDto: {
+            filters: components["schemas"]["ReportFiltersDto"];
+            /** Format: date-time */
+            generatedAt: string;
+            /** Format: int32 */
+            customers: number | string;
+            /** Format: int32 */
+            newCustomers: number | string;
+            /** Format: int32 */
+            returningCustomers: number | string;
+            /** Format: int32 */
+            ordersFromNew: number | string;
+            /** Format: int32 */
+            ordersFromReturning: number | string;
+            /** Format: double */
+            revenueFromNew: number | string;
+            /** Format: double */
+            revenueFromReturning: number | string;
+            /** Format: int32 */
+            guestsCreated: number | string;
+            /** Format: int32 */
+            convertedToProfile: number | string;
+            /** Format: double */
+            conversionRate: number | string;
+            topSpenders: components["schemas"]["TopSpenderDto"][];
+            notes: string[];
+        };
         CustomerSummaryDto: {
             /** Format: int32 */
             addressCount: number | string;
@@ -28326,6 +32040,33 @@ export interface components {
             activeOrderCount: number | string;
             /** Format: int32 */
             orderCount: number | string;
+        };
+        DashboardDto: {
+            /** Format: date-time */
+            generatedAt: string;
+            /** Format: uuid */
+            branchId: null | string;
+            consolidated: boolean;
+            /** Format: date */
+            today: string;
+            todayTotals: components["schemas"]["DashboardPointDto"];
+            series: components["schemas"]["DashboardPointDto"][];
+            ordersByStatus: components["schemas"]["StatusCountDto"][];
+            pending: components["schemas"]["PendingActionsDto"];
+            topProducts: components["schemas"]["TopProductDto"][];
+            /** Format: double */
+            codPending: number | string;
+            /** Format: double */
+            codInTransit: number | string;
+            notes: string[];
+        };
+        DashboardPointDto: {
+            /** Format: date */
+            date: string;
+            /** Format: int32 */
+            orders: number | string;
+            /** Format: double */
+            sales: number | string;
         };
         DaybookDto: {
             entries: components["schemas"]["PagedResultOfDaybookEntryDto"];
@@ -28359,6 +32100,28 @@ export interface components {
             /** Format: uuid */
             sourceId: null | string;
             derived: boolean;
+        };
+        DayCountDto: {
+            /** Format: date */
+            date: string;
+            /** Format: int32 */
+            new: number | string;
+            /** Format: int32 */
+            resolved: number | string;
+        };
+        DeadStockRowDto: {
+            /** Format: uuid */
+            variantId: string;
+            sku: string;
+            product: string;
+            /** Format: int32 */
+            onHand: number | string;
+            /** Format: double */
+            valueAtPrice: number | string;
+            /** Format: double */
+            valueAtCost: null | number | string;
+            /** Format: date-time */
+            lastSoldAt: null | string;
         };
         DecideExpenseRequest: {
             note: null | string;
@@ -28464,6 +32227,14 @@ export interface components {
         DuplicateProductRequest: {
             nameEn: null | string;
         };
+        DurationStatsDto: {
+            /** Format: int32 */
+            count: number | string;
+            /** Format: double */
+            averageMinutes: null | number | string;
+            /** Format: double */
+            medianMinutes: null | number | string;
+        };
         EffectivePermissionsDto: {
             /** Format: uuid */
             branchId: null | string;
@@ -28542,6 +32313,15 @@ export interface components {
             attachments: components["schemas"]["ExpenseAttachmentDto"][];
             nextStatuses: string[];
         };
+        ExpenseLineDto: {
+            /** Format: uuid */
+            categoryId: string;
+            category: string;
+            /** Format: double */
+            amount: number | string;
+            /** Format: int32 */
+            count: number | string;
+        };
         ExpenseListDto: {
             expenses: components["schemas"]["PagedResultOfExpenseListItemDto"];
             /** Format: double */
@@ -28581,6 +32361,43 @@ export interface components {
         FailRefundRequest: {
             reason: null | string;
         };
+        FinanceBucketDto: {
+            label: string;
+            /** Format: date */
+            start: string;
+            /** Format: int32 */
+            orders: number | string;
+            /** Format: double */
+            grossSales: number | string;
+            /** Format: double */
+            discounts: number | string;
+            /** Format: double */
+            refunds: number | string;
+            /** Format: double */
+            netRevenue: number | string;
+            /** Format: double */
+            deliveryCollected: number | string;
+            /** Format: double */
+            courierCharges: number | string;
+            /** Format: double */
+            gatewayFees: number | string;
+            /** Format: double */
+            costOfGoods: null | number | string;
+            /** Format: double */
+            grossProfit: null | number | string;
+        };
+        FinanceReportDto: {
+            filters: components["schemas"]["ReportFiltersDto"];
+            /** Format: date-time */
+            generatedAt: string;
+            costHidden: boolean;
+            totals: components["schemas"]["FinanceBucketDto"];
+            rows: components["schemas"]["FinanceBucketDto"][];
+            cod: components["schemas"]["CodBlockDto"];
+            /** Format: double */
+            deliveryBalance: number | string;
+            notes: string[];
+        };
         ForgotPasswordRequest: {
             email: string;
         };
@@ -28612,6 +32429,15 @@ export interface components {
         };
         /** @enum {unknown} */
         FraudState: "None" | "Flagged" | "InReview" | "AdvanceRequested" | "Approved" | "Rejected";
+        FunnelStageDto: {
+            stage: string;
+            /** Format: int32 */
+            count: number | string;
+            /** Format: double */
+            rateOfPlaced: number | string;
+            /** Format: double */
+            rateOfPrevious: number | string;
+        };
         GenerateRecurringResult: {
             /** Format: int32 */
             templates: number | string;
@@ -28715,6 +32541,24 @@ export interface components {
             items: null | components["schemas"]["InspectLine"][];
             fault: null | components["schemas"]["ReturnFault"];
             note: null | string;
+        };
+        InventoryReportDto: {
+            filters: components["schemas"]["ReportFiltersDto"];
+            /** Format: date-time */
+            generatedAt: string;
+            costHidden: boolean;
+            summary: components["schemas"]["StockSummaryDto"];
+            byBranch: components["schemas"]["StockBranchRowDto"][];
+            /** Format: int32 */
+            lowStockCount: number | string;
+            lowStock: components["schemas"]["LowStockRowDto"][];
+            movements: components["schemas"]["MovementRowDto"][];
+            /** Format: int32 */
+            deadStockCount: number | string;
+            /** Format: double */
+            deadStockValueAtPrice: number | string;
+            deadStock: components["schemas"]["DeadStockRowDto"][];
+            notes: string[];
         };
         InvoiceDto: {
             /** Format: uuid */
@@ -28867,6 +32711,23 @@ export interface components {
         LogoutRequest: {
             refreshToken: null | string;
         };
+        LowStockRowDto: {
+            /** Format: uuid */
+            variantId: string;
+            sku: string;
+            product: string;
+            /** Format: uuid */
+            branchId: string;
+            branchCode: string;
+            /** Format: int32 */
+            onHand: number | string;
+            /** Format: int32 */
+            reserved: number | string;
+            /** Format: int32 */
+            available: number | string;
+            /** Format: int32 */
+            reorderLevel: number | string;
+        };
         ManualOrderLine: {
             /** Format: uuid */
             variantId: null | string;
@@ -28985,6 +32846,17 @@ export interface components {
         };
         /** @enum {unknown} */
         MoneyMethod: "Cash" | "Bank" | "MobileBanking" | "Cheque" | "Other";
+        MovementRowDto: {
+            reason: string;
+            /** Format: int32 */
+            movements: number | string;
+            /** Format: int32 */
+            in: number | string;
+            /** Format: int32 */
+            out: number | string;
+            /** Format: int32 */
+            net: number | string;
+        };
         MoveToCartRequest: {
             /** Format: uuid */
             variantId: string;
@@ -29075,6 +32947,36 @@ export interface components {
             requestedAt: string;
             canCancel: boolean;
         };
+        MyTicketDto: {
+            /** Format: uuid */
+            id: string;
+            number: string;
+            subject: string;
+            status: components["schemas"]["TicketStatus"];
+            category: string;
+            orderNumber: null | string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            lastActivityAt: string;
+            canReply: boolean;
+            canClose: boolean;
+            canReopen: boolean;
+            messages: components["schemas"]["TicketMessageDto"][];
+        };
+        MyTicketListItemDto: {
+            /** Format: uuid */
+            id: string;
+            number: string;
+            subject: string;
+            status: components["schemas"]["TicketStatus"];
+            category: string;
+            orderNumber: null | string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            lastActivityAt: string;
+        };
         NoteDto: {
             /** Format: uuid */
             id: string;
@@ -29114,6 +33016,18 @@ export interface components {
         };
         /** @enum {unknown} */
         NotificationStatus: "Sent" | "Failed" | "Pending" | "DeadLetter" | "Skipped";
+        OldestOpenDto: {
+            /** Format: uuid */
+            id: string;
+            number: string;
+            subject: string;
+            status: components["schemas"]["TicketStatus"];
+            priority: components["schemas"]["TicketPriority"];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: double */
+            ageHours: number | string;
+        };
         OrderDetailDto: {
             /** Format: uuid */
             id: string;
@@ -29221,6 +33135,21 @@ export interface components {
             orders: number | string;
             /** Format: double */
             total: number | string;
+        };
+        OrdersReportDto: {
+            filters: components["schemas"]["ReportFiltersDto"];
+            /** Format: date-time */
+            generatedAt: string;
+            /** Format: int32 */
+            placed: number | string;
+            funnel: components["schemas"]["FunnelStageDto"][];
+            /** Format: double */
+            cancelledRate: number | string;
+            /** Format: double */
+            returnedRate: number | string;
+            cancellationReasons: components["schemas"]["ReasonRowDto"][];
+            returnReasons: components["schemas"]["ReasonRowDto"][];
+            notes: string[];
         };
         /** @enum {unknown} */
         OrderStatus: "Placed" | "Confirmed" | "Packed" | "HandedToCourier" | "InTransit" | "OutForDelivery" | "Delivered" | "Cancelled" | "DeliveryFailed" | "ReturnInProgress" | "Returned";
@@ -29430,6 +33359,17 @@ export interface components {
             /** Format: int32 */
             totalPages?: number | string;
         };
+        PagedResultOfMyTicketListItemDto: {
+            items: components["schemas"]["MyTicketListItemDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
         PagedResultOfNotificationLogDto: {
             items: components["schemas"]["NotificationLogDto"][];
             /** Format: int32 */
@@ -29606,6 +33546,17 @@ export interface components {
             /** Format: int32 */
             totalPages?: number | string;
         };
+        PagedResultOfTicketListItemDto: {
+            items: components["schemas"]["TicketListItemDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
         PagedResultOfTransferDto: {
             items: components["schemas"]["TransferDto"][];
             /** Format: int32 */
@@ -29756,6 +33707,18 @@ export interface components {
         };
         /** @enum {unknown} */
         PaymentStatus: "Pending" | "Paid" | "Failed" | "Cancelled" | "UnderReview" | "Rejected" | "PartiallyRefunded" | "Refunded" | "CollectedByCourier" | "Settled";
+        PendingActionsDto: {
+            /** Format: int32 */
+            toConfirm: number | string;
+            /** Format: int32 */
+            toPack: number | string;
+            /** Format: int32 */
+            heldByFraud: number | string;
+            /** Format: int32 */
+            returnsWaiting: number | string;
+            /** Format: int32 */
+            lowStock: number | string;
+        };
         PermissionCatalogDto: {
             version: string;
             /** Format: int32 */
@@ -29783,6 +33746,50 @@ export interface components {
             message: string;
             /** Format: date-time */
             serverTime: string;
+        };
+        PnlBucketDto: {
+            label: string;
+            /** Format: date */
+            start: string;
+            /** Format: int32 */
+            orders: number | string;
+            /** Format: double */
+            grossSales: number | string;
+            /** Format: double */
+            discounts: number | string;
+            /** Format: double */
+            refunds: number | string;
+            /** Format: double */
+            netRevenue: number | string;
+            /** Format: double */
+            deliveryCollected: number | string;
+            /** Format: double */
+            costOfGoods: null | number | string;
+            /** Format: int32 */
+            costMissingLines: number | string;
+            /** Format: double */
+            grossProfit: null | number | string;
+            /** Format: double */
+            courierCharges: number | string;
+            /** Format: double */
+            gatewayFees: number | string;
+            gatewayFeesRecorded: boolean;
+            /** Format: double */
+            expenses: number | string;
+            /** Format: double */
+            purchasesReceived: number | string;
+            /** Format: double */
+            netProfit: null | number | string;
+        };
+        PnlDto: {
+            filters: components["schemas"]["ReportFiltersDto"];
+            /** Format: date-time */
+            generatedAt: string;
+            costHidden: boolean;
+            total: components["schemas"]["PnlBucketDto"];
+            series: components["schemas"]["PnlBucketDto"][];
+            expensesByCategory: components["schemas"]["ExpenseLineDto"][];
+            notes: string[];
         };
         PreviewDto: {
             subject: null | string;
@@ -30158,6 +34165,15 @@ export interface components {
         ReasonRequest: {
             reason: null | string;
         };
+        ReasonRowDto: {
+            code: string;
+            label: string;
+            /** Format: int32 */
+            count: number | string;
+            /** Format: double */
+            share: number | string;
+            fault: null | string;
+        };
         ReassignRequest: {
             /** Format: uuid */
             branchId: string;
@@ -30336,8 +34352,35 @@ export interface components {
         RejectReturnRequest: {
             reason: null | string;
         };
+        RenderCannedReplyRequest: {
+            /** Format: uuid */
+            cannedReplyId: null | string;
+            body: null | string;
+            /** Format: uuid */
+            ticketId: null | string;
+        };
+        RenderedReplyDto: {
+            text: string;
+            unknownPlaceholders: string[];
+            emptyPlaceholders: string[];
+        };
         ReorderRequest: {
             ids: string[];
+        };
+        ReportFiltersDto: {
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            /** Format: uuid */
+            branchId: null | string;
+            consolidated: boolean;
+            branchCodes: string[];
+            groupBy: null | string;
+            /** Format: int32 */
+            limit: number | string;
+            /** Format: int32 */
+            days: number | string;
         };
         RequestOtpRequest: {
             mobile: string;
@@ -30678,6 +34721,33 @@ export interface components {
         };
         /** @enum {unknown} */
         RuleAction: "Flag" | "Hold" | "RequireAdvance" | "Reject";
+        SalesReportDto: {
+            filters: components["schemas"]["ReportFiltersDto"];
+            /** Format: date-time */
+            generatedAt: string;
+            totals: components["schemas"]["SalesRowDto"];
+            rows: components["schemas"]["SalesRowDto"][];
+            truncated: boolean;
+            notes: string[];
+        };
+        SalesRowDto: {
+            key: string;
+            label: string;
+            /** Format: int32 */
+            orders: number | string;
+            /** Format: int32 */
+            units: number | string;
+            /** Format: double */
+            gross: number | string;
+            /** Format: double */
+            discount: number | string;
+            /** Format: double */
+            net: number | string;
+            /** Format: double */
+            delivery: number | string;
+            /** Format: double */
+            total: number | string;
+        };
         SandboxDecisionDto: {
             sessionId: string;
             outcome: string;
@@ -30742,6 +34812,13 @@ export interface components {
             slug: null | string;
             /** @default true */
             isActive: boolean;
+        };
+        SaveCannedReplyRequest: {
+            title: null | string;
+            body: null | string;
+            language: null | string;
+            category: null | string;
+            isActive: null | boolean;
         };
         SaveCategoryRequest: {
             nameEn: string;
@@ -31294,6 +35371,20 @@ export interface components {
             /** Format: double */
             extraFee: number | string;
         };
+        StaffCreateTicketRequest: {
+            mobile: null | string;
+            customerName: null | string;
+            email: null | string;
+            subject: null | string;
+            message: null | string;
+            channel: null | components["schemas"]["TicketChannel"];
+            priority: null | components["schemas"]["TicketPriority"];
+            category: null | string;
+            orderNumber: null | string;
+            /** Format: uuid */
+            assigneeId: null | string;
+            attachmentPaths: null | string[];
+        };
         StaffProfileDto: {
             /** Format: uuid */
             id: string;
@@ -31309,11 +35400,33 @@ export interface components {
             /** Format: date-time */
             lastLoginAt: null | string;
         };
+        StaffReplyRequest: {
+            text: null | string;
+            internal: boolean;
+            setStatus: null | components["schemas"]["TicketStatus"];
+            attachmentPaths: null | string[];
+        };
         StartCountRequest: {
             /** Format: uuid */
             branchId: null | string;
             note: null | string;
             variantIds: null | string[];
+        };
+        StatusCountDto: {
+            status: string;
+            /** Format: int32 */
+            count: number | string;
+        };
+        StockBranchRowDto: {
+            /** Format: uuid */
+            branchId: string;
+            branchCode: string;
+            /** Format: int32 */
+            onHand: number | string;
+            /** Format: double */
+            valueAtPrice: number | string;
+            /** Format: double */
+            valueAtCost: null | number | string;
         };
         StockMovementDto: {
             /** Format: uuid */
@@ -31363,6 +35476,22 @@ export interface components {
             /** Format: int32 */
             reorderLevel: number | string;
             isLow: boolean;
+        };
+        StockSummaryDto: {
+            /** Format: int32 */
+            variants: number | string;
+            /** Format: int32 */
+            onHand: number | string;
+            /** Format: int32 */
+            reserved: number | string;
+            /** Format: int32 */
+            available: number | string;
+            /** Format: double */
+            valueAtPrice: number | string;
+            /** Format: double */
+            valueAtCost: null | number | string;
+            /** Format: int32 */
+            unitsWithoutCost: number | string;
         };
         StoreBrandFacet: {
             slug: string;
@@ -31554,6 +35683,30 @@ export interface components {
         };
         /** @enum {unknown} */
         SupplierPaymentStatus: "Unpaid" | "PartlyPaid" | "Paid";
+        SupportReportDto: {
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            /** Format: uuid */
+            branchId: null | string;
+            /** Format: int32 */
+            newTickets: number | string;
+            /** Format: int32 */
+            resolvedTickets: number | string;
+            /** Format: int32 */
+            openNow: number | string;
+            /** Format: int32 */
+            overdueNow: number | string;
+            openByStatus: components["schemas"]["CountDto"][];
+            openByPriority: components["schemas"]["CountDto"][];
+            daily: components["schemas"]["DayCountDto"][];
+            firstResponse: components["schemas"]["DurationStatsDto"];
+            resolution: components["schemas"]["DurationStatsDto"];
+            byCategory: components["schemas"]["CountDto"][];
+            byAssignee: components["schemas"]["AssigneeLoadDto"][];
+            oldestOpen: components["schemas"]["OldestOpenDto"][];
+        };
         SystemInfo: {
             name: string;
             version: string;
@@ -31604,6 +35757,145 @@ export interface components {
         TemporaryPasswordResponse: {
             temporaryPassword: string;
         };
+        TicketAttachmentDto: {
+            /** Format: uuid */
+            id: string;
+            fileName: string;
+            contentType: string;
+            /** Format: int64 */
+            size: number | string;
+            url: string;
+        };
+        /** @enum {unknown} */
+        TicketChannel: "Web" | "Phone" | "WhatsApp" | "Facebook" | "Email" | "OrderPage";
+        TicketDetailDto: {
+            /** Format: uuid */
+            id: string;
+            number: string;
+            subject: string;
+            status: components["schemas"]["TicketStatus"];
+            priority: components["schemas"]["TicketPriority"];
+            channel: components["schemas"]["TicketChannel"];
+            category: string;
+            customerMobile: string;
+            customerName: null | string;
+            customerEmail: null | string;
+            /** Format: uuid */
+            customerId: null | string;
+            /** Format: uuid */
+            orderId: null | string;
+            orderNumber: null | string;
+            /** Format: uuid */
+            branchId: null | string;
+            branchCode: null | string;
+            /** Format: uuid */
+            assigneeId: null | string;
+            assigneeName: null | string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            lastActivityAt: string;
+            /** Format: date-time */
+            responseDueAt: string;
+            /** Format: date-time */
+            resolveDueAt: string;
+            /** Format: date-time */
+            firstResponseAt: null | string;
+            /** Format: date-time */
+            resolvedAt: null | string;
+            /** Format: date-time */
+            closedAt: null | string;
+            /** Format: int32 */
+            reopenCount: number | string;
+            overdue: boolean;
+            canReopen: boolean;
+            nextStatuses: string[];
+            messages: components["schemas"]["TicketMessageDto"][];
+            history: components["schemas"]["TicketHistoryDto"][];
+        };
+        TicketHistoryDto: {
+            fromStatus: null | components["schemas"]["TicketStatus"];
+            toStatus: components["schemas"]["TicketStatus"];
+            reason: null | string;
+            actorName: null | string;
+            /** Format: date-time */
+            at: string;
+        };
+        TicketListItemDto: {
+            /** Format: uuid */
+            id: string;
+            number: string;
+            subject: string;
+            status: components["schemas"]["TicketStatus"];
+            priority: components["schemas"]["TicketPriority"];
+            channel: components["schemas"]["TicketChannel"];
+            category: string;
+            customerMobile: string;
+            customerName: null | string;
+            /** Format: uuid */
+            customerId: null | string;
+            /** Format: uuid */
+            orderId: null | string;
+            orderNumber: null | string;
+            /** Format: uuid */
+            branchId: null | string;
+            branchCode: null | string;
+            /** Format: uuid */
+            assigneeId: null | string;
+            assigneeName: null | string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            lastActivityAt: string;
+            /** Format: date-time */
+            responseDueAt: string;
+            /** Format: date-time */
+            resolveDueAt: string;
+            /** Format: date-time */
+            firstResponseAt: null | string;
+            overdue: boolean;
+            /** Format: int32 */
+            messageCount: number | string;
+        };
+        TicketMessageDto: {
+            /** Format: uuid */
+            id: string;
+            kind: components["schemas"]["TicketMessageKind"];
+            text: string;
+            /** Format: uuid */
+            authorId: null | string;
+            authorName: null | string;
+            /** Format: date-time */
+            at: string;
+            attachments: components["schemas"]["TicketAttachmentDto"][];
+        };
+        /** @enum {unknown} */
+        TicketMessageKind: "Customer" | "Staff" | "Internal" | "System";
+        /** @enum {unknown} */
+        TicketPriority: "Low" | "Normal" | "High" | "Urgent";
+        /** @enum {unknown} */
+        TicketStatus: "Open" | "InProgress" | "Waiting" | "Resolved" | "Closed";
+        TicketSummaryDto: {
+            byStatus: {
+                [key: string]: number | string;
+            };
+            /** Format: int32 */
+            active: number | string;
+            /** Format: int32 */
+            unassigned: number | string;
+            /** Format: int32 */
+            overdue: number | string;
+            /** Format: int32 */
+            mine: number | string;
+        };
+        TicketUploadDto: {
+            path: string;
+            fileName: string;
+            contentType: string;
+            /** Format: int64 */
+            size: number | string;
+            url: string;
+        };
         TimelineDto: {
             track: components["schemas"]["OrderTrack"];
             from: null | string;
@@ -31612,6 +35904,25 @@ export interface components {
             actorName: null | string;
             /** Format: date-time */
             at: string;
+        };
+        TopProductDto: {
+            /** Format: uuid */
+            productId: string;
+            name: string;
+            /** Format: int32 */
+            units: number | string;
+            /** Format: double */
+            revenue: number | string;
+        };
+        TopSpenderDto: {
+            /** Format: uuid */
+            customerId: string;
+            name: null | string;
+            mobile: string;
+            /** Format: int32 */
+            orders: number | string;
+            /** Format: double */
+            spent: number | string;
         };
         TrackCancelRequest: {
             number: null | string;
