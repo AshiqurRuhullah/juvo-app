@@ -350,14 +350,11 @@ public static class ErrorCodes
         public const string TenderExceedsCap = "LOYALTY.TENDER_EXCEEDS_CAP";
         public const string TenderExceedsTotal = "LOYALTY.TENDER_EXCEEDS_TOTAL";
         public const string TenderNeedsSignIn = "LOYALTY.TENDER_NEEDS_SIGN_IN";
-        public const string AmountInvalid = "LOYALTY.AMOUNT_INVALID";
-        public const string ReasonRequired = "LOYALTY.REASON_REQUIRED";
         public const string GiftCardInvalid = "LOYALTY.GIFT_CARD_INVALID";
         public const string GiftCardExpired = "LOYALTY.GIFT_CARD_EXPIRED";
         public const string GiftCardInactive = "LOYALTY.GIFT_CARD_INACTIVE";
         public const string GiftCardEmpty = "LOYALTY.GIFT_CARD_EMPTY";
         public const string GiftCardNotFound = "LOYALTY.GIFT_CARD_NOT_FOUND";
-        public const string GiftCardLimit = "LOYALTY.GIFT_CARD_LIMIT";
         public const string CodeLocked = "LOYALTY.CODE_LOCKED";
         public const string ReferralCodeInvalid = "LOYALTY.REFERRAL_CODE_INVALID";
         public const string ReferralSelf = "LOYALTY.REFERRAL_SELF";
