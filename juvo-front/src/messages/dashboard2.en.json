@@ -1,6 +1,4 @@
 {
-  "sample": "Sample data",
-  "sampleNote": "The numbers below are sample data until orders start coming in. Everything else on this page is real.",
   "account": "Your account and access",
   "kpi": {
     "sales": "Today's sales",
@@ -24,54 +22,17 @@
     "title": "Orders by status",
     "subtitle": "{count} orders in the last 30 days",
     "orders": "orders",
-    "summary": "{count} orders split by status; the numbers are listed beside the ring.",
-    "placed": "Placed",
-    "confirmed": "Confirmed",
-    "packed": "Packed",
-    "inTransit": "In transit",
-    "delivered": "Delivered",
-    "returned": "Returned"
+    "summary": "{count} orders split by status; the numbers are listed beside the ring."
   },
   "actions": {
     "title": "Needs your attention",
-    "subtitle": "What is waiting for someone today",
-    "soon": "Soon",
-    "confirm": "Orders to confirm",
-    "verifyPayments": "Payments to verify",
-    "lowStock": "Low-stock items",
-    "returns": "Returns to review",
-    "tickets": "Open support tickets"
+    "subtitle": "What is waiting for someone today"
   },
   "top": {
     "title": "Top products",
-    "subtitle": "Most sold in the last 30 days",
     "units": "{count} sold"
   },
   "cash": {
-    "title": "Cash and COD",
-    "collectedToday": "Cash collected today",
-    "onlineToday": "Paid online today",
-    "codWithCouriers": "COD waiting with couriers",
-    "refundsPending": "Refunds pending"
-  },
-  "stock": {
-    "title": "Stock health",
-    "total": "{count} variants tracked",
-    "healthy": "Healthy",
-    "low": "Low",
-    "out": "Out of stock",
-    "summary": "{healthy} healthy, {low} low and {out} out of stock."
-  },
-  "recent": {
-    "title": "Recent orders",
-    "subtitle": "The latest orders in the active branch",
-    "order": "Order",
-    "customer": "Customer",
-    "total": "Total",
-    "payment": "Payment",
-    "delivery": "Delivery",
-    "time": "Time",
-    "paymentStatus": { "paid": "Paid", "cod": "Cash on delivery", "review": "Under review" },
-    "deliveryStatus": { "placed": "Placed", "packed": "Packed", "inTransit": "In transit", "delivered": "Delivered" }
+    "title": "Cash and COD"
   }
 }
