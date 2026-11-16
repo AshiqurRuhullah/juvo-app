@@ -45,6 +45,13 @@ The browser never calls the API. It calls this app, and this app calls the API w
 | `/admin/couriers` (tabs: couriers, connections) | staff (`couriers.courier.*`) | done (Step 10) |
 | `/admin/shipments` (list, live), `/shipments/[id]`, `/shipments/[id]/label`, `/shipments/labels?ids=` | staff (`couriers.shipment.*`) | done (Step 10) |
 | `/admin/cod`, `/cod/new`, `/cod/[id]`, `/cod/[id]/print` | staff (`couriers.cod.*`) | done (Step 10) |
+| `/admin/purchasing` (tabs: purchase orders, suppliers, receipts, suggestions), `/purchasing/orders/new`, `/orders/[id]`, `/orders/[id]/edit`, `/orders/[id]/print` | staff (`purchasing.*`) | done (Step 11A) |
+| `/admin/accounting/expenses` (tabs: expenses, categories, repeating), `/expenses/[id]`; `/admin/accounting/cash` (tabs: accounts, day book) | staff (`accounting.*`) | done (Step 11A) |
+| `/admin/accounting/pnl` (profit and loss, accountant export) | staff (`accounting.pnl.view`, `accounting.export.run`) | done (Step 11A) |
+| `/admin/reports`, `/admin/reports/[report]` (sales, orders, inventory, finance, courier, customers) | staff (`reports.*`) | done (Step 11A) |
+| `/admin` (dashboard on real data from `/reports/dashboard`) | staff | done (Step 11A) |
+| `/admin/support` (tabs: tickets, canned replies, report), `/admin/support/[id]` | staff (`support.*`) | done (Step 11A) |
+| `/account/support`, `/account/support/new`, `/account/support/[id]`; `/contact` (public form) | customer; everyone | done (Step 11A) |
 | `/account` | customer | placeholder (Step 7) |
 | `/forbidden` (403), `/unauthorized` (401), not-found (404), error and global-error | all | done |
 | `/design` | development only (404 in production unless `ENABLE_DESIGN_PAGE=true`) | every component in every state |

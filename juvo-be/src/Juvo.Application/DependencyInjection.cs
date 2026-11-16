@@ -130,6 +130,44 @@ public static class DependencyInjection
         services.AddScoped<IOutboxMessageHandler, Juvo.Application.Realtime.RealtimeShipmentHandler>();
         services.AddScoped<IOutboxMessageHandler, Juvo.Application.Realtime.RealtimeReturnHandler>();
 
+        // Purchasing (W), expenses and the cash book (X), support (Y), reports (P) share these.
+        services.AddScoped<Juvo.Application.Operations.OpsSettingsService>();
+        services.AddScoped<Juvo.Application.Operations.NumberAllocator>();
+        services.AddScoped<Juvo.Application.Operations.AttachmentStore>();
+        services.AddScoped<Juvo.Application.Accounting.LedgerWriter>();
+        services.AddScoped<Juvo.Application.Accounting.AccountsService>();
+        services.AddScoped<Juvo.Application.Accounting.ExpenseCore>();
+        services.AddScoped<Juvo.Application.Accounting.ExpensesService>();
+        services.AddScoped<Juvo.Application.Accounting.RecurringExpenseService>();
+        services.AddScoped<Juvo.Application.Purchasing.SuppliersService>();
+        services.AddScoped<Juvo.Application.Purchasing.PurchasingService>();
+        services.AddScoped<Juvo.Application.Support.TicketCore>();
+        services.AddScoped<Juvo.Application.Support.TicketsService>();
+        services.AddScoped<Juvo.Application.Support.MyTicketsService>();
+        services.AddScoped<Juvo.Application.Support.CannedRepliesService>();
+        services.AddScoped<Juvo.Application.Support.SupportReportService>();
+        services.AddScoped<Juvo.Application.Support.TicketAutoCloseService>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Support.TicketCreatedHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Support.TicketRepliedHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Support.TicketResolvedHandler>();
+
+        // Reports (module P) and the profit and loss (module X).
+        services.AddScoped<Juvo.Application.Reports.ReportAccess>();
+        services.AddScoped<Juvo.Application.Reports.ReportData>();
+        services.AddScoped<Juvo.Application.Reports.FinanceBuilder>();
+        services.AddScoped<Juvo.Application.Reports.PnlService>();
+        services.AddScoped<Juvo.Application.Reports.FinanceReportService>();
+        services.AddScoped<Juvo.Application.Reports.SalesReportService>();
+        services.AddScoped<Juvo.Application.Reports.OrdersReportService>();
+        services.AddScoped<Juvo.Application.Reports.InventoryReportService>();
+        services.AddScoped<Juvo.Application.Reports.CourierReportService>();
+        services.AddScoped<Juvo.Application.Reports.CustomersReportService>();
+        services.AddScoped<Juvo.Application.Reports.DashboardService>();
+        services.AddScoped<Juvo.Application.Reports.ReportFileWriter>();
+        services.AddScoped<Juvo.Application.Reports.ReportExportService>();
+        services.AddScoped<Juvo.Application.Reports.AccountantExportService>();
+        services.AddScoped<Juvo.Application.Reports.DailySummaryService>();
+
         // Inventory (module V).
         services.AddScoped<InventoryAccess>();
         services.AddScoped<StockLedger>();

@@ -39,7 +39,7 @@ export function Tabs({
 
   return (
     <div className={className}>
-      <div role="tablist" aria-label={label} onKeyDown={onKeyDown} className="grid auto-cols-fr grid-flow-col gap-1 rounded-control bg-sunken p-1">
+      <div role="tablist" aria-label={label} onKeyDown={onKeyDown} className={cn("grid gap-1 rounded-control bg-sunken p-1", tabs.length > 3 ? "grid-cols-2 sm:auto-cols-fr sm:grid-flow-col sm:grid-cols-none" : "auto-cols-fr grid-flow-col")}>
         {tabs.map((tab) => {
           const selected = tab.id === value;
           return (

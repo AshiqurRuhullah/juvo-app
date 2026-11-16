@@ -6,6 +6,7 @@ import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from
 import { requireSession } from "@/lib/server/session";
 import { AccountSummary } from "@/modules/myaccount/account-summary";
 import { ReturnsOverviewLink } from "@/modules/returns/overview-link";
+import { SupportOverviewLink } from "@/modules/support/overview-link";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("account");
@@ -53,6 +54,7 @@ export default async function AccountPage() {
         </Card>
         <AccountSummary />
         <ReturnsOverviewLink />
+        <SupportOverviewLink />
         <SessionsCard />
       </div>
     </>

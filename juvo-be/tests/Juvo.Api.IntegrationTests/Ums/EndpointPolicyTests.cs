@@ -67,6 +67,8 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
             "payments/sandbox/sessions/{sessionId}", "payments/sandbox/sessions/{sessionId}/complete", "payments/sandbox/pay/{sessionId}", "orders/invoice", "orders/invoice/pdf",
             // Step 10: a guest cancels, or asks for a hub token, with the tracking token (or number plus mobile); both are rate limited.
             "orders/track/cancel", "orders/track/realtime-token",
+            // Step 11A: the public contact form (guest ticket), limited per address and per mobile number.
+            "contact",
         }.Select(r => "/api/v{version:apiVersion}/store/" + r);
 
         var actual = ApiEndpoints().Where(e => e.AllowAnonymous).Select(e => e.Route).Distinct().Order().ToList();
@@ -83,7 +85,10 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
                                             e.Route.Contains("/v{version:apiVersion}/orders", StringComparison.Ordinal) || e.Route.Contains("/fraud/", StringComparison.Ordinal) ||
                                             e.Route.Contains("/v{version:apiVersion}/returns", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/payments", StringComparison.Ordinal) ||
                                             e.Route.Contains("/v{version:apiVersion}/billing", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/notifications", StringComparison.Ordinal) ||
-                                            e.Route.Contains("/v{version:apiVersion}/couriers", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/shipments", StringComparison.Ordinal)).ToList();
+                                            e.Route.Contains("/v{version:apiVersion}/couriers", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/shipments", StringComparison.Ordinal) ||
+                                            e.Route.Contains("/v{version:apiVersion}/expenses", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/accounts", StringComparison.Ordinal) ||
+                                            e.Route.Contains("/v{version:apiVersion}/suppliers", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/purchasing", StringComparison.Ordinal) ||
+                                            e.Route.Contains("/v{version:apiVersion}/support", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/reports", StringComparison.Ordinal)).ToList();
 
         Assert.NotEmpty(ums);
         foreach (var endpoint in ums)

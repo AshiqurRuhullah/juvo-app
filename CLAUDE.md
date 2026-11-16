@@ -96,9 +96,9 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 - **Adapters**: `IPaymentGateway`, `ICourierProvider`, SMS/email/WhatsApp/maps behind interfaces; Sandbox on by default; real ones (Pathao, Steadfast, RedX, Paperfly, eCourier, DHL, bKash, Nagad, SSLCommerz, aamarPay, Stripe, PayPal) are disabled slots built in Step 14 only with owner credentials.
 - Defaults decided: COD + sandbox gateway enabled; reviews verified-buyers-only and moderated; loyalty (AB) behind a feature flag default off; Leaflet/OSM maps; stock-deduct setting `Inventory.DeductAt`; Bangladesh geo dataset chosen and recorded in Step 7; invoice PDF library chosen in Step 9 after licence check (QuestPDF Community licence limits).
 
-## 8. The 14-step plan and status (details in `PROGRESS.md`; next is Step 11A)
+## 8. The 14-step plan and status (details in `PROGRESS.md`; next is Step 11B)
 
-| Step | Scope | Status (2026-11-15) |
+| Step | Scope | Status (2026-11-16) |
 | --- | --- | --- |
 | 1 | Understand business, Git, docs, brand tokens | Done |
 | 2 | Backend foundation | Done |
@@ -110,7 +110,7 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 | 8 | Checkout, orders, order processing, social desk, fraud basics (D, S, T, J) | **Done** (8-a backend, 8-b front end) |
 | 9 | Payments, tax/invoices, notifications (I, U, K) | **Done** (9-a backend, 9-b front end) |
 | 10 | Couriers, real-time (SignalR), returns (H, J, L) | **Done** (backend and front end, gated 2026-11-15) |
-| 11A | Purchasing, expenses, support, reports (W, X, Y, P) | Not started |
+| 11A | Purchasing, expenses, support, reports (W, X, Y, P) | **Done** (backend and screens, gated 2026-11-16) |
 | 11B | Promotions, pre-order, loyalty, marketing, reseller, POS (Z, AA–AE) | Not started |
 | 12 | Remaining admin UI, CMS, dashboard, settings, platform services (M, N, Q, R, AF) | Not started |
 | 13 | Hardening, QA, acceptance checklist, docs | Not started |
@@ -164,4 +164,7 @@ Backend (6-d): domain 94 + application 23 + integration 190, build 0 warnings. F
 - Backend work that adds migrations is done by one builder at a time (the model snapshot would conflict); front-end builders run in parallel in worktrees and merge additively (nav.ts, load.ts, messages, docs).
 - Fast run (default of `start-all.ps1`): Release API and production web build; `-Dev` for the slow development servers. Client translations are scoped per area (`src/messages/scopes.ts`); when `tests/messages-scope.test.ts` fails, add the missing namespace to that area's list. If `next build` fails fetching Google Fonts, run it again (transient).
 - Live updates: `src/lib/realtime/use-live.ts` (SignalR, lazy); the API `Cors:AllowedOrigins` must contain the site address (the e2e config sets it).
+- Browser specs must not depend on how many specs ran before them (shared test database, head office sample stock runs out and online orders are then routed to the online branch): use `topUpHeadOfficeStock`, search lists instead of reading page 1, filter to visible rows (`filter({ visible: true })`) because a phone shows cards, not the table. On a small machine run the suite in shards: `npx playwright test --shard=1/4 ...` (and 2, 3, 4), after `npm run build`. Drop leftover `JuvoDb_E2E_*` databases with a plain `DROP DATABASE` (strip the carriage return from `sqlcmd` output first).
+- The shared branch list (`useBranchOptions`) puts the default branch first; the shared `Tabs` uses two rows on phones for four or more tabs; dashboards and reports read `GET /reports/*` (no sample data anywhere).
+- Step 11A contracts: `docs/operations-api.md` (purchasing, expenses, accounts), `docs/support-api.md`, `docs/reports-api.md`.
 - Step 8 to 10 backends: orders `docs/orders-api.md`, returns `docs/returns-api.md`, payments `docs/payments-api.md`, couriers and real-time `docs/couriers-api.md`.

@@ -1,0 +1,333 @@
+{
+  "names": {
+    "title": "Reports",
+    "sales": "Sales",
+    "orders": "Orders",
+    "inventory": "Inventory",
+    "finance": "Finance",
+    "courier": "Couriers",
+    "customers": "Customers"
+  },
+  "purpose": {
+    "sales": "What sold, by day, product, category, size, colour, channel, zone or payment.",
+    "orders": "How many orders reach the customer, and why others are cancelled or returned.",
+    "inventory": "What the stock is worth, what is running low and what is not selling.",
+    "finance": "Revenue, discounts, refunds, delivery money and the cash still with couriers.",
+    "courier": "Delivery rates, speed and cost per parcel, and the cash each courier owes.",
+    "customers": "New against returning customers, guest conversion and the biggest spenders.",
+    "pnl": "Profit and loss for a period, with expenses by category."
+  },
+  "landing": {
+    "subtitle": "Pick a report. Every report can be filtered by dates and branch, bookmarked and exported.",
+    "emptyTitle": "No reports for you yet",
+    "emptyText": "Your role does not include any report. Ask the owner to give you access if you need one."
+  },
+  "duration": {
+    "dh": "{d} d {h} h",
+    "d": "{d} d",
+    "hm": "{h} h {m} min",
+    "h": "{h} h",
+    "m": "{m} min"
+  },
+  "filters": {
+    "presets": "Date range shortcuts",
+    "presetNames": {
+      "today": "Today",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "thisMonth": "This month",
+      "lastMonth": "Last month",
+      "custom": "Custom"
+    },
+    "from": "From",
+    "to": "To",
+    "branch": "Branch",
+    "allBranches": "All branches (consolidated)",
+    "allMine": "All my branches",
+    "groupBy": "Group by",
+    "days": "No sale for (days)",
+    "daysHint": "Dead stock: items with no sale for this many days.",
+    "range": {
+      "missing": "Choose a start and an end date.",
+      "limit": "The limit for this grouping is {days} days."
+    },
+    "scopeAll": "Showing everything you may see, added together.",
+    "scopeBranches": "Showing branch {codes}."
+  },
+  "groupBy": {
+    "day": "Day",
+    "week": "Week (from Monday)",
+    "month": "Month",
+    "product": "Product",
+    "category": "Category",
+    "size": "Size",
+    "color": "Colour",
+    "channel": "Order channel",
+    "zone": "Delivery zone",
+    "payment": "Payment method"
+  },
+  "notices": {
+    "costHidden": "Cost, profit and stock value at cost are hidden because you do not have access to cost prices in every branch shown. They are not zero: they are simply not shown to you.",
+    "gatewayFees": "Payment gateway fees are not recorded by the system, so they are shown as \"not recorded\" and are not deducted. Real profit after fees is lower by that amount.",
+    "truncated": "This list was cut at its limit. Narrow the dates or the branch to see everything; the totals above are exact.",
+    "costMissing": "{count, plural, one {# sold line has} other {# sold lines have}} no cost price saved, so their cost counts as zero and profit may be overstated.",
+    "about": "About these numbers"
+  },
+  "export": {
+    "button": "Export",
+    "format": "File type",
+    "formats": { "csv": "CSV", "xlsx": "Excel", "pdf": "PDF" },
+    "language": "PDF language",
+    "languages": { "en": "English", "bn": "Bengali" },
+    "section": "Table to export",
+    "sectionHint": "CSV and Excel hold one table. The PDF holds all of them.",
+    "tableHint": "One table plus a total row, with the filters you chose.",
+    "pdfHint": "All tables, the filters and the notes, ready to print.",
+    "download": "Download",
+    "saved": "Saved as {name}."
+  },
+  "sections": {
+    "orders": { "funnel": "Funnel", "cancellations": "Cancellation reasons", "returns": "Return reasons" },
+    "inventory": { "summary": "Summary", "low": "Low stock", "movements": "Stock movements", "dead": "Dead stock" },
+    "finance": { "finance": "Finance by period", "cod": "Cash on delivery" },
+    "customers": { "summary": "Summary", "top": "Top spenders", "conversion": "Guest conversion" }
+  },
+  "sales": {
+    "groupLabel": "Group sales by",
+    "columns": { "orders": "Orders", "units": "Units", "gross": "Gross", "discount": "Discount", "net": "Net sales", "delivery": "Delivery", "total": "Total" },
+    "chart": {
+      "title": "Net sales",
+      "overTime": "Net sales for each period",
+      "topGroups": "The {count} biggest groups by net sales",
+      "none": "There are no sales in this period.",
+      "summary": "{count} groups from {from} to {to}. The biggest is {best} with {amount}. Total net sales {total}.",
+      "tableCaption": "Net sales by group"
+    },
+    "table": { "title": "Sales table", "lineNote": "Built from order lines: an order with several products counts once in each, the discount is shared by line value and delivery is not split." }
+  },
+  "orders": {
+    "tiles": { "placed": "Orders placed", "delivered": "Delivered", "cancelled": "Cancelled", "returned": "Returned", "ofPlaced": "of orders placed" },
+    "funnel": {
+      "title": "Order funnel",
+      "subtitle": "Orders placed in the period and where they are now.",
+      "summary": "{placed} orders placed, {delivered} delivered ({rate}).",
+      "ofPlaced": "{rate} of placed",
+      "ofPrevious": "{rate} of the step before"
+    },
+    "reasons": { "reason": "Reason", "count": "Orders", "share": "Share", "fault": "Fault" },
+    "cancellations": { "title": "Why orders were cancelled", "subtitle": "{count} cancelled orders" },
+    "returnsTable": { "title": "Why orders came back", "subtitle": "{count} returns" }
+  },
+  "stages": {
+    "Placed": "Placed",
+    "Confirmed": "Confirmed",
+    "Packed": "Packed",
+    "Shipped": "Shipped",
+    "Delivered": "Delivered",
+    "Cancelled": "Cancelled",
+    "Returned": "Returned"
+  },
+  "fault": { "Seller": "Seller", "Customer": "Customer", "Courier": "Courier", "Unknown": "Not decided" },
+  "inventory": {
+    "costHiddenValue": "Hidden (no cost access)",
+    "neverSold": "Never sold",
+    "columns": {
+      "product": "Product",
+      "branch": "Branch",
+      "onHand": "On hand",
+      "reserved": "Reserved",
+      "available": "Available",
+      "reorderLevel": "Reorder level",
+      "reason": "Reason",
+      "movements": "Movements",
+      "in": "Units in",
+      "out": "Units out",
+      "net": "Net units",
+      "valueAtPrice": "Value at price",
+      "valueAtCost": "Value at cost",
+      "lastSold": "Last sold"
+    },
+    "tiles": {
+      "variants": "Variants in stock records",
+      "onHand": "Units on hand",
+      "reserved": "Units reserved",
+      "available": "Units available",
+      "valueAtPrice": "Stock value at price",
+      "valueAtCost": "Stock value at cost",
+      "lowStock": "Low-stock lines",
+      "deadStock": "Dead-stock lines",
+      "withoutCost": "{count} units have no cost saved",
+      "deadValue": "{amount} at price"
+    },
+    "chart": {
+      "title": "Stock value by branch",
+      "subtitle": "What the stock on hand is worth now",
+      "none": "There is no stock.",
+      "summary": "Stock value across {count} branches. The highest is {branch} with {amount} at price.",
+      "tableCaption": "Stock value by branch"
+    },
+    "low": { "title": "Low stock", "subtitle": "{count} lines at or below their reorder level.", "partial": "Showing {shown} of {total} lines at or below their reorder level. Narrow the branch to see the rest." },
+    "movements": { "title": "Stock movements in the period", "subtitle": "Units that came in and went out, by reason." },
+    "dead": {
+      "title": "Dead stock: no sale for {days} days",
+      "subtitle": "{count} lines worth {amount} at price.",
+      "partial": "Showing {shown} of {total} lines. Narrow the branch to see the rest."
+    }
+  },
+  "finance": {
+    "groupLabel": "Group by",
+    "notRecorded": "Not recorded",
+    "costHiddenValue": "Hidden (no cost access)",
+    "deliveryBalance": "Delivery collected minus courier charges",
+    "deliveryBalanceHint": "Negative means couriers cost more than customers paid for delivery.",
+    "columns": {
+      "orders": "Orders",
+      "grossSales": "Gross sales",
+      "discounts": "Discounts",
+      "refunds": "Refunds",
+      "netRevenue": "Net revenue",
+      "deliveryCollected": "Delivery collected",
+      "courierCharges": "Courier charges",
+      "gatewayFees": "Gateway fees",
+      "costOfGoods": "Cost of goods",
+      "grossProfit": "Gross profit"
+    },
+    "chart": {
+      "title": "Revenue over time",
+      "subtitle": "Net revenue, delivery collected and gross profit",
+      "none": "There is no revenue in this period.",
+      "summary": "{count} periods from {from} to {to}. The best period is {best} with {amount} net revenue.",
+      "tableCaption": "Revenue by period"
+    },
+    "cod": {
+      "title": "Cash on delivery",
+      "subtitle": "Where the cash of COD parcels is now (all time, not only this period).",
+      "collected": "Collected by couriers",
+      "settled": "Settled to us",
+      "pending": "Waiting with couriers",
+      "pendingHint": "Collected by the courier, not yet settled.",
+      "inTransit": "In transit",
+      "inTransitHint": "Parcels on the way; cash not collected yet."
+    },
+    "table": { "title": "Finance by period", "subtitle": "{count} periods, {orders} orders" }
+  },
+  "courier": {
+    "columns": {
+      "courier": "Courier",
+      "parcels": "Parcels",
+      "delivered": "Delivered",
+      "avgDelivery": "Average delivery time",
+      "failed": "Failed",
+      "returned": "Returned",
+      "totalCost": "Courier charges",
+      "costPerParcel": "Cost per parcel",
+      "codCollected": "COD collected",
+      "codSettled": "COD settled",
+      "codPending": "COD pending"
+    },
+    "tiles": { "ofParcels": "{count} parcels", "perParcel": "{amount} per parcel", "settled": "{amount} settled" },
+    "rates": { "delivered": "Delivered rate", "failed": "Failed rate", "returned": "Returned rate" },
+    "chart": {
+      "title": "Delivery rates by courier",
+      "subtitle": "Share of parcels delivered, failed and returned",
+      "summary": "{count} couriers. Overall {rate} of parcels were delivered.",
+      "tableCaption": "Delivery rates by courier"
+    },
+    "table": { "title": "Courier performance", "subtitle": "Rates are shares of the parcels booked in the period." }
+  },
+  "customers": {
+    "noName": "Customer without a name",
+    "newCustomers": "New customers",
+    "returningCustomers": "Returning customers",
+    "revenueFromNew": "Revenue from new customers",
+    "revenueFromReturning": "Revenue from returning customers",
+    "guestsCreated": "Guest orders (new mobile numbers)",
+    "convertedToProfile": "Guests who made a profile",
+    "conversionRate": "Guest to profile conversion",
+    "revenue": "Revenue",
+    "columns": { "customer": "Customer", "orders": "Orders", "spent": "Spent", "customers": "Customers", "group": "Group" },
+    "chart": {
+      "title": "New against returning",
+      "subtitle": "Customers and their orders in the period",
+      "summary": "{newCount} new customers placed {newOrders} orders; {returning} returning customers placed {returningOrders} orders.",
+      "tableCaption": "New and returning customers"
+    },
+    "top": { "title": "Top spenders", "subtitle": "The customers who spent the most in the period." }
+  },
+  "pnl": {
+    "title": "Profit and loss",
+    "subtitle": "Revenue less cost, courier charges and expenses, for the dates and branch you choose.",
+    "groupLabel": "Group by",
+    "notRecorded": "Not recorded",
+    "costHiddenValue": "Hidden (no cost access)",
+    "columns": {
+      "orders": "Orders",
+      "netRevenue": "Net revenue",
+      "costOfGoods": "Cost of goods",
+      "grossProfit": "Gross profit",
+      "deliveryCollected": "Delivery collected",
+      "courierCharges": "Courier charges",
+      "gatewayFees": "Gateway fees",
+      "expenses": "Expenses",
+      "netProfit": "Net profit"
+    },
+    "hints": {
+      "netRevenue": "Gross sales minus discounts and refunds.",
+      "expenses": "Approved expenses by expense date.",
+      "netProfit": "Net revenue plus delivery, minus cost, courier charges, fees and expenses."
+    },
+    "chart": {
+      "title": "Revenue and profit",
+      "subtitle": "Net revenue, expenses, gross profit and net profit over time",
+      "none": "There is nothing to show in this period.",
+      "summary": "{count} periods from {from} to {to}. The best period is {best} with {amount} net revenue.",
+      "tableCaption": "Profit and loss by period"
+    },
+    "table": { "title": "By period", "subtitle": "Every bucket of the chosen grouping, including empty ones." },
+    "categories": { "title": "Expenses by category", "subtitle": "Approved expenses in the period.", "category": "Category", "count": "Entries", "amount": "Amount" },
+    "purchases": { "title": "Purchases received", "note": "For information only. Goods bought for stock are an asset until they are sold, so purchases are not part of the profit above." },
+    "export": { "title": "Accountant export", "subtitle": "A file for your accountant for the dates and branch above (at most {days} days)." }
+  },
+  "accountant": {
+    "kind": "What to export",
+    "format": "File type",
+    "formats": { "csv": "CSV (UTF-8, opens in Excel)", "xlsx": "Excel" },
+    "kinds": { "daybook": "Day book", "expenses": "Expenses", "pnl": "Profit and loss", "payables": "Payables", "purchases": "Purchases" },
+    "kindHelp": {
+      "daybook": "Every cash book line and every customer receipt, refund and settled COD cash in the range.",
+      "expenses": "Approved expenses in the range.",
+      "pnl": "The profit and loss by period for the range.",
+      "payables": "Open supplier invoices as of today. The date range is ignored.",
+      "purchases": "Every received purchase line in the range."
+    },
+    "needsCost": "Needs access to cost prices.",
+    "noRange": "A snapshot of today: the dates are ignored.",
+    "download": "Download file",
+    "saved": "Saved as {name}."
+  },
+  "dashboard": {
+    "toConfirm": "Orders to confirm",
+    "toConfirmHint": "Placed orders waiting for a decision",
+    "noYesterday": "No sales yesterday to compare with",
+    "noOrders": "No orders in the last 30 days.",
+    "actions": {
+      "toConfirm": "Orders to confirm",
+      "toPack": "Orders to pack",
+      "heldByFraud": "Orders held by fraud checks",
+      "returnsWaiting": "Returns waiting for you",
+      "lowStock": "Low-stock items"
+    },
+    "topSubtitle": "Most sold in the last 30 days",
+    "noTopTitle": "No sales yet",
+    "noTopText": "Top products appear here once orders come in.",
+    "cashSubtitle": "Cash on delivery that has not reached you yet",
+    "codInTransit": "COD on parcels in transit",
+    "codPending": "COD collected, waiting for settlement"
+  },
+  "quickLinks": {
+    "title": "Where to start",
+    "subtitle": "The dashboard numbers are not part of your role. These are the screens you can open.",
+    "emptyTitle": "Nothing assigned yet",
+    "emptyText": "Your role has no screens yet. Ask the owner to give you access."
+  }
+}

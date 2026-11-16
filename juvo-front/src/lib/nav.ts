@@ -16,6 +16,8 @@ import {
   Package,
   PackageSearch,
   Receipt,
+  Scale,
+  TrendingUp,
   RotateCcw,
   Settings,
   Shield,
@@ -90,7 +92,7 @@ export const ADMIN_NAV: NavGroup[] = [
       { id: "products", label: "products", href: "/admin/products", icon: ShoppingBag, permission: "catalog.product.view", scope: "anywhere", ready: true, bottom: true },
       { id: "categories", label: "categories", href: "/admin/categories", icon: Layers, permission: "catalog.category.view", scope: "anywhere", ready: true },
       { id: "inventory", label: "inventory", href: "/admin/inventory", icon: Boxes, permission: "inventory.stock.view", ready: true },
-      { id: "purchasing", label: "purchasing", href: "/admin/purchasing", icon: PackageSearch, permission: "purchasing.po.view", ready: false },
+      { id: "purchasing", label: "purchasing", href: "/admin/purchasing", icon: PackageSearch, permission: "purchasing.po.view", ready: true },
     ],
   },
   {
@@ -118,7 +120,9 @@ export const ADMIN_NAV: NavGroup[] = [
       { id: "payments", label: "payments", href: "/admin/payments", icon: Wallet, permission: "payments.payment.view", ready: true },
       { id: "tax", label: "taxInvoices", href: "/admin/billing", icon: Receipt, permission: "tax.invoice.view", ready: true },
       { id: "notifications", label: "notifications", href: "/admin/notifications", icon: Bell, permission: "notifications.template.view", ready: true },
-      { id: "expenses", label: "expenses", href: "/admin/accounting/expenses", icon: Landmark, permission: "accounting.expense.view", ready: false },
+      { id: "expenses", label: "expenses", href: "/admin/accounting/expenses", icon: Landmark, permission: "accounting.expense.view", ready: true },
+      { id: "cashbook", label: "cashBook", href: "/admin/accounting/cash", icon: Scale, permission: "accounting.cashbook.view", ready: true },
+      { id: "pnl", label: "profitLoss", href: "/admin/accounting/pnl", icon: TrendingUp, permission: "accounting.pnl.view", ready: true },
     ],
   },
   {
@@ -141,8 +145,8 @@ export const ADMIN_NAV: NavGroup[] = [
     label: "insights",
     icon: ChartNoAxesColumn,
     items: [
-      { id: "reports", label: "reports", href: "/admin/reports", icon: ChartNoAxesColumn, permission: "reports.sales.view", ready: false },
-      { id: "support", label: "support", href: "/admin/support", icon: Headset, permission: "support.ticket.view", ready: false },
+      { id: "reports", label: "reports", href: "/admin/reports", icon: ChartNoAxesColumn, permission: "reports.sales.view", ready: true },
+      { id: "support", label: "support", href: "/admin/support", icon: Headset, permission: "support.ticket.view", ready: true },
     ],
   },
   {
@@ -178,6 +182,7 @@ export const ACCOUNT_NAV: NavGroup[] = [
       { id: "account-addresses", label: "addresses", href: "/account/addresses", icon: Globe, ready: true, bottom: true },
       { id: "account-wishlist", label: "wishlist", href: "/account/wishlist", icon: Tag, ready: true },
       { id: "account-returns", label: "returns", href: "/account/returns", icon: RotateCcw, ready: true },
+      { id: "account-support", label: "mySupport", href: "/account/support", icon: Headset, ready: true },
     ],
   },
 ];

@@ -104,6 +104,8 @@ public class NotificationFlowTests(NotificationFactory factory) : IClassFixture<
     [Fact]
     public async Task An_order_message_is_queued_then_delivered_once_with_its_language_and_template_version()
     {
+        // Other tests of this class share the outbox and may leave messages in it: deliver those first, so only this order's message is counted.
+        await DrainAsync();
         factory.Sms.Reset();
         var (_, product) = await ProductAsync();
         var mobile = await PlaceCodAsync(product.Variants[0].Id);

@@ -19,7 +19,17 @@ import { useProductStock, type CountStatus, type StockReason, type TransferStatu
 /** The branches this person can choose between (their own, active ones). Used by filters and pickers. */
 export function useBranchOptions(): SelectOption[] {
   const { me } = useSession();
-  return React.useMemo(() => me.branches.filter((b) => b.isActive).map((b) => ({ value: b.id, label: `${b.code} · ${b.nameEn}` })), [me.branches]);
+  // The default branch (head office) comes first, so screens that start on "the first branch" for someone who sees every branch
+  // start on the one they most likely mean; the rest keep the order the API sent.
+  return React.useMemo(
+    () =>
+      me.branches
+        .filter((b) => b.isActive)
+        .map((b, index) => ({ b, index }))
+        .sort((x, y) => Number(y.b.isDefault) - Number(x.b.isDefault) || x.index - y.index)
+        .map(({ b }) => ({ value: b.id, label: `${b.code} · ${b.nameEn}` })),
+    [me.branches],
+  );
 }
 
 /** Moves between the inventory screens. Only the parts the person may view are shown. */

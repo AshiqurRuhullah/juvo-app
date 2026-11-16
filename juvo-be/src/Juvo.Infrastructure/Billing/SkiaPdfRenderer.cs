@@ -42,7 +42,7 @@ internal sealed class SkiaPdfRenderer : IDocumentPdfRenderer
     private static bool IsBengali(Rune r) => r.Value is >= 0x0980 and <= 0x09FF or 0x200C or 0x200D;
 
     /// <summary>Text drawing with run splitting: Bengali letters use the Bengali font, everything else the Latin font. Shapers are made once per document.</summary>
-    private sealed class TextPen : IDisposable
+    internal sealed class TextPen : IDisposable
     {
         private readonly Typefaces _faces = Fonts.Value;
         private readonly Dictionary<(bool Bengali, bool Bold), SKShaper> _shapers = [];

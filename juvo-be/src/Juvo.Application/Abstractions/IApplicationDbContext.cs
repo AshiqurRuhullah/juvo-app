@@ -12,6 +12,9 @@ using Juvo.Domain.Billing;
 using Juvo.Domain.Payments;
 using Juvo.Domain.Returns;
 using Juvo.Domain.Couriers;
+using Juvo.Domain.Accounting;
+using Juvo.Domain.Purchasing;
+using Juvo.Domain.Support;
 using Microsoft.EntityFrameworkCore;
 
 namespace Juvo.Application.Abstractions;
@@ -146,6 +149,40 @@ public interface IApplicationDbContext
     DbSet<CodSettlementItem> CodSettlementItems { get; }
 
     DbSet<SandboxConsignment> SandboxConsignments { get; }
+
+    DbSet<FinanceAccount> FinanceAccounts { get; }
+
+    DbSet<LedgerEntry> LedgerEntries { get; }
+
+    DbSet<ExpenseCategory> ExpenseCategories { get; }
+
+    DbSet<Expense> Expenses { get; }
+
+    DbSet<RecurringExpense> RecurringExpenses { get; }
+
+    DbSet<Supplier> Suppliers { get; }
+
+    DbSet<PurchaseOrder> PurchaseOrders { get; }
+
+    DbSet<PurchaseOrderLine> PurchaseOrderLines { get; }
+
+    DbSet<GoodsReceipt> GoodsReceipts { get; }
+
+    DbSet<GoodsReceiptLine> GoodsReceiptLines { get; }
+
+    DbSet<PurchasePayment> PurchasePayments { get; }
+
+    DbSet<GlobalSequence> GlobalSequences { get; }
+
+    DbSet<Ticket> Tickets { get; }
+
+    DbSet<TicketMessage> TicketMessages { get; }
+
+    DbSet<TicketAttachment> TicketAttachments { get; }
+
+    DbSet<TicketStatusHistory> TicketStatusHistories { get; }
+
+    DbSet<CannedReply> CannedReplies { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 

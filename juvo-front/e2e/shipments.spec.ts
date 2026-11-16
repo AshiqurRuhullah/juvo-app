@@ -1,7 +1,8 @@
 import { test, expect, type Page } from "@playwright/test";
 import { advanceParcel, bookedParcel, cancelParcel, type Parcel } from "./support/couriers";
 import { loadState } from "./support/env";
-import { staffWithPermissions, stockedVariants, type SampleVariant } from "./support/returns";
+import { topUpHeadOfficeStock } from "./support/orders";
+import { adminAccess, staffWithPermissions, stockedVariants, type SampleVariant } from "./support/returns";
 import { pick } from "./support/store";
 import { signInViaBff } from "./support/ui";
 
@@ -14,6 +15,8 @@ test.describe.configure({ timeout: 90_000 });
 
 let variants: SampleVariant[];
 test.beforeAll(async () => {
+  // Late in a long run head office stock is used up and orders go to the online branch, where these head office users cannot see them.
+  await topUpHeadOfficeStock(await adminAccess(), loadState().branches.ho.id);
   variants = await stockedVariants(5, 4);
 });
 

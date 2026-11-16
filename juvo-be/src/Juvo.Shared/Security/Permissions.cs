@@ -176,6 +176,66 @@ public static class Permissions
         public const string ChannelEdit = "notifications.channel.edit";
     }
 
+    public static class Purchasing
+    {
+        public const string SupplierView = "purchasing.supplier.view";
+        public const string SupplierCreate = "purchasing.supplier.create";
+        public const string SupplierEdit = "purchasing.supplier.edit";
+        public const string PoView = "purchasing.po.view";
+        public const string PoCreate = "purchasing.po.create";
+        public const string PoEdit = "purchasing.po.edit";
+        public const string PoSend = "purchasing.po.send";
+        public const string PoReceive = "purchasing.po.receive";
+        public const string PoCancel = "purchasing.po.cancel";
+        public const string ReceiptView = "purchasing.receipt.view";
+        public const string ReceiptCreate = "purchasing.receipt.create";
+        public const string PayableView = "purchasing.payable.view";
+        public const string PayablePay = "purchasing.payable.pay";
+    }
+
+    public static class Accounting
+    {
+        public const string ExpenseView = "accounting.expense.view";
+        public const string ExpenseCreate = "accounting.expense.create";
+        public const string ExpenseEdit = "accounting.expense.edit";
+        public const string ExpenseDelete = "accounting.expense.delete";
+        public const string ExpenseApprove = "accounting.expense.approve";
+        public const string CashbookView = "accounting.cashbook.view";
+        public const string CashbookEdit = "accounting.cashbook.edit";
+        public const string PnlView = "accounting.pnl.view";
+        public const string ExportRun = "accounting.export.run";
+    }
+
+    public static class Support
+    {
+        public const string TicketView = "support.ticket.view";
+        public const string TicketCreate = "support.ticket.create";
+        public const string TicketAssign = "support.ticket.assign";
+        public const string TicketReply = "support.ticket.reply";
+        public const string TicketClose = "support.ticket.close";
+        public const string CannedReplyView = "support.canned-reply.view";
+        public const string CannedReplyEdit = "support.canned-reply.edit";
+        public const string ReportView = "support.report.view";
+    }
+
+    public static class Reports
+    {
+        public const string DashboardView = "reports.dashboard.view";
+        public const string SalesView = "reports.sales.view";
+        public const string SalesExport = "reports.sales.export";
+        public const string OrdersView = "reports.orders.view";
+        public const string OrdersExport = "reports.orders.export";
+        public const string InventoryView = "reports.inventory.view";
+        public const string InventoryExport = "reports.inventory.export";
+        public const string FinanceView = "reports.finance.view";
+        public const string FinanceExport = "reports.finance.export";
+        public const string CourierView = "reports.courier.view";
+        public const string CourierExport = "reports.courier.export";
+        public const string CustomersView = "reports.customers.view";
+        public const string CustomersExport = "reports.customers.export";
+        public const string TaxView = "tax.report.view";
+    }
+
     public static class Cod
     {
         public const string View = "couriers.cod.view";

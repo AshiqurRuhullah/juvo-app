@@ -1,7 +1,7 @@
 # PROGRESS
 
 Resume from this file alone. Plan: `Documents/juvo-step-prompts.md` (14 steps). Master prompt: `juvo-claude-code-prompt.md`.
-Last updated: 2026-11-15.
+Last updated: 2026-11-16.
 
 ## Status of the 14 steps
 
@@ -17,7 +17,7 @@ Last updated: 2026-11-15.
 | 8 | Checkout, orders, order processing | **Done** (8-a backend, 8-b front end; merged to `main`) |
 | 9 | Payments, tax/invoices, notifications | **Done** (9-a backend, 9-b front end; merged to `main`) |
 | 10 | Couriers, real-time status, returns | **Done** (returns backend and front end, 10-a backend, 10-b front end: couriers, parcels, labels, COD settlement, live updates, order integration; merged to `main`, gated 2026-11-15) |
-| 11A | Operations part 1: purchasing, expenses, support, reports | Not started |
+| 11A | Operations part 1: purchasing, expenses, support, reports | **Done** (backend and screens; merged to `main`, gated 2026-11-16) |
 | 11B | Operations part 2: promotions, pre-order, loyalty, marketing, reseller, POS | Not started |
 | 12 | Remaining admin UI, CMS, dashboard, settings, platform services | Not started |
 | 13 | Hardening, QA, documentation | Not started |
@@ -213,9 +213,21 @@ Built by three parallel builders on top of a shared foundation and merged into `
 - **Not built / Partial:** courier count chips and short/over counts in lists (no API fields), real courier accounts (Step 14), courier card on the order-confirmation page, a full side-by-side transparency view (FR-J07), Bengali first pass, dashboard counters still sample data (Step 12). Contract gaps found are listed in `docs/assumptions.md` section T.
 - **Gate (2026-11-15, run and seen):** `npx tsc --noEmit` clean; `npx eslint src e2e tests` 0 problems; `npm test` 144 passed in 14 files (couriers 12, couriers-admin, cod, booking, messages scope); `npm run build` ok; backend `dotnet build` in `juvo-be` 0 warnings (backend unchanged in this step). Full `npm run test:e2e` on the merged tree (desktop, tablet, Android, iPhone; 22.9 min): **492 passed, 4 failed, 9 skipped, 9 did not run**. The 4 failures were timing flakes under load (`orders-ui-checks` at 768 px, two `orders.spec` tests, one `shipments.spec` test); the three affected spec files were re-run together: **62 of 62 passed**. The 9 "did not run" tests are the rest of those files after a failure and were part of the re-run. The full suite was not run a second time end to end.
 
+### Step 11A result (purchasing, expenses, cash book, support, reports)
+
+Built by five parallel builders on `feature/11a-operations` (the earlier purchasing and expenses backend was kept and finished), then integrated and gated. Contracts: `docs/operations-api.md`, `docs/support-api.md`, `docs/reports-api.md`; builder notes `docs/step11a-*.md`; decisions `docs/assumptions.md` section U; routes in `juvo-front/docs/frontend.md`; traceability rows FR-W01..W05, FR-X01..X05, FR-Y01..Y05, FR-P01..P07 updated.
+
+- **Purchasing:** suppliers, purchase orders (draft, send, receive in parts with damage, close short, cancel), supplier invoice and payments, reorder suggestions, print view.
+- **Expenses and cash book:** categories, approval by another person, repeating expenses, accounts with balances, transfers, adjustments, day book, profit and loss (one branch or consolidated), accountant export (CSV, Excel).
+- **Support:** tickets from the customer panel, the public contact form and staff; canned replies in English and Bengali; customer updates by SMS and email; auto-close; support report.
+- **Reports:** sales, order funnel, inventory, finance, courier and customers with branch and date filters, CSV, Excel and PDF exports, daily summary email (off until an owner address is set), and the admin dashboard now runs on real data.
+- **Also:** the Accountant default role can see couriers; the shared branch list starts on head office; the shared tab bar uses two rows on phones for four or more tabs.
+- **Partial or not built:** gateway fees are not recorded by the system (shown as not recorded); no per-product purchase history; no payables or ageing screen; tickets cannot be linked to returns; no seeded canned replies; no SLA escalation; settings screen for the daily summary address (Step 12); report row labels come from the server in English; Bengali is a first pass.
+- **Gate (2026-11-16, run and seen):** backend `dotnet build --no-incremental` 0 warnings and 0 errors; domain 339, application 95, integration 518 of 518 passed; `dotnet ef migrations has-pending-model-changes` clean; no vulnerable packages. Front end: `tsc --noEmit` clean, `eslint src e2e tests` 0 problems, `npm test` 247 passed in 18 files, `npm run build` ok. Browser suite on the final build in 4 shards (desktop, tablet, Android, iPhone): shards 1, 2 and 4 fully green (185, 145 and 153 passed, 8 skipped), shard 3 had 2 failures (a hidden-row locator on phones, a click before the page had loaded) that left 18 reports tests unrun; those spec files were fixed and re-run together: **51 of 51 passed**. The first full run before the fixes had 580 passed and 11 failed (stale line ids, default branch assumptions, a phone tab-bar overflow, shared-data wear); the earlier backend run found two order-dependent tests, fixed. The suite was not run a second time as one single run after the last fixes.
+
 ## Next step
 
-**Step 11A** (purchasing, expenses, support, reports), then 11B, 12 (remaining admin UI, CMS, dashboard, settings), 13, 14. Owner decisions open: delivery rates and VAT are placeholders, real provider accounts for Step 14. The Accountant default role now holds `couriers.courier.view` (new installs; existing databases keep their roles, apply it in the Roles screen). Unmerged local branches kept on purpose: `worktree-agent-ab1d1e1f524baaa0a` is the Step 11A backend (suppliers, purchase orders, expenses, cash book), `worktree-agent-a96ad2cc73a0a23b9` an earlier abandoned Step 10 front-end attempt.
+**Step 11B** (promotions, pre-order, loyalty, marketing, reseller, POS), then 12 (remaining admin UI, CMS, settings), 13, 14. Owner decisions open: delivery rates and VAT are placeholders; real provider accounts for Step 14. The Accountant default role now holds `couriers.courier.view` (new installs; existing databases keep their roles).
 
 ## Known issues / notes
 
