@@ -31,6 +31,7 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         ["Operations:RecurringExpensesEnabled"] = "false",
         ["Operations:TicketAutoCloseEnabled"] = "false",
         ["Reports:DailySummaryEnabled"] = "false",
+        ["Loyalty:ExpiryEnabled"] = "false",
         ["Couriers:Sandbox:WebhookSecret"] = "test-courier-webhook-secret-0123456789",
     };
 

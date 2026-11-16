@@ -17,7 +17,7 @@ namespace Juvo.Application.Orders;
 /// </summary>
 public sealed class CheckoutService(
     IApplicationDbContext db, ICurrentUser currentUser, CartService carts, PricedDelivery delivery, OrderPlacement placement, SettingsService settings, IFileStorage storage,
-    Payments.PaymentSettingsService paymentSettings, IUnitOfWork uow, OrderWorkflow workflow, Couriers.ShipmentViews shipments)
+    Payments.PaymentSettingsService paymentSettings, IUnitOfWork uow, OrderWorkflow workflow, Couriers.ShipmentViews shipments, Loyalty.TenderService tenders)
 {
     private static Error Invalid(string field, string message) => Error.Validation(new Dictionary<string, string[]> { [field] = [message] });
 
@@ -184,6 +184,9 @@ public sealed class CheckoutService(
         var codAdvance = method == OrderPlacement.Cod && deliveryQuote is not null && grand > config.CodAdvanceThreshold ? Math.Min(standardCharge, grand) : 0m;
         var advance = method == OrderPlacement.Cod ? Math.Max(codAdvance, Math.Min(view.PreorderAdvance, grand)) : 0m; // a pre-order's advance share (module AA) uses the same advance mechanism
         var payNow = method == OrderPlacement.Cod ? advance : grand;
+        var tender = await tenders.QuoteAsync(SignedInCustomerId, grand, request.Tender, cancellationToken); // rewards hook (module AB): reduces what is left to pay, never the total
+        var tenderTotal = tender?.TenderTotal ?? 0m;
+        payNow = Math.Max(0m, payNow - tenderTotal);
 
         var verified = SignedInCustomerId is { } id && await db.Customers.AsNoTracking().AnyAsync(c => c.Id == id && c.MobileVerified, cancellationToken);
         var otpRequired = !verified && (config.OtpMode == OtpMode.Always || (config.OtpMode == OtpMode.CodOnly && method == OrderPlacement.Cod));
@@ -200,8 +203,8 @@ public sealed class CheckoutService(
             l.PreorderLabelEn, l.PreorderLabelBn)).ToList();
         var methodOk = methods.Any(m => m.Code == method && m.Available);
         return new CheckoutQuoteDto("BDT", true, lines, view.ItemCount, view.Subtotal, view.Coupon?.Code, view.Discount, deliveryQuote, deliveryError, charge, grand, method, advance, payNow,
-            grand - payNow, otpRequired, methods, problems, view.ItemCount > 0 && deliveryQuote is not null && methodOk && problems.Count == 0, view.PromotionDiscount, view.ListSubtotal, view.Explanation, view.Coupon,
-            view.HasPreorder);
+            grand - tenderTotal - payNow, otpRequired, methods, problems, view.ItemCount > 0 && deliveryQuote is not null && methodOk && problems.Count == 0 && tender?.Problem is null, view.PromotionDiscount, view.ListSubtotal, view.Explanation, view.Coupon,
+            view.HasPreorder, tender);
     }
 
     // ---- Checkout ---------------------------------------------------------------------------------------
@@ -266,7 +269,7 @@ public sealed class CheckoutService(
         var input = new PlacementInput(
             OrderSource.Web, signedIn is null ? Who.System with { Name = name ?? "Guest" } : Who.Customer(signedIn.Id, signedIn.FullName), false, mobile, name, email, signedIn?.Id,
             signedIn?.MobileVerified == true, shipping.Value, lines, couponCode, 0m, null, request.PaymentMethod, Clean(request.Note), null, key, request.ConfirmDuplicate, request.ExpectedTotal,
-            Clean(request.DeviceId), currentUser.IpAddress, request.OtpCode, request.AcceptTerms, null, cart);
+            Clean(request.DeviceId), currentUser.IpAddress, request.OtpCode, request.AcceptTerms, null, cart) { Tender = request.Tender };
         var placed = await placement.PlaceAsync(input, cancellationToken);
         if (placed.IsFailure)
         {
@@ -300,9 +303,9 @@ public sealed class CheckoutService(
 
     private CheckoutResultDto ToResult(Order o, string? token, bool replayed, DateOnly? earliest, DateOnly? latest)
     {
-        var payNow = o.IsOnlinePayment ? o.GrandTotal : o.AdvanceRequired;
-        return new CheckoutResultDto(o.Id, o.Number, token, o.Status.ToString(), o.PaymentStatus.ToString(), o.PaymentMethod, o.GrandTotal, o.AdvanceRequired, payNow, o.GrandTotal - payNow,
-            earliest, latest, !replayed && SignedInCustomerId is null, replayed, o.PaymentHoldExpiresAt, o.PreorderState != PreorderState.None);
+        var payNow = Math.Max(0m, (o.IsOnlinePayment ? o.GrandTotal : o.AdvanceRequired) - o.AdvancePaid); // what points, credit or a gift card already paid counts as received
+        return new CheckoutResultDto(o.Id, o.Number, token, o.Status.ToString(), o.PaymentStatus.ToString(), o.PaymentMethod, o.GrandTotal, o.AdvanceRequired, payNow, o.GrandTotal - o.AdvancePaid - payNow,
+            earliest, latest, !replayed && SignedInCustomerId is null, replayed, o.PaymentHoldExpiresAt, o.PreorderState != PreorderState.None, o.AdvancePaid);
     }
 
     // ---- Public tracking --------------------------------------------------------------------------------

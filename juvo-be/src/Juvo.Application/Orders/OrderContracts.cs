@@ -15,7 +15,7 @@ public sealed record CheckoutAddress(
 public sealed record CheckoutContact(string Mobile, string? FullName, string? Email);
 
 /// <summary>Everything needed for live totals: where the parcel goes and how it is paid. The goods come from the cart (<c>X-Cart-Token</c> or the customer's cart).</summary>
-public sealed record CheckoutQuoteRequest(Guid? AddressId, CheckoutAddress? Address, string? PaymentMethod, string? Mobile);
+public sealed record CheckoutQuoteRequest(Guid? AddressId, CheckoutAddress? Address, string? PaymentMethod, string? Mobile, Loyalty.TenderRequest? Tender = null);
 
 public sealed record QuoteLineDto(
     Guid VariantId, Guid ProductId, string Name, string? NameBn, string Sku, string? ColorName, string? Size, string? ImageUrl, decimal UnitPrice, int Quantity, decimal LineTotal, string? Problem,
@@ -32,7 +32,7 @@ public sealed record CheckoutQuoteDto(
     string Currency, bool TaxIncluded, IReadOnlyList<QuoteLineDto> Lines, int ItemCount, decimal Subtotal, string? CouponCode, decimal CouponDiscount, DeliveryQuoteDto? Delivery,
     string? DeliveryError, decimal DeliveryCharge, decimal GrandTotal, string PaymentMethod, decimal AdvanceRequired, decimal PayNow, decimal PayOnDelivery, bool OtpRequired,
     IReadOnlyList<PaymentMethodDto> PaymentMethods, IReadOnlyList<string> Problems, bool CanPlace, decimal PromotionDiscount = 0m, decimal ListSubtotal = 0m, PriceExplanation? Explanation = null,
-    CartCouponDto? Coupon = null, bool HasPreorder = false);
+    CartCouponDto? Coupon = null, bool HasPreorder = false, Loyalty.TenderQuoteDto? Tender = null);
 
 /// <summary>
 /// Place the order. <c>ExpectedTotal</c> is the grand total the customer saw: when today's total differs the answer is 409 <c>ORDER.TOTAL_CHANGED</c> (FR-D06).
@@ -40,11 +40,11 @@ public sealed record CheckoutQuoteDto(
 /// </summary>
 public sealed record CheckoutRequest(
     CheckoutContact Contact, Guid? AddressId, CheckoutAddress? Address, bool SaveAddress, string PaymentMethod, string? Note, bool AcceptTerms, string? OtpCode, bool ConfirmDuplicate,
-    decimal? ExpectedTotal, string? IdempotencyKey, string? DeviceId);
+    decimal? ExpectedTotal, string? IdempotencyKey, string? DeviceId, Loyalty.TenderRequest? Tender = null);
 
 public sealed record CheckoutResultDto(
     Guid OrderId, string Number, string? TrackingToken, string Status, string PaymentStatus, string PaymentMethod, decimal GrandTotal, decimal AdvanceRequired, decimal PayNow,
-    decimal PayOnDelivery, DateOnly? EarliestDelivery, DateOnly? LatestDelivery, bool OfferProfile, bool Replayed, DateTimeOffset? PaymentDeadline, bool HasPreorder = false);
+    decimal PayOnDelivery, DateOnly? EarliestDelivery, DateOnly? LatestDelivery, bool OfferProfile, bool Replayed, DateTimeOffset? PaymentDeadline, bool HasPreorder = false, decimal TenderTotal = 0m);
 
 public sealed record TrackRequest(string? Number, string? Mobile, string? Token);
 

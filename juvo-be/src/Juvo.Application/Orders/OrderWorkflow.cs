@@ -53,7 +53,7 @@ public sealed class OrderAccess(ActorContext actors, IApplicationDbContext db, I
 /// Every status change of an order and what it does to stock. The methods change the aggregate and stock but do not save: the caller saves
 /// (inside its transaction). All checks are done before anything is changed, so a refused call changes nothing.
 /// </summary>
-public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, SettingsService settings, Couriers.ShipmentCancellation shipments, TimeProvider clock)
+public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, SettingsService settings, Couriers.ShipmentCancellation shipments, Loyalty.TenderService tenders, TimeProvider clock)
 {
     private static Result Refuse(string code, string message) => Error.Conflict(code, message);
 
@@ -166,6 +166,7 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
         await GiveStockBackAsync(order, cancellationToken);
         await shipments.CancelBookingOfOrderAsync(order, reason, who, cancellationToken); // a booked parcel nobody picked up yet is cancelled with the courier
         order.TransitionTo(OrderStatus.Cancelled, clock.GetUtcNow(), who.Id, who.Name, reason);
+        await tenders.ReleaseForOrderAsync(order, who, string.IsNullOrWhiteSpace(reason) ? "Order cancelled" : reason.Trim(), cancellationToken); // rewards hook: points, credit and gift card paid on this order go back to the ledger
         if (order.PaymentStatus is PaymentStatus.Paid or PaymentStatus.PartiallyRefunded)
         {
             order.AddNote(NoteKind.Internal, "The order was cancelled after payment: a refund is due.", who.Id, who.Name, clock.GetUtcNow());
@@ -234,6 +235,11 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
 
         if (to == OrderStatus.Returned)
         {
+            if (order.Status == OrderStatus.DeliveryFailed)
+            {
+                await tenders.ReleaseForOrderAsync(order, who, "Delivery failed and the parcel came back", cancellationToken); // rewards hook
+            }
+
             await GiveStockBackAsync(order, cancellationToken);
         }
 

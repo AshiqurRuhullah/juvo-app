@@ -185,6 +185,7 @@ public static class DependencyInjection
         services.AddScoped<Juvo.Application.Promotions.StorefrontPromotionsService>();
         services.AddScoped<Juvo.Application.Preorders.PreorderAllocator>();
         services.AddScoped<Juvo.Application.Preorders.PreorderService>();
+        Juvo.Application.Loyalty.LoyaltyRegistration.AddLoyalty(services);
 
         // No branch scope unless the host provides one (the API registers the per-request scope).
         services.TryAddScoped<IBranchContext>(_ => UnscopedBranchContext.Instance);

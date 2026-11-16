@@ -174,7 +174,15 @@ public sealed class InvoiceService(
             })],
             i.Subtotal, i.Discount, i.DeliveryCharge, i.GrandTotal, i.TaxRuleCode, i.TaxRuleName, i.TaxRatePercent, i.DeliveryTax, i.TaxTotal, i.GrandTotal - i.TaxTotal, order.PaymentMethod, order.PaymentStatus,
             notes.Sum(c => c.Amount), [.. notes.Select(c => new CreditNoteSummaryDto(c.Id, c.Number, c.Amount, c.TaxAmount, c.IssuedAt))],
-            snapshot.Sum(x => x.PromotionDiscount), snapshot.Sum(x => x.Quantity * x.ListPrice), snapshot.Any(x => x.IsPreorder));
+            snapshot.Sum(x => x.PromotionDiscount), snapshot.Sum(x => x.Quantity * x.ListPrice), snapshot.Any(x => x.IsPreorder), await TenderLinesAsync(i.OrderId, cancellationToken));
+    }
+
+    /// <summary>What the order was paid with besides money (points, store credit, gift card): one line each, shown on the invoice as part of the amount already paid.</summary>
+    private async Task<IReadOnlyList<InvoiceTenderDto>> TenderLinesAsync(Guid orderId, CancellationToken cancellationToken)
+    {
+        var rows = await db.Payments.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Where(p => p.OrderId == orderId && p.Kind == PaymentKind.StoreCredit).OrderBy(p => p.CreatedAt).ThenBy(p => p.Method)
+            .Select(p => new { p.Method, p.Amount }).ToListAsync(cancellationToken);
+        return [.. rows.Select(r => new InvoiceTenderDto(r.Method, r.Method switch { "POINTS" => "Paid with points", "CREDIT" => "Paid with store credit", "GIFTCARD" => "Paid with a gift card", _ => "Paid with rewards" }, r.Amount))];
     }
 
     private static PdfDocumentModel ToModel(InvoiceDto d, string language)
@@ -182,8 +190,11 @@ public sealed class InvoiceService(
         var bn = language == "bn";
         return new PdfDocumentModel(false, bn ? "কর চালান" : "Tax invoice", d.Number, null, d.IssuedAt, language, d.Seller, d.CustomerName, d.CustomerMobile, d.CustomerEmail, d.BillingAddress, d.OrderNumber, d.Currency,
             [.. d.Lines.Select(l => new PdfLine(bn && !string.IsNullOrWhiteSpace(l.NameBn) ? l.NameBn : l.Name, l.Variant, l.Sku, l.Quantity, l.UnitPrice, l.LineTotal))], d.Subtotal, d.Discount, d.DeliveryCharge,
-            d.GrandTotal, d.TaxRuleCode is null ? null : $"{d.TaxRuleName ?? d.TaxRuleCode} {d.TaxRatePercent:0.##}%", d.TaxTotal, d.NetTotal, d.PaymentMethod, d.PaymentStatus.ToString(), null);
+            d.GrandTotal, d.TaxRuleCode is null ? null : $"{d.TaxRuleName ?? d.TaxRuleCode} {d.TaxRatePercent:0.##}%", d.TaxTotal, d.NetTotal, d.PaymentMethod, d.PaymentStatus.ToString(),
+            d.Tenders is { Count: > 0 } tenders ? string.Join("; ", tenders.Select(t => $"{(bn ? TenderBn(t.Method) : t.Description)}: {t.Amount:0.##}")) + $". {(bn ? "বাকি" : "Amount due")}: {d.GrandTotal - tenders.Sum(t => t.Amount):0.##}" : null);
     }
+
+    private static string TenderBn(string method) => method switch { "POINTS" => "পয়েন্ট দিয়ে পরিশোধ", "CREDIT" => "স্টোর ক্রেডিট দিয়ে পরিশোধ", "GIFTCARD" => "গিফট কার্ড দিয়ে পরিশোধ", _ => "রিওয়ার্ডস দিয়ে পরিশোধ" };
 
     private async Task<CreditNoteDto> ToDtoAsync(CreditNote c, CancellationToken cancellationToken)
     {

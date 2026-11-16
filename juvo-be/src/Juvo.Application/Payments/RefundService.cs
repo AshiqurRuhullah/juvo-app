@@ -18,7 +18,7 @@ namespace Juvo.Application.Payments;
 /// (payment status, order payment track and a gap-free credit note follow) or Failed (the money becomes refundable again). Refunds from returns use the same rules.
 /// </summary>
 public sealed class RefundService(
-    IApplicationDbContext db, IUnitOfWork uow, IPaymentGatewayRegistry gateways, InvoiceService invoices, OrderWorkflow workflow, OrderAccess access, TimeProvider clock)
+    IApplicationDbContext db, IUnitOfWork uow, IPaymentGatewayRegistry gateways, InvoiceService invoices, OrderWorkflow workflow, OrderAccess access, Loyalty.TenderService tenders, TimeProvider clock)
 {
     private static Error Invalid(string field, string message) => Error.Validation(new Dictionary<string, string[]> { [field] = [message] });
 
@@ -119,6 +119,16 @@ public sealed class RefundService(
     {
         var payments = (await PaymentsOfAsync(order, cancellationToken)).Where(p => p.HoldsMoney && p.Refundable > 0).ToList();
         var remaining = ret.RefundTotal;
+
+        // Rewards hook 1 (module AB): the part of the refund that was paid with points, store credit or a gift card goes back to the customer's ledger, in proportion.
+        var tenderShare = await tenders.RefundTenderShareAsync(order, ret.Id, ret.Number, remaining, payments, who, cancellationToken);
+        if (tenderShare.IsFailure)
+        {
+            return tenderShare.Error!;
+        }
+
+        remaining -= tenderShare.Value;
+        payments = [.. payments.Where(p => p.Kind != PaymentKind.StoreCredit)];
         foreach (var payment in payments)
         {
             if (remaining <= 0)
@@ -127,6 +137,19 @@ public sealed class RefundService(
             }
 
             var take = Math.Min(remaining, payment.Refundable);
+            if (method == RefundMethod.StoreCredit)
+            {
+                // Rewards hook 2 (module AB): the customer takes this refund as store credit instead of money.
+                var credited = await tenders.RefundToLedgerAsync(order, payment, take, ret.Id, $"Return {ret.Number}", who, false, cancellationToken);
+                if (credited.IsFailure)
+                {
+                    return credited.Error!;
+                }
+
+                remaining -= take;
+                continue;
+            }
+
             var useGateway = method == RefundMethod.OriginalPayment && payment.Provider is not null && gateways.Find(payment.Provider) is { IsConfigured: true, SupportsRefund: true };
             var refund = new Refund(payment, take, useGateway ? RefundMode.Gateway : RefundMode.Manual, $"Return {ret.Number}", ret.Id, who.Id, who.Name, clock.GetUtcNow());
             payment.ReserveRefund(take, clock.GetUtcNow(), who.Id, who.Name, $"Refund for return {ret.Number}");
@@ -274,6 +297,21 @@ public sealed class RefundService(
                 if (request.Mode == RefundMode.Gateway && gateways.Find(payment.Provider ?? string.Empty) is not { IsConfigured: true, SupportsRefund: true })
                 {
                     return Error.Conflict(ErrorCodes.Payment.NotConfigured, "This payment has no gateway to refund through. Use a manual refund.");
+                }
+
+                if (request.Mode == RefundMode.StoreCredit)
+                {
+                    // Rewards hook 3 (module AB): a refund into the customer's rewards ledger completes at once.
+                    var creditedOrder = await db.Orders.IgnoreQueryFilters(["BranchScope"]).Include(o => o.Items).FirstAsync(o => o.Id == payment.OrderId, ct);
+                    var credited = await tenders.RefundToLedgerAsync(creditedOrder, payment, request.Amount, null, reason, who, false, ct);
+                    if (credited.IsFailure)
+                    {
+                        return credited.Error!;
+                    }
+
+                    await SyncOrderAsync(creditedOrder, payment, who, ct);
+                    await db.SaveChangesAsync(ct);
+                    return credited.Value;
                 }
 
                 var now = clock.GetUtcNow();

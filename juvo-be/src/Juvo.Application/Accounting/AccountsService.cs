@@ -297,7 +297,7 @@ public sealed class AccountsService(IApplicationDbContext db, InventoryAccess ac
 
     private DerivedPart<Payment> CustomerReceipts(DateTimeOffset from, DateTimeOffset to, List<Guid>? visible, Guid? branchId)
     {
-        var q = db.Payments.AsNoTracking().Where(p => p.Kind != PaymentKind.Cod && p.PaidAt != null && p.PaidAt >= from && p.PaidAt < to && PaidStatuses.Contains(p.Status));
+        var q = db.Payments.AsNoTracking().Where(p => p.Kind != PaymentKind.Cod && p.Kind != PaymentKind.StoreCredit && p.PaidAt != null && p.PaidAt >= from && p.PaidAt < to && PaidStatuses.Contains(p.Status));
         if (visible is not null)
         {
             q = q.Where(p => visible.Contains(p.BranchId));
@@ -331,7 +331,7 @@ public sealed class AccountsService(IApplicationDbContext db, InventoryAccess ac
 
     private DerivedPart<Refund> Refunded(DateTimeOffset from, DateTimeOffset to, List<Guid>? visible, Guid? branchId)
     {
-        var q = db.Refunds.AsNoTracking().Where(r => r.Status == RefundState.Completed && r.CompletedAt != null && r.CompletedAt >= from && r.CompletedAt < to);
+        var q = db.Refunds.AsNoTracking().Where(r => r.Status == RefundState.Completed && r.Mode != RefundMode.StoreCredit && r.CompletedAt != null && r.CompletedAt >= from && r.CompletedAt < to);
         if (visible is not null)
         {
             q = q.Where(r => visible.Contains(r.BranchId));

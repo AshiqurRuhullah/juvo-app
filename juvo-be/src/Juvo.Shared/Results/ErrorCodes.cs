@@ -356,4 +356,26 @@ public static class ErrorCodes
         public const string FormatInvalid = "REPORT.FORMAT_INVALID";
         public const string CostHidden = "REPORT.COST_HIDDEN";
     }
+
+    public static class Loyalty
+    {
+        public const string FeatureOff = "LOYALTY.FEATURE_OFF";
+        public const string CustomerNotFound = "LOYALTY.CUSTOMER_NOT_FOUND";
+        public const string InsufficientPoints = "LOYALTY.INSUFFICIENT_POINTS";
+        public const string InsufficientCredit = "LOYALTY.INSUFFICIENT_CREDIT";
+        public const string BelowMinimumPoints = "LOYALTY.BELOW_MINIMUM_POINTS";
+        public const string TenderExceedsCap = "LOYALTY.TENDER_EXCEEDS_CAP";
+        public const string TenderExceedsTotal = "LOYALTY.TENDER_EXCEEDS_TOTAL";
+        public const string TenderNeedsSignIn = "LOYALTY.TENDER_NEEDS_SIGN_IN";
+        public const string GiftCardInvalid = "LOYALTY.GIFT_CARD_INVALID";
+        public const string GiftCardExpired = "LOYALTY.GIFT_CARD_EXPIRED";
+        public const string GiftCardInactive = "LOYALTY.GIFT_CARD_INACTIVE";
+        public const string GiftCardEmpty = "LOYALTY.GIFT_CARD_EMPTY";
+        public const string GiftCardNotFound = "LOYALTY.GIFT_CARD_NOT_FOUND";
+        public const string CodeLocked = "LOYALTY.CODE_LOCKED";
+        public const string ReferralCodeInvalid = "LOYALTY.REFERRAL_CODE_INVALID";
+        public const string ReferralSelf = "LOYALTY.REFERRAL_SELF";
+        public const string ReferralAlreadyApplied = "LOYALTY.REFERRAL_ALREADY_APPLIED";
+        public const string ReferralNotEligible = "LOYALTY.REFERRAL_NOT_ELIGIBLE";
+    }
 }

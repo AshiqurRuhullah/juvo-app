@@ -58,6 +58,11 @@ public static partial class NotificationCatalog
         new("ticket.replied", "Support replied to the request", NotificationCategory.Transactional, TicketVars),
         new("ticket.resolved", "Support request resolved", NotificationCategory.Transactional, TicketVars),
         new("marketing.promotion", "Promotion message (needs the customer's consent)", NotificationCategory.Marketing, ["Name", "Message"]),
+        new("loyalty.points-earned", "Points earned on a delivered order", NotificationCategory.Transactional, ["OrderNumber", "Points", "Balance", "Name"]),
+        new("loyalty.referral-reward", "Referral reward for the customer who referred a friend", NotificationCategory.Transactional, ["Amount", "Friend", "Name"]),
+        new("loyalty.referral-welcome", "Welcome reward for a customer who joined with a referral code", NotificationCategory.Transactional, ["Amount", "Name"]),
+        new("loyalty.gift-card-received", "A gift card sent to its recipient", NotificationCategory.Transactional, ["Code", "Amount", "Expiry", "Name"]),
+        new("loyalty.points-expiring", "Points that expire soon", NotificationCategory.Transactional, ["Points", "Date", "Name"]),
     ];
 
     private static TemplateDefault Sms(string code, string language, string body) => new(code, NotificationChannel.Sms, language, null, body);
@@ -166,6 +171,28 @@ public static partial class NotificationCatalog
 
         Sms("marketing.promotion", "en", "Juvo BD: {{Message}}"),
         Sms("marketing.promotion", "bn", "জুভো বিডি: {{Message}}"),
+
+        // Rewards (module AB): points, referral, gift cards. All transactional (they tell the customer about their own balance), so no marketing consent is needed.
+        Sms("loyalty.points-earned", "en", "Juvo BD: you earned {{Points}} points on order {{OrderNumber}}. Your balance is {{Balance}} points."),
+        Sms("loyalty.points-earned", "bn", "জুভো বিডি: অর্ডার {{OrderNumber}}-এ আপনি {{Points}} পয়েন্ট পেয়েছেন। আপনার মোট পয়েন্ট {{Balance}}।"),
+        Email("loyalty.points-earned", "en", "You earned {{Points}} points", "Hello {{Name}},\n\nYou earned {{Points}} points on order {{OrderNumber}}. Your balance is {{Balance}} points. You can use them at checkout.\n\nJuvo BD"),
+        Email("loyalty.points-earned", "bn", "আপনি {{Points}} পয়েন্ট পেয়েছেন", "হ্যালো {{Name}},\n\nঅর্ডার {{OrderNumber}}-এ আপনি {{Points}} পয়েন্ট পেয়েছেন। আপনার মোট পয়েন্ট {{Balance}}। চেকআউটে এগুলো ব্যবহার করতে পারবেন।\n\nজুভো বিডি"),
+        Sms("loyalty.referral-reward", "en", "Juvo BD: your friend {{Friend}} received the first order, so BDT {{Amount}} was added to your store credit."),
+        Sms("loyalty.referral-reward", "bn", "জুভো বিডি: আপনার বন্ধু {{Friend}} প্রথম অর্ডার পেয়েছেন, তাই আপনার স্টোর ক্রেডিটে ৳{{Amount}} যোগ হয়েছে।"),
+        Email("loyalty.referral-reward", "en", "Your referral reward", "Hello {{Name}},\n\nYour friend {{Friend}} received the first order, so BDT {{Amount}} was added to your store credit. Thank you for spreading the word.\n\nJuvo BD"),
+        Email("loyalty.referral-reward", "bn", "আপনার রেফারেল পুরস্কার", "হ্যালো {{Name}},\n\nআপনার বন্ধু {{Friend}} প্রথম অর্ডার পেয়েছেন, তাই আপনার স্টোর ক্রেডিটে ৳{{Amount}} যোগ হয়েছে। ধন্যবাদ।\n\nজুভো বিডি"),
+        Sms("loyalty.referral-welcome", "en", "Juvo BD: welcome! BDT {{Amount}} was added to your store credit for joining with a referral code."),
+        Sms("loyalty.referral-welcome", "bn", "জুভো বিডি: স্বাগতম! রেফারেল কোডে যোগ দেওয়ায় আপনার স্টোর ক্রেডিটে ৳{{Amount}} যোগ হয়েছে।"),
+        Email("loyalty.referral-welcome", "en", "Welcome reward", "Hello {{Name}},\n\nWelcome to Juvo BD! BDT {{Amount}} was added to your store credit for joining with a referral code. You can use it at checkout.\n\nJuvo BD"),
+        Email("loyalty.referral-welcome", "bn", "স্বাগতম পুরস্কার", "হ্যালো {{Name}},\n\nজুভো বিডিতে স্বাগতম! রেফারেল কোডে যোগ দেওয়ায় আপনার স্টোর ক্রেডিটে ৳{{Amount}} যোগ হয়েছে। চেকআউটে ব্যবহার করতে পারবেন।\n\nজুভো বিডি"),
+        Sms("loyalty.gift-card-received", "en", "Juvo BD: you received a gift card of BDT {{Amount}}. Code: {{Code}}. Valid until {{Expiry}}. Redeem it in your account or at checkout."),
+        Sms("loyalty.gift-card-received", "bn", "জুভো বিডি: আপনি ৳{{Amount}} মূল্যের একটি গিফট কার্ড পেয়েছেন। কোড: {{Code}}। মেয়াদ: {{Expiry}}। আপনার অ্যাকাউন্টে বা চেকআউটে ব্যবহার করুন।"),
+        Email("loyalty.gift-card-received", "en", "You received a Juvo BD gift card", "Hello {{Name}},\n\nYou received a gift card of BDT {{Amount}}.\nCode: {{Code}}\nValid until: {{Expiry}}\n\nRedeem it in your account (Rewards) or enter the code at checkout.\n\nJuvo BD"),
+        Email("loyalty.gift-card-received", "bn", "আপনি একটি জুভো বিডি গিফট কার্ড পেয়েছেন", "হ্যালো {{Name}},\n\nআপনি ৳{{Amount}} মূল্যের একটি গিফট কার্ড পেয়েছেন।\nকোড: {{Code}}\nমেয়াদ: {{Expiry}}\n\nআপনার অ্যাকাউন্টে (রিওয়ার্ডস) ব্যবহার করুন বা চেকআউটে কোডটি দিন।\n\nজুভো বিডি"),
+        Sms("loyalty.points-expiring", "en", "Juvo BD: {{Points}} of your points expire on {{Date}}. Use them at checkout before then."),
+        Sms("loyalty.points-expiring", "bn", "জুভো বিডি: আপনার {{Points}} পয়েন্টের মেয়াদ {{Date}} তারিখে শেষ হবে। তার আগে চেকআউটে ব্যবহার করুন।"),
+        Email("loyalty.points-expiring", "en", "Your points expire soon", "Hello {{Name}},\n\n{{Points}} of your points expire on {{Date}}. Use them at checkout before then.\n\nJuvo BD"),
+        Email("loyalty.points-expiring", "bn", "আপনার পয়েন্টের মেয়াদ শেষ হচ্ছে", "হ্যালো {{Name}},\n\nআপনার {{Points}} পয়েন্টের মেয়াদ {{Date}} তারিখে শেষ হবে। তার আগে চেকআউটে ব্যবহার করুন।\n\nজুভো বিডি"),
     ];
 
     public static TemplateDefinition? Find(string? code) => Definitions.FirstOrDefault(d => string.Equals(d.Code, code?.Trim(), StringComparison.OrdinalIgnoreCase));

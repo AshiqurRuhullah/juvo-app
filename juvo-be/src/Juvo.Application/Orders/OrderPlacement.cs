@@ -21,7 +21,11 @@ namespace Juvo.Application.Orders;
 public sealed record PlacementInput(
     OrderSource Source, Who Who, bool IsStaff, string Mobile, string? Name, string? Email, Guid? SignedInCustomerId, bool OtpAlreadyVerified, ShippingSnapshot Shipping,
     IReadOnlyList<StockLine> Lines, string? CouponCode, decimal ManualDiscount, decimal? DeliveryOverride, string PaymentMethod, string? CustomerNote, string? InternalNote, string? IdempotencyKey,
-    bool ConfirmDuplicate, decimal? ExpectedTotal, string? DeviceId, string? Ip, string? OtpCode, bool TermsAccepted, Guid? TargetBranchId, Cart? Cart);
+    bool ConfirmDuplicate, decimal? ExpectedTotal, string? DeviceId, string? Ip, string? OtpCode, bool TermsAccepted, Guid? TargetBranchId, Cart? Cart)
+{
+    /// <summary>Points, store credit and gift card the customer pays part of the order with (module AB). Ignored for staff orders.</summary>
+    public Loyalty.TenderRequest? Tender { get; init; }
+}
 
 public sealed record PlacedOrder(Order Order, string? TrackingToken, bool Replayed, DateOnly? EarliestDelivery, DateOnly? LatestDelivery);
 
@@ -44,7 +48,7 @@ internal sealed class PlacementRejected(Error error) : Exception(error.Message)
 /// </summary>
 public sealed class OrderPlacement(
     IApplicationDbContext db, IUnitOfWork uow, SettingsService settings, OrderStock stock, OrderRouter router, FraudService fraud, PricedDelivery delivery, CustomerAuthService otp,
-    StockAvailability availability, Payments.PaymentSettingsService paymentSettings, Billing.TaxService taxes, IPricingEngine pricing, TimeProvider clock)
+    StockAvailability availability, Payments.PaymentSettingsService paymentSettings, Billing.TaxService taxes, IPricingEngine pricing, Loyalty.TenderService tenders, TimeProvider clock)
 {
     public const string Cod = "COD";
     public const string SandboxOnline = "SANDBOX";
@@ -124,6 +128,13 @@ public sealed class OrderPlacement(
         if (verdict.IsBlocked)
         {
             return Error.Forbidden(ErrorCodes.Order.CheckoutBlocked, BlockedMessage(i.IsStaff, verdict.BlockedBecause!));
+        }
+
+        // 6b. Rewards tender (module AB): checked here, written inside the order transaction below. Changes no price and no total.
+        var tenderPlan = await tenders.PlanAsync(i.IsStaff ? null : i.SignedInCustomerId, grand, i.IsStaff ? null : i.Tender, cancellationToken);
+        if (tenderPlan.IsFailure)
+        {
+            return tenderPlan.Error!;
         }
 
         // 7. Duplicate guard (FR-D09).
@@ -259,6 +270,15 @@ public sealed class OrderPlacement(
 
                 db.Orders.Add(placed);
                 await stock.RecordAsync(reservedIn, lines, StockReason.OrderReserved, 0, placed, ct);
+                if (tenderPlan.Value is { } plan)
+                {
+                    var applied = await tenders.ApplyAsync(placed, owner.Id, plan, ct); // same transaction: a failure undoes the order and its stock reservation
+                    if (applied.IsFailure)
+                    {
+                        throw new PlacementRejected(applied.Error!);
+                    }
+                }
+
                 if (i.Cart is { } cart)
                 {
                     cart.Clear();
