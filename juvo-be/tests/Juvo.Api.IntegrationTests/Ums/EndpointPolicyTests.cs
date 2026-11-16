@@ -67,6 +67,8 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
             "payments/sandbox/sessions/{sessionId}", "payments/sandbox/sessions/{sessionId}/complete", "payments/sandbox/pay/{sessionId}", "orders/invoice", "orders/invoice/pdf",
             // Step 10: a guest cancels, or asks for a hub token, with the tracking token (or number plus mobile); both are rate limited.
             "orders/track/cancel", "orders/track/realtime-token",
+            // Step 11A: the public contact form (guest ticket), limited per address and per mobile number.
+            "contact",
         }.Select(r => "/api/v{version:apiVersion}/store/" + r);
 
         var actual = ApiEndpoints().Where(e => e.AllowAnonymous).Select(e => e.Route).Distinct().Order().ToList();

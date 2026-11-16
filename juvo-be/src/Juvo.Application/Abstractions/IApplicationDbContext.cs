@@ -174,6 +174,16 @@ public interface IApplicationDbContext
 
     DbSet<GlobalSequence> GlobalSequences { get; }
 
+    DbSet<Ticket> Tickets { get; }
+
+    DbSet<TicketMessage> TicketMessages { get; }
+
+    DbSet<TicketAttachment> TicketAttachments { get; }
+
+    DbSet<TicketStatusHistory> TicketStatusHistories { get; }
+
+    DbSet<CannedReply> CannedReplies { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Juvo.Application.Accounting;
+using Juvo.Application.Support;
 using Juvo.Domain.Platform;
 using Juvo.Infrastructure.Persistence;
 using Microsoft.Extensions.DependencyInjection;
@@ -80,6 +81,65 @@ internal sealed class RecurringExpenseWorker(IServiceScopeFactory scopeFactory, 
             db.JobLogs.Add(job);
             await db.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Created {Count} recurring expense(s).", result.Created);
+        }
+
+        return result;
+    }
+}
+
+/// <summary>Closes tickets that stayed Resolved for the configured number of days. A run that closed something is written to the job log (FR-AF02).</summary>
+internal sealed class TicketAutoCloseWorker(IServiceScopeFactory scopeFactory, IOptions<OperationsJobOptions> options, TimeProvider timeProvider, ILogger<TicketAutoCloseWorker> logger) : BackgroundService
+{
+    internal const string JobName = "support.ticket-auto-close";
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        var settings = options.Value;
+        if (!settings.TicketAutoCloseEnabled)
+        {
+            logger.LogInformation("The ticket auto-close job is disabled by configuration.");
+            return;
+        }
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                await SweepAsync(stoppingToken);
+            }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Ticket auto-close run failed; will retry.");
+            }
+
+            try
+            {
+                await Task.Delay(TimeSpan.FromMinutes(settings.TicketAutoCloseIntervalMinutes), timeProvider, stoppingToken);
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
+        }
+    }
+
+    internal async Task<AutoCloseResult> SweepAsync(CancellationToken cancellationToken)
+    {
+        await using var scope = scopeFactory.CreateAsyncScope();
+        var started = timeProvider.GetUtcNow();
+        var result = await scope.ServiceProvider.GetRequiredService<TicketAutoCloseService>().CloseDueAsync(cancellationToken);
+        if (result.Closed > 0)
+        {
+            var db = scope.ServiceProvider.GetRequiredService<JuvoDbContext>();
+            var job = new JobLog(JobName, $"candidates:{result.Candidates} closed:{result.Closed} days:{result.Days}", 1, null, started);
+            job.Succeed(timeProvider.GetUtcNow());
+            db.JobLogs.Add(job);
+            await db.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Closed {Count} resolved ticket(s) automatically.", result.Closed);
         }
 
         return result;

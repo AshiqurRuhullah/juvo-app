@@ -77,15 +77,15 @@ public static class TicketStateMachine
     public static bool IsActive(TicketStatus status) => status is not (TicketStatus.Resolved or TicketStatus.Closed);
 }
 
-public sealed record TicketCreated(DateTimeOffset At, Guid TicketId, string Number, string Subject, string CustomerMobile, Guid? CustomerId, string? CustomerName) : DomainEvent(At);
+public sealed record TicketCreated(DateTimeOffset At, Guid TicketId, string Number, string Subject, string CustomerMobile, Guid? CustomerId, string? CustomerName, string? CustomerEmail) : DomainEvent(At);
 
 /// <summary>Staff sent a reply the customer can read.</summary>
-public sealed record TicketReplied(DateTimeOffset At, Guid TicketId, string Number, string Subject, string CustomerMobile, Guid? CustomerId, string? CustomerName, Guid MessageId) : DomainEvent(At);
+public sealed record TicketReplied(DateTimeOffset At, Guid TicketId, string Number, string Subject, string CustomerMobile, Guid? CustomerId, string? CustomerName, string? CustomerEmail, Guid MessageId) : DomainEvent(At);
 
-public sealed record TicketResolved(DateTimeOffset At, Guid TicketId, string Number, string Subject, string CustomerMobile, Guid? CustomerId, string? CustomerName) : DomainEvent(At);
+public sealed record TicketResolved(DateTimeOffset At, Guid TicketId, string Number, string Subject, string CustomerMobile, Guid? CustomerId, string? CustomerName, string? CustomerEmail) : DomainEvent(At);
 
 public sealed record NewTicket(
-    string Number, TicketChannel Channel, string Subject, TicketPriority Priority, string Category, string CustomerMobile, string? CustomerName, Guid? CustomerId, Guid? OrderId, string? OrderNumber,
+    string Number, TicketChannel Channel, string Subject, TicketPriority Priority, string Category, string CustomerMobile, string? CustomerName, string? CustomerEmail, Guid? CustomerId, Guid? OrderId, string? OrderNumber,
     Guid? ReturnId, string? ReturnNumber, Guid? BranchId, DateTimeOffset ResponseDueAt, DateTimeOffset ResolveDueAt);
 
 /// <summary>
@@ -120,6 +120,9 @@ public sealed class Ticket : AggregateRoot
 
     [AuditIgnore]
     public string? CustomerName { get; private set; }
+
+    [AuditIgnore]
+    public string? CustomerEmail { get; private set; }
 
     public Guid? OrderId { get; private set; }
 
@@ -168,6 +171,7 @@ public sealed class Ticket : AggregateRoot
             Category = data.Category,
             CustomerMobile = data.CustomerMobile,
             CustomerName = data.CustomerName,
+            CustomerEmail = data.CustomerEmail,
             CustomerId = data.CustomerId,
             OrderId = data.OrderId,
             OrderNumber = data.OrderNumber,
@@ -180,7 +184,7 @@ public sealed class Ticket : AggregateRoot
         };
         ticket._messages.Add(new TicketMessage(ticket.Id, TicketMessageKind.Customer, firstMessage, authorId, authorName ?? data.CustomerName ?? "Customer", now, attachments));
         ticket._history.Add(new TicketStatusHistory(ticket.Id, null, TicketStatus.Open, "Ticket created", authorId, authorName, now));
-        ticket.Raise(new TicketCreated(now, ticket.Id, ticket.Number, ticket.Subject, ticket.CustomerMobile, ticket.CustomerId, ticket.CustomerName));
+        ticket.Raise(new TicketCreated(now, ticket.Id, ticket.Number, ticket.Subject, ticket.CustomerMobile, ticket.CustomerId, ticket.CustomerName, ticket.CustomerEmail));
         return ticket;
     }
 
@@ -193,7 +197,7 @@ public sealed class Ticket : AggregateRoot
         if (kind == TicketMessageKind.Staff)
         {
             FirstResponseAt ??= now;
-            Raise(new TicketReplied(now, Id, Number, Subject, CustomerMobile, CustomerId, CustomerName, message.Id));
+            Raise(new TicketReplied(now, Id, Number, Subject, CustomerMobile, CustomerId, CustomerName, CustomerEmail, message.Id));
         }
 
         return message;
@@ -220,7 +224,7 @@ public sealed class Ticket : AggregateRoot
         if (to == TicketStatus.Resolved)
         {
             ResolvedAt = now;
-            Raise(new TicketResolved(now, Id, Number, Subject, CustomerMobile, CustomerId, CustomerName));
+            Raise(new TicketResolved(now, Id, Number, Subject, CustomerMobile, CustomerId, CustomerName, CustomerEmail));
         }
         else if (to == TicketStatus.Closed)
         {

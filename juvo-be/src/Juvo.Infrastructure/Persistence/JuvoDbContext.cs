@@ -174,6 +174,16 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
 
     public DbSet<GlobalSequence> GlobalSequences => Set<GlobalSequence>();
 
+    public DbSet<Ticket> Tickets => Set<Ticket>();
+
+    public DbSet<TicketMessage> TicketMessages => Set<TicketMessage>();
+
+    public DbSet<TicketAttachment> TicketAttachments => Set<TicketAttachment>();
+
+    public DbSet<TicketStatusHistory> TicketStatusHistories => Set<TicketStatusHistory>();
+
+    public DbSet<CannedReply> CannedReplies => Set<CannedReply>();
+
     public DbSet<TaxRule> TaxRules => Set<TaxRule>();
 
     public DbSet<Invoice> Invoices => Set<Invoice>();

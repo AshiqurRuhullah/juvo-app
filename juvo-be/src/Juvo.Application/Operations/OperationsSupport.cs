@@ -63,7 +63,7 @@ public sealed class OpsSettingsService(SettingsService settings)
             SettingsService.EnumValue(values, OpsSettingKeys.CostMethod, CostMethod.LastCost),
             SettingsService.Number(values, OpsSettingKeys.ExpenseApprovalThreshold, 0m, 0m),
             (int)SettingsService.Number(values, OpsSettingKeys.ReopenDays, 7m, 0m),
-            (int)SettingsService.Number(values, OpsSettingKeys.AutoCloseDays, 3m, 1m),
+            (int)SettingsService.Number(values, OpsSettingKeys.AutoCloseDays, 7m, 1m),
             (int)SettingsService.Number(values, OpsSettingKeys.MaxTicketsPerHour, 5m, 1m),
             priorities.ToDictionary(p => p, p => (int)SettingsService.Number(values, OpsSettingKeys.SlaResponseHours(p), OpsSettingKeys.DefaultResponseHours[p], 1m)),
             priorities.ToDictionary(p => p, p => (int)SettingsService.Number(values, OpsSettingKeys.SlaResolutionHours(p), OpsSettingKeys.DefaultResolutionHours[p], 1m)));

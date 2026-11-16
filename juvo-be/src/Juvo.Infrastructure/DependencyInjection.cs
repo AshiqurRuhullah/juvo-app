@@ -87,6 +87,7 @@ public static class DependencyInjection
         services.AddOptions<Reports.ReportJobOptions>().Bind(configuration.GetSection(Reports.ReportJobOptions.SectionName)).ValidateDataAnnotations().ValidateOnStart();
         services.AddHostedService<Reports.DailySummaryWorker>();
         services.AddSingleton<Juvo.Application.Reports.IReportPdfRenderer, Reports.ReportPdfRenderer>();
+        services.AddHostedService<TicketAutoCloseWorker>();
 
         AddIdentity(services, configuration, environment);
 

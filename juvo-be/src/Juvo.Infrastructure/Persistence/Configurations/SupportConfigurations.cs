@@ -20,6 +20,7 @@ internal sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         builder.Property(x => x.Category).HasMaxLength(30).IsRequired();
         builder.Property(x => x.CustomerMobile).HasMaxLength(20).IsRequired();
         builder.Property(x => x.CustomerName).HasMaxLength(120);
+        builder.Property(x => x.CustomerEmail).HasMaxLength(200);
         builder.Property(x => x.OrderNumber).HasMaxLength(40);
         builder.Property(x => x.ReturnNumber).HasMaxLength(40);
         builder.Property(x => x.AssigneeName).HasMaxLength(120);

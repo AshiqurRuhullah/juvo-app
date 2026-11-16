@@ -24,6 +24,7 @@ public static partial class NotificationCatalog
 
     private static readonly string[] OrderVars = ["OrderNumber", "Total", "Name"];
     private static readonly string[] PaymentVars = ["OrderNumber", "Amount", "Name", "Reason"];
+    private static readonly string[] TicketVars = ["TicketNumber", "Subject", "Name", "Reply"];
     private static readonly string[] ReturnVars = ["ReturnNumber", "OrderNumber", "Kind", "KindBn", "Amount", "Name"];
 
     public static readonly IReadOnlyList<TemplateDefinition> Definitions =
@@ -52,6 +53,9 @@ public static partial class NotificationCatalog
         new("return.refunded", "Return refund sent", NotificationCategory.Transactional, ReturnVars),
         new("return.exchanged", "Replacement on its way", NotificationCategory.Transactional, ReturnVars),
         new("return.refund-rejected", "Return could not be completed", NotificationCategory.Transactional, ReturnVars),
+        new("ticket.received", "Support request received", NotificationCategory.Transactional, TicketVars),
+        new("ticket.replied", "Support replied to the request", NotificationCategory.Transactional, TicketVars),
+        new("ticket.resolved", "Support request resolved", NotificationCategory.Transactional, TicketVars),
         new("marketing.promotion", "Promotion message (needs the customer's consent)", NotificationCategory.Marketing, ["Name", "Message"]),
     ];
 
@@ -140,6 +144,19 @@ public static partial class NotificationCatalog
         Sms("return.exchanged", "bn", "জুভো বিডি: আপনার {{KindBn}} {{ReturnNumber}}-এর বদলি পণ্য পাঠানো হচ্ছে।"),
         Sms("return.refund-rejected", "en", "Juvo BD: we could not complete your {{Kind}} {{ReturnNumber}} after checking the parcel. Please call us."),
         Sms("return.refund-rejected", "bn", "জুভো বিডি: পার্সেল যাচাইয়ের পর আপনার {{KindBn}} {{ReturnNumber}} সম্পন্ন করা যায়নি। অনুগ্রহ করে কল করুন।"),
+
+        Sms("ticket.received", "en", "Juvo BD: we received your request {{TicketNumber}}. Our team will reply soon."),
+        Sms("ticket.received", "bn", "জুভো বিডি: আপনার অনুরোধ {{TicketNumber}} পেয়েছি। আমাদের টিম শীঘ্রই উত্তর দেবে।"),
+        Email("ticket.received", "en", "We received your request {{TicketNumber}}", "Hello {{Name}},\n\nWe received your request {{TicketNumber}} ({{Subject}}). Our team will reply soon.\n\nJuvo BD"),
+        Email("ticket.received", "bn", "আপনার অনুরোধ {{TicketNumber}} পেয়েছি", "হ্যালো {{Name}},\n\nআপনার অনুরোধ {{TicketNumber}} ({{Subject}}) পেয়েছি। আমাদের টিম শীঘ্রই উত্তর দেবে।\n\nজুভো বিডি"),
+        Sms("ticket.replied", "en", "Juvo BD: we replied to your request {{TicketNumber}}. Check your email or your account, or call us."),
+        Sms("ticket.replied", "bn", "জুভো বিডি: আপনার অনুরোধ {{TicketNumber}}-এর উত্তর দিয়েছি। ইমেইল বা আপনার অ্যাকাউন্ট দেখুন, অথবা আমাদের কল করুন।"),
+        Email("ticket.replied", "en", "Reply to your request {{TicketNumber}}", "Hello {{Name}},\n\n{{Reply}}\n\nRequest {{TicketNumber}}: {{Subject}}\nJuvo BD"),
+        Email("ticket.replied", "bn", "আপনার অনুরোধ {{TicketNumber}}-এর উত্তর", "হ্যালো {{Name}},\n\n{{Reply}}\n\nঅনুরোধ {{TicketNumber}}: {{Subject}}\nজুভো বিডি"),
+        Sms("ticket.resolved", "en", "Juvo BD: your request {{TicketNumber}} is resolved. If you still need help, reply from your account or call us."),
+        Sms("ticket.resolved", "bn", "জুভো বিডি: আপনার অনুরোধ {{TicketNumber}} সমাধান হয়েছে। আরও সাহায্য লাগলে অ্যাকাউন্ট থেকে উত্তর দিন বা আমাদের কল করুন।"),
+        Email("ticket.resolved", "en", "Your request {{TicketNumber}} is resolved", "Hello {{Name}},\n\nYour request {{TicketNumber}} ({{Subject}}) is resolved. If you still need help, reply from your account or call us.\n\nJuvo BD"),
+        Email("ticket.resolved", "bn", "আপনার অনুরোধ {{TicketNumber}} সমাধান হয়েছে", "হ্যালো {{Name}},\n\nআপনার অনুরোধ {{TicketNumber}} ({{Subject}}) সমাধান হয়েছে। আরও সাহায্য লাগলে অ্যাকাউন্ট থেকে উত্তর দিন বা আমাদের কল করুন।\n\nজুভো বিডি"),
 
         Sms("marketing.promotion", "en", "Juvo BD: {{Message}}"),
         Sms("marketing.promotion", "bn", "জুভো বিডি: {{Message}}"),
