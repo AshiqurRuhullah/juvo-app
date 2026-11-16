@@ -56,7 +56,7 @@ public sealed class MarketingHelper(MarketingFactory factory)
     /// <summary>Hides every customer that exists so far (the soft delete filter), so the next test counts only the customers it creates itself.</summary>
     public Task ResetCustomersAsync() => DbAsync(db => db.Customers.ExecuteUpdateAsync(s => s.SetProperty(c => c.IsDeleted, true), Ct));
 
-    public static string NewMobile() => "+8801" + Random.Shared.Next(100_000_000, 999_999_999).ToString(System.Globalization.CultureInfo.InvariantCulture);
+    public static string NewMobile() => "+88017" + Random.Shared.Next(10_000_000, 99_999_999).ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     public async Task<Guid> CustomerAsync(
         string name, int createdDaysAgo = 100, int? lastLoginDaysAgo = null, bool sms = false, bool email = false, string? emailAddress = null, string? language = null, bool active = true, string? mobile = null)
@@ -152,6 +152,19 @@ public sealed class MarketingHelper(MarketingFactory factory)
             return order.Id;
         });
     }
+
+    /// <summary>A return request on the order (the order status stays Delivered).</summary>
+    public Task ReturnAsync(Guid orderId) =>
+        DbAsync(async db =>
+        {
+            var order = await db.Orders.IgnoreQueryFilters().Include(o => o.Items).FirstAsync(o => o.Id == orderId, Ct);
+            var item = order.Items[0];
+            var request = Juvo.Domain.Returns.ReturnRequest.Request(
+                new Juvo.Domain.Returns.NewReturn($"RET-MKT-{Guid.NewGuid():N}"[..20], order.BranchId, order.Id, order.Number, order.CustomerId, order.CustomerMobile, order.CustomerName, Juvo.Domain.Returns.ReturnKind.Return, "SIZE_FIT", null, Juvo.Domain.Returns.ReturnFault.Customer, null, []),
+                [new Juvo.Domain.Returns.NewReturnItem(item.Id, item.VariantId, item.ProductId, item.Name, item.Sku, item.ColorName, item.Size, null, 1, item.UnitPrice, item.UnitPrice, null, null)], null, "test", DateTimeOffset.UtcNow);
+            db.ReturnRequests.Add(request);
+            return await db.SaveChangesAsync(Ct);
+        });
 
     public Task WishAsync(Guid customerId, Guid productId) =>
         DbAsync(async db =>
