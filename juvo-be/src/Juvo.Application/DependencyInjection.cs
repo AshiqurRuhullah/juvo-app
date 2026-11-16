@@ -141,6 +141,15 @@ public static class DependencyInjection
         services.AddScoped<Juvo.Application.Accounting.RecurringExpenseService>();
         services.AddScoped<Juvo.Application.Purchasing.SuppliersService>();
         services.AddScoped<Juvo.Application.Purchasing.PurchasingService>();
+        services.AddScoped<Juvo.Application.Support.TicketCore>();
+        services.AddScoped<Juvo.Application.Support.TicketsService>();
+        services.AddScoped<Juvo.Application.Support.MyTicketsService>();
+        services.AddScoped<Juvo.Application.Support.CannedRepliesService>();
+        services.AddScoped<Juvo.Application.Support.SupportReportService>();
+        services.AddScoped<Juvo.Application.Support.TicketAutoCloseService>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Support.TicketCreatedHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Support.TicketRepliedHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Support.TicketResolvedHandler>();
 
         // Inventory (module V).
         services.AddScoped<InventoryAccess>();
