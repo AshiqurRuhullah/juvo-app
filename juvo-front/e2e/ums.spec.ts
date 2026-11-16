@@ -28,7 +28,10 @@ test.describe("UMS screens", () => {
     await signInViaBff(context, state().admin.email, state().admin.password);
     await page.goto("/admin/ums/roles");
     await expect(page.getByRole("heading", { level: 1, name: "Roles" })).toBeVisible();
+    // Other specs have created many roles by now, so the built-in one may not be on the first page: search for it.
+    await page.getByLabel("Search roles").fill("Super Admin");
     await expect(page.getByRole("link", { name: "Super Admin" }).first()).toBeVisible();
+    await page.getByLabel("Search roles").fill("");
 
     await page.getByRole("link", { name: "New role" }).click();
     await expect(page).toHaveURL(/\/admin\/ums\/roles\/new$/);

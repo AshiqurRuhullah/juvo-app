@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { loadState } from "./support/env";
+import { topUpHeadOfficeStock } from "./support/orders";
 import { call, deliveredParcel } from "./support/cod";
 import { adminAccess, deliveredOrder, stockedVariants, type Delivered } from "./support/returns";
 import { makeAccount, makeCategory, makeExpense, unique } from "./support/ops";
@@ -21,7 +22,7 @@ type Courier = { totals: { parcels: number | string; delivered: number | string 
 type Pnl = { total: { expenses: number | string; netRevenue: number | string; purchasesReceived: number | string }; costHidden: boolean };
 type Dash = { todayTotals: { orders: number | string; sales: number | string }; pending: { toConfirm: number | string; toPack: number | string; heldByFraud: number | string; returnsWaiting: number | string; lowStock: number | string } };
 
-const before = {} as { sales: Sales; orders: OrdersR; finance: Finance; customers: Customers; courier: Courier; pnl: Pnl; dash: Dash };
+const before = {} as { salesHo: Sales; sales: Sales; orders: OrdersR; finance: Finance; customers: Customers; courier: Courier; pnl: Pnl; dash: Dash };
 const created = { orders: 3, units: 0, total: 0, gross: 0, expense: 125, parcel: 0 };
 let delivered: Delivered[] = [];
 
@@ -29,6 +30,9 @@ const q = () => rangeQuery();
 
 test.beforeAll(async () => {
   test.setTimeout(240_000);
+  // Head office stock is topped up so the new orders are routed to head office, and its own baseline is read for the one-branch check.
+  await topUpHeadOfficeStock(await adminAccess(), loadState().branches.ho.id);
+  before.salesHo = await readReport<Sales>(`reports/sales?${q()}&branchId=${loadState().branches.ho.id}`);
   before.sales = await readReport<Sales>(`reports/sales?${q()}`);
   before.orders = await readReport<OrdersR>(`reports/orders?${q()}`);
   before.finance = await readReport<Finance>(`reports/finance?${q()}`);
@@ -108,8 +112,11 @@ test.describe("landing and sales", () => {
 
   test("a preset and the date filters live in the address and survive a reload", async ({ page }) => {
     await signInAdmin(page, reportPath("sales"));
-    await page.getByTestId("preset-last7").click();
-    await expect(page.getByTestId("preset-last7")).toHaveAttribute("aria-pressed", "true");
+    // A click that lands before the page has loaded its client code does nothing: click again until the preset shows as chosen.
+    await expect(async () => {
+      await page.getByTestId("preset-last7").click();
+      await expect(page.getByTestId("preset-last7")).toHaveAttribute("aria-pressed", "true", { timeout: 3000 });
+    }).toPass({ timeout: 20_000 });
     await expect(page).toHaveURL(/from=\d{4}-\d{2}-\d{2}&to=\d{4}-\d{2}-\d{2}/);
     const url = page.url();
     await page.reload();
@@ -205,7 +212,7 @@ test.describe("branches", () => {
     await expect.poll(() => tile(page, "orders")).toBe(0); // nothing was ordered in this shop
     await page.locator("#rf-branch").click();
     await page.getByRole("option", { name: "All branches (consolidated)" }).click();
-    await expect.poll(() => tile(page, "orders")).toBe(n(before.sales.totals.orders) + created.orders);
+    await expect.poll(() => tile(page, "orders")).toBe(n(before.salesHo.totals.orders) + created.orders);
   });
 
   test("a person limited to one branch only ever sees that branch", async ({ page }) => {

@@ -83,10 +83,10 @@ for (const width of WIDTHS) {
       const errors = await open(page, context, width);
       await page.goto("/admin/purchasing?tab=suppliers");
       await expect(page.getByTestId("new-supplier")).toBeVisible();
-      await expect(page.getByText(/UI Supplier/).first()).toBeVisible();
+      await expect(page.getByText(/UI Supplier/).filter({ visible: true }).first()).toBeVisible(); // the table or the phone cards, whichever shows
       await checks(page, width, errors, `suppliers-${width}`);
       await page.goto("/admin/purchasing?tab=receipts");
-      await expect(page.getByText(/GRN-/).first()).toBeVisible();
+      await expect(page.getByText(/GRN-/).filter({ visible: true }).first()).toBeVisible();
       await checks(page, width, errors, `receipts-${width}`);
       await page.goto("/admin/purchasing?tab=suggestions");
       await expect(page.getByTestId("suggestion-group").first()).toBeVisible();

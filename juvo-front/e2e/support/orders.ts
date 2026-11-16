@@ -114,6 +114,19 @@ export async function emptyVariantStock(token: string, productId: string, varian
   return { restore: () => adjust(1, "Found") };
 }
 
+/**
+ * Tops the head office stock of the sample catalogue up again. A long run of specs sells sample stock, and once head office is empty an
+ * online order is routed to the online branch, where a head office user cannot see it: specs that look for their own orders in the
+ * list call this first so they do not depend on how many specs ran before them.
+ */
+export async function topUpHeadOfficeStock(token: string, headOfficeId: string, below = 60, add = 300): Promise<void> {
+  const rows = await api<{ items: { variantId: string; available: number | string }[] }>("GET", `/api/v1/inventory/stock?branchId=${headOfficeId}&PageSize=100`, undefined, token);
+  const lines = rows.json.items.filter((r) => Number(r.available) < below).map((r) => ({ variantId: r.variantId, quantityChange: add }));
+  if (lines.length === 0) return;
+  const response = await api("POST", "/api/v1/inventory/adjustments", { branchId: headOfficeId, reason: "Found", note: "e2e top-up", lines }, token);
+  expect(response.status, JSON.stringify(response.json)).toBeLessThan(300);
+}
+
 /** Changes a product's price by `delta` taka behind the API's back, to prove that a changed total is caught at checkout. */
 export function bumpProductPrice(productId: string, delta: number) {
   // The products table has filtered unique indexes, so the update needs QUOTED_IDENTIFIER ON (sqlcmd starts with it off).

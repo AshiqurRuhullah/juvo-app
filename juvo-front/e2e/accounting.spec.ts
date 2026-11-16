@@ -242,6 +242,9 @@ test.describe("expenses", () => {
     await page.locator("#rc-title").fill(title);
     await page.locator("#rc-category").click();
     await page.getByRole("option", { name: category.name }).click();
+    // The dialog starts on the first branch of the list; the spec's cash account belongs to Head Office.
+    await page.locator("#rc-branch").click();
+    await page.getByRole("option", { name: /^HO/ }).click();
     await page.locator("#rc-account").click();
     await page.getByRole("option", { name: new RegExp(account.name) }).click();
     await page.locator("#rc-amount").fill("900");

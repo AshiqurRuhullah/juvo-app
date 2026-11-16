@@ -1,7 +1,7 @@
 import { test, expect, type APIRequestContext, type Page, type PlaywrightWorkerArgs } from "@playwright/test";
 import { E2E } from "../playwright.config";
 import { api, loadState } from "./support/env";
-import { apiCheckout, bumpProductPrice, createStaff, disableAllRules, emptyVariantStock, postCheckout, setRule, staffToken, type Placed } from "./support/orders";
+import { apiCheckout, bumpProductPrice, createStaff, disableAllRules, emptyVariantStock, postCheckout, setRule, staffToken, topUpHeadOfficeStock, type Placed } from "./support/orders";
 import { addToCart, newMobile, pick, sampleVariants, signInCustomer } from "./support/store";
 import { signInViaBff } from "./support/ui";
 
@@ -18,6 +18,7 @@ let support: { email: string; password: string };
 
 test.beforeAll(async () => {
   admin = await staffToken("admin");
+  await topUpHeadOfficeStock(admin, state().branches.ho.id);
   await disableAllRules(admin);
   support = await createStaff(admin, "support@e2e.test", "Sam Support", "Support", state().branches.ho.id);
 });

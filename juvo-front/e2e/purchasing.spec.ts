@@ -116,6 +116,8 @@ test.describe("purchase order from draft to paid", () => {
   test("receive part of it: stock goes up, over-receipt is refused", async ({ page }) => {
     const [v1] = product.variants;
     const before = await onHand(product.id, v1!.id);
+    // Saving the draft edit replaced its lines, so the line ids captured at creation are stale: read them again.
+    for (const l of (await getPo(poId)).lines) lineIds[l.variantId] = l.id;
     await signInAdmin(page, `/admin/purchasing/orders/${poId}`);
     await page.getByTestId("po-receive").click();
 
