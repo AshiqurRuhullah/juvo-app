@@ -3,11 +3,11 @@ import { getFormatter, getTranslations } from "next-intl/server";
 import { Building2, KeyRound, ShieldCheck, UserRound } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { DashboardView } from "@/modules/dashboard/dashboard-view";
-import { buildSampleDashboard } from "@/modules/dashboard/sample-data";
 import { SystemInfoCard } from "@/components/layout/system-info-card";
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/surfaces";
 import { requireSession } from "@/lib/server/session";
-import { can } from "@/lib/auth/permissions";
+import { can, canAnywhere } from "@/lib/auth/permissions";
+import { QuickLinks } from "@/modules/dashboard/quick-links";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("dashboard");
@@ -31,14 +31,20 @@ export default async function AdminDashboardPage() {
   const t2 = await getTranslations("dashboard2");
   const format = await getFormatter();
   const now = new Date();
-  const todayIso = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12).toISOString(); // noon: the same day in every timezone
   const where = me.isAllBranches ? t("allBranches") : (branch?.nameEn ?? null);
 
   return (
     <>
       <PageHeader title={t("welcome", { name: staff.fullName })} description={where ? `${where} · ${format.dateTime(now, { dateStyle: "full" })}` : format.dateTime(now, { dateStyle: "full" })} />
 
-      <DashboardView data={buildSampleDashboard(todayIso)} todayIso={todayIso} />
+      {canAnywhere(me, "reports.dashboard.view") ? (
+        <DashboardView
+          branchId={me.isAllBranches ? undefined : (active ?? undefined)}
+          links={{ orders: canAnywhere(me, "orders.order.view"), fraud: canAnywhere(me, "fraud.flag.view"), returns: canAnywhere(me, "returns.return.view"), inventory: canAnywhere(me, "inventory.stock.view") }}
+        />
+      ) : (
+        <QuickLinks access={me} />
+      )}
 
       <h2 className="mb-3 mt-10 text-lg font-medium text-strong">{t2("account")}</h2>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

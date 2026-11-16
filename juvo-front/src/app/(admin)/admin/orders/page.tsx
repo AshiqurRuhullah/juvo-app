@@ -9,7 +9,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("title") };
 }
 
-export default async function Page() {
+export default async function Page({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+  const { status } = await searchParams;
   const { me } = await requireSession({ subject: "staff" });
   requirePermission(me, "orders.order.view", "anywhere");
   const t = await getTranslations("orders.list");
@@ -17,7 +18,7 @@ export default async function Page() {
   return (
     <>
       <PageHeader title={t("title")} description={t("subtitle")} crumbs={[{ label: tn("items.dashboard"), href: "/admin" }, { label: t("title") }]} />
-      <OrdersList />
+      <OrdersList key={status ?? "all"} initialStatus={status === "Placed" || status === "Confirmed" ? status : undefined} />
     </>
   );
 }
