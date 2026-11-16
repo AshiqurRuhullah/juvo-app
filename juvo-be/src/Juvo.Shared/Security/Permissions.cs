@@ -137,6 +137,10 @@ public static class Permissions
 
     public static class Promotions
     {
+        public const string PromotionView = "promotions.promotion.view";
+        public const string PromotionCreate = "promotions.promotion.create";
+        public const string PromotionEdit = "promotions.promotion.edit";
+        public const string PromotionDelete = "promotions.promotion.delete";
         public const string CouponView = "promotions.coupon.view";
         public const string CouponCreate = "promotions.coupon.create";
         public const string CouponEdit = "promotions.coupon.edit";

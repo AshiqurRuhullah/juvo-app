@@ -115,6 +115,21 @@ public sealed class Product : SoftDeletableEntity
 
     public void SetNonReturnable(bool value) => NonReturnable = value;
 
+    /// <summary>Module AA: an out-of-stock product can still be ordered (a pre-order or backorder) and is shipped when stock arrives. Variants may override.</summary>
+    public bool AllowPreorder { get; private set; }
+
+    public DateOnly? PreorderExpectedShipDate { get; private set; }
+
+    /// <summary>Share of the line value the customer pays in advance (0 to 100). Null or zero: no advance beyond the usual rules.</summary>
+    public decimal? PreorderAdvancePercent { get; private set; }
+
+    public void SetPreorder(bool allow, DateOnly? expectedShipDate, decimal? advancePercent)
+    {
+        AllowPreorder = allow;
+        PreorderExpectedShipDate = allow ? expectedShipDate : null;
+        PreorderAdvancePercent = allow ? advancePercent : null;
+    }
+
     public Guid? SizeChartId { get; private set; }
 
     public string? MetaTitle { get; private set; }
@@ -226,6 +241,20 @@ public sealed class ProductVariant : SoftDeletableEntity
     public bool IsActive { get; private set; } = true;
 
     public int SortOrder { get; private set; }
+
+    /// <summary>Module AA: null inherits the product, true or false overrides it.</summary>
+    public bool? AllowPreorder { get; private set; }
+
+    public DateOnly? PreorderExpectedShipDate { get; private set; }
+
+    public decimal? PreorderAdvancePercent { get; private set; }
+
+    public void SetPreorder(bool? allow, DateOnly? expectedShipDate, decimal? advancePercent)
+    {
+        AllowPreorder = allow;
+        PreorderExpectedShipDate = expectedShipDate;
+        PreorderAdvancePercent = advancePercent;
+    }
 
     public static string NormalizeSku(string sku) => sku.Trim().ToUpperInvariant();
 

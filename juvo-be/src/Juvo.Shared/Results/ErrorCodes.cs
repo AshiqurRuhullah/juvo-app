@@ -161,6 +161,27 @@ public static class ErrorCodes
         public const string CodeTaken = "COUPON.CODE_TAKEN";
     }
 
+    public static class Promo
+    {
+        public const string NotFound = "PROMO.NOT_FOUND";
+        public const string MultipleCoupons = "PROMO.MULTIPLE_COUPONS";
+        public const string SlugTaken = "PROMO.SLUG_TAKEN";
+        public const string Archived = "PROMO.ARCHIVED";
+        public const string Incomplete = "PROMO.INCOMPLETE";
+        public const string CampaignNotFound = "PROMO.CAMPAIGN_NOT_FOUND";
+        public const string TargetNotFound = "PROMO.TARGET_NOT_FOUND";
+        public const string ImageInvalid = "PROMO.IMAGE_INVALID";
+        public const string UsedUp = "PROMO.USED_UP";
+    }
+
+    public static class Preorder
+    {
+        public const string NotAllowed = "PREORDER.NOT_ALLOWED";
+        public const string AwaitingStock = "PREORDER.AWAITING_STOCK";
+        public const string NotWaiting = "PREORDER.NOT_WAITING";
+        public const string SettingsInvalid = "PREORDER.SETTINGS_INVALID";
+    }
+
     public static class Customer
     {
         public const string NotFound = "CUSTOMER.NOT_FOUND";

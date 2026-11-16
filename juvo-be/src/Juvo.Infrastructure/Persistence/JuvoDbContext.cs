@@ -98,6 +98,10 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
 
     public DbSet<Coupon> Coupons => Set<Coupon>();
 
+    public DbSet<Juvo.Domain.Promotions.Promotion> Promotions => Set<Juvo.Domain.Promotions.Promotion>();
+
+    public DbSet<Juvo.Domain.Orders.OrderItemAdjustment> OrderItemAdjustments => Set<Juvo.Domain.Orders.OrderItemAdjustment>();
+
     public DbSet<Order> Orders => Set<Order>();
 
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();

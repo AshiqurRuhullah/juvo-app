@@ -17,7 +17,18 @@ public sealed record NewOrder(
     string Number, Guid BranchId, OrderSource Source, Guid CustomerId, string CustomerMobile, string? CustomerName, string? CustomerEmail, string PaymentMethod,
     string RoutingRule, string? ZoneCode, string Currency, decimal Subtotal, decimal CouponDiscount, string? CouponCode, Guid? CouponId, decimal ManualDiscount, decimal DeliveryCharge, decimal StandardDeliveryCharge,
     decimal AdvanceRequired, int WeightGrams, ShippingSnapshot Shipping, DateTimeOffset? PaymentHoldExpiresAt, string? IdempotencyKey, string Fingerprint, string TrackingTokenHash,
-    string? DeviceId, string? ClientIp, bool OtpVerified, DateTimeOffset? TermsAcceptedAt, Guid? CreatedByStaffId, string? CreatedByName);
+    string? DeviceId, string? ClientIp, bool OtpVerified, DateTimeOffset? TermsAcceptedAt, Guid? CreatedByStaffId, string? CreatedByName, decimal PromotionDiscount = 0m);
+
+/// <summary>Where an order stands in the pre-order queue (module AA). None: no pre-order line. Waiting: at least one line waits for stock. Ready: every line now holds stock.</summary>
+public enum PreorderState
+{
+    None = 0,
+    Waiting = 1,
+    Ready = 2,
+}
+
+/// <summary>One saving or price reason copied onto an order line (module Z): Sale, Promotion (flash, discount, campaign), Bundle, BuyXGetY. Level says whether it changed the unit price or was shared out from the order.</summary>
+public sealed record NewItemAdjustment(string SourceType, Guid? SourceId, string LabelEn, string LabelBn, decimal Amount, string Level);
 
 /// <summary>The delivery address copied onto the order (it never changes when the customer edits their address book).</summary>
 public sealed record ShippingSnapshot(
@@ -26,7 +37,8 @@ public sealed record ShippingSnapshot(
 
 /// <summary>One line of a new order with the product facts copied from the catalog at that moment (BR-001).</summary>
 public sealed record NewOrderItem(
-    Guid VariantId, Guid ProductId, string Name, string? NameBn, string Sku, string? ColorName, string? Size, string? ImagePath, decimal UnitPrice, int Quantity, int WeightGrams, bool TracksStock, decimal? UnitCost = null);
+    Guid VariantId, Guid ProductId, string Name, string? NameBn, string Sku, string? ColorName, string? Size, string? ImagePath, decimal UnitPrice, int Quantity, int WeightGrams, bool TracksStock, decimal? UnitCost = null,
+    decimal? ListPrice = null, decimal PromotionDiscount = 0m, IReadOnlyList<NewItemAdjustment>? Adjustments = null, bool IsPreorder = false, DateOnly? PreorderExpectedShipDate = null);
 
 /// <summary>
 /// An order (module D). One order has many variant lines (BR-001) and three parallel tracks: order, payment and delivery status. Every status
@@ -115,6 +127,11 @@ public sealed class Order : AggregateRoot, IBranchScoped
     public decimal Subtotal { get; private set; }
 
     public decimal CouponDiscount { get; private set; }
+
+    /// <summary>Module Z: the order-level promotion discount (bundle, buy X get Y), shared out over the lines in <see cref="OrderItem.PromotionDiscount"/>. Prices that a promotion lowered are already in the line prices.</summary>
+    public decimal PromotionDiscount { get; private set; }
+
+    public PreorderState PreorderState { get; private set; }
 
     public string? CouponCode { get; private set; }
 
@@ -238,12 +255,13 @@ public sealed class Order : AggregateRoot, IBranchScoped
             Currency = data.Currency,
             Subtotal = data.Subtotal,
             CouponDiscount = data.CouponDiscount,
+            PromotionDiscount = data.PromotionDiscount,
             CouponCode = data.CouponCode,
             CouponId = data.CouponId,
             ManualDiscount = data.ManualDiscount,
             DeliveryCharge = data.DeliveryCharge,
             StandardDeliveryCharge = data.StandardDeliveryCharge,
-            GrandTotal = data.Subtotal - data.CouponDiscount - data.ManualDiscount + data.DeliveryCharge,
+            GrandTotal = data.Subtotal - data.PromotionDiscount - data.CouponDiscount - data.ManualDiscount + data.DeliveryCharge,
             AdvanceRequired = data.AdvanceRequired,
             WeightGrams = data.WeightGrams,
             PaymentHoldExpiresAt = data.PaymentHoldExpiresAt,
@@ -280,6 +298,11 @@ public sealed class Order : AggregateRoot, IBranchScoped
         foreach (var item in items)
         {
             order._items.Add(new OrderItem(order.Id, item));
+        }
+
+        if (order._items.Any(i => i.BackorderedQuantity > 0))
+        {
+            order.PreorderState = PreorderState.Waiting;
         }
 
         order._history.Add(new OrderStatusHistory(order.Id, OrderTrack.Order, null, OrderStatus.Placed.ToString(), "Order placed", data.CreatedByStaffId, data.CreatedByName, now));
@@ -412,6 +435,29 @@ public sealed class Order : AggregateRoot, IBranchScoped
         _notes.Add(new OrderNote(Id, NoteKind.Internal, $"Advance of BDT {amount:0.##} received. {detail}".Trim(), by, byName, now));
     }
 
+    /// <summary>A pre-order line got its stock reserved (module AA): it no longer waits. The order itself is settled separately (<see cref="SettlePreorder"/>).</summary>
+    public void AllocatePreorderLine(OrderItem item, DateTimeOffset now)
+    {
+        if (!_items.Contains(item))
+        {
+            throw new InvalidOperationException("The line does not belong to this order.");
+        }
+
+        item.MarkAllocated(now);
+    }
+
+    /// <summary>The order becomes Ready once no line waits any more (the caller checks that against the database). Returns true when this call made it Ready, so the customer is told once.</summary>
+    public bool MarkPreorderReady()
+    {
+        if (PreorderState != PreorderState.Waiting)
+        {
+            return false;
+        }
+
+        PreorderState = PreorderState.Ready;
+        return true;
+    }
+
     public void MarkStockDeducted() => StockDeducted = true;
 
     public void MarkStockRestored() => StockDeducted = false;
@@ -492,6 +538,8 @@ public sealed class Order : AggregateRoot, IBranchScoped
 
 public sealed class OrderItem : Entity
 {
+    private readonly List<OrderItemAdjustment> _adjustments = [];
+
     private OrderItem()
     {
     }
@@ -510,6 +558,16 @@ public sealed class OrderItem : Entity
         UnitPrice = item.UnitPrice;
         Quantity = item.Quantity;
         LineTotal = item.UnitPrice * item.Quantity;
+        ListPrice = item.ListPrice ?? item.UnitPrice;
+        PromotionDiscount = item.PromotionDiscount;
+        IsPreorder = item.IsPreorder;
+        PreorderExpectedShipDate = item.PreorderExpectedShipDate;
+        BackorderedQuantity = item.IsPreorder ? item.Quantity : 0;
+        foreach (var a in item.Adjustments ?? [])
+        {
+            _adjustments.Add(new OrderItemAdjustment(orderId, Id, a));
+        }
+
         WeightGrams = item.WeightGrams;
         TracksStock = item.TracksStock;
         UnitCost = item.UnitCost;
@@ -540,6 +598,30 @@ public sealed class OrderItem : Entity
 
     public decimal LineTotal { get; private set; }
 
+    /// <summary>Module Z: the price before any sale or promotion (struck through on the invoice and the order page).</summary>
+    public decimal ListPrice { get; private set; }
+
+    /// <summary>The share of the order-level promotion discount that belongs to this line. The refund of the line uses it (see ReturnMath).</summary>
+    public decimal PromotionDiscount { get; private set; }
+
+    /// <summary>Module AA: the line was ordered while out of stock.</summary>
+    public bool IsPreorder { get; private set; }
+
+    public DateOnly? PreorderExpectedShipDate { get; private set; }
+
+    /// <summary>Units still waiting for stock. Zero for a normal line and after the stock was allocated; a waiting line holds no reservation.</summary>
+    public int BackorderedQuantity { get; private set; }
+
+    public DateTimeOffset? PreorderAllocatedAt { get; private set; }
+
+    public IReadOnlyList<OrderItemAdjustment> Adjustments => _adjustments;
+
+    internal void MarkAllocated(DateTimeOffset now)
+    {
+        BackorderedQuantity = 0;
+        PreorderAllocatedAt = now;
+    }
+
     public int WeightGrams { get; private set; }
 
     /// <summary>The product cost price when the order was placed (a snapshot, so later cost changes never rewrite the profit of old orders). Null for orders placed before it existed or when the product had no cost: reports then fall back to the current cost.</summary>
@@ -547,6 +629,45 @@ public sealed class OrderItem : Entity
 
     /// <summary>False for a variant that does not track stock: nothing is reserved for it.</summary>
     public bool TracksStock { get; private set; }
+}
+
+/// <summary>The immutable record of one saving on one order line (module Z): invoices, refunds and the campaign report read it and never recompute from live promotions.</summary>
+public sealed class OrderItemAdjustment : Entity, IAppendOnly, INotAudited
+{
+    private OrderItemAdjustment()
+    {
+    }
+
+    internal OrderItemAdjustment(Guid orderId, Guid orderItemId, NewItemAdjustment a)
+    {
+        OrderId = orderId;
+        OrderItemId = orderItemId;
+        SourceType = a.SourceType;
+        SourceId = a.SourceId;
+        LabelEn = a.LabelEn;
+        LabelBn = a.LabelBn;
+        Amount = a.Amount;
+        Level = a.Level;
+    }
+
+    public Guid OrderId { get; private set; }
+
+    public Guid OrderItemId { get; private set; }
+
+    /// <summary>Sale, Promotion, Bundle, BuyXGetY.</summary>
+    public string SourceType { get; private set; } = string.Empty;
+
+    public Guid? SourceId { get; private set; }
+
+    public string LabelEn { get; private set; } = string.Empty;
+
+    public string LabelBn { get; private set; } = string.Empty;
+
+    /// <summary>The saving in BDT for the whole line (positive).</summary>
+    public decimal Amount { get; private set; }
+
+    /// <summary>Line: it lowered the unit price. Order: it was shared out over lines from an order-level promotion.</summary>
+    public string Level { get; private set; } = string.Empty;
 }
 
 /// <summary>One status change on one of the three tracks: who, when, from, to, why. Append-only (BR-003).</summary>

@@ -22,6 +22,7 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(x => x.PaymentStatus).HasConversion<int>();
         builder.Property(x => x.DeliveryStatus).HasConversion<int>();
         builder.Property(x => x.FraudState).HasConversion<int>();
+        builder.Property(x => x.PreorderState).HasConversion<int>();
         builder.Property(x => x.PaymentMethod).HasMaxLength(30).IsRequired();
         builder.Property(x => x.CustomerMobile).HasMaxLength(20).IsRequired();
         builder.Property(x => x.CustomerName).HasMaxLength(120);
@@ -82,7 +83,7 @@ internal sealed class OrderItemConfiguration : IEntityTypeConfiguration<OrderIte
 {
     public void Configure(EntityTypeBuilder<OrderItem> builder)
     {
-        builder.ToTable("OrderItems", t => t.HasCheckConstraint("CK_OrderItems_Quantity", "[Quantity] > 0 AND [UnitPrice] >= 0"));
+        builder.ToTable("OrderItems", t => t.HasCheckConstraint("CK_OrderItems_Quantity", "[Quantity] > 0 AND [UnitPrice] >= 0 AND [BackorderedQuantity] >= 0 AND [PromotionDiscount] >= 0"));
         builder.Property(x => x.Name).HasMaxLength(200).IsRequired();
         builder.Property(x => x.NameBn).HasMaxLength(200);
         builder.Property(x => x.Sku).HasMaxLength(60).IsRequired();
@@ -91,7 +92,10 @@ internal sealed class OrderItemConfiguration : IEntityTypeConfiguration<OrderIte
         builder.Property(x => x.ImagePath).HasMaxLength(300);
         builder.HasIndex(x => x.OrderId);
         builder.HasIndex(x => x.VariantId);
+        builder.HasIndex(x => x.BackorderedQuantity).HasFilter("[BackorderedQuantity] > 0");
         builder.HasOne<ProductVariant>().WithMany().HasForeignKey(x => x.VariantId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasMany(x => x.Adjustments).WithOne().HasForeignKey(a => a.OrderItemId).OnDelete(DeleteBehavior.Cascade);
+        builder.Navigation(x => x.Adjustments).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }
 

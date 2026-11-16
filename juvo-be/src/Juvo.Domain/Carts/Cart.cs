@@ -58,11 +58,15 @@ public sealed class Coupon : Entity
 
     public bool IsActive { get; private set; } = true;
 
+    /// <summary>Module Z: true when this coupon may be added on top of promotions that allow it. False (default): the customer gets the better of the coupon and the promotions, never both.</summary>
+    public bool StacksWithPromotions { get; private set; }
+
     public static string Normalize(string code) => code.Trim().ToUpperInvariant();
 
     public void Update(string? description, CouponKind kind, decimal value, decimal minOrderValue, decimal? maxDiscount, DateTimeOffset? startsAt,
-        DateTimeOffset? endsAt, int? usageLimit, bool isActive)
+        DateTimeOffset? endsAt, int? usageLimit, bool isActive, bool stacksWithPromotions = false)
     {
+        StacksWithPromotions = stacksWithPromotions;
         Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
         Kind = kind;
         Value = value;
