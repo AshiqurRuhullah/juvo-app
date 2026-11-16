@@ -319,9 +319,20 @@ public class ExpenseTests(OpsFactory factory) : IClassFixture<OpsFactory>
             var codSum = await d.CodSettlements.IgnoreQueryFilters(["BranchScope"]).Where(s => s.BranchId == ho && s.Status == Juvo.Domain.Couriers.SettlementStatus.Settled && s.SettledAt >= from && s.SettledAt < to).SumAsync(s => (decimal?)s.ReceivedTotal, Ct) ?? 0m;
             return (paidSum, refundSum, codSum);
         });
-        Assert.Equal(paid + settled, day.GetProperty("totalIn").GetDecimal());
-        Assert.Equal(refunded, day.GetProperty("totalOut").GetDecimal());
-        Assert.Equal(paid + settled - refunded, day.GetProperty("net").GetDecimal());
+        // The day book also lists the branch cash book lines of the same days. Other tests of this class share the database and book
+        // expenses on the same day, so the independent sum must include them or the result would depend on the order the tests run in.
+        var fromDay = DateOnly.Parse(OpsHelper.DaysAgo(1), System.Globalization.CultureInfo.InvariantCulture);
+        var toDay = DateOnly.Parse(OpsHelper.Today, System.Globalization.CultureInfo.InvariantCulture);
+        var (ledgerIn, ledgerOut) = await _o.WithDbAsync(async d =>
+        {
+            var lines = d.LedgerEntries.IgnoreQueryFilters(["BranchScope"]).Where(e => e.BranchId == ho && e.EntryDate >= fromDay && e.EntryDate <= toDay);
+            var inSum = await lines.Where(e => e.Amount > 0).SumAsync(e => (decimal?)e.Amount, Ct) ?? 0m;
+            var outSum = await lines.Where(e => e.Amount < 0).SumAsync(e => (decimal?)e.Amount, Ct) ?? 0m;
+            return (inSum, -outSum);
+        });
+        Assert.Equal(paid + settled + ledgerIn, day.GetProperty("totalIn").GetDecimal());
+        Assert.Equal(refunded + ledgerOut, day.GetProperty("totalOut").GetDecimal());
+        Assert.Equal(paid + settled + ledgerIn - refunded - ledgerOut, day.GetProperty("net").GetDecimal());
 
         // An account filter shows only cash book lines; nothing was ever written to the ledger by the payments.
         var accountDay = await _o.GetAsync($"/api/v1/accounts/daybook?accountId={account}&from={OpsHelper.DaysAgo(1)}&to={OpsHelper.Today}", admin);
