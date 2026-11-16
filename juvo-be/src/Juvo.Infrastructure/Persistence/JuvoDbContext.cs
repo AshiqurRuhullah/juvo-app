@@ -15,6 +15,7 @@ using Juvo.Domain.Couriers;
 using Juvo.Domain.Accounting;
 using Juvo.Domain.Purchasing;
 using Juvo.Domain.Support;
+using Juvo.Domain.Marketing;
 using Juvo.Domain.Platform;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -203,6 +204,15 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
     public DbSet<Juvo.Domain.Loyalty.ReferralCode> ReferralCodes => Set<Juvo.Domain.Loyalty.ReferralCode>();
 
     public DbSet<Juvo.Domain.Loyalty.Referral> Referrals => Set<Juvo.Domain.Loyalty.Referral>();
+    public DbSet<CustomerSegment> CustomerSegments => Set<CustomerSegment>();
+
+    public DbSet<Campaign> Campaigns => Set<Campaign>();
+
+    public DbSet<CampaignRecipient> CampaignRecipients => Set<CampaignRecipient>();
+
+    public DbSet<Automation> Automations => Set<Automation>();
+
+    public DbSet<BackInStockSubscription> BackInStockSubscriptions => Set<BackInStockSubscription>();
 
     public DbSet<TaxRule> TaxRules => Set<TaxRule>();
 

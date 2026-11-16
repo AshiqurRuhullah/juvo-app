@@ -15,6 +15,7 @@ using Juvo.Domain.Couriers;
 using Juvo.Domain.Accounting;
 using Juvo.Domain.Purchasing;
 using Juvo.Domain.Support;
+using Juvo.Domain.Marketing;
 using Microsoft.EntityFrameworkCore;
 
 namespace Juvo.Application.Abstractions;
@@ -203,6 +204,15 @@ public interface IApplicationDbContext
     DbSet<Juvo.Domain.Loyalty.ReferralCode> ReferralCodes { get; }
 
     DbSet<Juvo.Domain.Loyalty.Referral> Referrals { get; }
+    DbSet<CustomerSegment> CustomerSegments { get; }
+
+    DbSet<Campaign> Campaigns { get; }
+
+    DbSet<CampaignRecipient> CampaignRecipients { get; }
+
+    DbSet<Automation> Automations { get; }
+
+    DbSet<BackInStockSubscription> BackInStockSubscriptions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 

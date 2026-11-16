@@ -348,6 +348,29 @@ public static class ErrorCodes
         public const string BulkLimit = "TICKET.BULK_LIMIT";
     }
 
+    public static class Marketing
+    {
+        public const string SegmentNotFound = "MARKETING.SEGMENT_NOT_FOUND";
+        public const string SegmentInvalid = "MARKETING.SEGMENT_INVALID";
+        public const string SegmentInUse = "MARKETING.SEGMENT_IN_USE";
+        public const string SegmentBuiltIn = "MARKETING.SEGMENT_BUILT_IN";
+        public const string CampaignNotFound = "MARKETING.CAMPAIGN_NOT_FOUND";
+        public const string CampaignInvalid = "MARKETING.CAMPAIGN_INVALID";
+        public const string CampaignNotEditable = "MARKETING.CAMPAIGN_NOT_EDITABLE";
+        public const string CampaignInvalidState = "MARKETING.CAMPAIGN_INVALID_STATE";
+        public const string ChannelOff = "MARKETING.CHANNEL_OFF";
+        public const string ScheduleInvalid = "MARKETING.SCHEDULE_INVALID";
+        public const string TestNoContact = "MARKETING.TEST_NO_CONTACT";
+        public const string UnsubscribeTokenInvalid = "MARKETING.UNSUBSCRIBE_TOKEN_INVALID";
+        public const string AutomationNotFound = "MARKETING.AUTOMATION_NOT_FOUND";
+        public const string AutomationInvalid = "MARKETING.AUTOMATION_INVALID";
+        public const string SettingsInvalid = "MARKETING.SETTINGS_INVALID";
+        public const string VariantNotFound = "MARKETING.VARIANT_NOT_FOUND";
+        public const string VariantInStock = "MARKETING.VARIANT_IN_STOCK";
+        public const string ContactRequired = "MARKETING.CONTACT_REQUIRED";
+        public const string SubscriptionLimit = "MARKETING.SUBSCRIPTION_LIMIT";
+    }
+
     public static class Report
     {
         public const string Unknown = "REPORT.UNKNOWN";
