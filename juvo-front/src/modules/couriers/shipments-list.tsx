@@ -40,7 +40,7 @@ export function ShipmentsList() {
   const branches = useBranchOptions();
   const perms = useCourierPermissions();
   const { activeBranchId, isAllBranches } = usePermissions();
-  const state = useListState<Filters>({}, 20, INITIAL_SORT);
+  const state = useListState<Filters>({}, undefined, INITIAL_SORT);
   const [codOnly, setCodOnly] = React.useState(false);
   const [openOnly, setOpenOnly] = React.useState(false);
   const [selected, setSelected] = React.useState<ReadonlySet<string>>(new Set());

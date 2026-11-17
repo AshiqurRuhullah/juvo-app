@@ -21,6 +21,7 @@ import { parseAmount, round2 } from "@/modules/purchasing/logic";
 import { useAccountEntries, useAdjust, useSaveAccount, useTransfer, type Account, type LedgerEntry } from "./api";
 import { Flow, useDateOnly, useMoney2 } from "./common";
 import { ACCOUNT_TYPES, adjustmentProblem, parseSigned, todayDhaka, transferProblem } from "./logic";
+import { PAGE_SIZE } from "@/lib/pagination";
 
 function Shell({ title, description, onClose, children, size = "md" }: { title: string; description: string; onClose: () => void; children: React.ReactNode; size?: "sm" | "md" | "lg" }) {
   const tc = useTranslations("accounting.common");
@@ -280,7 +281,7 @@ export function EntriesDialog({ account, onClose }: { account: Account; onClose:
   return (
     <Shell title={t("title", { name: account.name })} description={t("description")} onClose={onClose} size="lg">
       <div className="mt-4" data-testid="entries">
-        <DataTable caption={t("title", { name: account.name })} columns={columns} data={items} loading={query.isLoading} getRowId={(x) => x.id} labels={labels} page={page} pageSize={10} total={toNumber(query.data?.total)} onPageChange={setPage} />
+        <DataTable caption={t("title", { name: account.name })} columns={columns} data={items} loading={query.isLoading} getRowId={(x) => x.id} labels={labels} page={page} pageSize={PAGE_SIZE} total={toNumber(query.data?.total)} onPageChange={setPage} />
       </div>
     </Shell>
   );

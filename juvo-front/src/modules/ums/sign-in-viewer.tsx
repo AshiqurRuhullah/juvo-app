@@ -17,7 +17,7 @@ const dayEnd = (date: string) => (date ? new Date(`${date}T23:59:59.999`).toISOS
 export function SignInViewer() {
   const t = useTranslations("ums.signIns");
   const labels = useTableLabels();
-  const state = useListState<{ result?: string; subjectType?: string; from?: string; to?: string }>({}, 25);
+  const state = useListState<{ result?: string; subjectType?: string; from?: string; to?: string }>({});
   const columns = useSignInColumns({ showIdentifier: true });
 
   const query = useSignInHistory({

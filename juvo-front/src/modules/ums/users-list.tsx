@@ -17,7 +17,7 @@ export function UsersList() {
   const t = useTranslations("ums.users");
   const labels = useTableLabels();
   const dateTime = useDateTime();
-  const state = useListState<{ status?: string; roleId?: string; branchId?: string }>({}, 20, [{ id: "fullName", desc: false }]);
+  const state = useListState<{ status?: string; roleId?: string; branchId?: string }>({}, undefined, [{ id: "fullName", desc: false }]);
   const roles = useAllRoles();
   const branches = useAllBranches();
 

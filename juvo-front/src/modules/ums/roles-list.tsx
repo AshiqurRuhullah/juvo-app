@@ -17,7 +17,7 @@ export function RolesList() {
   const t = useTranslations("ums.roles");
   const labels = useTableLabels();
   const { can } = usePermissions();
-  const state = useListState<Record<string, never>>({}, 20, [{ id: "name", desc: false }]);
+  const state = useListState<Record<string, never>>({}, undefined, [{ id: "name", desc: false }]);
   const query = useRoles({ page: state.page, pageSize: state.pageSize, sort: state.sort, search: state.search });
   const canClone = can("ums.role.clone", "anywhere");
 

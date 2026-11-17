@@ -498,3 +498,11 @@ Details per builder: `docs/step11a-backend-support.md`, `docs/step11a-backend-re
 | Browser specs must not depend on how many specs ran before them: the shared test database fills up and head office sample stock runs out, which routes online orders to the online branch where a head office user cannot see them. Specs that look for their own orders call `topUpHeadOfficeStock`. The suite is run in shards (`--shard=i/4`) on a small machine. | Late tests failed only in a long run. | `e2e/support/orders.ts` |
 
 Contract gaps found: expense list and detail do not say who submitted (the screen remembers it locally and the API refuses self approval); `GET /accounts` needs the cash book permission, so an expense editor without it cannot choose an account; purchase order costs are sent to everyone with `po.view`; the receive request has no cost method choice (a setting decides); `GET /purchasing/receipts` has no supplier filter; no list of assignable staff; `GET /me/tickets` has no open/closed filter; `/store/contact` and `/me/tickets` have no idempotency key; tickets cannot be linked to a return; the finance report has no `gatewayFeesRecorded` flag; report row labels and notes come from the server in English.
+
+## V. Pagination (every table and list)
+
+| Decision | Reason | How to change |
+| --- | --- | --- |
+| Every table and list shows 10 rows per page, with one shared pager; no per-page chooser. | The owner asked for 10 per page and one matching design; a chooser would invite 100-row pages on phones. | `PAGE_SIZE` in `juvo-front/src/lib/pagination.ts`; to add a chooser, extend `Pagination` once. |
+| Tables that receive all their rows page them on the client; server paged tables ask the API for one page of 10. | The same look and behaviour everywhere, with no change to the API. | `components/ui/data-table.tsx` |
+| The storefront product grid keeps 12 per load (a 3 by 4 grid that loads more as you scroll); printable sheets and form line tables are not paged. | A grid is not a table; a printout must show every row. | |

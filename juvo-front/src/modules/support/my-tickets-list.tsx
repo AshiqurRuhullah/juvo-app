@@ -3,8 +3,11 @@
 import * as React from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, ChevronRight, Headset, Plus } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Headset, Plus } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
+import { usePaginationLabels } from "@/components/data/list-kit";
+import { PAGE_SIZE } from "@/lib/pagination";
 import { Alert, Card, EmptyState, Skeleton } from "@/components/ui/surfaces";
 import { useDateTime } from "@/components/data/list-kit";
 import { cn } from "@/lib/utils";
@@ -13,7 +16,6 @@ import { useMyTickets } from "./api";
 import { StatusBadge, useCategoryLabel } from "./common";
 import { TICKET_STATUSES, type TicketStatus } from "./logic";
 
-const PAGE_SIZE = 10;
 
 /** The customer's tickets, newest activity first: a status filter on top and cards at every width. */
 export function MyTicketsList() {
@@ -23,11 +25,11 @@ export function MyTicketsList() {
   const dateTime = useDateTime();
   const categoryLabel = useCategoryLabel();
   const [status, setStatus] = React.useState<TicketStatus | undefined>(undefined);
+  const pagerLabels = usePaginationLabels();
   const [page, setPage] = React.useState(1);
   const query = useMyTickets({ status, page, pageSize: PAGE_SIZE });
   const items = query.data?.items ?? [];
   const total = toNumber(query.data?.total);
-  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const choose = (next: TicketStatus | undefined) => {
     setStatus(next);
     setPage(1);
@@ -89,17 +91,7 @@ export function MyTicketsList() {
         ))}
       </ul>
 
-      {pages > 1 ? (
-        <nav className="flex items-center justify-between gap-3" aria-label={t("paging")}>
-          <Button variant="secondary" disabled={page <= 1} onClick={() => setPage(page - 1)}>
-            <ChevronLeft className="rtl:rotate-180" aria-hidden /> {tc("previous")}
-          </Button>
-          <span className="text-sm text-muted">{tc("pageOf", { page, pages })}</span>
-          <Button variant="secondary" disabled={page >= pages} onClick={() => setPage(page + 1)}>
-            {tc("next")} <ChevronRight className="rtl:rotate-180" aria-hidden />
-          </Button>
-        </nav>
-      ) : null}
+      <Pagination page={page} total={total} onPageChange={setPage} labels={pagerLabels} />
     </div>
   );
 }

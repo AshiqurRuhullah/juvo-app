@@ -13,7 +13,9 @@ import { Select } from "@/components/ui/select";
 import { Tabs } from "@/components/ui/tabs";
 import { Alert, Badge, EmptyState, Skeleton } from "@/components/ui/surfaces";
 import { toast } from "@/components/ui/toaster";
-import { FilterSelect, useDateTime, useTableLabels } from "@/components/data/list-kit";
+import { FilterSelect, useDateTime, usePaginationLabels, useTableLabels } from "@/components/data/list-kit";
+import { Pagination } from "@/components/ui/pagination";
+import { PAGE_SIZE } from "@/lib/pagination";
 import { toNumber, useMoney } from "@/modules/catalog/format";
 import {
   BLACKLIST_KINDS,
@@ -80,14 +82,14 @@ function ReviewQueue() {
   const errorText = useOrderErrorText();
   const perms = useOrderPermissions();
   const [state, setState] = React.useState<FraudState | undefined>(undefined);
+  const pagerLabels = usePaginationLabels();
   const [page, setPage] = React.useState(1);
-  const query = useFraudReviews({ page, pageSize: 10, state });
+  const query = useFraudReviews({ page, pageSize: PAGE_SIZE, state });
   const decide = useFraudDecision();
   const [target, setTarget] = React.useState<{ item: ReviewItem; action: FraudAction } | null>(null);
   const [note, setNote] = React.useState("");
   const [noteError, setNoteError] = React.useState<string | null>(null);
   const items = query.data?.items ?? [];
-  const pages = Math.max(1, Math.ceil(toNumber(query.data?.total) / 10));
 
   const close = () => {
     setTarget(null);
@@ -171,17 +173,7 @@ function ReviewQueue() {
         ))}
       </ul>
 
-      {pages > 1 ? (
-        <div className="flex items-center justify-between gap-2">
-          <Button variant="secondary" disabled={page <= 1} onClick={() => setPage(page - 1)}>
-            {tc("previous")}
-          </Button>
-          <span className="text-sm text-muted">{tc("pageOf", { page, pages })}</span>
-          <Button variant="secondary" disabled={page >= pages} onClick={() => setPage(page + 1)}>
-            {tc("next")}
-          </Button>
-        </div>
-      ) : null}
+      <Pagination page={page} total={toNumber(query.data?.total)} onPageChange={setPage} labels={pagerLabels} />
 
       <ConfirmDialog
         open={!!target}
@@ -212,7 +204,7 @@ function BlacklistTab() {
   const perms = useOrderPermissions();
   const [kind, setKind] = React.useState<BlacklistKind | undefined>(undefined);
   const [page, setPage] = React.useState(1);
-  const query = useBlacklist({ page, pageSize: 20, kind });
+  const query = useBlacklist({ page, pageSize: PAGE_SIZE, kind });
   const add = useAddBlacklist();
   const remove = useRemoveBlacklist();
   const [newKind, setNewKind] = React.useState<BlacklistKind>("Mobile");
@@ -281,7 +273,7 @@ function BlacklistTab() {
         <FilterSelect value={kind} onChange={(v) => (setKind(v as BlacklistKind | undefined), setPage(1))} options={BLACKLIST_KINDS.map((k) => ({ value: k, label: t(`kind.${k}`) }))} allLabel={t("anyKind")} label={t("columns.kind")} searchPlaceholder={tc("search")} emptyText={tc("noMatch")} />
       </div>
       {query.isError ? <Alert variant="danger">{errorText(query.error)}</Alert> : null}
-      <DataTable caption={t("title")} columns={columns} data={query.data?.items ?? []} loading={query.isLoading} getRowId={(x) => x.id} labels={labels} page={page} pageSize={20} total={toNumber(query.data?.total)} onPageChange={setPage} />
+      <DataTable caption={t("title")} columns={columns} data={query.data?.items ?? []} loading={query.isLoading} getRowId={(x) => x.id} labels={labels} page={page} pageSize={PAGE_SIZE} total={toNumber(query.data?.total)} onPageChange={setPage} />
 
       <ConfirmDialog
         open={!!removing}

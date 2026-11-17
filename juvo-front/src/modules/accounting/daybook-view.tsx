@@ -29,7 +29,7 @@ export function DaybookView() {
   const money = useMoney2();
   const dateOnly = useDateOnly();
   const branches = useBranchOptions();
-  const state = useListState<Filters>({}, 20);
+  const state = useListState<Filters>({});
   const accounts = useAccounts({ includeInactive: true });
 
   const query = useDaybook({ page: state.page, pageSize: state.pageSize, ...state.filters });

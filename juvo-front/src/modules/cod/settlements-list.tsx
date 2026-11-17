@@ -33,7 +33,7 @@ export function SettlementsList() {
   const branchLabel = useBranchLabel();
   const branches = useBranchOptions();
   const perms = useCourierPermissions();
-  const state = useListState<Filters>({}, 20);
+  const state = useListState<Filters>({});
   const couriers = useCouriers();
 
   const query = useSettlements({

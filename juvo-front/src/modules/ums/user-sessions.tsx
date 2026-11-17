@@ -10,6 +10,7 @@ import { toast } from "@/components/ui/toaster";
 import { usePermissions } from "@/components/providers/session-provider";
 import { useRevokeUserSession, useReportError, useUserSessions, useUserSignIns, type Session, type SignInHistory } from "./api";
 import { useDateTime, useTableLabels } from "./shared";
+import { PAGE_SIZE } from "@/lib/pagination";
 
 /** Short device text from a user-agent string ("Chrome on Windows"). The raw string is never trusted for markup; it is only text. */
 export function summarizeAgent(agent: string | null | undefined): string {
@@ -125,7 +126,7 @@ export function UserSignIns({ userId }: { userId: string }) {
           getRowId={(s) => s.id}
           labels={{ ...labels, empty: t("empty"), emptyDescription: undefined }}
           page={page}
-          pageSize={10}
+          pageSize={PAGE_SIZE}
           total={Number(query.data?.total ?? 0)}
           onPageChange={setPage}
         />

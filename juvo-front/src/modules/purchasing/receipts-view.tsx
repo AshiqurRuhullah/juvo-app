@@ -25,7 +25,7 @@ export function ReceiptsView() {
   const labels = useTableLabels();
   const dateTime = useDateTime();
   const branches = useBranchOptions();
-  const state = useListState<Filters>({}, 20);
+  const state = useListState<Filters>({});
   const [openId, setOpenId] = React.useState<string | null>(null);
 
   const query = useReceipts({

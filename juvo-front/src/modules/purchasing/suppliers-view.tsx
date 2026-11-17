@@ -25,7 +25,7 @@ export function SuppliersView() {
   const tc = useTranslations("purchasing.common");
   const labels = useTableLabels();
   const perms = usePurchasingPermissions();
-  const state = useListState<Filters>({}, 20, INITIAL_SORT);
+  const state = useListState<Filters>({}, undefined, INITIAL_SORT);
   const [editing, setEditing] = React.useState<Supplier | null>(null);
   const [open, setOpen] = React.useState(false);
 

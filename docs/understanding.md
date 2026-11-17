@@ -542,7 +542,7 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-M06 | Cash view: online paid, COD pending with couriers, COD settled, refunds due | M | 12 | Not started | | |
 | FR-M07 | Stock health: low stock, out of stock, slow movers | S | 12 | Not started | | |
 | FR-M08 | Date range filter; all cards link to the filtered list behind them | M | 12 | Not started | | |
-| FR-N01 | Every list has search, filters, sorting, pagination, column chooser and export to Excel/CSV | M | 6-12 | Not started | | |
+| FR-N01 | Every list has search, filters, sorting, pagination, column chooser and export to Excel/CSV | M | 6-12 | Partial | DataTable, Pagination, useListState | Pagination is Done everywhere (10 per page, one pager, see juvo-front/docs/frontend.md); search, filters and sorting exist on the server paged lists; the column chooser and the Excel/CSV export of every list are not built (reports and the accountant export cover the money lists). |
 | FR-N02 | Bulk actions (confirm, book courier, print labels, change status) with a result summary per order | M | 6-12 | Not started | | |
 | FR-N03 | Optimistic-lock protection: if two staff edit the same order, the second gets a conflict message | S | 6-12 | Partial | rowversion concurrency token; GlobalExceptionHandler returns 409 GENERAL.CONCURRENCY_CONFLICT | UI conflict message in Steps 5/8. |
 | FR-N04 | Internal notes and tags on orders and customers | S | 6-12 | Not started | | |

@@ -27,7 +27,7 @@ export function RefundsList() {
   const dateTime = useDateTime();
   const labels = useTableLabels();
   const perms = usePaymentPermissions();
-  const state = useListState<Filters>({ status: undefined }, 20);
+  const state = useListState<Filters>({ status: undefined });
   const f = state.filters;
   const query = useRefunds({ page: state.page, pageSize: state.pageSize, status: f.status, ...dayRange(f.from, f.to) });
   const items = React.useMemo(() => query.data?.items ?? [], [query.data]);

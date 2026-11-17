@@ -25,7 +25,7 @@ export function MovementsList() {
   const dateTime = useDateTime();
   const reasonLabel = useReasonLabel();
   const branches = useBranchOptions();
-  const state = useListState<{ branchId?: string; reason?: string; from?: string; to?: string }>({}, 20);
+  const state = useListState<{ branchId?: string; reason?: string; from?: string; to?: string }>({});
 
   const query = useMovements({
     page: state.page,

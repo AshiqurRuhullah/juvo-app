@@ -3,8 +3,10 @@
 import * as React from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { RotateCcw } from "lucide-react";
+import { Pagination } from "@/components/ui/pagination";
+import { usePaginationLabels } from "@/components/data/list-kit";
+import { PAGE_SIZE } from "@/lib/pagination";
 import { Alert, Badge, Card, EmptyState, Skeleton } from "@/components/ui/surfaces";
 import { useDateTime } from "@/components/data/list-kit";
 import { cn } from "@/lib/utils";
@@ -12,7 +14,6 @@ import { toNumber, useMoney } from "@/modules/catalog/format";
 import { useMyReturns, type MyReturnsFilter } from "./api";
 import { ReturnStatusBadge, Thumb } from "./common";
 
-const PAGE_SIZE = 10;
 
 /** The customer's returns: active ones first, closed ones on the other tab. Cards at every width (a return has few columns worth showing). */
 export function MyReturnsList() {
@@ -21,11 +22,11 @@ export function MyReturnsList() {
   const money = useMoney();
   const dateTime = useDateTime();
   const [filter, setFilter] = React.useState<MyReturnsFilter>("active");
+  const pagerLabels = usePaginationLabels();
   const [page, setPage] = React.useState(1);
   const query = useMyReturns({ filter, page, pageSize: PAGE_SIZE });
   const items = query.data?.items ?? [];
   const total = toNumber(query.data?.total);
-  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
     <div className="space-y-4">
@@ -86,17 +87,7 @@ export function MyReturnsList() {
         ))}
       </ul>
 
-      {pages > 1 ? (
-        <nav className="flex items-center justify-between gap-3" aria-label={t("paging")}>
-          <Button variant="secondary" disabled={page <= 1} onClick={() => setPage(page - 1)}>
-            <ChevronLeft className="rtl:rotate-180" aria-hidden /> {tc("previous")}
-          </Button>
-          <span className="text-sm text-muted">{tc("pageOf", { page, pages })}</span>
-          <Button variant="secondary" disabled={page >= pages} onClick={() => setPage(page + 1)}>
-            {tc("next")} <ChevronRight className="rtl:rotate-180" aria-hidden />
-          </Button>
-        </nav>
-      ) : null}
+      <Pagination page={page} total={total} onPageChange={setPage} labels={pagerLabels} />
     </div>
   );
 }

@@ -15,7 +15,7 @@ import { FilterSelect, SearchBox, useListState, useTableLabels } from "./shared"
 export function BranchesList() {
   const t = useTranslations("ums.branches");
   const labels = useTableLabels();
-  const state = useListState<{ status?: string }>({}, 20, [{ id: "name", desc: false }]);
+  const state = useListState<{ status?: string }>({}, undefined, [{ id: "name", desc: false }]);
   const query = useBranches({
     page: state.page,
     pageSize: state.pageSize,

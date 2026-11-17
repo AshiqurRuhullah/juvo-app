@@ -21,7 +21,7 @@ export function ProductsList({ initialSearch }: { initialSearch?: string }) {
   const labels = useTableLabels();
   const money = useMoney();
   const dateTime = useDateTime();
-  const state = useListState<{ status?: string; categoryId?: string; brandId?: string }>({}, 20, [{ id: "updatedAt", desc: true }]);
+  const state = useListState<{ status?: string; categoryId?: string; brandId?: string }>({}, undefined, [{ id: "updatedAt", desc: true }]);
   const categories = useCategoryTree(true);
   const brands = useAllBrands();
 

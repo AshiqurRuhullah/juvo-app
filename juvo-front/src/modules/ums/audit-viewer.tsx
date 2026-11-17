@@ -23,7 +23,7 @@ export function AuditViewer() {
   const labels = useTableLabels();
   const dateTime = useDateTime();
   const branches = useAllBranches();
-  const state = useListState<{ action?: string; branchId?: string; entity?: string; from?: string; to?: string }>({}, 25);
+  const state = useListState<{ action?: string; branchId?: string; entity?: string; from?: string; to?: string }>({});
   const [selected, setSelected] = React.useState<AuditLog | null>(null);
 
   const query = useAuditLogs({

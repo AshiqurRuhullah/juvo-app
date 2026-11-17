@@ -10,9 +10,10 @@ import {
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import { Pagination } from "@/components/ui/pagination";
 import { EmptyState, Skeleton } from "@/components/ui/surfaces";
+import { clampPage, pageCount, PAGE_SIZE } from "@/lib/pagination";
 import { cn } from "@/lib/utils";
 
 /**
@@ -42,6 +43,12 @@ export type DataTableLabels = {
   pageOf: (page: number, pages: number) => string;
   /** "{total} results" */
   total: (total: number) => string;
+  /** "Showing {from} to {to} of {total}" (falls back to `total`) */
+  showing?: (from: number, to: number, total: number) => string;
+  /** "Go to page {page}" */
+  goToPage?: (page: number) => string;
+  /** "Page {page}, current page" */
+  currentPage?: (page: number) => string;
   sortBy: (column: string) => string;
 };
 
@@ -76,7 +83,7 @@ export function DataTable<T>({
   loading,
   getRowId,
   page = 1,
-  pageSize = 20,
+  pageSize = PAGE_SIZE,
   total,
   onPageChange,
   sorting,
@@ -110,8 +117,15 @@ export function DataTable<T>({
     return () => observer.disconnect();
   }, []);
 
-  const rows = table.getRowModel().rows;
-  const pages = total !== undefined ? Math.max(1, Math.ceil(total / pageSize)) : 1;
+  // Server paging: the parent passes `total` and `onPageChange` and the API sends one page. Otherwise the table pages the rows it was
+  // given itself, ten at a time, so every table of the system looks and behaves the same.
+  const serverPaged = total !== undefined && !!onPageChange;
+  const [localPage, setLocalPage] = React.useState(1);
+  const allRows = table.getRowModel().rows;
+  const rowTotal = serverPaged ? total : allRows.length;
+  const activePage = serverPaged ? page : clampPage(localPage, pageCount(rowTotal, pageSize));
+  const rows = serverPaged ? allRows : allRows.slice((activePage - 1) * pageSize, activePage * pageSize);
+  const changePage = serverPaged ? onPageChange : setLocalPage;
   const hasData = rows.length > 0;
 
   return (
@@ -227,19 +241,14 @@ export function DataTable<T>({
         ) : null}
       </ul>
 
-      {total !== undefined && onPageChange ? (
-        <nav className="flex flex-wrap items-center justify-between gap-3" aria-label={caption}>
-          <p className="text-sm text-muted">{labels.total(total)}</p>
-          <div className="flex items-center gap-2">
-            <Button variant="secondary" size="icon" onClick={() => onPageChange(page - 1)} disabled={page <= 1} aria-label={labels.previous}>
-              <ChevronLeft aria-hidden className="rtl:rotate-180" />
-            </Button>
-            <span className="min-w-24 text-center text-sm font-medium text-strong">{labels.pageOf(page, pages)}</span>
-            <Button variant="secondary" size="icon" onClick={() => onPageChange(page + 1)} disabled={page >= pages} aria-label={labels.next}>
-              <ChevronRight aria-hidden className="rtl:rotate-180" />
-            </Button>
-          </div>
-        </nav>
+      {!loading || hasData ? (
+        <Pagination
+          page={activePage}
+          total={rowTotal}
+          pageSize={pageSize}
+          onPageChange={changePage}
+          labels={{ nav: caption, previous: labels.previous, next: labels.next, pageOf: labels.pageOf, total: labels.total, showing: labels.showing, goToPage: labels.goToPage, currentPage: labels.currentPage }}
+        />
       ) : null}
     </div>
   );

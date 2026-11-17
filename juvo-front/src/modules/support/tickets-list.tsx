@@ -44,7 +44,7 @@ export function TicketsList() {
   const categoryOptions = useCategoryOptions();
   const branches = useBranchOptions();
   const perms = useSupportPermissions();
-  const state = useListState<TicketFilters>({}, 20, [{ id: "activity", desc: true }]);
+  const state = useListState<TicketFilters>({}, undefined, [{ id: "activity", desc: true }]);
   const assignees = useAssigneeOptions(true);
   const [selected, setSelected] = React.useState<ReadonlySet<string>>(new Set());
   const [creating, setCreating] = React.useState(false);

@@ -21,7 +21,7 @@ export function TransfersList() {
   const labels = useTableLabels();
   const dateTime = useDateTime();
   const branches = useBranchOptions();
-  const state = useListState<{ status?: string; branchId?: string }>({}, 20);
+  const state = useListState<{ status?: string; branchId?: string }>({});
 
   const query = useTransfers({ page: state.page, pageSize: state.pageSize, search: state.search, status: state.filters.status as TransferStatus | undefined, branchId: state.filters.branchId });
 

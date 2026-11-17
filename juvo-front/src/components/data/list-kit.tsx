@@ -5,9 +5,11 @@ import { useFormatter, useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import type { SortingState } from "@tanstack/react-table";
 import type { DataTableLabels } from "@/components/ui/data-table";
+import type { PaginationLabels } from "@/components/ui/pagination";
 import { Input } from "@/components/ui/form";
 import { Select, type SelectOption } from "@/components/ui/select";
 import { useDebounced } from "@/lib/hooks";
+import { PAGE_SIZE } from "@/lib/pagination";
 
 /** Texts of the data table (paging and sorting) in the current language. */
 export function useTableLabels(): DataTableLabels {
@@ -19,7 +21,25 @@ export function useTableLabels(): DataTableLabels {
     next: t("next"),
     pageOf: (page, pages) => t("pageOf", { page, pages }),
     total: (total) => t("total", { count: total }),
+    showing: (from, to, total) => t("showing", { from, to, total }),
+    goToPage: (page) => t("goToPage", { page }),
+    currentPage: (page) => t("currentPage", { page }),
     sortBy: (column) => t("sortBy", { column }),
+  };
+}
+
+/** Texts of the pager for lists that are not a DataTable (cards): the same wording and the same design as every table. */
+export function usePaginationLabels(nav?: string): PaginationLabels {
+  const t = useTranslations("table");
+  return {
+    nav: nav ?? t("pagination"),
+    previous: t("previous"),
+    next: t("next"),
+    pageOf: (page, pages) => t("pageOf", { page, pages }),
+    total: (total) => t("total", { count: total }),
+    showing: (from, to, total) => t("showing", { from, to, total }),
+    goToPage: (page) => t("goToPage", { page }),
+    currentPage: (page) => t("currentPage", { page }),
   };
 }
 
@@ -33,7 +53,7 @@ export function toSortParam(sorting: SortingState): string | undefined {
  * State of a server-side list: page, search text (sent after a short pause so every keystroke is not a request), sorting and
  * extra filters. Changing the search, sorting or a filter returns to page 1.
  */
-export function useListState<F extends Record<string, string | undefined>>(initialFilters: F, pageSize = 20, initialSort?: SortingState) {
+export function useListState<F extends Record<string, string | undefined>>(initialFilters: F, pageSize = PAGE_SIZE, initialSort?: SortingState) {
   const [page, setPage] = React.useState(1);
   const [searchText, setSearchText] = React.useState("");
   const [sorting, setSortingState] = React.useState<SortingState>(initialSort ?? []);

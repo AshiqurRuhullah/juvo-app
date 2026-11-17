@@ -529,7 +529,11 @@
     "next": "Next",
     "pageOf": "Page {page} of {pages}",
     "total": "{count, plural, one {# result} other {# results}}",
-    "sortBy": "Sort by {column}"
+    "sortBy": "Sort by {column}",
+    "showing": "Showing {from} to {to} of {total}",
+    "goToPage": "Go to page {page}",
+    "currentPage": "Page {page}, current page",
+    "pagination": "Pages"
   },
   "ums": {
     "common": {
