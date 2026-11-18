@@ -339,6 +339,7 @@
     "RETURN_PAYMENT_NOT_RECEIVED": "The order has no received payment to refund.",
     "RETURN_REPLACEMENT_UNAVAILABLE": "The replacement is not in stock or is no longer sold. Restock it, choose another item, or decline the exchange.",
     "LOYALTY_FEATURE_OFF": "Rewards are not switched on in this shop.",
+    "CUSTOMER_NOT_FOUND": "We could not find that customer.",
     "LOYALTY_CUSTOMER_NOT_FOUND": "We could not find that customer.",
     "LOYALTY_INSUFFICIENT_POINTS": "You do not have that many points.",
     "LOYALTY_INSUFFICIENT_CREDIT": "You do not have that much store credit.",

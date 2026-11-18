@@ -105,7 +105,7 @@ export const ADMIN_NAV: NavGroup[] = [
     id: "customers",
     label: "customers",
     icon: Users,
-    items: [{ id: "customers", label: "customers", href: "/admin/customers", icon: Users, permission: "customers.customer.view", scope: "anywhere", ready: false, bottom: true }],
+    items: [{ id: "customers", label: "customers", href: "/admin/customers", icon: Users, permission: "customers.customer.view", scope: "anywhere", ready: true, bottom: true }],
   },
   {
     id: "delivery",
