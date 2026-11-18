@@ -8994,6 +8994,173 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/store/campaigns/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A festival campaign page with its product set (cards carry the campaign price). Only while the campaign is Active; otherwise 404 PROMO.CAMPAIGN_NOT_FOUND. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    slug: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StoreCampaignDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/store/banners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Active campaign banners for a slot (HomeTop, ShopTop, Category; for Category pass the category web address in 'category'), highest priority first. */
+        get: {
+            parameters: {
+                query?: {
+                    slot?: components["schemas"]["BannerSlot"];
+                    category?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StoreBannerDto"][];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/store/search/suggest": {
         parameters: {
             query?: never;
@@ -9414,7 +9581,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Delivery charge and estimated delivery dates for an address and goods (items, or subtotal and weight). The charge shown is the charge billed. */
+        /** Delivery charge and estimated delivery dates for an address and goods (items, or subtotal and weight). The charge shown is the charge billed; a running free-delivery promotion makes it free. */
         post: {
             parameters: {
                 query?: never;
@@ -15271,6 +15438,1487 @@ export interface paths {
                     };
                     content: {
                         "application/json": components["schemas"]["FraudRuleDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/promotions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List promotions (newest first). Filters: type, derived status (Draft, Scheduled, Active, Ended, Archived), liveNow; search by name or campaign address. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    type?: components["schemas"]["PromotionType"];
+                    status?: components["schemas"]["PromotionStatus"];
+                    liveNow?: boolean;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfPromotionListItemDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create a promotion as a Draft: flash sale, product discount, bundle, buy X get Y, free delivery or festival campaign. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SavePromotionRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PromotionDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/promotions/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Price a sample cart with a chosen promotion set (draft ones too) or with the promotions running at a given time, and see per line prices, adjustments, totals and the explanation. Nothing is saved or counted. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["PreviewRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PreviewResultDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/promotions/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Campaign report: per promotion the orders, units, revenue and discount cost, from the order line breakdown (cancelled orders left out). */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    from?: string;
+                    to?: string;
+                    type?: components["schemas"]["PromotionType"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfPromotionReportDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/promotions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One promotion with its settings and targets (names resolved). */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PromotionDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        /** Change a promotion and its targets (the type cannot change; an archived promotion cannot be changed). */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SavePromotionRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PromotionDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        /** Same as archive (a promotion is never erased). */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PromotionDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/promotions/{id}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The report of one promotion: orders, units, revenue after promotion discounts, discount cost. */
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PromotionReportDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/promotions/{id}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Switch the promotion on. It runs inside its schedule (Scheduled before the start, Active, Ended after the end). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PromotionDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/promotions/{id}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Switch the promotion off (back to Draft). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PromotionDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/promotions/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive the promotion: it stops and leaves the shop but stays in the reports and on the orders that used it. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PromotionDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/promotions/{id}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Copy a promotion (and its targets) as a new Draft. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PromotionDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/promotions/{id}/images/{kind}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload the hero or banner picture of a campaign (kind = hero or banner; JPEG, PNG or WebP, at least 1000 px on the long side, at most 10 MB). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    kind: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "multipart/form-data": {
+                        file: components["schemas"]["IFormFile"];
+                    };
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PromotionDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/preorders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The pre-order queue, oldest first: orders with lines that wait for stock (Waiting) or got it (Ready). Filters: state, branch, variant, expected ship date; search order, mobile, name or SKU. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    state?: components["schemas"]["PreorderState"];
+                    branchId?: string;
+                    variantId?: string;
+                    expectedBefore?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfPreorderQueueItemDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/preorders/allocate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Give available stock to waiting pre-order lines, oldest order first (also done automatically after a purchase receipt). An order whose last line was served becomes Ready and the customer is told once. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["AllocatePreordersRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AllocationResultDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/catalog/products/{id}/preorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The pre-order switch of a product and of each variant (with what each variant effectively allows). */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PreorderSettingsDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        /** Allow or forbid pre-orders for a product when it is out of stock, with the expected ship date and an optional advance percentage. */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["PreorderSettingsRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PreorderSettingsDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/catalog/products/{id}/variants/{variantId}/preorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Override the product's pre-order setting for one variant (allowPreorder null inherits the product). */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    variantId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["PreorderSettingsRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PreorderSettingsDto"];
                     };
                 };
                 /** @description Bad Request */
@@ -30100,6 +31748,1506 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/me/rewards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My points, store credit, the points that expire soon and the rules (earn rate, point value, minimum, cap). */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RewardsSummaryDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/rewards/points": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My points ledger, newest first. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfPointsEntryDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/rewards/credit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My store credit ledger, newest first. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfCreditEntryDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/rewards/usable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** How many points and how much store credit I can use on an order of this total right now (balances, minimum and the share cap applied). */
+        get: {
+            parameters: {
+                query: {
+                    orderTotal: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UsableOnCartDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/rewards/gift-cards/redeem": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move the whole balance of a gift card into my store credit. Wrong codes are counted: 5 in 15 minutes lock code entry for 15 minutes (LOYALTY.CODE_LOCKED). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RedeemGiftCardRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RedeemGiftCardResultDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/rewards/referral": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My referral code (made on the first call), how many friends were rewarded, and who referred me. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MyReferralDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/rewards/referral/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Enter a friend's referral code before my first order. The reward comes after my first order is delivered. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ApplyReferralRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MyReferralDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/loyalty/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The rewards settings (the feature flag, earn rate, point value, limits, expiry, referral rewards, gift card limits). */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["LoyaltySettings"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        /** Change the rewards settings (only the fields sent). Every change is written to the audit log. */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateLoyaltySettingsRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["LoyaltySettings"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/loyalty/customers/{customerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A customer's points and store credit balances, the sums of their ledgers and whether the two agree. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomerRewardsDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/loyalty/customers/{customerId}/points": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A customer's points ledger. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                };
+                header?: never;
+                path: {
+                    customerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfStaffPointsEntryDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/loyalty/customers/{customerId}/credit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A customer's store credit ledger. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                };
+                header?: never;
+                path: {
+                    customerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfStaffCreditEntryDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/loyalty/customers/{customerId}/adjust": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add (positive) or take (negative) points and/or store credit with a written reason. A balance never goes below zero. Send Idempotency-Key to make retries safe. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "Idempotency-Key"?: string;
+                };
+                path: {
+                    customerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["AdjustRewardsRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdjustRewardsResultDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/loyalty/gift-cards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Gift cards, newest first. status: active, used, expired, deactivated. The code is never shown. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    status?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfGiftCardDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create a gift card. The code is in this answer only (and in the message to the recipient when sendToRecipient is true); it is stored as a hash. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateGiftCardRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GiftCardCreatedDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/loyalty/gift-cards/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One gift card with its balance history. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GiftCardDetailDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/loyalty/gift-cards/{id}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Switch a gift card off. Its balance can no longer be used. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GiftCardDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/loyalty/referrals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Referrals with their status (Pending, Rewarded, Rejected with the reason, Reversed). */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    status?: components["schemas"]["ReferralStatus"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfReferralListItemDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/notifications/templates": {
         parameters: {
             query?: never;
@@ -30927,6 +34075,2468 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/marketing/segments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Saved segments (the built-in ones first). Search by name. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfSegmentDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create a segment from typed rules (newCustomers, repeatBuyers, highSpenders, inactive, location, consent, lastOrderStatus, wishlist, cart) joined by and/or. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SaveSegmentRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SegmentDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/segments/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One segment with its rules. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SegmentDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        /** Change a segment. Built-in segments cannot be changed: copy them first. */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SaveSegmentRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SegmentDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        /** Delete a segment that no campaign uses (not a built-in one). */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/segments/{id}/copy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Copy a segment (also a built-in one) under a new name. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SegmentDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/segments/{id}/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Live count of active customers in the segment and how many are reachable by SMS and by email (consented and contactable). */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SegmentCountDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/segments/preview-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** The same counts for rules that are not saved yet. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SegmentPreviewRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SegmentCountDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/segments/{id}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Members, paged: name, mobile and email (masked without customers.customer.view-pii), last order, order count, spend and per-channel reachability. Sort: name, spend, -spend, lastOrder, -lastOrder, -createdAt. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfSegmentMemberDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/campaigns": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The campaign report: each campaign with recipients, sent, failed, skipped, unsubscribed and attributed orders and revenue. Filters: status, channel, segmentId; search by name. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    status?: components["schemas"]["CampaignStatus"];
+                    channel?: components["schemas"]["NotificationChannel"];
+                    segmentId?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfCampaignListItemDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create a draft campaign: segment, channel (Sms or Email), English text (Bengali optional) with {customerName}, {shopName}, {link}, {unsubscribeLink}. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SaveCampaignRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CampaignDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/campaigns/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One campaign with its texts, schedule and recipient counts. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CampaignDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        /** Change a draft or scheduled campaign. */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SaveCampaignRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CampaignDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        /** Delete a campaign that never started. */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/campaigns/{id}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** What sending would do now: members, recipients, skipped for no consent, for missing contact and for the frequency cap, and the message as a sample customer would see it in each language. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CampaignPreviewDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/campaigns/{id}/schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send at a time (a full date-time with offset, for example 2026-12-01T10:00:00+06:00 for Asia/Dhaka). The send worker starts it. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ScheduleCampaignRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CampaignDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/campaigns/{id}/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send now. Recipients are fixed, then messages go out throttled; SMS waits for the end of quiet hours. The send worker carries on with what is left. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CampaignDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/campaigns/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel a draft, scheduled or sending campaign. Messages already queued stay; nothing more is sent. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CampaignDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/campaigns/{id}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send the campaign text to your own email or phone (from your staff profile) to see it. Not counted in any result. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SendTestRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SendTestDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/campaigns/{id}/recipients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recipient rows with their state, skip reason (NoConsent, NoContact, FrequencyCap, ChannelOff, Cancelled) and delivery status. Contacts are masked. */
+        get: {
+            parameters: {
+                query?: {
+                    Page?: number | string;
+                    PageSize?: number | string;
+                    Sort?: string;
+                    Search?: string;
+                    Filter?: string;
+                    status?: components["schemas"]["RecipientStatus"];
+                    reason?: string;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfCampaignRecipientDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/campaigns/{id}/results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recipients, sent, delivered, failed, skipped by reason, unsubscribed and the orders attributed (last touch inside the attribution window) with their revenue. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CampaignResultsDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/automations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The four automations (abandoned cart, back in stock, review request, win-back), all off until switched on. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AutomationDto"][];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/automations/{kind}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One automation by kind (AbandonedCart, BackInStock, ReviewRequest, WinBack). */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    kind: components["schemas"]["AutomationKind"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AutomationDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        /** Switch on or off, change the delay, window, frequency cap, channel and the English and Bengali texts. */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    kind: components["schemas"]["AutomationKind"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateAutomationRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AutomationDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/automations/dry-run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** How many messages each automation would send right now, with the reasons for the others. Nothing is sent or written. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AutomationDryRunDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/automations/{kind}/results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Queued, sent, failed and skipped messages of the automation and the orders attributed to them. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    kind: components["schemas"]["AutomationKind"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AutomationResultsDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/marketing/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Quiet hours, frequency cap, throttle, attribution window and the shop name used in messages. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MarketingSettingsDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        /** Change the marketing settings (only the fields you send). */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateMarketingSettingsRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MarketingSettingsDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/store/unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The unsubscribe link of a message: turns the marketing consent of that channel off. Safe to open twice. */
+        get: {
+            parameters: {
+                query?: {
+                    token?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UnsubscribeDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** The same as GET (the token in the query or a form field), for one-click unsubscribe from mail clients. */
+        post: {
+            parameters: {
+                query?: {
+                    token?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UnsubscribeDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/store/products/{slug}/notify-me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ask to be told when a sold-out variant is back. A signed-in customer needs only the variant; a guest gives a mobile number. Once per variant and number. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    slug: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["NotifyMeRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["NotifyMeDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -31050,6 +36660,19 @@ export interface components {
             date: null | string;
             reason: string;
         };
+        AdjustRewardsRequest: {
+            /** Format: int32 */
+            points: null | number | string;
+            /** Format: double */
+            credit: null | number | string;
+            reason: string;
+        };
+        AdjustRewardsResultDto: {
+            /** Format: int32 */
+            pointsBalance: number | string;
+            /** Format: double */
+            creditBalance: number | string;
+        };
         AdjustStockRequest: {
             /** Format: uuid */
             branchId: null | string;
@@ -31061,7 +36684,35 @@ export interface components {
             status: null | string;
             note: null | string;
         };
+        AllocatePreordersRequest: {
+            /** Format: uuid */
+            branchId: null | string;
+            /** Format: uuid */
+            variantId: null | string;
+        };
+        AllocationResultDto: {
+            /** Format: int32 */
+            linesAllocated: number | string;
+            /** Format: int32 */
+            ordersReady: number | string;
+            readyOrderIds: string[];
+        };
+        AppliedPromotion: {
+            /** Format: uuid */
+            id: string;
+            type: components["schemas"]["PromotionType"];
+            nameEn: string;
+            nameBn: string;
+            labelEn: string;
+            labelBn: string;
+            /** Format: double */
+            discount: number | string;
+            stackMode: components["schemas"]["StackMode"];
+        };
         ApplyCouponRequest: {
+            code: string;
+        };
+        ApplyReferralRequest: {
             code: string;
         };
         ApproveReturnRequest: {
@@ -31103,6 +36754,14 @@ export interface components {
             size: number | string;
             url: string;
         };
+        AttributionDto: {
+            /** Format: int32 */
+            orders: number | string;
+            /** Format: double */
+            revenue: number | string;
+            /** Format: int32 */
+            windowDays: number | string;
+        };
         /** @enum {unknown} */
         AuditAction: "Created" | "Updated" | "Deleted" | "AccessDenied" | "Viewed";
         AuditLogDto: {
@@ -31135,6 +36794,68 @@ export interface components {
             requiresPasswordChange: boolean;
             requiresTwoFactorSetup: boolean;
         };
+        AutomationDryRunDto: {
+            /** Format: date-time */
+            at: string;
+            quietHoursNow: boolean;
+            automations: components["schemas"]["AutomationDryRunItemDto"][];
+        };
+        AutomationDryRunItemDto: {
+            kind: components["schemas"]["AutomationKind"];
+            name: string;
+            isEnabled: boolean;
+            /** Format: int32 */
+            candidates: number | string;
+            /** Format: int32 */
+            wouldSend: number | string;
+            /** Format: int32 */
+            wouldSendIfEnabled: number | string;
+            /** Format: int32 */
+            deferredByQuietHours: number | string;
+            skipped: components["schemas"]["SkipCountDto"][];
+        };
+        AutomationDto: {
+            /** Format: uuid */
+            id: string;
+            kind: components["schemas"]["AutomationKind"];
+            name: string;
+            description: string;
+            isEnabled: boolean;
+            channel: components["schemas"]["NotificationChannel"];
+            /** Format: int32 */
+            delayMinutes: number | string;
+            /** Format: int32 */
+            windowDays: number | string;
+            /** Format: int32 */
+            capDays: number | string;
+            subjectEn: null | string;
+            subjectBn: null | string;
+            bodyEn: string;
+            bodyBn: string;
+            placeholders: string[];
+            /** Format: date-time */
+            lastRunAt: null | string;
+        };
+        /** @enum {unknown} */
+        AutomationKind: "AbandonedCart" | "BackInStock" | "ReviewRequest" | "WinBack";
+        AutomationResultsDto: {
+            kind: components["schemas"]["AutomationKind"];
+            name: string;
+            isEnabled: boolean;
+            /** Format: int32 */
+            queued: number | string;
+            /** Format: int32 */
+            sent: number | string;
+            /** Format: int32 */
+            failed: number | string;
+            /** Format: int32 */
+            skipped: number | string;
+            attribution: components["schemas"]["AttributionDto"];
+            /** Format: date-time */
+            lastRunAt: null | string;
+        };
+        /** @enum {unknown} */
+        BannerSlot: "None" | "HomeTop" | "ShopTop" | "Category";
         BlacklistDto: {
             /** Format: uuid */
             id: string;
@@ -31328,6 +37049,124 @@ export interface components {
             assigneeId: null | string;
             reason: null | string;
         };
+        CampaignCountsDto: {
+            /** Format: int32 */
+            recipients: number | string;
+            /** Format: int32 */
+            pending: number | string;
+            /** Format: int32 */
+            queued: number | string;
+            /** Format: int32 */
+            skipped: number | string;
+        };
+        CampaignDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /** Format: uuid */
+            segmentId: string;
+            segmentName: null | string;
+            channel: components["schemas"]["NotificationChannel"];
+            status: components["schemas"]["CampaignStatus"];
+            subjectEn: null | string;
+            subjectBn: null | string;
+            bodyEn: string;
+            bodyBn: null | string;
+            /** Format: date-time */
+            scheduledAt: null | string;
+            scheduledAtDhaka: null | string;
+            /** Format: date-time */
+            startedAt: null | string;
+            /** Format: date-time */
+            completedAt: null | string;
+            /** Format: date-time */
+            cancelledAt: null | string;
+            recipientsReady: boolean;
+            deferredByQuietHours: boolean;
+            createdByName: null | string;
+            /** Format: date-time */
+            createdAt: string;
+            counts: components["schemas"]["CampaignCountsDto"];
+        };
+        CampaignListItemDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            channel: components["schemas"]["NotificationChannel"];
+            status: components["schemas"]["CampaignStatus"];
+            /** Format: date-time */
+            scheduledAt: null | string;
+            /** Format: date-time */
+            startedAt: null | string;
+            /** Format: int32 */
+            recipients: number | string;
+            /** Format: int32 */
+            sent: number | string;
+            /** Format: int32 */
+            failed: number | string;
+            /** Format: int32 */
+            skipped: number | string;
+            /** Format: int32 */
+            unsubscribed: number | string;
+            /** Format: int32 */
+            attributedOrders: number | string;
+            /** Format: double */
+            attributedRevenue: number | string;
+        };
+        CampaignPreviewDto: {
+            /** Format: int32 */
+            segmentMembers: number | string;
+            /** Format: int32 */
+            recipients: number | string;
+            /** Format: int32 */
+            skippedNoConsent: number | string;
+            /** Format: int32 */
+            skippedNoContact: number | string;
+            /** Format: int32 */
+            skippedFrequencyCap: number | string;
+            quietHoursNow: boolean;
+            smsDeferred: boolean;
+            samples: components["schemas"]["SampleMessageDto"][];
+            unknownPlaceholders: string[];
+        };
+        CampaignRecipientDto: {
+            /** Format: uuid */
+            customerId: string;
+            name: null | string;
+            contact: null | string;
+            status: components["schemas"]["RecipientStatus"];
+            skipReason: null | string;
+            deliveryStatus: null | components["schemas"]["NotificationStatus"];
+            /** Format: date-time */
+            processedAt: null | string;
+        };
+        CampaignResultsDto: {
+            /** Format: uuid */
+            campaignId: string;
+            name: string;
+            status: components["schemas"]["CampaignStatus"];
+            channel: components["schemas"]["NotificationChannel"];
+            /** Format: int32 */
+            recipients: number | string;
+            /** Format: int32 */
+            pending: number | string;
+            /** Format: int32 */
+            inFlight: number | string;
+            /** Format: int32 */
+            sent: number | string;
+            /** Format: int32 */
+            delivered: number | string;
+            /** Format: int32 */
+            failed: number | string;
+            /** Format: int32 */
+            skipped: number | string;
+            skippedByReason: components["schemas"]["SkipCountDto"][];
+            /** Format: int32 */
+            unsubscribed: number | string;
+            attribution: components["schemas"]["AttributionDto"];
+        };
+        /** @enum {unknown} */
+        CampaignStatus: "Draft" | "Scheduled" | "Sending" | "Sent" | "Cancelled";
         CancelOrderRequest: {
             reason: null | string;
         };
@@ -31356,6 +37195,10 @@ export interface components {
             /** Format: double */
             discount: number | string;
             problem: null | string;
+            /** @default true */
+            applied: boolean;
+            notAppliedReasonEn?: null | string;
+            notAppliedReasonBn?: null | string;
         };
         CartDeliveryRequest: {
             countryCode: null | string;
@@ -31388,6 +37231,25 @@ export interface components {
             problem: null | string;
             /** Format: double */
             lineTotal: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            listPrice: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            orderDiscount: number | string;
+            adjustments?: null | components["schemas"]["PriceAdjustment"][];
+            promotionLabelEn?: null | string;
+            promotionLabelBn?: null | string;
+            /** @default false */
+            isPreorder: boolean;
+            /** Format: date */
+            preorderExpectedShipDate?: null | string;
+            preorderLabelEn?: null | string;
+            preorderLabelBn?: null | string;
         };
         CartView: {
             /** Format: uuid */
@@ -31409,6 +37271,25 @@ export interface components {
             priceChanged: boolean;
             /** Format: date-time */
             expiresAt: null | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            promotionDiscount: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            listSubtotal: number | string;
+            explanation?: null | components["schemas"]["PriceExplanation"];
+            freeDelivery?: null | components["schemas"]["FreeDeliveryOffer"][];
+            /** @default false */
+            hasPreorder: boolean;
+            /**
+             * Format: double
+             * @default 0
+             */
+            preorderAdvance: number | string;
         };
         CategoryDto: {
             /** Format: uuid */
@@ -31508,6 +37389,21 @@ export interface components {
             paymentMethods: components["schemas"]["PaymentMethodDto"][];
             problems: string[];
             canPlace: boolean;
+            /**
+             * Format: double
+             * @default 0
+             */
+            promotionDiscount: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            listSubtotal: number | string;
+            explanation?: null | components["schemas"]["PriceExplanation"];
+            coupon?: null | components["schemas"]["CartCouponDto"];
+            /** @default false */
+            hasPreorder: boolean;
+            tender?: null | components["schemas"]["TenderQuoteDto"];
         };
         CheckoutQuoteRequest: {
             /** Format: uuid */
@@ -31515,6 +37411,7 @@ export interface components {
             address: null | components["schemas"]["CheckoutAddress"];
             paymentMethod: null | string;
             mobile: null | string;
+            tender?: null | components["schemas"]["TenderRequest"];
         };
         CheckoutRequest: {
             contact: components["schemas"]["CheckoutContact"];
@@ -31531,6 +37428,7 @@ export interface components {
             expectedTotal: null | number | string;
             idempotencyKey: null | string;
             deviceId: null | string;
+            tender?: null | components["schemas"]["TenderRequest"];
         };
         CheckoutResultDto: {
             /** Format: uuid */
@@ -31556,6 +37454,13 @@ export interface components {
             replayed: boolean;
             /** Format: date-time */
             paymentDeadline: null | string;
+            /** @default false */
+            hasPreorder: boolean;
+            /**
+             * Format: double
+             * @default 0
+             */
+            tenderTotal: number | string;
         };
         CloneRoleRequest: {
             name: string;
@@ -31701,9 +37606,22 @@ export interface components {
             /** Format: int32 */
             usedCount: number | string;
             isActive: boolean;
+            /** @default false */
+            stacksWithPromotions: boolean;
         };
         /** @enum {unknown} */
         CouponKind: "Percent" | "Fixed";
+        CouponOutcome: {
+            code: string;
+            /** Format: uuid */
+            couponId: null | string;
+            applied: boolean;
+            /** Format: double */
+            discount: number | string;
+            problem: null | string;
+            notAppliedReasonEn: null | string;
+            notAppliedReasonBn: null | string;
+        };
         CourierDto: {
             /** Format: uuid */
             id: string;
@@ -31833,6 +37751,16 @@ export interface components {
             user: components["schemas"]["UserDetailDto"];
             temporaryPassword: null | string;
         };
+        CreateGiftCardRequest: {
+            /** Format: double */
+            amount: number | string;
+            /** Format: date-time */
+            expiresAt: null | string;
+            note: null | string;
+            recipientMobile: null | string;
+            recipientEmail: null | string;
+            sendToRecipient: boolean;
+        };
         CreateMyTicketRequest: {
             subject: null | string;
             message: null | string;
@@ -31911,6 +37839,21 @@ export interface components {
              */
             daysMax: number | string;
         };
+        CreditEntryDto: {
+            /** Format: uuid */
+            id: string;
+            kind: components["schemas"]["CreditEntryKind"];
+            /** Format: double */
+            amount: number | string;
+            /** Format: double */
+            balanceAfter: number | string;
+            reason: string;
+            orderNumber: null | string;
+            /** Format: date-time */
+            at: string;
+        };
+        /** @enum {unknown} */
+        CreditEntryKind: "GiftCardRedeem" | "Spend" | "Release" | "Refund" | "Adjust" | "ReferralReward" | "ReferralClawback";
         CreditNoteDto: {
             /** Format: uuid */
             id: string;
@@ -32000,6 +37943,23 @@ export interface components {
         CustomerReplyRequest: {
             text: null | string;
             attachmentPaths: null | string[];
+        };
+        CustomerRewardsDto: {
+            /** Format: uuid */
+            customerId: string;
+            mobile: string;
+            name: null | string;
+            /** Format: int32 */
+            pointsBalance: number | string;
+            /** Format: double */
+            creditBalance: number | string;
+            /** Format: int32 */
+            pointsLedgerSum: number | string;
+            /** Format: double */
+            creditLedgerSum: number | string;
+            ledgerConsistent: boolean;
+            /** Format: int32 */
+            pointsExpiringSoon: number | string;
         };
         CustomersReportDto: {
             filters: components["schemas"]["ReportFiltersDto"];
@@ -32158,6 +38118,8 @@ export interface components {
             /** Format: date */
             latestDelivery: string;
             dutiesPaidByReceiver: boolean;
+            promotionLabelEn?: null | string;
+            promotionLabelBn?: null | string;
         };
         DeliveryQuoteRequest: {
             countryCode: null | string;
@@ -32206,6 +38168,8 @@ export interface components {
             password: string;
             code: string;
         };
+        /** @enum {unknown} */
+        DiscountKind: "Percent" | "Fixed" | "FixedPrice" | null;
         DistrictDto: {
             /** Format: uuid */
             id: string;
@@ -32358,6 +38322,33 @@ export interface components {
         };
         /** @enum {unknown} */
         ExpenseStatus: "Draft" | "Submitted" | "Approved" | "Rejected";
+        ExplainedLine: {
+            /** Format: uuid */
+            variantId: string;
+            /** Format: double */
+            listPrice: number | string;
+            /** Format: double */
+            unitPrice: number | string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            listTotal: number | string;
+            /** Format: double */
+            finalTotal: number | string;
+            /** Format: double */
+            saving: number | string;
+            reasonsEn: string[];
+            reasonsBn: string[];
+        };
+        ExplainedReason: {
+            sourceType: string;
+            /** Format: uuid */
+            sourceId: null | string;
+            labelEn: string;
+            labelBn: string;
+            /** Format: double */
+            amount: number | string;
+        };
         FailRefundRequest: {
             reason: null | string;
         };
@@ -32429,6 +38420,18 @@ export interface components {
         };
         /** @enum {unknown} */
         FraudState: "None" | "Flagged" | "InReview" | "AdvanceRequested" | "Approved" | "Rejected";
+        FreeDeliveryOffer: {
+            /** Format: uuid */
+            promotionId: string;
+            labelEn: string;
+            labelBn: string;
+            /** Format: double */
+            minCartValue: number | string;
+            zoneCodes: string[];
+            qualifies: boolean;
+            /** Format: double */
+            amountToQualify: number | string;
+        };
         FunnelStageDto: {
             stage: string;
             /** Format: int32 */
@@ -32446,6 +38449,49 @@ export interface components {
             /** Format: int32 */
             autoApproved: number | string;
         };
+        GiftCardCreatedDto: {
+            card: components["schemas"]["GiftCardDto"];
+            code: string;
+        };
+        GiftCardDetailDto: {
+            card: components["schemas"]["GiftCardDto"];
+            entries: components["schemas"]["GiftCardEntryDto"][];
+        };
+        GiftCardDto: {
+            /** Format: uuid */
+            id: string;
+            codeHint: string;
+            /** Format: double */
+            initialAmount: number | string;
+            /** Format: double */
+            balance: number | string;
+            status: string;
+            /** Format: date-time */
+            expiresAt: null | string;
+            note: null | string;
+            recipientMobile: null | string;
+            createdByName: null | string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            redeemedAt: null | string;
+        };
+        GiftCardEntryDto: {
+            /** Format: uuid */
+            id: string;
+            kind: components["schemas"]["GiftCardEntryKind"];
+            /** Format: double */
+            amount: number | string;
+            /** Format: double */
+            balanceAfter: number | string;
+            orderNumber: null | string;
+            actorName: null | string;
+            note: null | string;
+            /** Format: date-time */
+            at: string;
+        };
+        /** @enum {unknown} */
+        GiftCardEntryKind: "Issue" | "RedeemToCredit" | "Spend" | "Deactivate";
         GoodsReceiptDto: {
             /** Format: uuid */
             id: string;
@@ -32602,6 +38648,19 @@ export interface components {
             /** Format: double */
             creditedTotal: number | string;
             creditNotes: components["schemas"]["CreditNoteSummaryDto"][];
+            /**
+             * Format: double
+             * @default 0
+             */
+            orderPromotionDiscount: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            listSubtotal: number | string;
+            /** @default false */
+            hasPreorder: boolean;
+            tenders?: null | components["schemas"]["InvoiceTenderDto"][];
         };
         InvoiceLineDto: {
             name: string;
@@ -32616,6 +38675,19 @@ export interface components {
             lineTotal: number | string;
             /** Format: double */
             taxAmount: number | string;
+            /** Format: double */
+            listPrice?: null | number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            promotionDiscount: number | string;
+            /** @default false */
+            isPreorder: boolean;
+            /** Format: date */
+            preorderExpectedShipDate?: null | string;
+            preorderLabelEn?: null | string;
+            preorderLabelBn?: null | string;
         };
         InvoiceListItemDto: {
             /** Format: uuid */
@@ -32641,6 +38713,12 @@ export interface components {
             phone: null | string;
             email: null | string;
             taxId: null | string;
+        };
+        InvoiceTenderDto: {
+            method: string;
+            description: string;
+            /** Format: double */
+            amount: number | string;
         };
         /** @enum {unknown} */
         ItemCondition: "Unopened" | "Good" | "Damaged" | null;
@@ -32728,6 +38806,34 @@ export interface components {
             /** Format: int32 */
             reorderLevel: number | string;
         };
+        LoyaltySettings: {
+            enabled: boolean;
+            /** Format: double */
+            earnRatePerBdt: number | string;
+            earnRounding: components["schemas"]["PointsRounding"];
+            /** Format: double */
+            pointValue: number | string;
+            /** Format: int32 */
+            minPointsToRedeem: number | string;
+            /** Format: int32 */
+            maxTenderPercent: number | string;
+            /** Format: int32 */
+            pointsExpiryMonths: number | string;
+            /** Format: int32 */
+            expiryWarningDays: number | string;
+            /** Format: double */
+            referralRewardReferrer: number | string;
+            /** Format: double */
+            referralRewardReferee: number | string;
+            /** Format: int32 */
+            referralMaxRewardsPerReferrer: number | string;
+            /** Format: double */
+            giftCardMinAmount: number | string;
+            /** Format: double */
+            giftCardMaxAmount: number | string;
+            /** Format: int32 */
+            giftCardDefaultValidityMonths: number | string;
+        };
         ManualOrderLine: {
             /** Format: uuid */
             variantId: null | string;
@@ -32792,6 +38898,17 @@ export interface components {
             earliestDelivery: null | string;
             /** Format: date */
             latestDelivery: null | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            promotionDiscount: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            listSubtotal: number | string;
+            explanation?: null | components["schemas"]["PriceExplanation"];
         };
         ManualQuoteLineDto: {
             /** Format: uuid */
@@ -32808,6 +38925,32 @@ export interface components {
             lineTotal: number | string;
             /** Format: int32 */
             availableInBranch: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            listPrice: number | string;
+            /** @default false */
+            isPreorder: boolean;
+            adjustments?: null | components["schemas"]["PriceAdjustment"][];
+        };
+        MarketingSettingsDto: {
+            quietHoursEnabled: boolean;
+            quietHoursStart: string;
+            quietHoursEnd: string;
+            /** Format: int32 */
+            frequencyCapMessages: number | string;
+            /** Format: int32 */
+            frequencyCapDays: number | string;
+            /** Format: int32 */
+            throttlePerMinute: number | string;
+            /** Format: int32 */
+            attributionWindowDays: number | string;
+            shopName: string;
+            linkUrl: null | string;
+            /** Format: int32 */
+            maxNotifyMePerMobile: number | string;
+            smsOptOutText: string;
         };
         MeResponse: {
             subjectType: string;
@@ -32843,6 +38986,16 @@ export interface components {
             grandTotal: number | string;
             /** Format: double */
             advanceRequired: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            promotionDiscount: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            listSubtotal: number | string;
         };
         /** @enum {unknown} */
         MoneyMethod: "Cash" | "Bank" | "MobileBanking" | "Cheque" | "Other";
@@ -32885,6 +39038,7 @@ export interface components {
             /** Format: date-time */
             paymentDeadline: null | string;
             shipment?: null | components["schemas"]["TrackingShipmentDto"];
+            preorderState?: components["schemas"]["PreorderState"];
         };
         MyOrderListItemDto: {
             /** Format: uuid */
@@ -32902,6 +39056,21 @@ export interface components {
             firstItemName: null | string;
             firstItemImageUrl: null | string;
             canCancel: boolean;
+        };
+        MyReferralDto: {
+            code: string;
+            /** Format: int32 */
+            rewarded: number | string;
+            /** Format: int32 */
+            pending: number | string;
+            /** Format: int32 */
+            rejected: number | string;
+            /** Format: double */
+            creditEarned: number | string;
+            /** Format: int32 */
+            maxRewards: number | string;
+            referredByName: null | string;
+            myStatus: null | components["schemas"]["ReferralStatus"];
         };
         MyReturnDto: {
             /** Format: uuid */
@@ -33016,6 +39185,19 @@ export interface components {
         };
         /** @enum {unknown} */
         NotificationStatus: "Sent" | "Failed" | "Pending" | "DeadLetter" | "Skipped";
+        NotifyMeDto: {
+            /** Format: uuid */
+            subscriptionId: string;
+            /** Format: uuid */
+            variantId: string;
+            alreadySubscribed: boolean;
+        };
+        NotifyMeRequest: {
+            /** Format: uuid */
+            variantId: null | string;
+            mobile: null | string;
+            email: null | string;
+        };
         OldestOpenDto: {
             /** Format: uuid */
             id: string;
@@ -33082,6 +39264,17 @@ export interface components {
             customerStats: components["schemas"]["CustomerOrderStatsDto"];
             nextOrderStatuses: string[];
             nextPaymentStatuses: string[];
+            preorderState?: components["schemas"]["PreorderState"];
+        };
+        OrderLineAdjustmentDto: {
+            sourceType: string;
+            /** Format: uuid */
+            sourceId: null | string;
+            labelEn: string;
+            labelBn: string;
+            /** Format: double */
+            amount: number | string;
+            level: string;
         };
         OrderLineDto: {
             /** Format: uuid */
@@ -33100,6 +39293,25 @@ export interface components {
             quantity: number | string;
             /** Format: double */
             lineTotal: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            listPrice: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            promotionDiscount: number | string;
+            adjustments?: null | components["schemas"]["OrderLineAdjustmentDto"][];
+            /** @default false */
+            isPreorder: boolean;
+            /** Format: date */
+            preorderExpectedShipDate?: null | string;
+            preorderLabelEn?: null | string;
+            preorderLabelBn?: null | string;
+            /** @default false */
+            waitingForStock: boolean;
         };
         OrderListItemDto: {
             /** Format: uuid */
@@ -33238,6 +39450,28 @@ export interface components {
             /** Format: int32 */
             totalPages?: number | string;
         };
+        PagedResultOfCampaignListItemDto: {
+            items: components["schemas"]["CampaignListItemDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
+        PagedResultOfCampaignRecipientDto: {
+            items: components["schemas"]["CampaignRecipientDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
         PagedResultOfCountListItemDto: {
             items: components["schemas"]["CountListItemDto"][];
             /** Format: int32 */
@@ -33251,6 +39485,17 @@ export interface components {
         };
         PagedResultOfCouponDto: {
             items: components["schemas"]["CouponDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
+        PagedResultOfCreditEntryDto: {
+            items: components["schemas"]["CreditEntryDto"][];
             /** Format: int32 */
             total: number | string;
             /** Format: int32 */
@@ -33295,6 +39540,17 @@ export interface components {
         };
         PagedResultOfExpenseListItemDto: {
             items: components["schemas"]["ExpenseListItemDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
+        PagedResultOfGiftCardDto: {
+            items: components["schemas"]["GiftCardDto"][];
             /** Format: int32 */
             total: number | string;
             /** Format: int32 */
@@ -33403,6 +39659,28 @@ export interface components {
             /** Format: int32 */
             totalPages?: number | string;
         };
+        PagedResultOfPointsEntryDto: {
+            items: components["schemas"]["PointsEntryDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
+        PagedResultOfPreorderQueueItemDto: {
+            items: components["schemas"]["PreorderQueueItemDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
         PagedResultOfProductListItemDto: {
             items: components["schemas"]["ProductListItemDto"][];
             /** Format: int32 */
@@ -33414,8 +39692,41 @@ export interface components {
             /** Format: int32 */
             totalPages?: number | string;
         };
+        PagedResultOfPromotionListItemDto: {
+            items: components["schemas"]["PromotionListItemDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
+        PagedResultOfPromotionReportDto: {
+            items: components["schemas"]["PromotionReportDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
         PagedResultOfPurchaseListItemDto: {
             items: components["schemas"]["PurchaseListItemDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
+        PagedResultOfReferralListItemDto: {
+            items: components["schemas"]["ReferralListItemDto"][];
             /** Format: int32 */
             total: number | string;
             /** Format: int32 */
@@ -33469,6 +39780,28 @@ export interface components {
             /** Format: int32 */
             totalPages?: number | string;
         };
+        PagedResultOfSegmentDto: {
+            items: components["schemas"]["SegmentDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
+        PagedResultOfSegmentMemberDto: {
+            items: components["schemas"]["SegmentMemberDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
         PagedResultOfSettlementListItemDto: {
             items: components["schemas"]["SettlementListItemDto"][];
             /** Format: int32 */
@@ -33493,6 +39826,28 @@ export interface components {
         };
         PagedResultOfSignInHistoryDto: {
             items: components["schemas"]["SignInHistoryDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
+        PagedResultOfStaffCreditEntryDto: {
+            items: components["schemas"]["StaffCreditEntryDto"][];
+            /** Format: int32 */
+            total: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+            /** Format: int32 */
+            totalPages?: number | string;
+        };
+        PagedResultOfStaffPointsEntryDto: {
+            items: components["schemas"]["StaffPointsEntryDto"][];
             /** Format: int32 */
             total: number | string;
             /** Format: int32 */
@@ -33631,7 +39986,7 @@ export interface components {
             at: string;
         };
         /** @enum {unknown} */
-        PaymentKind: "Online" | "Manual" | "Cod" | "Advance";
+        PaymentKind: "Online" | "Manual" | "Cod" | "Advance" | "StoreCredit";
         PaymentListItemDto: {
             /** Format: uuid */
             id: string;
@@ -33791,6 +40146,87 @@ export interface components {
             expensesByCategory: components["schemas"]["ExpenseLineDto"][];
             notes: string[];
         };
+        PointsEntryDto: {
+            /** Format: uuid */
+            id: string;
+            kind: components["schemas"]["PointsEntryKind"];
+            /** Format: int32 */
+            points: number | string;
+            /** Format: int32 */
+            balanceAfter: number | string;
+            reason: string;
+            orderNumber: null | string;
+            /** Format: date-time */
+            expiresAt: null | string;
+            /** Format: date-time */
+            at: string;
+        };
+        /** @enum {unknown} */
+        PointsEntryKind: "Earn" | "Redeem" | "Release" | "Reverse" | "Expire" | "Adjust" | "ReferralReward";
+        /** @enum {unknown} */
+        PointsRounding: "Down" | "Nearest" | "Up";
+        PreorderLineDto: {
+            /** Format: uuid */
+            itemId: string;
+            /** Format: uuid */
+            variantId: string;
+            sku: string;
+            name: string;
+            colorName: null | string;
+            size: null | string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: int32 */
+            waiting: number | string;
+            /** Format: date */
+            expectedShipDate: null | string;
+            /** Format: date-time */
+            allocatedAt: null | string;
+        };
+        PreorderQueueItemDto: {
+            /** Format: uuid */
+            orderId: string;
+            number: string;
+            /** Format: uuid */
+            branchId: string;
+            branchCode: string;
+            status: components["schemas"]["OrderStatus"];
+            state: components["schemas"]["PreorderState"];
+            customerName: null | string;
+            customerMobile: string;
+            /** Format: date-time */
+            placedAt: string;
+            /** Format: double */
+            grandTotal: number | string;
+            /** Format: double */
+            advanceRequired: number | string;
+            /** Format: double */
+            advancePaid: number | string;
+            lines: components["schemas"]["PreorderLineDto"][];
+        };
+        PreorderSettingsDto: {
+            /** Format: uuid */
+            productId: string;
+            name: string;
+            allowPreorder: boolean;
+            /** Format: date */
+            expectedShipDate: null | string;
+            /** Format: double */
+            advancePercent: null | number | string;
+            variants: components["schemas"]["VariantPreorderDto"][];
+        };
+        PreorderSettingsRequest: {
+            allowPreorder: null | boolean;
+            /** Format: date */
+            expectedShipDate: null | string;
+            /** Format: double */
+            advancePercent: null | number | string;
+        };
+        /**
+         * @default None
+         * @enum {unknown}
+         */
+        PreorderState: "None" | "Waiting" | "Ready";
         PreviewDto: {
             subject: null | string;
             body: string;
@@ -33798,6 +40234,31 @@ export interface components {
             missingVariables: string[];
             /** Format: int32 */
             characters: number | string;
+        };
+        PreviewLine: {
+            /** Format: uuid */
+            variantId: null | string;
+            sku: null | string;
+            /** Format: int32 */
+            quantity: number | string;
+        };
+        PreviewRequest: {
+            lines: components["schemas"]["PreviewLine"][];
+            couponCode: null | string;
+            promotionIds: null | string[];
+            /** Format: date-time */
+            at: null | string;
+            channel: null | components["schemas"]["PricingChannel"];
+        };
+        PreviewResultDto: {
+            lines: components["schemas"]["PricedLine"][];
+            totals: components["schemas"]["PricingTotals"];
+            promotions: components["schemas"]["AppliedPromotion"][];
+            coupon: null | components["schemas"]["CouponOutcome"];
+            freeDelivery: components["schemas"]["FreeDeliveryOffer"][];
+            explanation: components["schemas"]["PriceExplanation"];
+            couponErrorCode: null | string;
+            couponErrorMessage: null | string;
         };
         PreviewTemplateRequest: {
             code: null | string;
@@ -33808,6 +40269,64 @@ export interface components {
             variables: null | {
                 [key: string]: string;
             };
+        };
+        PriceAdjustment: {
+            sourceType: string;
+            /** Format: uuid */
+            sourceId: null | string;
+            labelEn: string;
+            labelBn: string;
+            /** Format: double */
+            amount: number | string;
+            level: string;
+        };
+        PricedLine: {
+            /** Format: uuid */
+            variantId: string;
+            /** Format: uuid */
+            productId: string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            listPrice: number | string;
+            /** Format: double */
+            baseUnitPrice: number | string;
+            /** Format: double */
+            unitPrice: number | string;
+            /** Format: double */
+            lineTotal: number | string;
+            /** Format: double */
+            orderDiscount: number | string;
+            /** Format: double */
+            netTotal: number | string;
+            adjustments: components["schemas"]["PriceAdjustment"][];
+        };
+        PriceExplanation: {
+            currency: string;
+            /** Format: double */
+            listTotal: number | string;
+            /** Format: double */
+            finalTotal: number | string;
+            /** Format: double */
+            savings: number | string;
+            reasons: components["schemas"]["ExplainedReason"][];
+            lines: components["schemas"]["ExplainedLine"][];
+            notesEn: string[];
+            notesBn: string[];
+        };
+        /** @enum {unknown} */
+        PricingChannel: "Web" | "SocialDesk" | "Pos" | null;
+        PricingTotals: {
+            /** Format: double */
+            listSubtotal: number | string;
+            /** Format: double */
+            subtotal: number | string;
+            /** Format: double */
+            promotionDiscount: number | string;
+            /** Format: double */
+            couponDiscount: number | string;
+            /** Format: double */
+            goodsTotal: number | string;
         };
         PrintLineDto: {
             /** Format: int32 */
@@ -33954,6 +40473,125 @@ export interface components {
         };
         /** @enum {unknown} */
         ProfileLevel: "Guest" | "Quick" | "Full";
+        PromotionChannels: string;
+        PromotionDetailDto: {
+            /** Format: uuid */
+            id: string;
+            nameEn: string;
+            nameBn: null | string;
+            type: components["schemas"]["PromotionType"];
+            status: components["schemas"]["PromotionStatus"];
+            isEnabled: boolean;
+            isArchived: boolean;
+            /** Format: date-time */
+            startsAt: null | string;
+            /** Format: date-time */
+            endsAt: null | string;
+            /** Format: int32 */
+            priority: number | string;
+            stackMode: components["schemas"]["StackMode"];
+            channels: components["schemas"]["PromotionChannels"];
+            /** Format: double */
+            minCartValue: null | number | string;
+            /** Format: int32 */
+            usageLimit: null | number | string;
+            /** Format: int32 */
+            usedCount: number | string;
+            discountKind: null | components["schemas"]["DiscountKind"];
+            /** Format: double */
+            discountValue: null | number | string;
+            /** Format: double */
+            maxDiscount: null | number | string;
+            /** Format: int32 */
+            buyQuantity: number | string;
+            /** Format: int32 */
+            getQuantity: number | string;
+            /** Format: double */
+            getDiscountPercent: number | string;
+            /** Format: double */
+            bundlePrice: null | number | string;
+            zoneCodes: string[];
+            labelEn: null | string;
+            labelBn: null | string;
+            slug: null | string;
+            titleEn: null | string;
+            titleBn: null | string;
+            bodyEn: null | string;
+            bodyBn: null | string;
+            heroImageUrl: null | string;
+            bannerImageUrl: null | string;
+            bannerSlot: components["schemas"]["BannerSlot"];
+            /** Format: uuid */
+            bannerCategoryId: null | string;
+            targets: components["schemas"]["PromotionTargetDto"][];
+            /** Format: date-time */
+            createdAt: string;
+        };
+        PromotionListItemDto: {
+            /** Format: uuid */
+            id: string;
+            nameEn: string;
+            nameBn: null | string;
+            type: components["schemas"]["PromotionType"];
+            status: components["schemas"]["PromotionStatus"];
+            /** Format: date-time */
+            startsAt: null | string;
+            /** Format: date-time */
+            endsAt: null | string;
+            /** Format: int32 */
+            priority: number | string;
+            stackMode: components["schemas"]["StackMode"];
+            /** Format: int32 */
+            usedCount: number | string;
+            /** Format: int32 */
+            usageLimit: null | number | string;
+            slug: null | string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        PromotionReportDto: {
+            /** Format: uuid */
+            promotionId: string;
+            nameEn: string;
+            type: components["schemas"]["PromotionType"];
+            status: components["schemas"]["PromotionStatus"];
+            /** Format: int32 */
+            orders: number | string;
+            /** Format: int32 */
+            units: number | string;
+            /** Format: double */
+            revenue: number | string;
+            /** Format: double */
+            discountCost: number | string;
+        };
+        /** @enum {unknown} */
+        PromotionStatus: "Draft" | "Scheduled" | "Active" | "Ended" | "Archived";
+        PromotionTargetDto: {
+            /** Format: uuid */
+            id: string;
+            kind: components["schemas"]["PromotionTargetKind"];
+            /** Format: uuid */
+            targetId: null | string;
+            role: components["schemas"]["TargetRole"];
+            /** Format: int32 */
+            quantity: number | string;
+            name: null | string;
+        };
+        PromotionTargetInput: {
+            kind: components["schemas"]["PromotionTargetKind"];
+            /** Format: uuid */
+            targetId: null | string;
+            role?: components["schemas"]["TargetRole"];
+            /**
+             * Format: int32
+             * @default 1
+             */
+            quantity: number | string;
+        };
+        /** @enum {unknown} */
+        PromotionTargetKind: "Product" | "Variant" | "Category" | "Brand" | "Everything";
+        /** @enum {unknown} */
+        PromotionType: "FlashSale" | "ProductDiscount" | "Bundle" | "BuyXGetY" | "FreeDelivery" | "FestivalCampaign";
         PurchaseAttachmentDto: {
             /** Format: uuid */
             id: string;
@@ -34152,6 +40790,31 @@ export interface components {
             /** Format: double */
             lineTotal: number | string;
             problem: null | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            listPrice: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            orderDiscount: number | string;
+            adjustments?: null | components["schemas"]["PriceAdjustment"][];
+            promotionLabelEn?: null | string;
+            promotionLabelBn?: null | string;
+            /** @default false */
+            isPreorder: boolean;
+            /** Format: date */
+            preorderExpectedShipDate?: null | string;
+            preorderLabelEn?: null | string;
+            preorderLabelBn?: null | string;
+        };
+        ReachableDto: {
+            /** Format: int32 */
+            sms: number | string;
+            /** Format: int32 */
+            email: number | string;
         };
         RealtimeTokenDto: {
             token: string;
@@ -34229,6 +40892,8 @@ export interface components {
             receipt: components["schemas"]["GoodsReceiptDto"];
             order: components["schemas"]["PurchaseDetailDto"];
         };
+        /** @enum {unknown} */
+        RecipientStatus: "Pending" | "Queued" | "Skipped";
         ReconcileSettlementRequest: {
             lines: null | components["schemas"]["ReceivedLineRequest"][];
         };
@@ -34289,6 +40954,38 @@ export interface components {
             isActive: boolean;
             lastGeneratedPeriod: null | string;
         };
+        RedeemGiftCardRequest: {
+            code: string;
+        };
+        RedeemGiftCardResultDto: {
+            /** Format: double */
+            added: number | string;
+            /** Format: double */
+            creditBalance: number | string;
+        };
+        ReferralListItemDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            referrerId: string;
+            referrerName: null | string;
+            /** Format: uuid */
+            refereeId: string;
+            refereeName: null | string;
+            codeUsed: string;
+            status: components["schemas"]["ReferralStatus"];
+            note: null | string;
+            /** Format: double */
+            referrerReward: number | string;
+            /** Format: double */
+            refereeReward: number | string;
+            /** Format: date-time */
+            appliedAt: string;
+            /** Format: date-time */
+            decidedAt: null | string;
+        };
+        /** @enum {unknown} */
+        ReferralStatus: "Pending" | "Rewarded" | "Rejected" | "Reversed" | null;
         RefreshRequest: {
             refreshToken: string;
             deviceName: null | string;
@@ -34330,9 +41027,9 @@ export interface components {
             completedAt: null | string;
         };
         /** @enum {unknown} */
-        RefundMethod: "OriginalPayment" | "Cash" | "BankTransfer" | "Wallet";
+        RefundMethod: "OriginalPayment" | "Cash" | "BankTransfer" | "Wallet" | "StoreCredit";
         /** @enum {unknown} */
-        RefundMode: "Gateway" | "Manual";
+        RefundMode: "Gateway" | "Manual" | "StoreCredit";
         RefundReturnRequest: {
             method: components["schemas"]["RefundMethod"];
             reference: null | string;
@@ -34677,6 +41374,36 @@ export interface components {
             flags: components["schemas"]["RiskFlagDto"][];
             customerStats: components["schemas"]["CustomerOrderStatsDto"];
         };
+        RewardRulesDto: {
+            /** Format: double */
+            earnRatePerBdt: number | string;
+            /** Format: double */
+            pointValue: number | string;
+            /** Format: int32 */
+            minPointsToRedeem: number | string;
+            /** Format: int32 */
+            maxTenderPercent: number | string;
+            /** Format: int32 */
+            pointsExpiryMonths: number | string;
+            /** Format: double */
+            referralRewardReferrer: number | string;
+            /** Format: double */
+            referralRewardReferee: number | string;
+        };
+        RewardsSummaryDto: {
+            enabled: boolean;
+            /** Format: int32 */
+            pointsBalance: number | string;
+            /** Format: double */
+            pointsValue: number | string;
+            /** Format: double */
+            creditBalance: number | string;
+            /** Format: int32 */
+            pointsExpiringSoon: number | string;
+            /** Format: date-time */
+            nextPointsExpiry: null | string;
+            rules: components["schemas"]["RewardRulesDto"];
+        };
         RiskFlagDto: {
             ruleCode: string;
             message: string;
@@ -34748,6 +41475,13 @@ export interface components {
             /** Format: double */
             total: number | string;
         };
+        SampleMessageDto: {
+            language: string;
+            subject: null | string;
+            body: string;
+            /** Format: int32 */
+            characters: number | string;
+        };
         SandboxDecisionDto: {
             sessionId: string;
             outcome: string;
@@ -34813,6 +41547,16 @@ export interface components {
             /** @default true */
             isActive: boolean;
         };
+        SaveCampaignRequest: {
+            name: null | string;
+            /** Format: uuid */
+            segmentId: null | string;
+            channel: null | components["schemas"]["NotificationChannel"];
+            subjectEn: null | string;
+            subjectBn: null | string;
+            bodyEn: null | string;
+            bodyBn: null | string;
+        };
         SaveCannedReplyRequest: {
             title: null | string;
             body: null | string;
@@ -34861,6 +41605,8 @@ export interface components {
             usageLimit: null | number | string;
             /** @default true */
             isActive: boolean;
+            /** @default false */
+            stacksWithPromotions: boolean;
         };
         SaveCourierRequest: {
             code: null | string;
@@ -34958,6 +41704,60 @@ export interface components {
             videoUrl: null | string;
             nonReturnable?: null | boolean;
         };
+        SavePromotionRequest: {
+            nameEn: string;
+            nameBn: null | string;
+            type: components["schemas"]["PromotionType"];
+            /** Format: date-time */
+            startsAt: null | string;
+            /** Format: date-time */
+            endsAt: null | string;
+            /**
+             * Format: int32
+             * @default 0
+             */
+            priority: number | string;
+            stackMode?: components["schemas"]["StackMode"];
+            channels?: null | components["schemas"]["PromotionChannels"];
+            /** Format: double */
+            minCartValue?: null | number | string;
+            /** Format: int32 */
+            usageLimit?: null | number | string;
+            discountKind?: null | components["schemas"]["DiscountKind"];
+            /** Format: double */
+            discountValue?: null | number | string;
+            /** Format: double */
+            maxDiscount?: null | number | string;
+            /**
+             * Format: int32
+             * @default 0
+             */
+            buyQuantity: number | string;
+            /**
+             * Format: int32
+             * @default 0
+             */
+            getQuantity: number | string;
+            /**
+             * Format: double
+             * @default 100
+             */
+            getDiscountPercent: number | string;
+            /** Format: double */
+            bundlePrice?: null | number | string;
+            zoneCodes?: null | string[];
+            labelEn?: null | string;
+            labelBn?: null | string;
+            slug?: null | string;
+            titleEn?: null | string;
+            titleBn?: null | string;
+            bodyEn?: null | string;
+            bodyBn?: null | string;
+            bannerSlot?: components["schemas"]["BannerSlot"];
+            /** Format: uuid */
+            bannerCategoryId?: null | string;
+            targets?: null | components["schemas"]["PromotionTargetInput"][];
+        };
         SavePurchaseOrderRequest: {
             /** Format: uuid */
             branchId: null | string;
@@ -35003,6 +41803,11 @@ export interface components {
             /** Format: date */
             endDate: null | string;
             isActive: null | boolean;
+        };
+        SaveSegmentRequest: {
+            name: null | string;
+            description: null | string;
+            definition: null | components["schemas"]["SegmentDefinition"];
         };
         SaveSizeChartRequest: {
             nameEn: string;
@@ -35051,6 +41856,10 @@ export interface components {
              */
             sortOrder: number | string;
         };
+        ScheduleCampaignRequest: {
+            /** Format: date-time */
+            scheduledAt: null | string;
+        };
         SchedulePickupRequest: {
             /** Format: date */
             date: string;
@@ -35060,6 +41869,75 @@ export interface components {
             useCourier: boolean;
             /** Format: uuid */
             courierId?: null | string;
+        };
+        SegmentCountDto: {
+            /** Format: int32 */
+            total: number | string;
+            reachable: components["schemas"]["ReachableDto"];
+        };
+        SegmentDefinition: {
+            combinator?: string;
+            rules?: components["schemas"]["SegmentRule"][];
+        };
+        SegmentDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            description: null | string;
+            isBuiltIn: boolean;
+            builtInCode: null | string;
+            definition: components["schemas"]["SegmentDefinition"];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: null | string;
+        };
+        SegmentMemberDto: {
+            /** Format: uuid */
+            customerId: string;
+            name: null | string;
+            mobile: string;
+            email: null | string;
+            /** Format: date-time */
+            lastOrderAt: null | string;
+            /** Format: int32 */
+            orderCount: number | string;
+            /** Format: double */
+            totalSpend: number | string;
+            smsReachable: boolean;
+            emailReachable: boolean;
+        };
+        SegmentPreviewRequest: {
+            definition: null | components["schemas"]["SegmentDefinition"];
+        };
+        SegmentRule: {
+            type?: string;
+            /** Format: int32 */
+            days?: null | number | string;
+            /** Format: int32 */
+            minOrders?: null | number | string;
+            /** Format: double */
+            minSpend?: null | number | string;
+            /** Format: int32 */
+            periodDays?: null | number | string;
+            level?: null | string;
+            ids?: null | string[];
+            channel?: null | string;
+            granted?: null | boolean;
+            status?: null | components["schemas"]["OrderStatus"];
+            productIds?: null | string[];
+            /** Format: int32 */
+            idleHours?: null | number | string;
+        };
+        SendTestDto: {
+            channel: components["schemas"]["NotificationChannel"];
+            recipient: string;
+            /** Format: uuid */
+            notificationLogId: string;
+            status: string;
+        };
+        SendTestRequest: {
+            language: null | string;
         };
         SessionDto: {
             /** Format: uuid */
@@ -35365,12 +42243,19 @@ export interface components {
             /** Format: uuid */
             categoryId: null | string;
         };
+        SkipCountDto: {
+            reason: string;
+            /** Format: int32 */
+            count: number | string;
+        };
         SlabDto: {
             /** Format: int32 */
             upToGrams: number | string;
             /** Format: double */
             extraFee: number | string;
         };
+        /** @enum {unknown} */
+        StackMode: "Exclusive" | "StacksWithOrderPromotions" | "StacksWithCoupon";
         StaffCreateTicketRequest: {
             mobile: null | string;
             customerName: null | string;
@@ -35384,6 +42269,36 @@ export interface components {
             /** Format: uuid */
             assigneeId: null | string;
             attachmentPaths: null | string[];
+        };
+        StaffCreditEntryDto: {
+            /** Format: uuid */
+            id: string;
+            kind: components["schemas"]["CreditEntryKind"];
+            /** Format: double */
+            amount: number | string;
+            /** Format: double */
+            balanceAfter: number | string;
+            reason: string;
+            orderNumber: null | string;
+            actorName: null | string;
+            /** Format: date-time */
+            at: string;
+        };
+        StaffPointsEntryDto: {
+            /** Format: uuid */
+            id: string;
+            kind: components["schemas"]["PointsEntryKind"];
+            /** Format: int32 */
+            points: number | string;
+            /** Format: int32 */
+            balanceAfter: number | string;
+            reason: string;
+            orderNumber: null | string;
+            /** Format: date-time */
+            expiresAt: null | string;
+            actorName: null | string;
+            /** Format: date-time */
+            at: string;
         };
         StaffProfileDto: {
             /** Format: uuid */
@@ -35493,6 +42408,19 @@ export interface components {
             /** Format: int32 */
             unitsWithoutCost: number | string;
         };
+        StoreBannerDto: {
+            /** Format: uuid */
+            promotionId: string;
+            slot: components["schemas"]["BannerSlot"];
+            imageUrl: string;
+            titleEn: null | string;
+            titleBn: null | string;
+            slug: null | string;
+            labelEn: string;
+            labelBn: string;
+            /** Format: date-time */
+            endsAt: null | string;
+        };
         StoreBrandFacet: {
             slug: string;
             name: string;
@@ -35500,6 +42428,22 @@ export interface components {
         StoreBreadcrumb: {
             slug: string;
             name: string;
+        };
+        StoreCampaignDto: {
+            slug: string;
+            titleEn: null | string;
+            titleBn: null | string;
+            bodyEn: null | string;
+            bodyBn: null | string;
+            heroImageUrl: null | string;
+            bannerImageUrl: null | string;
+            labelEn: string;
+            labelBn: string;
+            /** Format: date-time */
+            startsAt: null | string;
+            /** Format: date-time */
+            endsAt: null | string;
+            products: components["schemas"]["StoreProductCard"][];
         };
         StoreCategory: {
             /** Format: uuid */
@@ -35569,6 +42513,15 @@ export interface components {
             lowStock: boolean;
             swatches: components["schemas"]["StoreSwatch"][];
             sizes: components["schemas"]["StoreSize"][];
+            promotion?: null | components["schemas"]["StorePromotionInfo"];
+            /** @default false */
+            allowPreorder: boolean;
+            /** @default false */
+            isPreorder: boolean;
+            /** Format: date */
+            preorderExpectedShipDate?: null | string;
+            preorderLabelEn?: null | string;
+            preorderLabelBn?: null | string;
         };
         StoreProductDetail: {
             card: components["schemas"]["StoreProductCard"];
@@ -35587,6 +42540,19 @@ export interface components {
             variants: components["schemas"]["StoreVariant"][];
             images: components["schemas"]["StoreImage"][];
             related: components["schemas"]["StoreProductCard"][];
+        };
+        StorePromotionInfo: {
+            /** Format: uuid */
+            promotionId: string;
+            type: components["schemas"]["PromotionType"];
+            /** Format: double */
+            price: number | string;
+            /** Format: double */
+            listPrice: number | string;
+            labelEn: string;
+            labelBn: string;
+            /** Format: date-time */
+            endsAt: null | string;
         };
         StoreSize: {
             label: string;
@@ -35624,6 +42590,18 @@ export interface components {
             available: number | string;
             inStock: boolean;
             lowStock: boolean;
+            /**
+             * Format: double
+             * @default 0
+             */
+            listPrice: number | string;
+            /** @default false */
+            isPreorder: boolean;
+            /** Format: date */
+            preorderExpectedShipDate?: null | string;
+            preorderLabelEn?: null | string;
+            preorderLabelBn?: null | string;
+            promotion?: null | components["schemas"]["StorePromotionInfo"];
         };
         SuggestedLineDto: {
             /** Format: uuid */
@@ -35714,6 +42692,8 @@ export interface components {
         };
         /** @enum {unknown} */
         TargetGroup: "Unisex" | "Women" | "Men" | "Kids";
+        /** @enum {unknown} */
+        TargetRole: "Main" | "Buy" | "Get" | "BundleItem";
         TaxRuleDto: {
             /** Format: uuid */
             id: string;
@@ -35756,6 +42736,40 @@ export interface components {
         };
         TemporaryPasswordResponse: {
             temporaryPassword: string;
+        };
+        TenderQuoteDto: {
+            enabled: boolean;
+            /** Format: int32 */
+            pointsUsed: number | string;
+            /** Format: double */
+            pointsAmount: number | string;
+            /** Format: double */
+            creditUsed: number | string;
+            /** Format: double */
+            giftCardUsed: number | string;
+            /** Format: double */
+            tenderTotal: number | string;
+            /** Format: double */
+            payableAfterTender: number | string;
+            /** Format: int32 */
+            pointsBalance: number | string;
+            /** Format: double */
+            creditBalance: number | string;
+            problem: null | string;
+            problemMessage: null | string;
+        };
+        TenderRequest: {
+            /**
+             * Format: int32
+             * @default 0
+             */
+            points: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            credit: number | string;
+            giftCardCode?: null | string;
         };
         TicketAttachmentDto: {
             /** Format: uuid */
@@ -35945,6 +42959,7 @@ export interface components {
             timeline: components["schemas"]["TimelineDto"][];
             canCancel: boolean;
             shipment?: null | components["schemas"]["TrackingShipmentDto"];
+            preorderState?: components["schemas"]["PreorderState"];
         };
         TrackingShipmentDto: {
             courierName: string;
@@ -36038,6 +43053,11 @@ export interface components {
             sharedKey: string;
             authenticatorUri: string;
         };
+        UnsubscribeDto: {
+            channel: string;
+            unsubscribed: boolean;
+            alreadyUnsubscribed: boolean;
+        };
         UpazilaDto: {
             /** Format: uuid */
             id: string;
@@ -36052,6 +43072,20 @@ export interface components {
             accountNumber: null | string;
             note: null | string;
             isActive: boolean;
+        };
+        UpdateAutomationRequest: {
+            isEnabled: null | boolean;
+            channel: null | components["schemas"]["NotificationChannel"];
+            /** Format: int32 */
+            delayMinutes: null | number | string;
+            /** Format: int32 */
+            windowDays: null | number | string;
+            /** Format: int32 */
+            capDays: null | number | string;
+            subjectEn: null | string;
+            subjectBn: null | string;
+            bodyEn: null | string;
+            bodyBn: null | string;
         };
         UpdateBranchRequest: {
             nameEn: string;
@@ -36095,6 +43129,52 @@ export interface components {
             /** Format: double */
             focalY: null | number | string;
         };
+        UpdateLoyaltySettingsRequest: {
+            enabled: null | boolean;
+            /** Format: double */
+            earnRatePerBdt: null | number | string;
+            earnRounding: null | components["schemas"]["PointsRounding"];
+            /** Format: double */
+            pointValue: null | number | string;
+            /** Format: int32 */
+            minPointsToRedeem: null | number | string;
+            /** Format: int32 */
+            maxTenderPercent: null | number | string;
+            /** Format: int32 */
+            pointsExpiryMonths: null | number | string;
+            /** Format: int32 */
+            expiryWarningDays: null | number | string;
+            /** Format: double */
+            referralRewardReferrer: null | number | string;
+            /** Format: double */
+            referralRewardReferee: null | number | string;
+            /** Format: int32 */
+            referralMaxRewardsPerReferrer: null | number | string;
+            /** Format: double */
+            giftCardMinAmount: null | number | string;
+            /** Format: double */
+            giftCardMaxAmount: null | number | string;
+            /** Format: int32 */
+            giftCardDefaultValidityMonths: null | number | string;
+        };
+        UpdateMarketingSettingsRequest: {
+            quietHoursEnabled: null | boolean;
+            quietHoursStart: null | string;
+            quietHoursEnd: null | string;
+            /** Format: int32 */
+            frequencyCapMessages: null | number | string;
+            /** Format: int32 */
+            frequencyCapDays: null | number | string;
+            /** Format: int32 */
+            throttlePerMinute: null | number | string;
+            /** Format: int32 */
+            attributionWindowDays: null | number | string;
+            shopName: null | string;
+            linkUrl: null | string;
+            /** Format: int32 */
+            maxNotifyMePerMobile: null | number | string;
+            smsOptOutText: null | string;
+        };
         UpdatePaymentSettingsRequest: {
             methods: null | components["schemas"]["PaymentMethodSetting"][];
             /** Format: double */
@@ -36131,6 +43211,29 @@ export interface components {
             daysMin: number | string;
             /** Format: int32 */
             daysMax: number | string;
+        };
+        UsableOnCartDto: {
+            enabled: boolean;
+            /** Format: double */
+            orderTotal: number | string;
+            /** Format: int32 */
+            pointsBalance: number | string;
+            /** Format: double */
+            pointsValue: number | string;
+            /** Format: double */
+            creditBalance: number | string;
+            /** Format: double */
+            pointValue: number | string;
+            /** Format: int32 */
+            minPointsToRedeem: number | string;
+            /** Format: int32 */
+            maxTenderPercent: number | string;
+            /** Format: double */
+            maxTenderAmount: number | string;
+            /** Format: int32 */
+            maxPoints: number | string;
+            /** Format: double */
+            maxCredit: number | string;
         };
         UserDetailDto: {
             /** Format: uuid */
@@ -36186,6 +43289,23 @@ export interface components {
             isActive: boolean;
             /** Format: int32 */
             sortOrder: number | string;
+        };
+        VariantPreorderDto: {
+            /** Format: uuid */
+            variantId: string;
+            sku: string;
+            colorName: null | string;
+            size: null | string;
+            allowPreorder: null | boolean;
+            /** Format: date */
+            expectedShipDate: null | string;
+            /** Format: double */
+            advancePercent: null | number | string;
+            effectiveAllow: boolean;
+            /** Format: date */
+            effectiveShipDate: null | string;
+            /** Format: double */
+            effectiveAdvancePercent: number | string;
         };
         VariantStockDto: {
             /** Format: uuid */
