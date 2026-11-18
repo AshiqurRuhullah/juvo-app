@@ -11,6 +11,7 @@ import {
   orderStateNotice,
   preorderLabel,
   sameDraft,
+  twoYearsAhead,
   validatePreorderDraft,
   waitingLineCount,
 } from "@/modules/preorders/logic";
@@ -101,6 +102,13 @@ describe("settings form", () => {
     expect(validatePreorderDraft({ allow: "yes", date: "", percent: "101" }, "2026-11-18")).toEqual({ percent: "range" });
     expect(validatePreorderDraft({ allow: "yes", date: "", percent: "-1" }, "2026-11-18")).toEqual({ percent: "range" });
     expect(validatePreorderDraft({ allow: "yes", date: "", percent: "abc" }, "2026-11-18")).toEqual({ percent: "invalid" });
+  });
+
+  it("refuses a date more than two years ahead (the API's limit)", () => {
+    expect(twoYearsAhead("2026-11-18")).toBe("2028-11-18");
+    expect(validatePreorderDraft({ allow: "yes", date: "2028-11-18", percent: "" }, "2026-11-18")).toEqual({});
+    expect(validatePreorderDraft({ allow: "yes", date: "2028-11-19", percent: "" }, "2026-11-18")).toEqual({ date: "far" });
+    expect(validatePreorderDraft({ allow: "yes", date: "2031-03-05", percent: "" }, "2026-11-18")).toEqual({ date: "far" });
   });
 
   it("builds the request: inherit is null, blanks clear the date and the advance", () => {

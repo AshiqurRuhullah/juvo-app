@@ -74,9 +74,15 @@ export function draftFromSettings(settings: PreorderSettingsLike, isVariant: boo
   return { allow, date: settings.expectedShipDate ? settings.expectedShipDate.slice(0, 10) : "", percent };
 }
 
-export type PreorderErrors = { date?: "past" | "invalid"; percent?: "range" | "invalid" };
+export type PreorderErrors = { date?: "past" | "far" | "invalid"; percent?: "range" | "invalid" };
 
-/** Checks the form: the advance is a percentage from 0 to 100, the date a real calendar date that is not in the past (today counts). */
+/** The same day two years later (the API accepts an expected ship date up to two years ahead). */
+export function twoYearsAhead(today: string): string {
+  const year = Number(today.slice(0, 4)) + 2;
+  return `${year}${today.slice(4)}`;
+}
+
+/** Checks the form: the advance is a percentage from 0 to 100, the date a real calendar date from today up to two years ahead. */
 export function validatePreorderDraft(draft: PreorderDraft, today: string): PreorderErrors {
   const errors: PreorderErrors = {};
   if (draft.percent.trim() !== "") {
@@ -87,6 +93,7 @@ export function validatePreorderDraft(draft: PreorderDraft, today: string): Preo
   if (draft.date.trim() !== "") {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(draft.date) || Number.isNaN(Date.parse(`${draft.date}T00:00:00Z`))) errors.date = "invalid";
     else if (draft.date < today) errors.date = "past";
+    else if (draft.date > twoYearsAhead(today)) errors.date = "far";
   }
   return errors;
 }

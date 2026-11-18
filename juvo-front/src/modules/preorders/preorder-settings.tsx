@@ -4,7 +4,7 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import { CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Field, Input, Switch } from "@/components/ui/form";
+import { ChoiceRow, Field, Input, Switch } from "@/components/ui/form";
 import { Select } from "@/components/ui/select";
 import { Alert, Card, CardContent, CardDescription, CardHeader, CardTitle, Skeleton } from "@/components/ui/surfaces";
 import { toast } from "@/components/ui/toaster";
@@ -13,12 +13,12 @@ import { fieldErrors } from "@/lib/api/problem";
 import { useProblemMessage } from "@/lib/api/use-problem-message";
 import { toNumber } from "@/modules/catalog/format";
 import { usePreorderSettings, useSaveProductPreorder, useSaveVariantPreorder, type PreorderSettings, type VariantPreorder } from "./api";
-import { dhakaToday, draftFromSettings, draftToRequest, sameDraft, validatePreorderDraft, type PreorderDraft, type PreorderErrors } from "./logic";
+import { dhakaToday, twoYearsAhead, draftFromSettings, draftToRequest, sameDraft, validatePreorderDraft, type PreorderDraft, type PreorderErrors } from "./logic";
 
 function useErrorText() {
   const t = useTranslations("preorders.settings.errors");
   return (errors: PreorderErrors) => ({
-    date: errors.date ? t(errors.date === "past" ? "datePast" : "dateInvalid") : undefined,
+    date: errors.date ? t(errors.date === "past" ? "datePast" : errors.date === "far" ? "dateFar" : "dateInvalid") : undefined,
     percent: errors.percent ? t(errors.percent === "range" ? "percentRange" : "percentInvalid") : undefined,
   });
 }
@@ -29,7 +29,7 @@ function DateAndAdvance({ idPrefix, draft, onChange, errors, disabled, hintDate,
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <Field label={t("shipDate")} htmlFor={`${idPrefix}-date`} hint={hintDate ?? t("shipDateHint")} error={errors.date}>
-        <Input id={`${idPrefix}-date`} type="date" value={draft.date} min={dhakaToday()} disabled={disabled} aria-invalid={!!errors.date} onChange={(e) => onChange({ ...draft, date: e.target.value })} />
+        <Input id={`${idPrefix}-date`} type="date" value={draft.date} min={dhakaToday()} max={twoYearsAhead(dhakaToday())} disabled={disabled} aria-invalid={!!errors.date} onChange={(e) => onChange({ ...draft, date: e.target.value })} />
       </Field>
       <Field label={t("advance")} htmlFor={`${idPrefix}-percent`} hint={hintPercent ?? t("advanceHint")} error={errors.percent}>
         <Input
@@ -88,13 +88,13 @@ function ProductBlock({ productId, settings, disabled }: { productId: string; se
         <CardDescription>{t("productHelp")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex min-h-11 items-center justify-between gap-3">
-          <label htmlFor="pre-allow" className="min-w-0 flex-1 cursor-pointer font-medium text-strong">
-            {t("allow")}
-            <span className="block text-sm font-normal text-muted">{t("allowHint")}</span>
-          </label>
+        <ChoiceRow htmlFor="pre-allow">
           <Switch id="pre-allow" checked={draft.allow === "yes"} disabled={disabled} onCheckedChange={(on) => setDraft({ ...draft, allow: on ? "yes" : "no" })} />
-        </div>
+          <span>
+            <span className="block font-medium">{t("allow")}</span>
+            <span className="block text-sm text-muted">{t("allowHint")}</span>
+          </span>
+        </ChoiceRow>
         <DateAndAdvance idPrefix="pre-product" draft={draft} onChange={setDraft} errors={errors} disabled={disabled} />
         {!disabled ? (
           <div className="flex justify-end gap-2">

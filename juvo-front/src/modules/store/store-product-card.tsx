@@ -121,9 +121,9 @@ export function StoreProductCard({ product, priority = false, className }: { pro
           {product.sizes.length > 0 ? (
             <ul className="flex flex-wrap gap-1" aria-label={t("sizes")}>
               {product.sizes.slice(0, 6).map((size) => (
-                <li key={size.label} className={cn("rounded-md border border-line px-1.5 py-0.5 text-xs font-medium", size.soldOut ? "text-muted line-through" : "text-strong")}>
+                <li key={size.label} className={cn("rounded-md border border-line px-1.5 py-0.5 text-xs font-medium", size.soldOut && !product.isPreorder ? "text-muted line-through" : "text-strong")}>
                   {size.label}
-                  {size.soldOut ? <span className="sr-only"> ({t("soldOut")})</span> : null}
+                  {size.soldOut && !product.isPreorder ? <span className="sr-only"> ({t("soldOut")})</span> : null}
                 </li>
               ))}
               {product.sizes.length > 6 ? <li className="py-0.5 text-xs text-muted">+{product.sizes.length - 6}</li> : null}

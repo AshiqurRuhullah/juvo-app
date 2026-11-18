@@ -56,6 +56,7 @@
     "rule": "A line becomes a pre-order only when the option allows it, tracks stock and has no stock at all in any branch. With some stock the option is sold normally, up to what is there.",
     "errors": {
       "datePast": "The expected date cannot be in the past.",
+      "dateFar": "The expected date must be within two years from today.",
       "dateInvalid": "Enter a valid date.",
       "percentRange": "The advance must be between 0 and 100.",
       "percentInvalid": "Enter a number for the advance."
