@@ -111,16 +111,16 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 | 9 | Payments, tax/invoices, notifications (I, U, K) | **Done** (9-a backend, 9-b front end) |
 | 10 | Couriers, real-time (SignalR), returns (H, J, L) | **Done** (backend and front end, gated 2026-11-15) |
 | 11A | Purchasing, expenses, support, reports (W, X, Y, P) | **Done** (backend and screens, gated 2026-11-16) |
-| 11B | Promotions, pre-order, loyalty, marketing, reseller, POS (Z, AA–AE) | **In progress**: backend of promotions/pricing engine, pre-orders, rewards (default off) and marketing is on local branch `feature/11b-growth` (unmerged, unpushed, merged-tip gate not run); no 11B screens; reseller and POS not built |
+| 11B | Promotions, pre-order, loyalty, marketing, reseller, POS (Z, AA–AE) | **In progress**: backend of promotions/pricing engine, pre-orders, rewards (default off) and marketing is **merged to `main` (2026-11-18, gated: domain 397, application 175, integration 614)**; no 11B screens; reseller and POS not built |
 | 12 | Remaining admin UI, CMS, dashboard, settings, platform services (M, N, Q, R, AF) | Not started |
 | 13 | Hardening, QA, acceptance checklist, docs | Not started |
 | 14 | Real providers, go-live (tag `v1.0.0` only if owner confirms) | Not started |
 
 ### Step 11B detail (state on 2026-11-18)
-- Branch `feature/11b-growth` (tip `84f6e20`, 17 commits over `main`, migration `GrowthModules`) is **not merged or pushed**. Its contracts (`docs/pricing-engine.md`, `promotions-api.md`, `loyalty-api.md`, `marketing-api.md`) and builder notes (`docs/step11b-backend-*.md`) live only on that branch.
+- Branch `feature/11b-growth` (migration `GrowthModules`) is **merged into `main`** (`2c5fd5c`, 2026-11-18) after the gate. Contracts: `docs/pricing-engine.md`, `promotions-api.md`, `loyalty-api.md`, `marketing-api.md`; builder notes `docs/step11b-backend-*.md`; decisions `docs/assumptions.md` section V; traceability rows FR-Z, FR-AA, FR-AB, FR-AC in `docs/understanding.md`.
 - Built (backend only): one pricing engine (`IPricingEngine`) for cart, quote, placement, order desk and invoices; promotions `/promotions`; pre-order/backorder with FIFO allocation; rewards `/loyalty` and `/me/rewards` (points, referral credit, gift cards, store credit as tender, flag `Loyalty.Enabled` default off); marketing `/marketing/*` (segments, SMS/email campaigns, automations, unsubscribe, notify-me).
-- Not built: all front-end screens, reseller price list, POS, WhatsApp campaigns. Before merging: run the full backend gate on the merged tip, then `npm run gen:api` (quote/checkout gained an optional `tender`), and copy traceability rows and decisions into `docs/understanding.md` and `docs/assumptions.md`.
-- Also: branch `feature/pagination` (ten rows per page, one pager for every table) is one commit ahead of `main` and not merged; ten leftover `worktree-agent-*` branches exist locally.
+- Not built: all front-end screens, reseller price list, POS, WhatsApp campaigns. Next: `npm run gen:api` (quote/checkout gained an optional `tender`), then the 11B screens.
+- Also: branch `feature/pagination` (ten rows per page, one pager for every table) is one commit ahead of the old `main` and not merged; ten leftover `worktree-agent-*` branches exist locally.
 
 ### Step 6 detail
 - 6-a Catalog backend: **Done** (committed `f5aaf89`): categories tree, brands, size charts, products, variants, pricing/sale dates, publish rules, duplicate, cost-price visibility, audit, `CatalogSeeder`; endpoints `/api/v1/catalog/*`; migration `CatalogProducts`; SKU unique among live variants (case-insensitive); slugs unique among live rows.
