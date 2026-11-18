@@ -382,7 +382,7 @@ export function ReturnActions({ detail }: { detail: ReturnDetail }) {
         loading={run.isPending}
         error={error}
         onSubmit={() => {
-          if (reference.trim() === "") {
+          if (method !== "StoreCredit" && reference.trim() === "") {
             setReferenceError(true);
             return;
           }
@@ -403,7 +403,7 @@ export function ReturnActions({ detail }: { detail: ReturnDetail }) {
             emptyText={tc("noMatch")}
           />
         </Field>
-        <Field label={t("refund.reference")} htmlFor="act-reference" required hint={t("refund.referenceHint")} error={referenceError ? t("refund.referenceRequired") : undefined}>
+        <Field label={t("refund.reference")} htmlFor="act-reference" required={method !== "StoreCredit"} hint={t("refund.referenceHint")} error={referenceError ? t("refund.referenceRequired") : undefined}>
           <Input id="act-reference" value={reference} maxLength={120} onChange={(e) => { setReference(e.target.value); setReferenceError(false); }} autoComplete="off" />
         </Field>
       </FormDialog>

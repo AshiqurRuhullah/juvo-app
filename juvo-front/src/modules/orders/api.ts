@@ -63,7 +63,7 @@ const clean = <T extends Record<string, unknown>>(value: T) =>
 
 /* ---- Shop: quote, checkout, tracking ---------------------------------------------------------------------------------------- */
 
-export type QuoteInput = { addressId?: string | null; address?: Partial<CheckoutAddress> | null; paymentMethod?: string | null; mobile?: string | null };
+export type QuoteInput = { addressId?: string | null; address?: Partial<CheckoutAddress> | null; paymentMethod?: string | null; mobile?: string | null; tender?: CheckoutRequest["tender"] };
 
 /** The server's own working-out of the basket (goods, delivery, advance, payment methods). Asked again on every change. */
 export function useCheckoutQuote(input: QuoteInput, enabled: boolean, cartKey: string) {
@@ -75,7 +75,7 @@ export function useCheckoutQuote(input: QuoteInput, enabled: boolean, cartKey: s
     queryFn: async () =>
       unwrap(
         await api.POST("/api/v1/store/checkout/quote", {
-          body: { addressId: input.addressId ?? null, address: (input.address as CheckoutAddress | null | undefined) ?? null, paymentMethod: input.paymentMethod ?? null, mobile: input.mobile ?? null },
+          body: { addressId: input.addressId ?? null, address: (input.address as CheckoutAddress | null | undefined) ?? null, paymentMethod: input.paymentMethod ?? null, mobile: input.mobile ?? null, tender: input.tender ?? null },
         }),
       ),
   });

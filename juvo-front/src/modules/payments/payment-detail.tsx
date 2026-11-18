@@ -276,6 +276,7 @@ export function PaymentDetail({ id }: { id: string }) {
             options: [
               { value: "Manual", label: t("mode.Manual"), hint: t("refund.modeManual") },
               { value: "Gateway", label: t("mode.Gateway"), hint: t("refund.modeGateway") },
+              { value: "StoreCredit", label: t("mode.StoreCredit"), hint: t("refund.modeStoreCredit") },
             ],
           },
           { name: "reason", label: t("refund.reason"), kind: "textarea", required: true },
@@ -283,7 +284,7 @@ export function PaymentDetail({ id }: { id: string }) {
         onSubmit={async (v) => {
           const amount = Number(v.amount);
           if (!Number.isFinite(amount) || amount <= 0) return t("refund.amountInvalid");
-          return run(() => refund.mutateAsync({ paymentId: id, amount, mode: v.mode === "Gateway" ? "Gateway" : "Manual", reason: v.reason! }), "refund");
+          return run(() => refund.mutateAsync({ paymentId: id, amount, mode: v.mode === "Gateway" ? "Gateway" : v.mode === "StoreCredit" ? "StoreCredit" : "Manual", reason: v.reason! }), "refund");
         }}
       />
     </>
