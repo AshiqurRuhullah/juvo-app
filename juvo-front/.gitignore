@@ -106,3 +106,8 @@ test-results/
 !/docs/ui-checks/loyalty/checkout-tender-360.png
 !/docs/ui-checks/loyalty/settings-1280.png
 !/docs/ui-checks/loyalty/cards-1280.png
+/docs/ui-checks/marketing/*.png
+!/docs/ui-checks/marketing/campaign-draft-1280.png
+!/docs/ui-checks/marketing/segment-editor-360.png
+!/docs/ui-checks/marketing/notify-me-360.png
+!/docs/ui-checks/marketing/unsubscribe-360.png
