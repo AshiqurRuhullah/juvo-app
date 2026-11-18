@@ -111,7 +111,7 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 | 9 | Payments, tax/invoices, notifications (I, U, K) | **Done** (9-a backend, 9-b front end) |
 | 10 | Couriers, real-time (SignalR), returns (H, J, L) | **Done** (backend and front end, gated 2026-11-15) |
 | 11A | Purchasing, expenses, support, reports (W, X, Y, P) | **Done** (backend and screens, gated 2026-11-16) |
-| 11B | Promotions, pre-order, loyalty, marketing, reseller, POS (Z, AA–AE) | **In progress**: backend merged to `main`; front end for Z, AA, AB, AC done on `feature/11b-front` (gated 2026-11-18, not yet merged to `main`); reseller (AD) and POS (AE) not built |
+| 11B | Promotions, pre-order, loyalty, marketing, reseller, POS (Z, AA–AE) | **In progress**: backend merged to `main`; front end for Z, AA, AB, AC done on `feature/11b-front` (gated and merged to `main` 2026-11-18); reseller (AD) and POS (AE) not built |
 | 12 | Remaining admin UI, CMS, dashboard, settings, platform services (M, N, Q, R, AF) | Not started |
 | 13 | Hardening, QA, acceptance checklist, docs | Not started |
 | 14 | Real providers, go-live (tag `v1.0.0` only if owner confirms) | Not started |

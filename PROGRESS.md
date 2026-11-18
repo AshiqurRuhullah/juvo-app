@@ -18,7 +18,7 @@ Last updated: 2026-11-18.
 | 9 | Payments, tax/invoices, notifications | **Done** (9-a backend, 9-b front end; merged to `main`) |
 | 10 | Couriers, real-time status, returns | **Done** (returns backend and front end, 10-a backend, 10-b front end: couriers, parcels, labels, COD settlement, live updates, order integration; merged to `main`, gated 2026-11-15) |
 | 11A | Operations part 1: purchasing, expenses, support, reports | **Done** (backend and screens; merged to `main`, gated 2026-11-16) |
-| 11B | Operations part 2: promotions, pre-order, loyalty, marketing, reseller, POS | **In progress**: backend merged to `main`; front end for promotions, pre-orders, rewards and marketing built on `feature/11b-front` (see the Step 11B front-end result); reseller and POS not built |
+| 11B | Operations part 2: promotions, pre-order, loyalty, marketing, reseller, POS | **In progress**: backend merged to `main`; front end for promotions, pre-orders, rewards and marketing built and merged to `main` 2026-11-18 (see the Step 11B front-end result); reseller and POS not built |
 | 12 | Remaining admin UI, CMS, dashboard, settings, platform services | Not started |
 | 13 | Hardening, QA, documentation | Not started |
 | 14 | Real providers and go-live preparation | Not started |
@@ -250,7 +250,7 @@ Four parallel builders, merged on branch `feature/11b-front` (based on `main` wi
 
 ## Next step
 
-**Step 11B, remaining work:** merge `feature/11b-front` into `main` (owner decision), build reseller and POS (backend first: neither exists), then 12 (remaining admin UI, CMS, settings, platform services), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.
+**Step 11B, remaining work:** Step 12 in small steps (admin screens for Customers, Delivery zones and Coupons first, then website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.
 
 ## Known issues / notes
 
