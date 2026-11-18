@@ -111,16 +111,16 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 | 9 | Payments, tax/invoices, notifications (I, U, K) | **Done** (9-a backend, 9-b front end) |
 | 10 | Couriers, real-time (SignalR), returns (H, J, L) | **Done** (backend and front end, gated 2026-11-15) |
 | 11A | Purchasing, expenses, support, reports (W, X, Y, P) | **Done** (backend and screens, gated 2026-11-16) |
-| 11B | Promotions, pre-order, loyalty, marketing, reseller, POS (Z, AA–AE) | **In progress**: backend of promotions/pricing engine, pre-orders, rewards (default off) and marketing is **merged to `main` (2026-11-18, gated: domain 397, application 175, integration 614)**; no 11B screens; reseller and POS not built |
+| 11B | Promotions, pre-order, loyalty, marketing, reseller, POS (Z, AA–AE) | **In progress**: backend merged to `main`; front end for Z, AA, AB, AC done on `feature/11b-front` (gated 2026-11-18, not yet merged to `main`); reseller (AD) and POS (AE) not built |
 | 12 | Remaining admin UI, CMS, dashboard, settings, platform services (M, N, Q, R, AF) | Not started |
 | 13 | Hardening, QA, acceptance checklist, docs | Not started |
 | 14 | Real providers, go-live (tag `v1.0.0` only if owner confirms) | Not started |
 
 ### Step 11B detail (state on 2026-11-18)
-- Branch `feature/11b-growth` (migration `GrowthModules`) is **merged into `main`** (`2c5fd5c`, 2026-11-18) after the gate. Contracts: `docs/pricing-engine.md`, `promotions-api.md`, `loyalty-api.md`, `marketing-api.md`; builder notes `docs/step11b-backend-*.md`; decisions `docs/assumptions.md` section V; traceability rows FR-Z, FR-AA, FR-AB, FR-AC in `docs/understanding.md`.
-- Built (backend only): one pricing engine (`IPricingEngine`) for cart, quote, placement, order desk and invoices; promotions `/promotions`; pre-order/backorder with FIFO allocation; rewards `/loyalty` and `/me/rewards` (points, referral credit, gift cards, store credit as tender, flag `Loyalty.Enabled` default off); marketing `/marketing/*` (segments, SMS/email campaigns, automations, unsubscribe, notify-me).
-- Not built: all front-end screens, reseller price list, POS, WhatsApp campaigns. Next: `npm run gen:api` (quote/checkout gained an optional `tender`), then the 11B screens.
-- Also: branch `feature/pagination` (ten rows per page, one pager for every table) is one commit ahead of the old `main` and not merged; ten leftover `worktree-agent-*` branches exist locally.
+- Backend: merged into `main` (`2c5fd5c`, migration `GrowthModules`). Contracts `docs/pricing-engine.md`, `promotions-api.md`, `loyalty-api.md`, `marketing-api.md`; builder notes `docs/step11b-backend-*.md`; decisions `docs/assumptions.md` section V.
+- Front end: branch `feature/11b-front` (main + pagination merged, regenerated client, four builder branches merged). Screens: `/admin/promotions`, `/campaign/[slug]` and banners, promotion and pre-order display everywhere a price shows, `/admin/orders/preorders`, `/admin/loyalty`, `/account/rewards`, checkout `TenderSection`, `/admin/marketing/*`, notify-me, `/unsubscribe`. Modules `src/modules/{promotions,promotions-store,preorders,loyalty,marketing}`. Notes `docs/step11b-frontend-*.md`, decisions `docs/assumptions.md` section X.
+- Not built: reseller price list and POS (backend too), coupon/zone/customer admin screens (Step 12), WhatsApp campaigns. Owner actions: set `Marketing:UnsubscribeUrl` to `<web>/unsubscribe`; decide the Next.js security upgrade (`next build` first stops with an advisory notice, passes on a second run).
+- Working notes: error texts shared between builders must not repeat a key in `errors.*` (duplicate JSON keys parse silently; check with a duplicate-key script after merges); new Playwright specs must be added to the desktop `testMatch`; run e2e shards sequentially (each starts its own servers) and use `E2E_API_PORT`, `E2E_WEB_PORT`, `E2E_DB` to run builders side by side.
 
 ### Step 6 detail
 - 6-a Catalog backend: **Done** (committed `f5aaf89`): categories tree, brands, size charts, products, variants, pricing/sale dates, publish rules, duplicate, cost-price visibility, audit, `CatalogSeeder`; endpoints `/api/v1/catalog/*`; migration `CatalogProducts`; SKU unique among live variants (case-insensitive); slugs unique among live rows.
