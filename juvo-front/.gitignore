@@ -88,3 +88,9 @@ test-results/
 !/docs/ui-checks/returns/queue-1280.png
 !/docs/ui-checks/returns/admin-detail-1280.png
 !/docs/ui-checks/returns/refund-dialog-360.png
+/docs/ui-checks/promotions/*.png
+!/docs/ui-checks/promotions/list-1280.png
+!/docs/ui-checks/promotions/flash-1280.png
+!/docs/ui-checks/promotions/flash-360.png
+!/docs/ui-checks/promotions/picker-360.png
+!/docs/ui-checks/promotions/preview-1280.png

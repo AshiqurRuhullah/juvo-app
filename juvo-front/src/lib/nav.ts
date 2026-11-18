@@ -130,7 +130,7 @@ export const ADMIN_NAV: NavGroup[] = [
     label: "marketing",
     icon: Megaphone,
     items: [
-      { id: "promotions", label: "promotions", href: "/admin/promotions", icon: Tag, permission: "promotions.promotion.view", scope: "anywhere", ready: false },
+      { id: "promotions", label: "promotions", href: "/admin/promotions", icon: Tag, permission: "promotions.promotion.view", scope: "anywhere", ready: true },
       { id: "campaigns", label: "campaigns", href: "/admin/marketing/campaigns", icon: Megaphone, permission: "marketing.campaign.view", scope: "anywhere", ready: false },
     ],
   },
