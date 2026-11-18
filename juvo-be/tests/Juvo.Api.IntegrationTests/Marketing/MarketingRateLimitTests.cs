@@ -40,6 +40,16 @@ public class MarketingRateLimitTests(MarketingRateLimitTests.LimitedFactory fact
         Assert.Equal("GENERAL.TOO_MANY_REQUESTS", json.GetProperty("code").GetString());
     }
 
+}
+
+/// <summary>
+/// Separate class (so a separate factory and limiter) from the notify-me test: the limit is per client address, and two tests
+/// in one class would share one window, making each pass or fail depending on which ran first.
+/// </summary>
+public class MarketingUnsubscribeRateLimitTests(MarketingRateLimitTests.LimitedFactory factory) : IClassFixture<MarketingRateLimitTests.LimitedFactory>
+{
+    private readonly StoreHelper _h = new(factory);
+
     [Fact]
     public async Task The_unsubscribe_endpoint_shares_the_limit()
     {
