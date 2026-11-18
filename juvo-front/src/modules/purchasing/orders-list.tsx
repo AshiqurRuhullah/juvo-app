@@ -33,7 +33,7 @@ export function OrdersList() {
   const branches = useBranchOptions();
   const perms = usePurchasingPermissions();
   const params = useSearchParams();
-  const state = useListState<Filters>({ supplierId: params.get("supplierId") ?? undefined }, 20, INITIAL_SORT);
+  const state = useListState<Filters>({ supplierId: params.get("supplierId") ?? undefined }, undefined, INITIAL_SORT);
 
   const query = usePurchaseOrders({
     page: state.page,

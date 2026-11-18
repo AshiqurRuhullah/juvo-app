@@ -35,7 +35,7 @@ export function LogsPanel({ canRetry }: { canRetry: boolean }) {
   const dateTime = useDateTime();
   const labels = useTableLabels();
   const problemText = useProblemMessage();
-  const state = useListState<Filters>({}, 20);
+  const state = useListState<Filters>({});
   const resend = useResendLog();
   const [detail, setDetail] = React.useState<NotificationLog | null>(null);
   const ts = useTranslations("notifications.status");

@@ -44,7 +44,7 @@ export function StockList() {
   const tc = useTranslations("inventory.common");
   const labels = useTableLabels();
   const branches = useBranchOptions();
-  const state = useListState<{ branchId?: string; low?: string }>({}, 20, [
+  const state = useListState<{ branchId?: string; low?: string }>({}, undefined, [
     { id: "product", desc: false },
   ]);
   const [adjusting, setAdjusting] = React.useState<StockRow | null>(null);

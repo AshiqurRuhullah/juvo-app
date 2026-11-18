@@ -63,7 +63,7 @@ export function OrdersList({ initialStatus }: { initialStatus?: string } = {}) {
   const perms = useOrderPermissions();
   const courierPerms = useCourierPermissions();
   const live = useOrdersListLive();
-  const state = useListState<Filters>(initialStatus ? { status: initialStatus } : {}, 20);
+  const state = useListState<Filters>(initialStatus ? { status: initialStatus } : {});
   const bulk = useBulkAction();
   const [bookOpen, setBookOpen] = React.useState(false);
   // Status of every order that was ticked, so a selection that spans pages still knows which ones are packed.

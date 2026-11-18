@@ -32,6 +32,11 @@ test.describe("Products", () => {
     await signInViaBff(context, state().admin.email, state().admin.password);
     await page.goto("/admin/products");
     await expect(page.getByRole("heading", { level: 1, name: "Products" })).toBeVisible();
+    // Ten products per page: the sample catalogue (16 products) fills a first page and spills onto a second one.
+    await expect(page.getByTestId("pagination-summary")).toContainText(/1.*10/);
+    await expect(page.locator("tbody tr:visible")).toHaveCount(10);
+
+    await page.getByLabel("Search products").fill("Classic Cotton");
     await expect(page.getByRole("link", { name: /Classic Cotton T-Shirt/ }).first()).toBeVisible();
 
     await page.getByLabel("Search products").fill("Denim Jacket");
@@ -39,7 +44,10 @@ test.describe("Products", () => {
     await expect(page.getByRole("link", { name: /Classic Cotton T-Shirt/ })).toHaveCount(0);
 
     await page.getByLabel("Search products").fill("sample"); // the sample products carry the tag "sample"
-    await expect(page.getByRole("link", { name: /Classic Cotton T-Shirt/ }).first()).toBeVisible();
+    await expect(page.getByTestId("page-next")).toBeEnabled();
+    await page.getByTestId("page-next").click(); // 16 sample products: the rest are on the second page
+    await expect(page.getByTestId("pagination-summary")).toContainText(/11/);
+    await expect(page.locator("tbody tr:visible").first()).toBeVisible();
   });
 
   test("a new product shows mistakes next to the fields and a live card preview", async ({ page, context }) => {

@@ -568,3 +568,11 @@ Built on `feature/11b-growth`, merged into `main` on 2026-11-18 after a green ga
 | M17 | Member mobile and email are masked without `customers.customer.view-pii`; recipient contacts are always masked. | NFR-012. | `SegmentsService.MembersAsync`, `CampaignsService.RecipientsAsync`. |
 | M18 | The test message uses template `marketing.campaign-test`, category Transactional, consent mode none (it goes to the staff member's own contact) and is never counted. | It is not a customer message. | `CampaignsService.SendTestAsync`. |
 | M19 | Marketing endpoints are global (not branch scoped); orders are read with the `BranchScope` filter ignored. | Segments and results span all branches. | `IgnoreQueryFilters(["BranchScope"])` in the engine and services. |
+
+## W. Pagination (every table and list)
+
+| Decision | Reason | How to change |
+| --- | --- | --- |
+| Every table and list shows 10 rows per page, with one shared pager; no per-page chooser. | The owner asked for 10 per page and one matching design; a chooser would invite 100-row pages on phones. | `PAGE_SIZE` in `juvo-front/src/lib/pagination.ts`; to add a chooser, extend `Pagination` once. |
+| Tables that receive all their rows page them on the client; server paged tables ask the API for one page of 10. | The same look and behaviour everywhere, with no change to the API. | `components/ui/data-table.tsx` |
+| The storefront product grid keeps 12 per load (a 3 by 4 grid that loads more as you scroll); printable sheets and form line tables are not paged. | A grid is not a table; a printout must show every row. | |

@@ -53,7 +53,7 @@ export function InvoicesList() {
   const money = useMoney();
   const dateTime = useDateTime();
   const labels = useTableLabels();
-  const state = useListState<Filters>({}, 20, [{ id: "issuedAt", desc: true }]);
+  const state = useListState<Filters>({}, undefined, [{ id: "issuedAt", desc: true }]);
   const range = dayRange(state.filters.from, state.filters.to);
   const query = useInvoices({ page: state.page, pageSize: state.pageSize, sort: state.sort, search: state.search, branchId: state.filters.branchId, ...range });
 
@@ -107,7 +107,7 @@ export function CreditNotesList() {
   const money = useMoney();
   const dateTime = useDateTime();
   const labels = useTableLabels();
-  const state = useListState<Filters>({}, 20, [{ id: "issuedAt", desc: true }]);
+  const state = useListState<Filters>({}, undefined, [{ id: "issuedAt", desc: true }]);
   const range = dayRange(state.filters.from, state.filters.to);
   const query = useCreditNotes({ page: state.page, pageSize: state.pageSize, sort: state.sort, search: state.search, branchId: state.filters.branchId, ...range });
 

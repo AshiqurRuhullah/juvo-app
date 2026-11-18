@@ -529,7 +529,11 @@
     "next": "পরের",
     "pageOf": "পৃষ্ঠা {page} / {pages}",
     "total": "{count}টি ফলাফল",
-    "sortBy": "{column} অনুযায়ী সাজান"
+    "sortBy": "{column} অনুযায়ী সাজান",
+    "showing": "{total}টির মধ্যে {from} থেকে {to} দেখানো হচ্ছে",
+    "goToPage": "{page} নম্বর পৃষ্ঠায় যান",
+    "currentPage": "পৃষ্ঠা {page}, বর্তমান পৃষ্ঠা",
+    "pagination": "পৃষ্ঠাসমূহ"
   },
   "ums": {
     "common": {

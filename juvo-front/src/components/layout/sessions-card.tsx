@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MonitorSmartphone } from "lucide-react";
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/button";
+import { useTableLabels } from "@/components/data/list-kit";
 import { DataTable } from "@/components/ui/data-table";
 import { toast } from "@/components/ui/toaster";
 import { api, unwrap } from "@/lib/api/client";
@@ -17,6 +18,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 /** Devices signed in as me, with a button to sign one out. Works for staff and customers (/auth/sessions). */
 export function SessionsCard() {
   const t = useTranslations("sessions");
+  const tableLabels = useTableLabels();
   const format = useFormatter();
   const message = useProblemMessage();
   const queryClient = useQueryClient();
@@ -81,7 +83,7 @@ export function SessionsCard() {
           data={data ?? []}
           loading={isLoading}
           getRowId={(s) => s.sessionId}
-          labels={{ empty: t("empty"), previous: "", next: "", pageOf: () => "", total: () => "", sortBy: () => "" }}
+          labels={{ ...tableLabels, empty: t("empty"), emptyDescription: undefined }}
         />
       </CardContent>
     </Card>

@@ -12,6 +12,7 @@ import { Alert } from "@/components/ui/surfaces";
 import { toast } from "@/components/ui/toaster";
 import { Can } from "@/components/providers/session-provider";
 import { useTableLabels } from "@/components/data/list-kit";
+import { PAGE_SIZE } from "@/lib/pagination";
 import { ApiError } from "@/lib/api/client";
 import { fieldErrors } from "@/lib/api/problem";
 import { useProblemMessage } from "@/lib/api/use-problem-message";
@@ -213,9 +214,8 @@ function ReportView({ report }: { report: ImportReport }) {
   const labels = useTableLabels();
   const errors = toNumber(report.errorCount);
   const [page, setPage] = React.useState(1);
-  const pageSize = 15;
   const issues = report.issues;
-  const slice = React.useMemo(() => issues.map((issue, index) => ({ ...issue, key: index })).slice((page - 1) * pageSize, page * pageSize), [issues, page]);
+  const slice = React.useMemo(() => issues.map((issue, index) => ({ ...issue, key: index })).slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), [issues, page]);
 
   const columns = React.useMemo<ColumnDef<Row, unknown>[]>(
     () => [
@@ -289,7 +289,7 @@ function ReportView({ report }: { report: ImportReport }) {
             data={slice}
             labels={labels}
             page={page}
-            pageSize={pageSize}
+            pageSize={PAGE_SIZE}
             total={issues.length}
             onPageChange={setPage}
             getRowId={(issue) => String(issue.key)}

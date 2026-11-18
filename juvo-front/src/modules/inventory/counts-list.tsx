@@ -28,7 +28,7 @@ export function CountsList() {
   const labels = useTableLabels();
   const dateTime = useDateTime();
   const branches = useBranchOptions();
-  const state = useListState<{ status?: string; branchId?: string }>({}, 20);
+  const state = useListState<{ status?: string; branchId?: string }>({});
 
   const query = useCounts({ page: state.page, pageSize: state.pageSize, search: state.search, status: state.filters.status as CountStatus | undefined, branchId: state.filters.branchId });
 

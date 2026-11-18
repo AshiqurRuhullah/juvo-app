@@ -35,7 +35,7 @@ export function ExpensesList() {
   const router = useRouter();
   const branches = useBranchOptions();
   const perms = useAccountingPermissions();
-  const state = useListState<Filters>({}, 20, INITIAL_SORT);
+  const state = useListState<Filters>({}, undefined, INITIAL_SORT);
   const [creating, setCreating] = React.useState(false);
 
   const query = useExpenses({ page: state.page, pageSize: state.pageSize, search: state.search, sort: state.sort, ...state.filters });

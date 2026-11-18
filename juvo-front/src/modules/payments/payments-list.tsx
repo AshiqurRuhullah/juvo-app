@@ -62,7 +62,7 @@ export function PaymentsList() {
   const labels = useTableLabels();
   const methodLabel = usePayMethodLabel();
   const branches = useBranchOptions();
-  const state = useListState<Filters>({}, 20, [
+  const state = useListState<Filters>({}, undefined, [
     { id: "createdAt", desc: true },
   ]);
   const f = state.filters;

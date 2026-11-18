@@ -38,7 +38,7 @@ export function ReturnsQueue() {
   const reasonLabel = useReasonLabel();
   const branches = useBranchOptions();
   const { can } = usePermissions();
-  const state = useListState<Filters>({}, 20);
+  const state = useListState<Filters>({});
   const [selected, setSelected] = React.useState<ReadonlySet<string>>(new Set());
 
   const query = useReturns({
