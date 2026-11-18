@@ -101,3 +101,8 @@ test-results/
 !/docs/ui-checks/promo-store/campaign-1280.png
 !/docs/ui-checks/promo-store/queue-1280.png
 !/docs/ui-checks/promo-store/settings-1280.png
+/docs/ui-checks/loyalty/*.png
+!/docs/ui-checks/loyalty/rewards-360.png
+!/docs/ui-checks/loyalty/checkout-tender-360.png
+!/docs/ui-checks/loyalty/settings-1280.png
+!/docs/ui-checks/loyalty/cards-1280.png

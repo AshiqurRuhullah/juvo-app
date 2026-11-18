@@ -50,7 +50,8 @@
       "OriginalPayment": "Original payment method",
       "Cash": "Cash",
       "BankTransfer": "Bank transfer",
-      "Wallet": "Wallet"
+      "Wallet": "Wallet",
+      "StoreCredit": "Store credit"
     }
   },
   "refund": {
@@ -395,7 +396,7 @@
       "amountHint": "Set by the inspection.",
       "method": "Paid by",
       "reference": "Reference",
-      "referenceHint": "Receipt, transaction or transfer number.",
+      "referenceHint": "Receipt, transaction or transfer number. Not needed for store credit.",
       "referenceRequired": "Write the reference of the payment."
     },
     "exchange": {

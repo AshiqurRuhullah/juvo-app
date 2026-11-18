@@ -22,6 +22,7 @@ import { AddressFields } from "./address-fields";
 import { useCheckoutQuote, useOrderErrorText, usePlaceOrder, useRequestOrderOtp, useSavedAddresses, type CheckoutQuote, type CheckoutRequest } from "./api";
 import { AmountList, Section } from "./common";
 import { MethodIcon, usePayMethodLabel } from "@/modules/payments/common";
+import { TenderSection } from "@/modules/loyalty/tender-section";
 import { payPath } from "@/modules/payments/status";
 import { cleanMobile, getDeviceId, isBdMobile, newKey } from "./status";
 import { CouponLostNotice, DeliveryWaiverNote, LineOfferNote, useSavingRows, WhyThisPrice } from "@/modules/promotions-store/price-explainer";
@@ -75,6 +76,7 @@ export function CheckoutView() {
   const [changedFrom, setChangedFrom] = React.useState<number | null>(null);
   const [duplicateOpen, setDuplicateOpen] = React.useState(false);
   const [placed, setPlaced] = React.useState(false);
+  const [tender, setTender] = React.useState<CheckoutRequest["tender"]>(null);
   const attempt = React.useRef<{ fingerprint: string; key: string } | null>(null);
 
   const savedList = saved.data ?? [];
@@ -92,8 +94,9 @@ export function CheckoutView() {
       address: place_ ? { recipientName: "", phone: null, area: null, addressLine: "", landmark: null, stateProvince: null, city: null, postalCode: null, latitude: null, longitude: null, ...place_ } : null,
       paymentMethod: method,
       mobile: guestMobile,
+      tender,
     }),
-    [addressId, place_, method, guestMobile],
+    [addressId, place_, method, guestMobile, tender],
   );
   const hasLines = (cart.data?.lines.length ?? 0) > 0;
   const quoteQuery = useCheckoutQuote(quoteInput, hasLines && !placed, lines);
@@ -171,9 +174,10 @@ export function CheckoutView() {
       expectedTotal: total,
       idempotencyKey: null,
       deviceId: getDeviceId(),
+      tender,
     };
     // One key per attempt: the same basket, method and number keep it (a retry returns the same order); a changed basket gets a new one.
-    const fingerprint = JSON.stringify([lines, activeMethod, body.contact.mobile, addressId]);
+    const fingerprint = JSON.stringify([lines, activeMethod, body.contact.mobile, addressId, tender]);
     if (attempt.current?.fingerprint !== fingerprint) attempt.current = { fingerprint, key: newKey() };
 
     try {
@@ -337,6 +341,8 @@ export function CheckoutView() {
             </Alert>
           ) : null}
         </Section>
+
+        <TenderSection quote={quote} onChange={setTender} />
 
         {needsOtp ? (
           <Section title={t("otp.title")} id="co-otp">

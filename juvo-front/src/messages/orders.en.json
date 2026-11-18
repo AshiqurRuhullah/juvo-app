@@ -217,6 +217,7 @@
     "number": "Order number",
     "summary": "Your order",
     "total": "Total",
+    "tender": "Paid with rewards",
     "payNow": "Pay now (advance)",
     "onDelivery": "Pay on delivery",
     "method": "Payment: {method}",

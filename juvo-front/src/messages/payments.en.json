@@ -10,9 +10,12 @@
     "SSLCOMMERZ": "SSLCommerz",
     "AAMARPAY": "aamarPay",
     "STRIPE": "Card (Stripe)",
-    "PAYPAL": "PayPal"
+    "PAYPAL": "PayPal",
+    "POINTS": "Reward points",
+    "CREDIT": "Store credit",
+    "GIFTCARD": "Gift card"
   },
-  "kind": { "Online": "Online", "Manual": "Transfer", "Cod": "Cash on delivery", "Advance": "Advance" },
+  "kind": { "Online": "Online", "Manual": "Transfer", "Cod": "Cash on delivery", "Advance": "Advance", "StoreCredit": "Rewards" },
   "methodKind": { "Cash": "Cash", "Gateway": "Online gateway", "Manual": "Manual transfer" },
   "refundState": { "Pending": "Pending", "Completed": "Completed", "Failed": "Failed" },
   "pay": {
@@ -131,6 +134,7 @@
     "discount": "Discount",
     "delivery": "Delivery",
     "taxIncluded": "Tax included {rate}",
+    "amountDue": "Amount due",
     "total": "Total"
   },
   "admin": {
@@ -234,7 +238,7 @@
       "appendOnly": "History is never changed or deleted.",
       "refunds": "Refunds",
       "noRefunds": "No refunds yet.",
-      "mode": { "Manual": "Paid back by hand", "Gateway": "Through the gateway" },
+      "mode": { "Manual": "Paid back by hand", "Gateway": "Through the gateway", "StoreCredit": "To store credit" },
       "reference": "Reference",
       "facts": "Details",
       "transfer": "Transfer",
@@ -272,6 +276,7 @@
         "mode": "How is it paid back",
         "modeManual": "You pay the customer by hand, then mark it paid back.",
         "modeGateway": "Sent to the payment service at once.",
+        "modeStoreCredit": "The money goes to the customer's store credit at once. No cash leaves the shop.",
         "reason": "Reason"
       }
     },

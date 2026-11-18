@@ -134,6 +134,20 @@ function InvoiceBody({ invoice, href }: { invoice: Invoice; href: (lang: "en" | 
               <dt className="text-strong">{t("total")}</dt>
               <dd className="text-strong" data-testid="invoice-total">{money(invoice.grandTotal)}</dd>
             </div>
+            {(invoice.tenders ?? []).length > 0 ? (
+              <div className="space-y-1 border-t border-line pt-2" data-testid="invoice-tenders">
+                {(invoice.tenders ?? []).map((tender) => (
+                  <div key={tender.method + tender.description} className="flex justify-between gap-3">
+                    <dt className="text-muted">{tender.description}</dt>
+                    <dd className="text-success-ink">-{money(tender.amount)}</dd>
+                  </div>
+                ))}
+                <div className="flex justify-between gap-3 font-semibold">
+                  <dt className="text-strong">{t("amountDue")}</dt>
+                  <dd className="text-strong" data-testid="invoice-due">{money(Math.max(0, toNumber(invoice.grandTotal) - (invoice.tenders ?? []).reduce((sum, x) => sum + toNumber(x.amount), 0)))}</dd>
+                </div>
+              </div>
+            ) : null}
           </dl>
         </div>
       ) : null}

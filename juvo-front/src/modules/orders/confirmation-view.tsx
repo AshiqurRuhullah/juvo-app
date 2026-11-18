@@ -84,6 +84,7 @@ export function ConfirmationView({ number }: { number: string }) {
           <AmountList
             rows={[
               { key: "total", label: t("total"), value: result.grandTotal, always: true, strong: true },
+              { key: "tender", label: t("tender"), value: result.tenderTotal ?? 0, negative: true },
               { key: "paynow", label: t("payNow"), value: result.payNow, always: advance > 0 || online },
               { key: "ondelivery", label: t("onDelivery"), value: result.payOnDelivery, always: advance > 0 || !online },
             ]}
