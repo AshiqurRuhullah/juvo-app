@@ -228,7 +228,11 @@ export const useCampaignResults = (id: string, enabled = true, live = false) =>
   useQuery({
     queryKey: [...KEY, "campaigns", "results", id],
     enabled,
-    refetchInterval: live ? 5000 : false,
+    // Keep looking while the campaign is sending or messages are still waiting or on their way (the worker delivers after the send).
+    refetchInterval: (query) => {
+      const d = query.state.data;
+      return live || (d && (Number(d.inFlight) > 0 || Number(d.pending) > 0)) ? 5000 : false;
+    },
     queryFn: async () => unwrap(await api.GET("/api/v1/marketing/campaigns/{id}/results", { params: { path: { id } } })),
   });
 

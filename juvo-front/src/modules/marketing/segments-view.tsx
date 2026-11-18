@@ -86,7 +86,7 @@ export function SegmentsView() {
         cell: ({ row }) => {
           const s = row.original;
           return (
-            <span className="flex flex-wrap justify-end gap-2">
+            <span className="flex flex-col items-stretch gap-2 md:flex-row md:flex-wrap md:justify-end">
               <Button variant="secondary" onClick={() => setMembers(s)} aria-label={t("membersOf", { name: s.name })} data-testid="segment-members">
                 <Users aria-hidden /> {t("members")}
               </Button>

@@ -88,3 +88,8 @@ test-results/
 !/docs/ui-checks/returns/queue-1280.png
 !/docs/ui-checks/returns/admin-detail-1280.png
 !/docs/ui-checks/returns/refund-dialog-360.png
+/docs/ui-checks/marketing/*.png
+!/docs/ui-checks/marketing/campaign-draft-1280.png
+!/docs/ui-checks/marketing/segment-editor-360.png
+!/docs/ui-checks/marketing/notify-me-360.png
+!/docs/ui-checks/marketing/unsubscribe-360.png
