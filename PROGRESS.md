@@ -1,7 +1,7 @@
 # PROGRESS
 
 Resume from this file alone. Plan: `Documents/juvo-step-prompts.md` (14 steps). Master prompt: `juvo-claude-code-prompt.md`.
-Last updated: 2026-11-16.
+Last updated: 2026-11-18.
 
 ## Status of the 14 steps
 
@@ -18,7 +18,7 @@ Last updated: 2026-11-16.
 | 9 | Payments, tax/invoices, notifications | **Done** (9-a backend, 9-b front end; merged to `main`) |
 | 10 | Couriers, real-time status, returns | **Done** (returns backend and front end, 10-a backend, 10-b front end: couriers, parcels, labels, COD settlement, live updates, order integration; merged to `main`, gated 2026-11-15) |
 | 11A | Operations part 1: purchasing, expenses, support, reports | **Done** (backend and screens; merged to `main`, gated 2026-11-16) |
-| 11B | Operations part 2: promotions, pre-order, loyalty, marketing, reseller, POS | Not started |
+| 11B | Operations part 2: promotions, pre-order, loyalty, marketing, reseller, POS | **In progress**: backend of promotions, pre-orders, loyalty and marketing built on `feature/11b-growth` (not merged, not pushed); no front end; reseller and POS not built |
 | 12 | Remaining admin UI, CMS, dashboard, settings, platform services | Not started |
 | 13 | Hardening, QA, documentation | Not started |
 | 14 | Real providers and go-live preparation | Not started |
@@ -225,9 +225,20 @@ Built by five parallel builders on `feature/11a-operations` (the earlier purchas
 - **Partial or not built:** gateway fees are not recorded by the system (shown as not recorded); no per-product purchase history; no payables or ageing screen; tickets cannot be linked to returns; no seeded canned replies; no SLA escalation; settings screen for the daily summary address (Step 12); report row labels come from the server in English; Bengali is a first pass.
 - **Gate (2026-11-16, run and seen):** backend `dotnet build --no-incremental` 0 warnings and 0 errors; domain 339, application 95, integration 518 of 518 passed; `dotnet ef migrations has-pending-model-changes` clean; no vulnerable packages. Front end: `tsc --noEmit` clean, `eslint src e2e tests` 0 problems, `npm test` 247 passed in 18 files, `npm run build` ok. Browser suite on the final build in 4 shards (desktop, tablet, Android, iPhone): shards 1, 2 and 4 fully green (185, 145 and 153 passed, 8 skipped), shard 3 had 2 failures (a hidden-row locator on phones, a click before the page had loaded) that left 18 reports tests unrun; those spec files were fixed and re-run together: **51 of 51 passed**. The first full run before the fixes had 580 passed and 11 failed (stale line ids, default branch assumptions, a phone tab-bar overflow, shared-data wear); the earlier backend run found two order-dependent tests, fixed. The suite was not run a second time as one single run after the last fixes.
 
+### Step 11B backend result so far (promotions and pricing engine, pre-orders, rewards, marketing)
+
+Branch `feature/11b-growth` (local only: 17 commits ahead of `main`, tip `84f6e20` of 2026-11-16, three builder branches merged, 117 files changed; not pushed, not merged). Contracts: `docs/pricing-engine.md`, `docs/promotions-api.md`, `docs/loyalty-api.md`, `docs/marketing-api.md`; builder notes `docs/step11b-backend-{promotions,loyalty,marketing}.md` (each has its own decision table and traceability rows). Migration on the branch: `GrowthModules` (combined). These docs exist only on that branch until it is merged.
+
+- **Promotions and pricing engine (Z):** one `IPricingEngine` used by cart, checkout quote, order placement, staff order desk and the invoice/refund snapshot (pure `PricingCalculator`, 40 cases); promotions with targets, schedule, channel, usage limit and stacking mode, with the default stacking policy in `docs/pricing-engine.md`; staff API `/promotions`; shop campaign page, banners and promotion info on cards. Order lines snapshot list price, promotion discount and immutable adjustments. `IBasePriceSource` is the plug-in point for a reseller price list.
+- **Pre-order and backorder (AA):** switch on product and variant, pre-order lines through cart, checkout, order, tracking and invoice, queue `GET /orders/preorders`, FIFO allocation after a purchase receipt or by `POST /orders/preorders/allocate`, template `order.preorder-ready`.
+- **Rewards (AB):** points (earn at Delivered, reversed on return), referral rewards as store credit, gift cards and store credit as a tender at checkout, append-only never-negative ledgers; behind `Loyalty.Enabled`, **default off**; staff API `/loyalty`, customer API `/me/rewards`. Quote and checkout gained an optional `tender` field (run `npm run gen:api` when the front end starts).
+- **Marketing (AC):** customer segments (rule model, live counts, four built-in), SMS and email campaigns with preview, schedule, throttle, quiet hours, frequency cap, results and last-touch attribution; consent check in the shared send path; signed unsubscribe (public `/store/unsubscribe`); automations (abandoned cart, back in stock via public notify-me, review request, win-back; all off by default); API `/marketing/*`.
+- **Not built:** every screen of 11B (admin promotions, pre-order queue, rewards, marketing; storefront campaign page, notify-me button, rewards in checkout and account, unsubscribe page); reseller price list and POS (the Pos channel and `IBasePriceSource` exist only as hooks); WhatsApp campaigns, A/B tests, click tracking, delivery receipts (delivered equals sent in the sandbox); customer- or segment-specific promotions; tiered loyalty; redaction of the gift card code in the notification log; the customer's refund-to-credit choice at return time; public list filters and price sort use the sale price, not promotions.
+- **Gate (as recorded by the builders, each on its own branch, before the merge):** promotions: domain 344, application 144, integration 518 in older namespaces plus 29 new, migration and vulnerability checks clean. Marketing: domain 339, application 119, integration 556 of 556. Rewards: domain 392, application 102. **A single gate run on the merged `feature/11b-growth` tip (build, all tests, `has-pending-model-changes`, vulnerable packages) is not recorded and has not been done; do it before merging.** Traceability rows for FR-Z*, FR-AA*, FR-AB*, FR-AC* are in the builder notes and still have to be copied into `docs/understanding.md` and `docs/assumptions.md` when the branch is merged.
+
 ## Next step
 
-**Step 11B** (promotions, pre-order, loyalty, marketing, reseller, POS), then 12 (remaining admin UI, CMS, settings), 13, 14. Owner decisions open: delivery rates and VAT are placeholders; real provider accounts for Step 14. The Accountant default role now holds `couriers.courier.view` (new installs; existing databases keep their roles).
+**Step 11B, remaining work:** run the gate on `feature/11b-growth` and merge it, build the front end for promotions, pre-orders, rewards and marketing, then build reseller and POS; then 12 (remaining admin UI, CMS, settings), 13, 14. Owner decisions open: delivery rates and VAT are placeholders; real provider accounts for Step 14. The Accountant default role now holds `couriers.courier.view` (new installs; existing databases keep their roles).
 
 ## Known issues / notes
 
