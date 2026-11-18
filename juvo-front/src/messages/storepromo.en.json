@@ -1,0 +1,44 @@
+{
+  "countdown": {
+    "endsIn": "Ends in",
+    "ended": "Offer ended",
+    "endedSr": "This offer has ended.",
+    "endsAt": "This offer ends on {when}.",
+    "unit": { "d": "d", "h": "h", "m": "m", "s": "s" }
+  },
+  "card": {
+    "youSave": "You save {amount}"
+  },
+  "summary": {
+    "offers": "Offers",
+    "listPrice": "Price before offers",
+    "wasPrice": "Price before offers:",
+    "lineShare": "Order offer share -{amount}",
+    "whyTitle": "Why this price",
+    "whyLine": "{reasons} applied. You save {saving} in total.",
+    "whyNone": "No offers apply to this order right now."
+  },
+  "coupon": {
+    "notUsedTitle": "Coupon kept, not used",
+    "lostTitle": "Coupon {code} was not used",
+    "lostFallback": "The offers already in your cart give you a better price than this coupon."
+  },
+  "freeDelivery": {
+    "won": "Free delivery on this order: {label}",
+    "more": "Add {amount} more to get free delivery ({label}).",
+    "moreZones": "Add {amount} more to get free delivery in selected areas ({label}).",
+    "waived": "Free delivery. You save {amount} on delivery.",
+    "waivedWith": "Free delivery offer \"{label}\": you save {amount} on delivery."
+  },
+  "banners": {
+    "label": "Offers and campaigns",
+    "cta": "See the offers"
+  },
+  "campaign": {
+    "notFoundTitle": "Campaign not found",
+    "products": "Products in this campaign",
+    "emptyTitle": "No products yet",
+    "emptyText": "This campaign has no products right now. Have a look at the rest of the shop.",
+    "shop": "Shop all products"
+  }
+}

@@ -19,6 +19,8 @@ import { MyInvoicePanel, PaymentHistory, PaymentPanel } from "@/modules/payments
 import { LiveBadge } from "@/components/ui/live-badge";
 import { useLiveRefresh } from "@/lib/realtime/use-live";
 import { CourierTrackingCard } from "./booking/courier-card";
+import { OrderPreorderNotice } from "@/modules/preorders/preorder-parts";
+import { useSavingRows } from "@/modules/promotions-store/price-explainer";
 import { AmountList, OrderLines, ProgressLine, Section, TrackBadges, TrackHistory, useMethodLabel } from "./common";
 
 /** The shipping address in a few readable lines. */
@@ -50,6 +52,7 @@ export function MyOrderDetail({ id }: { id: string }) {
   const live = useLiveRefresh({ mode: "customer", orderIds: [id], queryKeys: [["orders", "mine", id]], events: ["OrderStatusChanged", "PaymentStatusChanged", "ShipmentEventAdded"], delayMs: 300 });
   const [open, setOpen] = React.useState(false);
   const [reason, setReason] = React.useState("");
+  const savingLines = useSavingRows({ listSubtotal: query.data?.money.listSubtotal ?? 0, subtotal: query.data?.money.subtotal ?? 0, promotionDiscount: query.data?.money.promotionDiscount ?? 0 });
   const crumbs = [{ label: tn("items.accountHome"), href: "/account" }, { label: tm("title"), href: "/account/orders" }, { label: query.data?.number ?? "..." }];
 
   if (query.isLoading) {
@@ -109,6 +112,7 @@ export function MyOrderDetail({ id }: { id: string }) {
       <div className="space-y-5">
         <Section title={t("status")} id="mo-status">
           <TrackBadges status={order.status} paymentStatus={order.paymentStatus} deliveryStatus={order.deliveryStatus} />
+          <OrderPreorderNotice state={order.preorderState} className="mt-4" />
           {order.paymentDeadline && order.paymentStatus === "Pending" && order.paymentMethod !== "COD" ? (
             <Alert variant="warning" className="mt-4">
               {t("deadline", { time: dateTime(order.paymentDeadline) })}
@@ -145,7 +149,9 @@ export function MyOrderDetail({ id }: { id: string }) {
             <Section title={t("amounts")} id="mo-amounts">
               <AmountList
                 rows={[
-                  { key: "subtotal", label: t("subtotal"), value: order.money.subtotal, always: true },
+                  ...(savingLines.length > 0
+                    ? savingLines.map((r) => ({ key: r.key, label: r.text, value: r.value, negative: r.kind === "reason", always: true }))
+                    : [{ key: "subtotal", label: t("subtotal"), value: order.money.subtotal, always: true }]),
                   { key: "coupon", label: t("coupon"), value: order.money.couponDiscount, negative: true },
                   { key: "discount", label: t("discount"), value: order.money.manualDiscount, negative: true },
                   { key: "delivery", label: t("delivery"), value: order.money.deliveryCharge, always: true },

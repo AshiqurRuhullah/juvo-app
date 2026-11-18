@@ -179,10 +179,10 @@ test("modules that are not built yet are marked, not linked", async ({ page }) =
   const scope = layout === "desktop" ? page.getByRole("complementary", { name: "Navigation" }) : page.getByRole("dialog", { name: "Menu" });
 
   await expect(scope.getByRole("link", { name: "Dashboard" })).toBeVisible();
-  await expect(scope.locator('a[href="/admin/promotions"]')).toHaveCount(0); // no dead link
-  // Promotions (a later step) is a child of the Marketing parent, which is closed until it is opened.
-  const marketing = scope.getByRole("button", { name: "Marketing" });
-  if ((await marketing.getAttribute("aria-expanded")) !== "true") await marketing.click();
-  await expect(scope.getByText("Promotions", { exact: true })).toBeVisible();
-  await expect(scope.locator("li", { hasText: "Promotions" }).getByText("Soon")).toBeVisible();
+  await expect(scope.locator('a[href="/admin/delivery/zones"]')).toHaveCount(0); // no dead link
+  // Delivery zones (its admin screen is a later step) is a child of the Delivery parent, which is closed until it is opened.
+  const delivery = scope.getByRole("button", { name: "Delivery" });
+  if ((await delivery.getAttribute("aria-expanded")) !== "true") await delivery.click();
+  await expect(scope.getByText("Delivery zones", { exact: true })).toBeVisible();
+  await expect(scope.locator("li", { hasText: "Delivery zones" }).getByText("Soon")).toBeVisible();
 });

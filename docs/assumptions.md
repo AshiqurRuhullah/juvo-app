@@ -576,3 +576,70 @@ Built on `feature/11b-growth`, merged into `main` on 2026-11-18 after a green ga
 | Every table and list shows 10 rows per page, with one shared pager; no per-page chooser. | The owner asked for 10 per page and one matching design; a chooser would invite 100-row pages on phones. | `PAGE_SIZE` in `juvo-front/src/lib/pagination.ts`; to add a chooser, extend `Pagination` once. |
 | Tables that receive all their rows page them on the client; server paged tables ask the API for one page of 10. | The same look and behaviour everywhere, with no change to the API. | `components/ui/data-table.tsx` |
 | The storefront product grid keeps 12 per load (a 3 by 4 grid that loads more as you scroll); printable sheets and form line tables are not paged. | A grid is not a table; a printout must show every row. | |
+
+## X. Step 11B front end (promotions, pre-orders, rewards, marketing screens) decisions
+
+Built by four parallel builders and merged on `feature/11b-front`. Notes with contract gaps and tests: `docs/step11b-frontend-{promo,store,rewards,marketing}.md`. Ids: F = promotions admin, S = storefront and pre-orders, R = rewards, MF = marketing screens.
+
+### Promotions admin (F)
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| F1 | Times are typed in `datetime-local` fields and sent as `YYYY-MM-DDTHH:mm:00+06:00`; answers (any offset) are shown as the Dhaka wall clock. | The business time is Asia/Dhaka (P8) whatever the device clock says; the form says so. | `dhakaLocalToIso`, `isoToDhakaLocal` in `logic.ts`. |
+| F2 | Report periods are Dhaka days: `from` = 00:00:00+06:00, `to` = 23:59:59+06:00. | Same reason. | `dhakaDayBound`. |
+| F3 | The summary strip on the list adds up the report of every promotion (all pages, 100 per page, at most 20 pages), and says an order with two promotions counts under each. | The API has no total row; no invented numbers. | `useCampaignTotals`, `summarizeReport`. |
+| F4 | Activate is disabled while the form has unsaved changes. | The API switches on the saved record, not the form. | `dirty` in `promotion-editor.tsx`. |
+| F5 | The price preview takes sample items picked by the person (inventory `VariantPicker`, so only active stock-tracking variants are offered). | The preview needs a cart and none may be made up. | `preview-panel.tsx`. |
+| F6 | Free delivery zones are picked from `GET /delivery/zones`; without the zone permission the field falls back to typed codes (the API checks them). | Same approach as the courier form. | `ZonePicker` in `promotion-fields.tsx`. |
+| F7 | A festival campaign may be saved without products (the API allows a draft) but needs slug and English title; the page says products are needed before it can be switched on. | Mirrors `PromotionsService` validation (title required at save, targets at activation). | `TYPE_RULES.FestivalCampaign.targetsRequired`. |
+| F8 | API validation field errors are shown as our own translated one-line text per field (`editor.serverField.*`), never the API's English sentence; error codes use `errors.PROMO_*`. | English and Bengali for every text. | `SERVER_FIELDS`, `showProblem`. |
+| F9 | Pictures are checked in the browser for type, 10 MB and a 1000 px long side before upload; the API checks again. | Quick feedback; the 400 answer shows a generic rules text. | `ImageUploads`. |
+| F10 | Stack mode radios are disabled for free delivery (the engine ignores them there) and the explanation says so. | `docs/pricing-engine.md` section 3, rule 6. | `stackingText`. |
+
+### Storefront promotions and pre-orders (S)
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| S1 | Server reads of the home page, product pages, product lists, banners and campaigns use `storeGet(..., { fresh: true })` (`cache: "no-store"`); other reads keep the one-minute cache. | P12: the API cuts its own Cache-Control at the next promotion start or end; the BFF/Next layer must not keep an answer longer. | `lib/server/store.ts` option `fresh`. |
+| S2 | At zero the countdown asks the API again instead of computing a price itself. | The base price after a sale ends (sale price, regular price) is only known to the API. | `useOnPromotionEnded` in `promotions-store/promo-parts.tsx`. |
+| S3 | Pre-order shown from the API facts only (`isPreorder`, expected date); the text is our own in en and bn (the API labels are used only as data, not displayed). | One wording for both languages and a localised date. | `preorders.*.json`. |
+| S4 | The cart summary keeps the old "Subtotal" row when nothing was saved, and replaces it by list price + offer rows when something was. | Existing tests and the plain case stay as they were. | `hasSavings`, `savingRows` in `promotions-store/logic.ts`. |
+| S5 | A pre-order variant has quantity up to the per-order maximum (10) on the product page; the cart answer is the authority. | `available` is 0 for such a variant; the API's cart limit for pre-order lines is the per-line maximum. | `product-view.tsx` `stock`. |
+| S6 | Banner and campaign hero use a fixed dark base with white text. | Contrast must hold in both themes whatever the picture. | `promo-banners.tsx`, campaign page. |
+
+### Rewards (R)
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| R1 | The customer menu entry uses a new optional `feature: "loyalty"` flag on `NavItem`; `visibleNav(groups, access, features)` hides such items unless the feature is on. `AppShell` gets the flag from `useNavFeatures` (`GET /me/rewards`, cached one minute, only in the account area). | The menu must hide rewards while the flag is off, and the only customer-side signal is the API's 409 `LOYALTY.FEATURE_OFF`. | `modules/loyalty/nav-features.ts`, `lib/nav.ts`. |
+| R2 | `useMyRewards` turns the 409 into `data: null` (not an error). It also logs one browser "409" resource line on account pages while the feature is off. | Not-an-error for the UI. | The few UI-check specs that visit `/account` with a strict console filter must allow 409 (see merge notes). |
+| R3 | The tender fields apply on a button ("Apply"), not on every keystroke. | Each apply is one quote call; typing would flood the API and flicker the totals. | `tender-section.tsx`. |
+| R4 | Points and credit are lowered on the client to what `usable` allows before the quote; the server still decides. | Avoids refused tenders from typing a big number. | `clampPoints`, `creditRoom` in `logic.ts`. |
+| R5 | The customer lookup accepts a pasted customer id as well as a search. | Staff without `customers.customer.view` can still reach the screen from a ticket or an order. | `customer-lookup.tsx`. |
+| R6 | Settings are sent as a patch of changed fields; unchanged fields are `null`. | The API changes only the fields it receives. | `toSettingsPatch`. |
+
+### Marketing screens (MF)
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| MF1 | Two message fragments: `marketing` (admin) and `marketingStore` (public). | The storefront scope would otherwise ship all admin texts (about 15 kB compressed) to every shopper. | Merge the files and rename the namespace. |
+| MF2 | The rule form shows only the fields of the chosen rule type and the request carries only those (`RULE_FIELDS` in `logic.ts`). | The API refuses a field its type does not use (backend decision 4). | Edit `RULE_FIELDS`. |
+| MF3 | Segment count is one request per visible row (`GET /segments/{id}/count`), cached 15 s. | The list endpoint carries no counts; ten rows per page keeps it at ten set-based queries. | Ask for counts in the list DTO. |
+| MF4 | The live count in the editor calls `POST /segments/preview-count` after a 500 ms pause and only when every rule is complete. | Avoids requests for half-typed rules (the API would answer a validation error). | `usePreviewCount` and the `complete` check in `segment-editor.tsx`. |
+| MF5 | The editor is a dialog (bottom sheet on phones). | One list route, as asked. | A full page route could reuse `SegmentEditorDialog`'s body. |
+| MF6 | Wishlist rule: optional product picker (search by name, needs `catalog.product.view`); ids from a saved segment show a short id because the API returns no names. | The API holds ids only. | Resolve names by id when a bulk lookup exists. |
+| MF7 | Schedule entered as Dhaka time (`datetime-local`, read as UTC+06:00 whatever the browser's zone), sent as `YYYY-MM-DDTHH:mm:00+06:00`; the displayed schedule is the API's `scheduledAtDhaka`. | Bangladesh has one offset all year, so a fixed offset is exact; the API wants an offset. | `DHAKA_OFFSET_HOURS` in `logic.ts`. |
+| MF8 | "Send now" first calls preview and states `recipients` from it in the confirmation. The campaign must be saved (buttons disabled while the form has unsaved changes). | Preview, test, schedule and send use the saved text. | `askSend` in `campaign-detail.tsx`. |
+| MF9 | Switching an automation on asks first (consent wording differs for back in stock); switching off is immediate. The switch sends only `isEnabled`, the Save button sends the other fields. | Switching on starts real messages. | `AutomationCard`. |
+| MF10 | Settings screen edits only throttle, quiet hours, frequency cap and attribution window; the other setting fields (shop name, link address, max notify-me per number, SMS opt-out text) are sent as `null` ("leave as is"). | Brief scope. | `settingsToRequest`. |
+| MF11 | Quiet hours are described as SMS-only in the automations page note and the settings screen. | Backend decision 8. | Message keys `quietHoursScope`, `quietScope`. |
+| MF12 | The unsubscribe page never acts on open: the button POSTs the token. | Backend notes: a mail scanner opening a GET link would unsubscribe a customer. | The links in messages still point at the API's GET address until `Marketing:UnsubscribeUrl` is set (see merge notes). |
+| MF13 | SMS counter is labelled as an estimate: GSM letters 160/153, any other letter (Bengali) makes it Unicode 70/67; the footer note says the opt-out text is added. | The real provider rules are not in the API. | `smsLength` in `logic.ts`. |
+| MF14 | The campaign detail polls results and the campaign every 5 s while the status is Sending. | Sending is carried on by a worker. | `useCampaign`, `useCampaignResults`. |
+
+### Merge decisions (lead)
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| X1 | The three error keys `PROMO_CAMPAIGN_NOT_FOUND`, `PROMO_USED_UP`, `PROMO_MULTIPLE_COUPONS` were added by two builders; the customer-facing wording is kept (it was already the effective one, the later key). | One key can hold one text; shoppers see these more often than staff. | `errors.*` in `en.json` and `bn.json`. |
+| X2 | Message links of campaigns still point at the API's GET unsubscribe address until `Marketing:UnsubscribeUrl` is set to `<web address>/unsubscribe` (the page confirms with a POST). | A mail scanner opening a GET link would unsubscribe a customer. | Setting `Marketing:UnsubscribeUrl` (Step 14 go-live settings). |

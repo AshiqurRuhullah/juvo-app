@@ -11,6 +11,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/overlays";
 import { postJson } from "@/lib/api/post";
 import { ACCOUNT_NAV, ADMIN_NAV, activeItem, flattenNav, visibleNav } from "@/lib/nav";
+import { useNavFeatures } from "@/modules/loyalty/nav-features";
 import { cn } from "@/lib/utils";
 import { useSession } from "@/components/providers/session-provider";
 import { Logo } from "./logo";
@@ -63,7 +64,8 @@ export function AppShell({ area, initialCollapsed, children }: { area: Area; ini
   const drawer = drawerFor === pathname;
   const setDrawer = (open: boolean) => setDrawerFor(open ? pathname : null);
 
-  const groups = React.useMemo(() => visibleNav(area === "admin" ? ADMIN_NAV : ACCOUNT_NAV, me), [area, me]);
+  const features = useNavFeatures(area);
+  const groups = React.useMemo(() => visibleNav(area === "admin" ? ADMIN_NAV : ACCOUNT_NAV, me, features), [area, me, features]);
   const profileHref = area === "admin" ? "/admin/profile" : "/account";
   const home = area === "admin" ? "/admin" : "/account";
 
@@ -171,7 +173,8 @@ export function AppShell({ area, initialCollapsed, children }: { area: Area; ini
 function MenuDrawer({ open, onOpenChange, area }: { open: boolean; onOpenChange: (open: boolean) => void; area: Area }) {
   const { me } = useSession();
   const t = useTranslations("shell");
-  const groups = React.useMemo(() => visibleNav(area === "admin" ? ADMIN_NAV : ACCOUNT_NAV, me), [area, me]);
+  const features = useNavFeatures(area);
+  const groups = React.useMemo(() => visibleNav(area === "admin" ? ADMIN_NAV : ACCOUNT_NAV, me, features), [area, me, features]);
   const start = React.useRef<number | null>(null);
 
   return (

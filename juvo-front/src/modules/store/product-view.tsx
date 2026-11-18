@@ -14,10 +14,14 @@ import { useAddToCart, useStoreProduct, type StoreProductDetail, type StoreVaria
 import { usePickName, useStoreError } from "./hooks";
 import { Breadcrumbs } from "./page-heading";
 import { ProductDelivery } from "./product-delivery";
+import { NotifyMe } from "@/modules/marketing/notify-me";
 import { ProductGallery } from "./product-gallery";
 import { RecentlyViewed, useRememberProduct } from "./recently-viewed";
 import { ProductGrid } from "./store-product-card";
 import { WishlistHeart } from "./wishlist-heart";
+import { PromoBadge, PromotionCountdown, SavingLine } from "@/modules/promotions-store/promo-parts";
+import { priceView } from "@/modules/promotions-store/logic";
+import { PreorderBadge, PreorderProductNotice } from "@/modules/preorders/preorder-parts";
 
 const MAX_QUANTITY = 10;
 
@@ -128,6 +132,7 @@ function Details({ title, children }: { title: string; children: React.ReactNode
  */
 export function ProductView({ slug, initial }: { slug: string; initial: StoreProductDetail }) {
   const t = useTranslations("store.product");
+  const tp = useTranslations("preorders.action");
   const b = useTranslations("store.breadcrumb");
   const money = useMoney();
   const pick = usePickName();
@@ -149,7 +154,9 @@ export function ProductView({ slug, initial }: { slug: string; initial: StorePro
   }, [variants]);
   const sizes = React.useMemo(() => [...new Set(variants.map((v) => v.size).filter((s): s is string => !!s))], [variants]);
 
-  const firstAvailable = variants.find((v) => v.inStock) ?? variants[0];
+  // A pre-order variant has no stock but can be ordered, so it counts as available everywhere on this page.
+  const orderable = (v: StoreVariant | undefined) => !!v && (v.inStock || v.isPreorder);
+  const firstAvailable = variants.find((v) => v.inStock) ?? variants.find((v) => v.isPreorder) ?? variants[0];
   const [colour, setColour] = React.useState<string | null>(firstAvailable?.colorName ?? null);
   const [size, setSize] = React.useState<string | null>(sizes.length === 1 ? sizes[0] : null);
   const [quantity, setQuantity] = React.useState(1);
@@ -159,28 +166,30 @@ export function ProductView({ slug, initial }: { slug: string; initial: StorePro
   const find = (c: string | null, s: string | null): StoreVariant | undefined =>
     variants.find((v) => (colours.length === 0 || v.colorName === c) && (sizes.length === 0 || v.size === s));
   const variant = sizes.length === 0 || size ? find(colour, size) : undefined;
-  const sizeSoldOut = (s: string) => !(find(colour, s)?.inStock ?? false);
+  const sizeSoldOut = (s: string) => !orderable(find(colour, s));
 
   const chooseColour = (next: string) => {
     setColour(next);
     const index = product.images.findIndex((image) => image.colorName === next);
     if (index >= 0) setImageIndex(index);
-    if (size && !(variants.find((v) => v.colorName === next && v.size === size)?.inStock ?? false)) setSize(null);
+    if (size && !orderable(variants.find((v) => v.colorName === next && v.size === size))) setSize(null);
     setQuantity(1);
   };
 
   const unitPrice = variant ? toNumber(variant.price) : toNumber(card.price);
-  const regular = toNumber(card.regularPrice);
-  const onSale = unitPrice < regular;
-  const percent = onSale ? Math.round(((regular - unitPrice) / regular) * 100) : 0;
-  const stock = variant ? Math.min(toNumber(variant.available), MAX_QUANTITY) : MAX_QUANTITY;
+  // The variant carries its own list price and promotion (a variant can have its own price); without a chosen variant the card speaks.
+  const regular = variant && toNumber(variant.listPrice) > 0 ? toNumber(variant.listPrice) : toNumber(card.regularPrice);
+  const { onSale, percent } = priceView(unitPrice, regular);
+  const promotion = variant ? (variant.promotion ?? null) : (card.promotion ?? null);
+  const preorderFacts = variant ?? (card.isPreorder ? card : null);
+  const stock = variant ? (variant.isPreorder ? MAX_QUANTITY : Math.min(toNumber(variant.available), MAX_QUANTITY)) : MAX_QUANTITY;
 
   const add = async () => {
     if (sizes.length > 0 && !size) {
       setNeedSize(true);
       return;
     }
-    if (!variant || !variant.inStock) return;
+    if (!variant || !orderable(variant)) return;
     try {
       await addToCart.mutateAsync({ variantId: variant.id, quantity });
       toast.success(t("added", { name }), { action: { label: t("viewCart"), onClick: () => router.push("/cart") } });
@@ -191,7 +200,7 @@ export function ProductView({ slug, initial }: { slug: string; initial: StorePro
 
   const sizeTable = parseSizeTable(product.sizeChartJson);
   const tagList = (product.tags ?? "").split(",").map((x) => x.trim()).filter(Boolean);
-  const soldOut = variants.length > 0 && variants.every((v) => !v.inStock);
+  const soldOut = variants.length > 0 && variants.every((v) => !orderable(v));
   const crumbs = [
     { label: b("home"), href: "/" },
     ...product.breadcrumb.map((c) => ({ label: c.name, href: `/category/${c.slug}` })),
@@ -210,6 +219,8 @@ export function ProductView({ slug, initial }: { slug: string; initial: StorePro
               <div className="flex flex-wrap gap-1.5">
                 {card.isNew ? <Badge variant="neutral">{t("new")}</Badge> : null}
                 {onSale ? <Badge variant="sale">{t("save", { percent })}</Badge> : null}
+                <PromoBadge promotion={promotion} className="bg-primary-soft" />
+                <PreorderBadge facts={preorderFacts} className="bg-info-soft" />
               </div>
               <div className="flex items-start justify-between gap-3">
                 <h1 className="text-3xl font-semibold leading-tight [overflow-wrap:anywhere]" data-testid="product-name">
@@ -228,6 +239,8 @@ export function ProductView({ slug, initial }: { slug: string; initial: StorePro
                   </span>
                 ) : null}
               </p>
+              <SavingLine price={unitPrice} regular={regular} />
+              {promotion?.endsAt ? <PromotionCountdown promotion={promotion} size="lg" /> : null}
             </div>
 
             {colours.length > 0 ? (
@@ -238,7 +251,7 @@ export function ProductView({ slug, initial }: { slug: string; initial: StorePro
                 <div className="flex flex-wrap gap-2">
                   {colours.map((c) => {
                     const on = colour === c.colorName;
-                    const out = !variants.some((v) => v.colorName === c.colorName && v.inStock);
+                    const out = !variants.some((v) => v.colorName === c.colorName && orderable(v));
                     return (
                       <button
                         key={c.colorName}
@@ -307,7 +320,9 @@ export function ProductView({ slug, initial }: { slug: string; initial: StorePro
               {soldOut ? (
                 <span className="font-medium text-danger-ink">{t("soldOut")}</span>
               ) : variant ? (
-                variant.inStock ? (
+                variant.isPreorder ? (
+                  <span className="font-medium text-info-ink" data-testid="preorder-available">{tp("available")}</span>
+                ) : variant.inStock ? (
                   variant.lowStock ? (
                     <span className="font-medium text-warning-ink">{t("lowStock", { count: stock })}</span>
                   ) : (
@@ -318,6 +333,9 @@ export function ProductView({ slug, initial }: { slug: string; initial: StorePro
                 )
               ) : null}
             </p>
+
+            <PreorderProductNotice facts={preorderFacts} />
+            <NotifyMe slug={slug} variants={variants} variant={variant} />
 
             <div className="flex flex-wrap items-center gap-3">
               <div className="inline-flex items-center rounded-control border border-line" role="group" aria-label={t("quantity")}>
@@ -331,8 +349,8 @@ export function ProductView({ slug, initial }: { slug: string; initial: StorePro
                   <Plus className="size-4" aria-hidden />
                 </button>
               </div>
-              <Button size="lg" className="min-w-0 flex-1" onClick={() => void add()} loading={addToCart.isPending} disabled={soldOut || (!!variant && !variant.inStock)} data-testid="add-to-cart">
-                <ShoppingBag aria-hidden /> {soldOut ? t("soldOut") : t("addToCart")}
+              <Button size="lg" className="min-w-0 flex-1" onClick={() => void add()} loading={addToCart.isPending} disabled={soldOut || (!!variant && !orderable(variant))} data-testid="add-to-cart">
+                <ShoppingBag aria-hidden /> {soldOut ? t("soldOut") : variant?.isPreorder ? tp("preorderNow") : t("addToCart")}
               </Button>
             </div>
             {stock >= MAX_QUANTITY && variant ? <p className="-mt-2 text-xs text-muted">{t("maxPerOrder", { count: MAX_QUANTITY })}</p> : null}

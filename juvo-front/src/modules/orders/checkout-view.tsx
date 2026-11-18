@@ -22,8 +22,11 @@ import { AddressFields } from "./address-fields";
 import { useCheckoutQuote, useOrderErrorText, usePlaceOrder, useRequestOrderOtp, useSavedAddresses, type CheckoutQuote, type CheckoutRequest } from "./api";
 import { AmountList, Section } from "./common";
 import { MethodIcon, usePayMethodLabel } from "@/modules/payments/common";
+import { TenderSection } from "@/modules/loyalty/tender-section";
 import { payPath } from "@/modules/payments/status";
 import { cleanMobile, getDeviceId, isBdMobile, newKey } from "./status";
+import { CouponLostNotice, DeliveryWaiverNote, LineOfferNote, useSavingRows, WhyThisPrice } from "@/modules/promotions-store/price-explainer";
+import { PreorderCartNotice, PreorderTag } from "@/modules/preorders/preorder-parts";
 
 const NEW_ADDRESS = "__new";
 export const ORDER_STORAGE_PREFIX = "juvo_order_";
@@ -73,6 +76,7 @@ export function CheckoutView() {
   const [changedFrom, setChangedFrom] = React.useState<number | null>(null);
   const [duplicateOpen, setDuplicateOpen] = React.useState(false);
   const [placed, setPlaced] = React.useState(false);
+  const [tender, setTender] = React.useState<CheckoutRequest["tender"]>(null);
   const attempt = React.useRef<{ fingerprint: string; key: string } | null>(null);
 
   const savedList = saved.data ?? [];
@@ -90,8 +94,9 @@ export function CheckoutView() {
       address: place_ ? { recipientName: "", phone: null, area: null, addressLine: "", landmark: null, stateProvince: null, city: null, postalCode: null, latitude: null, longitude: null, ...place_ } : null,
       paymentMethod: method,
       mobile: guestMobile,
+      tender,
     }),
-    [addressId, place_, method, guestMobile],
+    [addressId, place_, method, guestMobile, tender],
   );
   const hasLines = (cart.data?.lines.length ?? 0) > 0;
   const quoteQuery = useCheckoutQuote(quoteInput, hasLines && !placed, lines);
@@ -102,6 +107,8 @@ export function CheckoutView() {
   const needsOtp = !customer && !!quote?.otpRequired;
   const total = quote ? toNumber(quote.grandTotal) : 0;
   const advance = quote ? toNumber(quote.advanceRequired) : 0;
+  // Module Z: the money between the list price and the goods total (sale price, promotions), one row each.
+  const savingLines = useSavingRows({ explanation: quote?.explanation, listSubtotal: quote?.listSubtotal ?? 0, subtotal: quote?.subtotal ?? 0, promotionDiscount: quote?.promotionDiscount ?? 0 });
 
   if (cart.isPending) return <Skeleton className="h-96" aria-busy />;
   if (!hasLines && !placed) {
@@ -167,9 +174,10 @@ export function CheckoutView() {
       expectedTotal: total,
       idempotencyKey: null,
       deviceId: getDeviceId(),
+      tender,
     };
     // One key per attempt: the same basket, method and number keep it (a retry returns the same order); a changed basket gets a new one.
-    const fingerprint = JSON.stringify([lines, activeMethod, body.contact.mobile, addressId]);
+    const fingerprint = JSON.stringify([lines, activeMethod, body.contact.mobile, addressId, tender]);
     if (attempt.current?.fingerprint !== fingerprint) attempt.current = { fingerprint, key: newKey() };
 
     try {
@@ -302,6 +310,7 @@ export function CheckoutView() {
                 </p>
                 <p className="text-sm text-muted">{t("delivery.days", { min: toNumber(quote.delivery.daysMin), max: toNumber(quote.delivery.daysMax) })}</p>
                 {quote.delivery.dutiesPaidByReceiver ? <p className="text-sm text-muted">{t("delivery.duties")}</p> : null}
+                <DeliveryWaiverNote delivery={quote.delivery} />
               </div>
             ) : quote?.deliveryError ? (
               <Alert variant="warning">{quote.deliveryError === "DELIVERY.NOT_DELIVERABLE" ? t("delivery.notDeliverable") : t("delivery.error")}</Alert>
@@ -332,6 +341,8 @@ export function CheckoutView() {
             </Alert>
           ) : null}
         </Section>
+
+        <TenderSection quote={quote} onChange={setTender} />
 
         {needsOtp ? (
           <Section title={t("otp.title")} id="co-otp">
@@ -378,6 +389,8 @@ export function CheckoutView() {
                   <div className="min-w-0 flex-1">
                     <p className="line-clamp-2 text-sm font-medium text-strong [overflow-wrap:anywhere]">{pick(line.name, line.nameBn)}</p>
                     <p className="text-xs text-muted">{[line.colorName, line.size ? t("review.size", { size: line.size }) : null, `× ${toNumber(line.quantity)}`].filter(Boolean).join(" · ")}</p>
+                    <LineOfferNote line={line} className="text-xs" />
+                    <PreorderTag facts={line} className="mt-1 text-xs" />
                     {line.problem ? (
                       <p className="mt-1 text-sm font-medium text-danger" data-testid="line-problem" role="alert">
                         {problemText(line.problem)}
@@ -394,7 +407,9 @@ export function CheckoutView() {
             <AmountList
               className="border-t border-line pt-4"
               rows={[
-                { key: "subtotal", label: t("review.subtotal", { count: toNumber(quote.itemCount) }), value: quote.subtotal, always: true },
+                ...(savingLines.length > 0
+                  ? savingLines.map((r) => ({ key: r.key, label: r.text, value: r.value, negative: r.kind === "reason", always: true }))
+                  : [{ key: "subtotal", label: t("review.subtotal", { count: toNumber(quote.itemCount) }), value: quote.subtotal, always: true }]),
                 { key: "discount", label: t("review.discount"), value: quote.couponDiscount, negative: true },
                 { key: "delivery", label: t("review.delivery"), value: quote.deliveryCharge, always: !!quote.delivery, text: quote.delivery ? (quote.delivery.isFree ? t("delivery.free") : undefined) : t("review.chooseAddress") },
                 { key: "total", label: t("review.total"), value: quote.grandTotal, strong: true },
@@ -411,6 +426,14 @@ export function CheckoutView() {
           ) : (
             <Skeleton className="h-28" />
           )}
+
+          {quote ? (
+            <>
+              <CouponLostNotice coupon={quote.coupon} />
+              <WhyThisPrice explanation={quote.explanation} />
+              {quote.hasPreorder ? <PreorderCartNotice lines={quoteLines} /> : null}
+            </>
+          ) : null}
 
           {quote && quote.problems.length > 0 ? (
             <Alert variant="warning" title={t("review.problems")}>

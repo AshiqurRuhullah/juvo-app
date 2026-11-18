@@ -1,0 +1,59 @@
+{
+  "common": {
+    "search": "Search",
+    "noMatch": "No match"
+  },
+  "notify": {
+    "title": "Tell me when it is back",
+    "intro": "This item is sold out. Leave your number and we will send you one message when it is available again.",
+    "forVariant": "For: {variant}",
+    "whichVariant": "Which option do you want?",
+    "whichVariantPlaceholder": "Choose an option",
+    "thisItem": "This item",
+    "pickVariant": "Please choose the option you are waiting for.",
+    "mobile": "Mobile number",
+    "mobileHint": "For example 01712345678. We use it only for this message.",
+    "signedIn": "You are signed in, so we will message the number on your account.",
+    "submit": "Notify me",
+    "haveAccount": "Have an account?",
+    "signIn": "Sign in",
+    "success": "Thank you. We will message you when it is back.",
+    "already": "You are already on the list for this item. We will message you when it is back.",
+    "successGuest": "You will get one message, to the number you gave. You can opt out of any message with its link.",
+    "successCustomer": "You will get one message, to the number on your account.",
+    "errors": {
+      "inStock": "Good news: this item is in stock now. You can order it.",
+      "limit": "This number is already waiting for the most items we allow. We will message you when one of them is back.",
+      "contact": "Please enter a valid mobile number.",
+      "notFound": "We could not find that option. Please choose one and try again.",
+      "rateLimited": "Too many requests from your connection. Please wait a little and try again.",
+      "network": "We could not reach the server. Check your connection and try again.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "unsubscribe": {
+    "title": "Unsubscribe",
+    "backToShop": "Back to the shop",
+    "contact": "Contact us",
+    "tryAgain": "Try again",
+    "missingTitle": "This link has no unsubscribe code",
+    "missingBody": "Open the unsubscribe link from the message you received, or copy the whole link.",
+    "invalidTitle": "This unsubscribe link is not valid",
+    "invalidBody": "The link is damaged, cut short or changed. Open the link from your message again.",
+    "contactHelp": "If it still does not work, contact us and we will remove you by hand.",
+    "confirmTitle": "Stop marketing messages?",
+    "confirmBody": "We will stop sending you marketing messages on this channel. You can agree again any time in your account.",
+    "orderMessages": "Messages about your orders, payments and delivery are not marketing and will still reach you.",
+    "confirmButton": "Yes, unsubscribe me",
+    "doneTitle": "You are unsubscribed",
+    "doneBody": "We will not send you more marketing messages by {channel}.",
+    "alreadyTitle": "You were already unsubscribed",
+    "alreadyBody": "You do not get marketing messages by {channel}. Nothing was changed.",
+    "channelSms": "SMS",
+    "channelEmail": "email",
+    "channelAny": "this channel",
+    "failed": "We could not unsubscribe you just now. Please try again.",
+    "rateLimited": "Too many attempts. Please wait a little and try again.",
+    "network": "We could not reach the server. Check your connection and try again."
+  }
+}

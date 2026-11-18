@@ -6,8 +6,10 @@ import {
   ClipboardList,
   FileText,
   Gauge,
+  Gift,
   Globe,
   Headset,
+  Hourglass,
   Landmark,
   Layers,
   LogIn,
@@ -31,6 +33,7 @@ import {
   UserCog,
   Users,
   Wallet,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 import { can, type AccessView, type PermissionScope } from "@/lib/auth/permissions";
@@ -49,6 +52,8 @@ export type NavItem = {
   ready: boolean;
   /** One of the few items on the phone's bottom bar. */
   bottom?: boolean;
+  /** Shown only while this switchable feature is on (the shell asks the API once). */
+  feature?: "loyalty";
 };
 
 export type NavGroup = {
@@ -80,6 +85,7 @@ export const ADMIN_NAV: NavGroup[] = [
     items: [
       { id: "orders", label: "orders", href: "/admin/orders", icon: ClipboardList, permission: "orders.order.view", ready: true, bottom: true },
       { id: "social-orders", label: "socialOrders", href: "/admin/orders/new", icon: Store, permission: "orders.order.create", ready: true },
+      { id: "preorders", label: "preorders", href: "/admin/orders/preorders", icon: Hourglass, permission: "orders.order.view", ready: true },
       { id: "fraud", label: "fraud", href: "/admin/fraud", icon: ShieldAlert, permission: "fraud.flag.view", ready: true },
       { id: "returns", label: "returns", href: "/admin/returns", icon: RotateCcw, permission: "returns.return.view", ready: true },
     ],
@@ -130,8 +136,11 @@ export const ADMIN_NAV: NavGroup[] = [
     label: "marketing",
     icon: Megaphone,
     items: [
-      { id: "promotions", label: "promotions", href: "/admin/promotions", icon: Tag, permission: "promotions.promotion.view", scope: "anywhere", ready: false },
-      { id: "campaigns", label: "campaigns", href: "/admin/marketing/campaigns", icon: Megaphone, permission: "marketing.campaign.view", scope: "anywhere", ready: false },
+      { id: "promotions", label: "promotions", href: "/admin/promotions", icon: Tag, permission: "promotions.promotion.view", scope: "anywhere", ready: true },
+      { id: "segments", label: "segments", href: "/admin/marketing/segments", icon: Users, permission: "marketing.segment.view", scope: "anywhere", ready: true },
+      { id: "campaigns", label: "campaigns", href: "/admin/marketing/campaigns", icon: Megaphone, permission: "marketing.campaign.view", scope: "anywhere", ready: true },
+      { id: "automations", label: "automations", href: "/admin/marketing/automations", icon: Zap, permission: "marketing.automation.view", scope: "anywhere", ready: true },
+      { id: "loyalty", label: "loyalty", href: "/admin/loyalty", icon: Gift, permission: "loyalty.points.view", scope: "anywhere", ready: true },
     ],
   },
   {
@@ -183,16 +192,17 @@ export const ACCOUNT_NAV: NavGroup[] = [
       { id: "account-wishlist", label: "wishlist", href: "/account/wishlist", icon: Tag, ready: true },
       { id: "account-returns", label: "returns", href: "/account/returns", icon: RotateCcw, ready: true },
       { id: "account-support", label: "mySupport", href: "/account/support", icon: Headset, ready: true },
+      { id: "account-rewards", label: "myRewards", href: "/account/rewards", icon: Gift, ready: true, feature: "loyalty" },
     ],
   },
 ];
 
 /** Groups with only the items this user may see in the active branch. Empty groups are removed. */
-export function visibleNav(groups: NavGroup[], access: AccessView): NavGroup[] {
+export function visibleNav(groups: NavGroup[], access: AccessView, features: Partial<Record<NonNullable<NavItem["feature"]>, boolean>> = {}): NavGroup[] {
   return groups
     .map((group) => ({
       ...group,
-      items: group.items.filter((item) => !item.permission || can(access, item.permission, item.scope ?? "active")),
+      items: group.items.filter((item) => (!item.feature || features[item.feature]) && (!item.permission || can(access, item.permission, item.scope ?? "active"))),
     }))
     .filter((group) => group.items.length > 0);
 }

@@ -11,7 +11,7 @@ export type ItemCondition = NonNullable<Schemas["ItemCondition"]>;
 export const RETURN_STATUSES: ReturnStatus[] = ["Requested", "Approved", "PickupScheduled", "PickedUp", "Received", "Inspected", "Refunded", "Exchanged", "Rejected", "RefundRejected", "Cancelled"];
 export const RETURN_KINDS: ReturnKind[] = ["Return", "Exchange"];
 export const RETURN_FAULTS: ReturnFault[] = ["Customer", "Seller"];
-export const REFUND_METHODS: RefundMethod[] = ["OriginalPayment", "Cash", "BankTransfer", "Wallet"];
+export const REFUND_METHODS: RefundMethod[] = ["OriginalPayment", "Cash", "BankTransfer", "Wallet", "StoreCredit"];
 export const CONDITIONS: ItemCondition[] = ["Unopened", "Good", "Damaged"];
 
 /** The five states nothing can follow (docs/returns-api.md section 3). */

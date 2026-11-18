@@ -25,7 +25,7 @@ export type Ledger = Schemas["LedgerDto"];
 export type PaymentSettings = Schemas["PaymentSettingsDto"];
 
 export const PAYMENT_STATUSES: PaymentStatus[] = ["Pending", "Paid", "Failed", "Cancelled", "UnderReview", "Rejected", "PartiallyRefunded", "Refunded", "CollectedByCourier", "Settled"];
-export const PAYMENT_KINDS: PaymentKind[] = ["Online", "Manual", "Cod", "Advance"];
+export const PAYMENT_KINDS: PaymentKind[] = ["Online", "Manual", "Cod", "Advance", "StoreCredit"];
 export const REFUND_STATES: RefundState[] = ["Pending", "Completed", "Failed"];
 
 const clean = <T extends Record<string, unknown>>(value: T) => Object.fromEntries(Object.entries(value).filter(([, v]) => v !== undefined && v !== "" && v !== null && v !== false)) as Partial<T>;

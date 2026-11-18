@@ -7,7 +7,7 @@ import { ProductView } from "@/modules/store/product-view";
 
 type Params = { slug: string };
 
-const load = (slug: string) => storeGet<StoreProductDetail>(`/products/${encodeURIComponent(decodeURIComponent(slug))}`);
+const load = (slug: string) => storeGet<StoreProductDetail>(`/products/${encodeURIComponent(decodeURIComponent(slug))}`, undefined, { fresh: true });
 
 const absolute = (path: string | null | undefined) => (path ? (path.startsWith("/files/") ? `/media/${path.slice("/files/".length)}` : path) : undefined);
 
@@ -46,7 +46,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
       "@type": "Offer",
       priceCurrency: "BDT",
       price: Number(card.price),
-      availability: product.variants.some((v) => v.inStock) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      availability: product.variants.some((v) => v.inStock) ? "https://schema.org/InStock" : product.variants.some((v) => v.isPreorder) ? "https://schema.org/PreOrder" : "https://schema.org/OutOfStock",
     },
   };
 

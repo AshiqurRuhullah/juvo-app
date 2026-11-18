@@ -13,6 +13,7 @@ import { toNumber, useMoney } from "@/modules/catalog/format";
 import { signInUrl, useStoreSession } from "@/modules/store/store-session";
 import { GuestInvoicePanel, PaymentPanel } from "@/modules/payments/customer-panels";
 import { useOrderErrorText, useTracking, type TrackQuery } from "./api";
+import { OrderPreorderNotice } from "@/modules/preorders/preorder-parts";
 import { OrderLines, ProgressLine, Section, TrackBadges, TrackHistory } from "./common";
 import { cleanMobile, isBdMobile } from "./status";
 import { LiveBadge } from "@/components/ui/live-badge";
@@ -101,6 +102,7 @@ export function TrackView({ initialToken, initialNumber, initialMobile }: { init
               </div>
               <LiveBadge status={live} />
             </div>
+            <OrderPreorderNotice state={data.preorderState} />
             {data.canCancel && query ? <GuestCancel query={query} number={data.number} paid={data.paymentStatus === "Paid"} /> : null}
             {data.district ? <p className="text-sm text-muted">{t("deliveringTo", { district: data.district })}</p> : null}
             {initialToken || customer ? <PaymentPanel number={data.number} method={data.paymentMethod} paymentStatus={data.paymentStatus} orderStatus={data.status} token={initialToken} /> : null}

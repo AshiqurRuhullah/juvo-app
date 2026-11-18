@@ -252,6 +252,7 @@ test.describe("Products", () => {
     await expect(page.getByRole("link", { name: "New product" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: /Import|Export|Template/ })).toHaveCount(0);
 
+    await page.getByLabel("Search products").fill("Classic Cotton"); // ten rows per page: the product may not be on page 1
     await page.getByRole("link", { name: /Classic Cotton T-Shirt/ }).first().click();
     await expect(page.getByText("You can look at this product but not change it.")).toBeVisible();
     await expect(page.getByRole("button", { name: "Save" })).toHaveCount(0);

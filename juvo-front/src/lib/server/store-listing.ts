@@ -10,7 +10,7 @@ export type RawSearchParams = Record<string, string | string[] | undefined>;
 export async function loadListing(category: string | undefined, raw: RawSearchParams) {
   const query: ListQuery = parseListQuery(raw);
   const [page, facets] = await Promise.all([
-    storeGet<ProductPage>("/products", { Page: 1, PageSize: PAGE_SIZE, category, ...query }),
+    storeGet<ProductPage>("/products", { Page: 1, PageSize: PAGE_SIZE, category, ...query }, { fresh: true }),
     storeGet<StoreFacets>("/products/facets", { category }),
   ]);
   return { query, page, facets };

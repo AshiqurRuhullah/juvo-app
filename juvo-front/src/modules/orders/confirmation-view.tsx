@@ -13,6 +13,7 @@ import type { CheckoutResult } from "./api";
 import { ORDER_STORAGE_PREFIX } from "./checkout-view";
 import { AmountList, useMethodLabel } from "./common";
 import { trackingLink } from "./status";
+import { PreorderConfirmed } from "@/modules/preorders/preorder-parts";
 import { LivePaymentPanel } from "@/modules/payments/customer-panels";
 
 const subscribe = () => () => undefined;
@@ -83,6 +84,7 @@ export function ConfirmationView({ number }: { number: string }) {
           <AmountList
             rows={[
               { key: "total", label: t("total"), value: result.grandTotal, always: true, strong: true },
+              { key: "tender", label: t("tender"), value: result.tenderTotal ?? 0, negative: true },
               { key: "paynow", label: t("payNow"), value: result.payNow, always: advance > 0 || online },
               { key: "ondelivery", label: t("onDelivery"), value: result.payOnDelivery, always: advance > 0 || !online },
             ]}
@@ -98,6 +100,8 @@ export function ConfirmationView({ number }: { number: string }) {
           ) : null}
         </Card>
       ) : null}
+
+      {result?.hasPreorder ? <PreorderConfirmed /> : null}
 
       {result && online ? <LivePaymentPanel number={number} /> : null}
 

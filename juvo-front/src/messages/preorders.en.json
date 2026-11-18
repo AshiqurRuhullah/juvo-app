@@ -1,0 +1,89 @@
+{
+  "label": "Pre-order",
+  "shipsAround": "Ships around {date}",
+  "shipsWhenBack": "Ships when it is back in stock",
+  "waitingForStock": "Waiting for stock",
+  "action": {
+    "preorderNow": "Pre-order now",
+    "available": "Out of stock now. You can pre-order it."
+  },
+  "product": {
+    "title": "Pre-order",
+    "body": "We do not hold this item yet. Your order is placed now and waits for stock. We confirm and ship it as soon as it arrives, and you can cancel while it waits."
+  },
+  "cart": {
+    "title": "Your cart has pre-order items",
+    "body": "The whole order waits until the pre-order items arrive, then we confirm and ship everything together. You can cancel while it waits.",
+    "bodyDated": "The whole order waits until the pre-order items arrive (expected around {date}), then we confirm and ship everything together. You can cancel while it waits.",
+    "advance": "Advance to pay now for the pre-order items: {amount}"
+  },
+  "order": {
+    "waitingTitle": "Waiting for stock",
+    "waitingBody": "This order has pre-order items that have not arrived yet. We confirm it as soon as they arrive. You can cancel it while it waits.",
+    "readyTitle": "Your pre-order items have arrived",
+    "readyBody": "Stock is set aside for your order. We are getting it ready."
+  },
+  "confirmed": {
+    "title": "Your order has pre-order items",
+    "body": "Your order is placed. It shows as waiting for stock until the pre-order items arrive; then we confirm it and tell you. If an advance is due, it is part of what you pay now."
+  },
+  "settings": {
+    "tab": "Pre-order",
+    "productTitle": "Pre-order for this product",
+    "productHelp": "When every branch is out of stock of an option, customers can still order it. The order waits until stock is given to it.",
+    "allow": "Allow pre-orders when out of stock",
+    "allowHint": "Applies to every option that does not have its own setting below.",
+    "shipDate": "Expected ship date",
+    "shipDateHint": "Shown to customers. Leave empty to say \"ships when it is back in stock\".",
+    "advance": "Advance (percent)",
+    "advanceHint": "Share of the item price paid up front. Leave empty or 0 for no advance.",
+    "save": "Save",
+    "discard": "Discard",
+    "saved": "Pre-order settings saved.",
+    "variantsTitle": "Options (variants)",
+    "variantsHelp": "An option can follow the product or have its own switch, date and advance.",
+    "variantAllow": "Pre-order for this option",
+    "inherit": "Same as the product",
+    "yes": "Allowed",
+    "no": "Not allowed",
+    "variantDateHint": "Empty: use the date of the product.",
+    "variantAdvanceHint": "Empty: use the advance of the product.",
+    "saveVariant": "Save pre-order settings of {sku}",
+    "variantSaved": "Saved pre-order settings of {sku}.",
+    "effectiveOn": "In effect: allowed, ships {date}, advance {percent}%",
+    "effectiveOff": "In effect: not allowed",
+    "noDate": "when back in stock",
+    "rule": "A line becomes a pre-order only when the option allows it, tracks stock and has no stock at all in any branch. With some stock the option is sold normally, up to what is there.",
+    "errors": {
+      "datePast": "The expected date cannot be in the past.",
+      "dateFar": "The expected date must be within two years from today.",
+      "dateInvalid": "Enter a valid date.",
+      "percentRange": "The advance must be between 0 and 100.",
+      "percentInvalid": "Enter a number for the advance."
+    }
+  },
+  "queue": {
+    "title": "Pre-orders",
+    "subtitle": "Orders with items that wait for stock, oldest first.",
+    "rule": "Stock is given to waiting lines oldest first, whole lines only, and also automatically after a purchase receipt. An order becomes ready when its last line is served; then the usual confirm and pack steps apply.",
+    "allocate": "Give stock to waiting orders",
+    "allocateNone": "Nothing could be served: there is no free stock for the waiting lines.",
+    "allocateDone": "Served {lines, plural, one {# line} other {# lines}}; {orders, plural, one {# order is} other {# orders are}} now ready.",
+    "total": "{count, plural, one {# order} other {# orders}}",
+    "search": "Search pre-orders",
+    "searchPlaceholder": "Order number, mobile, name or SKU",
+    "anyState": "Any state",
+    "expectedBefore": "Expected before",
+    "state": { "Waiting": "Waiting for stock", "Ready": "Ready" },
+    "columns": { "order": "Order", "state": "State", "customer": "Customer", "lines": "Items", "advance": "Advance", "total": "Total", "branch": "Branch", "placed": "Placed", "actions": "Actions" },
+    "noName": "No name",
+    "noAdvance": "None",
+    "advanceOf": "{paid} of {due}",
+    "lineWaiting": "Waiting for {count, plural, one {# unit} other {# units}}",
+    "lineServed": "Served {date}",
+    "lineServedNoDate": "Served",
+    "expected": "expected {date}",
+    "view": "Open",
+    "open": "Open order {number}"
+  }
+}
