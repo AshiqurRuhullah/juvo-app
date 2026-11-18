@@ -14,6 +14,7 @@ import { useAddToCart, useStoreProduct, type StoreProductDetail, type StoreVaria
 import { usePickName, useStoreError } from "./hooks";
 import { Breadcrumbs } from "./page-heading";
 import { ProductDelivery } from "./product-delivery";
+import { NotifyMe } from "@/modules/marketing/notify-me";
 import { ProductGallery } from "./product-gallery";
 import { RecentlyViewed, useRememberProduct } from "./recently-viewed";
 import { ProductGrid } from "./store-product-card";
@@ -318,6 +319,8 @@ export function ProductView({ slug, initial }: { slug: string; initial: StorePro
                 )
               ) : null}
             </p>
+
+            <NotifyMe slug={slug} variants={variants} variant={variant} />
 
             <div className="flex flex-wrap items-center gap-3">
               <div className="inline-flex items-center rounded-control border border-line" role="group" aria-label={t("quantity")}>

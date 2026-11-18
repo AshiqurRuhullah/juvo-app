@@ -31,6 +31,7 @@ import {
   UserCog,
   Users,
   Wallet,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 import { can, type AccessView, type PermissionScope } from "@/lib/auth/permissions";
@@ -131,7 +132,9 @@ export const ADMIN_NAV: NavGroup[] = [
     icon: Megaphone,
     items: [
       { id: "promotions", label: "promotions", href: "/admin/promotions", icon: Tag, permission: "promotions.promotion.view", scope: "anywhere", ready: false },
-      { id: "campaigns", label: "campaigns", href: "/admin/marketing/campaigns", icon: Megaphone, permission: "marketing.campaign.view", scope: "anywhere", ready: false },
+      { id: "segments", label: "segments", href: "/admin/marketing/segments", icon: Users, permission: "marketing.segment.view", scope: "anywhere", ready: true },
+      { id: "campaigns", label: "campaigns", href: "/admin/marketing/campaigns", icon: Megaphone, permission: "marketing.campaign.view", scope: "anywhere", ready: true },
+      { id: "automations", label: "automations", href: "/admin/marketing/automations", icon: Zap, permission: "marketing.automation.view", scope: "anywhere", ready: true },
     ],
   },
   {
