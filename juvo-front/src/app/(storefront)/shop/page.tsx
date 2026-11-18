@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { loadListing, type RawSearchParams } from "@/lib/server/store-listing";
 import { Breadcrumbs, PageHeading } from "@/modules/store/page-heading";
 import { ProductListing } from "@/modules/store/product-listing";
+import { PromoBanners } from "@/modules/promotions-store/promo-banners";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("store.shop");
@@ -19,6 +20,9 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
       <Breadcrumbs label={b("label")} items={[{ label: b("home"), href: "/" }, { label: t("title") }]} />
       <PageHeading title={t("title")} subtitle={t("description")} />
+      <div className="-mx-4 -mt-2 mb-6 sm:-mx-6">
+        <PromoBanners slot="ShopTop" />
+      </div>
       <Suspense>
         <ProductListing initialQuery={query} initialPage={page} initialFacets={facets} />
       </Suspense>

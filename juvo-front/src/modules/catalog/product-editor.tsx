@@ -27,6 +27,7 @@ import { ProductDetailsForm, ProductSeoForm } from "./product-form";
 import { ProductImages } from "./product-images";
 import { ProductStockGrid } from "./product-stock-grid";
 import { ProductVariants } from "./product-variants";
+import { PreorderSettingsPanel } from "@/modules/preorders/preorder-settings";
 
 const sameDraft = (a: ProductDraft, b: ProductDraft) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -36,6 +37,7 @@ export function ProductEditor({ id, initialTab }: { id?: string; initialTab?: st
   const tn = useTranslations("nav");
   const tf = useTranslations("catalog.form");
   const tc = useTranslations("catalog.common");
+  const tpre = useTranslations("preorders.settings");
   const ts = useTranslations("catalog.status");
   const router = useRouter();
   const report = useReportError();
@@ -56,7 +58,7 @@ export function ProductEditor({ id, initialTab }: { id?: string; initialTab?: st
   const [draft, setDraft] = React.useState<ProductDraft>(emptyDraft);
   const [saved, setSaved] = React.useState<ProductDraft>(emptyDraft);
   const [errors, setErrors] = React.useState<DraftErrors>({});
-  const [tab, setTab] = React.useState(id && ["details", "variants", "pictures", "seo"].includes(initialTab ?? "") ? initialTab! : "details");
+  const [tab, setTab] = React.useState(id && ["details", "variants", "pictures", "seo", "preorder"].includes(initialTab ?? "") ? initialTab! : "details");
   const [archiving, setArchiving] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
   const [duplicating, setDuplicating] = React.useState(false);
@@ -191,6 +193,7 @@ export function ProductEditor({ id, initialTab }: { id?: string; initialTab?: st
         { id: "variants", label: t("tabs.variants") },
         { id: "pictures", label: t("tabs.pictures") },
         { id: "seo", label: t("tabs.seo") },
+        { id: "preorder", label: tpre("tab") },
       ]
     : [{ id: "details", label: t("tabs.details") }];
 
@@ -249,6 +252,7 @@ export function ProductEditor({ id, initialTab }: { id?: string; initialTab?: st
                 );
               }
               if (active === "pictures" && data) return <ProductImages product={data} disabled={archived} />;
+              if (active === "preorder" && id) return <PreorderSettingsPanel productId={id} disabled={archived || !canEdit} />;
               if (active === "seo") return <ProductSeoForm draft={draft} errors={errors} onChange={change} disabled={locked} />;
               return <ProductDetailsForm draft={draft} errors={errors} onChange={change} disabled={locked} options={{ categories: categoryOptions, brands: brandOptions, sizeCharts: chartOptions }} canSeeCost={canSeeCost} />;
             }}

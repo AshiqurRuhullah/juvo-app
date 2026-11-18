@@ -8,6 +8,7 @@ import { findCategoryPath, loadListing, type RawSearchParams } from "@/lib/serve
 import type { StoreCategory } from "@/modules/store/api";
 import { Breadcrumbs, PageHeading } from "@/modules/store/page-heading";
 import { ProductListing } from "@/modules/store/product-listing";
+import { PromoBanners } from "@/modules/promotions-store/promo-banners";
 
 type Params = { slug: string[] };
 
@@ -49,6 +50,9 @@ export default async function CategoryPage({ params, searchParams }: { params: P
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
       <Breadcrumbs label={b("label")} items={crumbs} />
       <PageHeading title={name(category)} subtitle={t("description", { name: name(category) })} />
+      <div className="-mx-4 -mt-2 mb-6 sm:-mx-6">
+        <PromoBanners slot="Category" category={category.slug} />
+      </div>
       {category.children.length > 0 ? (
         <ul className="-mt-2 mb-6 flex flex-wrap gap-2" aria-label={t("subcategories")}>
           {category.children.map((child) => (

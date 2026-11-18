@@ -158,7 +158,10 @@ export function DeliveryEstimate({ cartKey, subtotal, onQuote }: { cartKey: stri
               ) : null}
               {toNumber(result.freeDeliveryWaiver) > 0 ? (
                 <div className="flex justify-between gap-3 text-success-ink">
-                  <dt>{t("waiver")}</dt>
+                  <dt>
+                    {t("waiver")}
+                    {result.promotionLabelEn ? ` (${label(result.promotionLabelEn, result.promotionLabelBn)})` : ""}
+                  </dt>
                   <dd>-{money(result.freeDeliveryWaiver)}</dd>
                 </div>
               ) : null}

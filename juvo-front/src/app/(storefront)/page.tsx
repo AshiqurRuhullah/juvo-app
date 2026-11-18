@@ -7,6 +7,7 @@ import { storeGet } from "@/lib/server/store";
 import { mediaUrl } from "@/lib/media";
 import type { StoreHome, StoreProductCard } from "@/modules/store/api";
 import { ProductGrid } from "@/modules/store/store-product-card";
+import { PromoBanners } from "@/modules/promotions-store/promo-banners";
 
 function Section({ id, title, href, linkLabel, products }: { id: string; title: string; href: string; linkLabel: string; products: StoreProductCard[] }) {
   if (products.length === 0) return null;
@@ -29,7 +30,7 @@ function Section({ id, title, href, linkLabel, products }: { id: string; title: 
 export default async function StorefrontHome() {
   const t = await getTranslations("store.home");
   const locale = await getLocale();
-  const home = await storeGet<StoreHome>("/home");
+  const home = await storeGet<StoreHome>("/home", undefined, { fresh: true });
   const categories = home?.categories ?? [];
 
   const trust = [
@@ -62,6 +63,8 @@ export default async function StorefrontHome() {
           </div>
         </div>
       </section>
+
+      <PromoBanners slot="HomeTop" />
 
       {categories.length > 0 ? (
         <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6" aria-labelledby="cat-heading">

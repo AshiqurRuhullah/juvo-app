@@ -34,6 +34,7 @@
       "dashboard": "Dashboard",
       "orders": "Orders",
       "socialOrders": "Social orders",
+      "preorders": "Pre-orders",
       "fraud": "Fraud review",
       "returns": "Returns",
       "products": "Products",
@@ -528,7 +529,11 @@
     "REPORT_RANGE_INVALID": "The end date must not be before the start date.",
     "REPORT_RANGE_TOO_LARGE": "That date range is too long. Choose a shorter period.",
     "REPORT_FORMAT_INVALID": "That export format is not available for this report.",
-    "REPORT_COST_HIDDEN": "Cost and profit figures are hidden because you do not have access to cost prices."
+    "REPORT_COST_HIDDEN": "Cost and profit figures are hidden because you do not have access to cost prices.",
+    "PREORDER_AWAITING_STOCK": "This pre-order is still waiting for stock. Give stock to the waiting orders from the pre-order queue first, then confirm it.",
+    "PROMO_CAMPAIGN_NOT_FOUND": "That campaign is not running any more.",
+    "PROMO_USED_UP": "An offer in your order was just used up. Please check your cart and try again.",
+    "PROMO_MULTIPLE_COUPONS": "Only one coupon can be used on an order."
   },
   "table": {
     "empty": "Nothing to show yet",

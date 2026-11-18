@@ -11,6 +11,8 @@ import { mediaUrl, toNumber, useMoney } from "@/modules/catalog/format";
 import { usePickName } from "@/modules/store/hooks";
 import type { DeliveryStatus, FraudState, OrderLine, OrderSource, OrderStatus, PaymentStatus, RiskFlag, TimelineEntry } from "./api";
 import { deliveryStatusTone, fraudStateTone, orderStatusTone, paymentStatusTone, progressSteps, trackEntries } from "./status";
+import { LineOfferNote } from "@/modules/promotions-store/price-explainer";
+import { PreorderTag } from "@/modules/preorders/preorder-parts";
 
 export function OrderStatusBadge({ status }: { status: OrderStatus }) {
   const t = useTranslations("orders.status.order");
@@ -92,6 +94,8 @@ export function OrderLines({ lines, label }: { lines: OrderLine[]; label: string
               <p className="text-sm text-muted">
                 {money(line.unitPrice)} × {toNumber(line.quantity)}
               </p>
+              <LineOfferNote line={{ unitPrice: line.unitPrice, listPrice: line.listPrice, orderDiscount: line.promotionDiscount, promotionLabelEn: line.adjustments?.[0]?.labelEn, promotionLabelBn: line.adjustments?.[0]?.labelBn }} />
+              <PreorderTag facts={line} waiting={line.waitingForStock} className="mt-1" />
             </div>
             <p className="shrink-0 font-semibold text-strong">{money(line.lineTotal)}</p>
           </li>
