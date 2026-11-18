@@ -53,7 +53,7 @@ public sealed class OrderAccess(ActorContext actors, IApplicationDbContext db, I
 /// Every status change of an order and what it does to stock. The methods change the aggregate and stock but do not save: the caller saves
 /// (inside its transaction). All checks are done before anything is changed, so a refused call changes nothing.
 /// </summary>
-public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, SettingsService settings, Couriers.ShipmentCancellation shipments, TimeProvider clock)
+public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, SettingsService settings, Couriers.ShipmentCancellation shipments, Loyalty.TenderService tenders, TimeProvider clock)
 {
     private static Result Refuse(string code, string message) => Error.Conflict(code, message);
 
@@ -67,6 +67,11 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
         if (!OrderStateMachine.CanMove(order.Status, OrderStatus.Confirmed))
         {
             return Invalid(order, OrderStatus.Confirmed);
+        }
+
+        if (order.PreorderState == PreorderState.Waiting)
+        {
+            return Refuse(ErrorCodes.Preorder.AwaitingStock, "This pre-order is waiting for stock. It can be confirmed once the stock has been allocated to it.");
         }
 
         if (order.IsHeld)
@@ -106,6 +111,11 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
         if (!OrderStateMachine.CanMove(order.Status, OrderStatus.Packed))
         {
             return Invalid(order, OrderStatus.Packed);
+        }
+
+        if (order.PreorderState == PreorderState.Waiting)
+        {
+            return Refuse(ErrorCodes.Preorder.AwaitingStock, "This pre-order is waiting for stock and cannot be packed until the stock has been allocated to it.");
         }
 
         var config = await settings.OrdersAsync(cancellationToken);
@@ -156,6 +166,7 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
         await GiveStockBackAsync(order, cancellationToken);
         await shipments.CancelBookingOfOrderAsync(order, reason, who, cancellationToken); // a booked parcel nobody picked up yet is cancelled with the courier
         order.TransitionTo(OrderStatus.Cancelled, clock.GetUtcNow(), who.Id, who.Name, reason);
+        await tenders.ReleaseForOrderAsync(order, who, string.IsNullOrWhiteSpace(reason) ? "Order cancelled" : reason.Trim(), cancellationToken); // rewards hook: points, credit and gift card paid on this order go back to the ledger
         if (order.PaymentStatus is PaymentStatus.Paid or PaymentStatus.PartiallyRefunded)
         {
             order.AddNote(NoteKind.Internal, "The order was cancelled after payment: a refund is due.", who.Id, who.Name, clock.GetUtcNow());
@@ -164,6 +175,13 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
         if (order.CouponId is { } couponId)
         {
             await db.Coupons.Where(c => c.Id == couponId && c.UsedCount > 0).ExecuteUpdateAsync(set => set.SetProperty(c => c.UsedCount, c => c.UsedCount - 1), cancellationToken);
+        }
+
+        // The promotions the order used get their use back (module Z), like the coupon.
+        var promotionIds = await db.OrderItemAdjustments.Where(a => a.OrderId == order.Id && a.SourceId != null && (a.SourceType == "Promotion" || a.SourceType == "Bundle" || a.SourceType == "BuyXGetY")).Select(a => a.SourceId!.Value).Distinct().ToListAsync(cancellationToken);
+        foreach (var promotionId in promotionIds)
+        {
+            await db.Promotions.Where(p => p.Id == promotionId && p.UsedCount > 0).ExecuteUpdateAsync(set => set.SetProperty(p => p.UsedCount, p => p.UsedCount - 1), cancellationToken);
         }
 
         return Result.Success();
@@ -217,6 +235,11 @@ public sealed class OrderWorkflow(IApplicationDbContext db, OrderStock stock, Se
 
         if (to == OrderStatus.Returned)
         {
+            if (order.Status == OrderStatus.DeliveryFailed)
+            {
+                await tenders.ReleaseForOrderAsync(order, who, "Delivery failed and the parcel came back", cancellationToken); // rewards hook
+            }
+
             await GiveStockBackAsync(order, cancellationToken);
         }
 

@@ -100,7 +100,7 @@ public sealed class ReportData(IApplicationDbContext db)
                select new Line
                {
                    OrderId = o.Id, ProductId = i.ProductId, VariantId = i.VariantId, Name = i.Name, Size = i.Size, ColorName = i.ColorName, Quantity = i.Quantity, LineTotal = i.LineTotal, UnitCost = i.UnitCost,
-                   OrderSubtotal = o.Subtotal, OrderDiscount = o.CouponDiscount + o.ManualDiscount, Source = o.Source, ZoneCode = o.ZoneCode, PaymentMethod = o.PaymentMethod,
+                   OrderSubtotal = o.Subtotal, OrderDiscount = o.PromotionDiscount + o.CouponDiscount + o.ManualDiscount, Source = o.Source, ZoneCode = o.ZoneCode, PaymentMethod = o.PaymentMethod,
                    Day = (int)((o.PlacedAt.ToUnixTimeSeconds() + 21600L) / 86400L),
                    CategoryId = p == null ? (Guid?)null : p.CategoryId,
                };
@@ -109,7 +109,7 @@ public sealed class ReportData(IApplicationDbContext db)
     public async Task<List<OrderAgg<TKey>>> OrderGroupsAsync<TKey>(ReportScope s, Expression<Func<Order, TKey>> key, CancellationToken ct) =>
         await Orders(s).GroupBy(key).Select(g => new OrderAgg<TKey>
         {
-            Key = g.Key, Orders = g.Count(), Gross = g.Sum(o => o.Subtotal), Discount = g.Sum(o => o.CouponDiscount + o.ManualDiscount), Delivery = g.Sum(o => o.DeliveryCharge),
+            Key = g.Key, Orders = g.Count(), Gross = g.Sum(o => o.Subtotal), Discount = g.Sum(o => o.PromotionDiscount + o.CouponDiscount + o.ManualDiscount), Delivery = g.Sum(o => o.DeliveryCharge),
         }).ToListAsync(ct);
 
     public async Task<List<ItemAgg<TKey>>> ItemGroupsAsync<TKey>(ReportScope s, Expression<Func<Line, TKey>> key, CancellationToken ct) =>
@@ -185,9 +185,9 @@ public sealed class ReportData(IApplicationDbContext db)
     public async Task<(decimal Receipts, decimal CodSettled, decimal Refunds)> CashReceivedAsync(ReportScope s, CancellationToken ct)
     {
         PaymentStatus[] paid = [PaymentStatus.Paid, PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded];
-        var receipts = await s.Apply(db.Payments.AsNoTracking()).Where(p => p.Kind != PaymentKind.Cod && p.PaidAt != null && p.PaidAt >= s.FromAt && p.PaidAt < s.ToAt && paid.Contains(p.Status)).SumAsync(p => (decimal?)p.Amount, ct) ?? 0m;
+        var receipts = await s.Apply(db.Payments.AsNoTracking()).Where(p => p.Kind != PaymentKind.Cod && p.Kind != PaymentKind.StoreCredit && p.PaidAt != null && p.PaidAt >= s.FromAt && p.PaidAt < s.ToAt && paid.Contains(p.Status)).SumAsync(p => (decimal?)p.Amount, ct) ?? 0m;
         var cod = await s.Apply(db.CodSettlements.AsNoTracking()).Where(x => x.Status == SettlementStatus.Settled && x.SettledAt != null && x.SettledAt >= s.FromAt && x.SettledAt < s.ToAt).SumAsync(x => x.ReceivedTotal, ct) ?? 0m;
-        var refunds = await s.Apply(db.Refunds.AsNoTracking()).Where(r => r.Status == RefundState.Completed && r.CompletedAt != null && r.CompletedAt >= s.FromAt && r.CompletedAt < s.ToAt).SumAsync(r => (decimal?)r.Amount, ct) ?? 0m;
+        var refunds = await s.Apply(db.Refunds.AsNoTracking()).Where(r => r.Status == RefundState.Completed && r.Mode != RefundMode.StoreCredit && r.CompletedAt != null && r.CompletedAt >= s.FromAt && r.CompletedAt < s.ToAt).SumAsync(r => (decimal?)r.Amount, ct) ?? 0m;
         return (receipts, cod, refunds);
     }
 }

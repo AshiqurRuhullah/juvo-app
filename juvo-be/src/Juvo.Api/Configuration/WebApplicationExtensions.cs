@@ -56,6 +56,7 @@ internal static class WebApplicationExtensions
         app.MapMeEndpoints();
         app.MapStoreAdminEndpoints();
         app.MapOrdersEndpoints();
+        app.MapPromotionsEndpoints();
         app.MapReturnsEndpoints();
         app.MapPaymentsEndpoints();
         app.MapBillingEndpoints();
@@ -64,8 +65,10 @@ internal static class WebApplicationExtensions
         app.MapPurchasingEndpoints();
         app.MapReportsEndpoints();
         app.MapSupportEndpoints();
+        app.MapLoyaltyEndpoints();
         app.MapHub<Juvo.Api.Realtime.OrdersHub>(Juvo.Api.Realtime.RealtimeAuth.HubPath);
         app.MapNotificationsEndpoints();
+        app.MapMarketingEndpoints();
 
         if (app.Services.GetRequiredService<IOptions<OpenApiSettings>>().Value.Enabled)
         {

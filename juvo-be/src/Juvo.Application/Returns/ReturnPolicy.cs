@@ -22,17 +22,21 @@ public sealed record ReturnSettings(int WindowDays, decimal CustomerFaultReturnC
 /// <summary>The money rules of module L (FR-L07), kept as plain functions so they can be tested without a database.</summary>
 public static class ReturnMath
 {
-    /// <summary>What the customer paid for the whole line after the order's discounts: the line total times (subtotal minus discounts) over subtotal.</summary>
+    /// <summary>
+    /// What the customer paid for the whole line after the order's discounts. A line price already holds the promotions that lowered the unit price; the line's own share of bundle and
+    /// buy-X-get-Y savings (<see cref="OrderItem.PromotionDiscount"/>) comes off next; the coupon and the manual discount are then shared over the lines by value. Everything comes from the order's
+    /// snapshot, never from live promotions.
+    /// </summary>
     public static decimal NetLine(Order order, OrderItem item)
     {
-        var subtotal = order.Items.Sum(i => i.LineTotal);
-        if (subtotal <= 0)
+        var afterPromotion = order.Items.Sum(i => i.LineTotal - i.PromotionDiscount);
+        if (afterPromotion <= 0)
         {
             return 0m;
         }
 
-        var discount = Math.Min(subtotal, order.CouponDiscount + order.ManualDiscount);
-        return Math.Round(item.LineTotal * (subtotal - discount) / subtotal, 2, MidpointRounding.AwayFromZero);
+        var discount = Math.Min(afterPromotion, order.CouponDiscount + order.ManualDiscount);
+        return Math.Round((item.LineTotal - item.PromotionDiscount) * (afterPromotion - discount) / afterPromotion, 2, MidpointRounding.AwayFromZero);
     }
 
     /// <summary>

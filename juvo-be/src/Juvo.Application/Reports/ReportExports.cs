@@ -255,9 +255,9 @@ public sealed class AccountantExportService(ReportAccess access, PnlService pnl,
         var to = s.To;
         var stored = s.Apply(db.LedgerEntries.AsNoTracking()).Where(e => e.EntryDate >= from && e.EntryDate <= to);
         PaymentStatus[] paid = [PaymentStatus.Paid, PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded];
-        var receipts = s.Apply(db.Payments.AsNoTracking()).Where(p => p.Kind != PaymentKind.Cod && p.PaidAt != null && p.PaidAt >= s.FromAt && p.PaidAt < s.ToAt && paid.Contains(p.Status));
+        var receipts = s.Apply(db.Payments.AsNoTracking()).Where(p => p.Kind != PaymentKind.Cod && p.Kind != PaymentKind.StoreCredit && p.PaidAt != null && p.PaidAt >= s.FromAt && p.PaidAt < s.ToAt && paid.Contains(p.Status));
         var cod = s.Apply(db.CodSettlements.AsNoTracking()).Where(x => x.Status == SettlementStatus.Settled && x.SettledAt != null && x.SettledAt >= s.FromAt && x.SettledAt < s.ToAt);
-        var refunds = s.Apply(db.Refunds.AsNoTracking()).Where(r => r.Status == RefundState.Completed && r.CompletedAt != null && r.CompletedAt >= s.FromAt && r.CompletedAt < s.ToAt);
+        var refunds = s.Apply(db.Refunds.AsNoTracking()).Where(r => r.Status == RefundState.Completed && r.Mode != RefundMode.StoreCredit && r.CompletedAt != null && r.CompletedAt >= s.FromAt && r.CompletedAt < s.ToAt);
         if (await stored.CountAsync(ct) + await receipts.CountAsync(ct) + await cod.CountAsync(ct) + await refunds.CountAsync(ct) > MaxRows)
         {
             return TooMany();

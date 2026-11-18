@@ -1,4 +1,6 @@
+using Juvo.Application.Carts;
 using Juvo.Application.Delivery;
+using Juvo.Application.Pricing;
 using Juvo.Domain.Orders;
 
 namespace Juvo.Application.Orders;
@@ -13,10 +15,12 @@ public sealed record CheckoutAddress(
 public sealed record CheckoutContact(string Mobile, string? FullName, string? Email);
 
 /// <summary>Everything needed for live totals: where the parcel goes and how it is paid. The goods come from the cart (<c>X-Cart-Token</c> or the customer's cart).</summary>
-public sealed record CheckoutQuoteRequest(Guid? AddressId, CheckoutAddress? Address, string? PaymentMethod, string? Mobile);
+public sealed record CheckoutQuoteRequest(Guid? AddressId, CheckoutAddress? Address, string? PaymentMethod, string? Mobile, Loyalty.TenderRequest? Tender = null);
 
 public sealed record QuoteLineDto(
-    Guid VariantId, Guid ProductId, string Name, string? NameBn, string Sku, string? ColorName, string? Size, string? ImageUrl, decimal UnitPrice, int Quantity, decimal LineTotal, string? Problem);
+    Guid VariantId, Guid ProductId, string Name, string? NameBn, string Sku, string? ColorName, string? Size, string? ImageUrl, decimal UnitPrice, int Quantity, decimal LineTotal, string? Problem,
+    decimal ListPrice = 0m, decimal OrderDiscount = 0m, IReadOnlyList<PriceAdjustment>? Adjustments = null, string? PromotionLabelEn = null, string? PromotionLabelBn = null,
+    bool IsPreorder = false, DateOnly? PreorderExpectedShipDate = null, string? PreorderLabelEn = null, string? PreorderLabelBn = null);
 
 public sealed record PaymentMethodDto(string Code, string Name, bool Available, string? Reason);
 
@@ -27,7 +31,8 @@ public sealed record PaymentMethodDto(string Code, string Name, bool Available, 
 public sealed record CheckoutQuoteDto(
     string Currency, bool TaxIncluded, IReadOnlyList<QuoteLineDto> Lines, int ItemCount, decimal Subtotal, string? CouponCode, decimal CouponDiscount, DeliveryQuoteDto? Delivery,
     string? DeliveryError, decimal DeliveryCharge, decimal GrandTotal, string PaymentMethod, decimal AdvanceRequired, decimal PayNow, decimal PayOnDelivery, bool OtpRequired,
-    IReadOnlyList<PaymentMethodDto> PaymentMethods, IReadOnlyList<string> Problems, bool CanPlace);
+    IReadOnlyList<PaymentMethodDto> PaymentMethods, IReadOnlyList<string> Problems, bool CanPlace, decimal PromotionDiscount = 0m, decimal ListSubtotal = 0m, PriceExplanation? Explanation = null,
+    CartCouponDto? Coupon = null, bool HasPreorder = false, Loyalty.TenderQuoteDto? Tender = null);
 
 /// <summary>
 /// Place the order. <c>ExpectedTotal</c> is the grand total the customer saw: when today's total differs the answer is 409 <c>ORDER.TOTAL_CHANGED</c> (FR-D06).
@@ -35,18 +40,23 @@ public sealed record CheckoutQuoteDto(
 /// </summary>
 public sealed record CheckoutRequest(
     CheckoutContact Contact, Guid? AddressId, CheckoutAddress? Address, bool SaveAddress, string PaymentMethod, string? Note, bool AcceptTerms, string? OtpCode, bool ConfirmDuplicate,
-    decimal? ExpectedTotal, string? IdempotencyKey, string? DeviceId);
+    decimal? ExpectedTotal, string? IdempotencyKey, string? DeviceId, Loyalty.TenderRequest? Tender = null);
 
 public sealed record CheckoutResultDto(
     Guid OrderId, string Number, string? TrackingToken, string Status, string PaymentStatus, string PaymentMethod, decimal GrandTotal, decimal AdvanceRequired, decimal PayNow,
-    decimal PayOnDelivery, DateOnly? EarliestDelivery, DateOnly? LatestDelivery, bool OfferProfile, bool Replayed, DateTimeOffset? PaymentDeadline);
+    decimal PayOnDelivery, DateOnly? EarliestDelivery, DateOnly? LatestDelivery, bool OfferProfile, bool Replayed, DateTimeOffset? PaymentDeadline, bool HasPreorder = false, decimal TenderTotal = 0m);
 
 public sealed record TrackRequest(string? Number, string? Mobile, string? Token);
 
 // ---- Shared views -----------------------------------------------------------------------------------------
 
 public sealed record OrderLineDto(
-    Guid VariantId, Guid ProductId, string Name, string? NameBn, string Sku, string? ColorName, string? Size, string? ImageUrl, decimal UnitPrice, int Quantity, decimal LineTotal);
+    Guid VariantId, Guid ProductId, string Name, string? NameBn, string Sku, string? ColorName, string? Size, string? ImageUrl, decimal UnitPrice, int Quantity, decimal LineTotal,
+    decimal ListPrice = 0m, decimal PromotionDiscount = 0m, IReadOnlyList<OrderLineAdjustmentDto>? Adjustments = null, bool IsPreorder = false, DateOnly? PreorderExpectedShipDate = null,
+    string? PreorderLabelEn = null, string? PreorderLabelBn = null, bool WaitingForStock = false);
+
+/// <summary>A saving stored on the order line (module Z), exactly as it was at placement.</summary>
+public sealed record OrderLineAdjustmentDto(string SourceType, Guid? SourceId, string LabelEn, string LabelBn, decimal Amount, string Level);
 
 public sealed record TimelineDto(OrderTrack Track, string? From, string To, string? Reason, string? ActorName, DateTimeOffset At);
 
@@ -56,7 +66,9 @@ public sealed record ShippingDto(
     string RecipientName, string Phone, string CountryCode, string? Division, string? District, string? Upazila, string? Area, string AddressLine, string? Landmark, string? StateProvince,
     string? City, string? PostalCode, double? Latitude, double? Longitude);
 
-public sealed record MoneyDto(string Currency, decimal Subtotal, decimal CouponDiscount, string? CouponCode, decimal ManualDiscount, decimal DeliveryCharge, decimal GrandTotal, decimal AdvanceRequired);
+public sealed record MoneyDto(
+    string Currency, decimal Subtotal, decimal CouponDiscount, string? CouponCode, decimal ManualDiscount, decimal DeliveryCharge, decimal GrandTotal, decimal AdvanceRequired, decimal PromotionDiscount = 0m,
+    decimal ListSubtotal = 0m);
 
 // ---- Customer panel and public tracking ---------------------------------------------------------------------
 
@@ -67,12 +79,12 @@ public sealed record MyOrderListItemDto(
 public sealed record MyOrderDto(
     Guid Id, string Number, OrderStatus Status, PaymentStatus PaymentStatus, DeliveryStatus DeliveryStatus, string PaymentMethod, DateTimeOffset PlacedAt, MoneyDto Money,
     ShippingDto Shipping, IReadOnlyList<OrderLineDto> Items, IReadOnlyList<TimelineDto> Timeline, IReadOnlyList<NoteDto> Notes, bool CanCancel, DateTimeOffset? PaymentDeadline,
-    Couriers.TrackingShipmentDto? Shipment = null);
+    Couriers.TrackingShipmentDto? Shipment = null, PreorderState PreorderState = PreorderState.None);
 
 /// <summary>What anyone with the order number and mobile (or the tracking token) may see: no street address, no contact details.</summary>
 public sealed record TrackingDto(
     string Number, OrderStatus Status, PaymentStatus PaymentStatus, DeliveryStatus DeliveryStatus, string PaymentMethod, DateTimeOffset PlacedAt, string? District, decimal GrandTotal,
-    IReadOnlyList<OrderLineDto> Items, IReadOnlyList<TimelineDto> Timeline, bool CanCancel, Couriers.TrackingShipmentDto? Shipment = null);
+    IReadOnlyList<OrderLineDto> Items, IReadOnlyList<TimelineDto> Timeline, bool CanCancel, Couriers.TrackingShipmentDto? Shipment = null, PreorderState PreorderState = PreorderState.None);
 
 public sealed record CancelOrderRequest(string? Reason);
 
@@ -92,7 +104,7 @@ public sealed record OrderDetailDto(
     string RoutingRule, bool RoutingPending, bool StockDeducted, FraudState FraudState, int RiskScore, bool IsHeld, DateTimeOffset PlacedAt, DateTimeOffset? ConfirmedAt, DateTimeOffset? PackedAt,
     DateTimeOffset? DeliveredAt, DateTimeOffset? CancelledAt, string? CancelReason, DateTimeOffset? PaymentHoldExpiresAt, bool OtpVerified, Guid? CreatedByStaffId,
     IReadOnlyList<OrderLineDto> Items, IReadOnlyList<TimelineDto> Timeline, IReadOnlyList<NoteDto> Notes, IReadOnlyList<RiskFlagDto> Flags, IReadOnlyList<FraudLogDto> FraudLog,
-    CustomerOrderStatsDto CustomerStats, IReadOnlyList<string> NextOrderStatuses, IReadOnlyList<string> NextPaymentStatuses);
+    CustomerOrderStatsDto CustomerStats, IReadOnlyList<string> NextOrderStatuses, IReadOnlyList<string> NextPaymentStatuses, PreorderState PreorderState = PreorderState.None);
 
 public sealed record ConfirmOrderRequest(bool AdvanceReceived = false);
 
@@ -130,6 +142,24 @@ public sealed record TrackCancelRequest(string? Number, string? Mobile, string? 
 
 public sealed record ManualQuoteDto(
     string Currency, decimal Subtotal, decimal CouponDiscount, string? CouponCode, decimal ManualDiscount, decimal DeliveryCharge, decimal StandardDeliveryCharge, decimal GrandTotal, decimal AdvanceRequired,
-    int WeightGrams, string? ZoneCode, string PaymentMethod, Guid BranchId, string RoutingRule, IReadOnlyList<ManualQuoteLineDto> Lines, DateOnly? EarliestDelivery, DateOnly? LatestDelivery);
+    int WeightGrams, string? ZoneCode, string PaymentMethod, Guid BranchId, string RoutingRule, IReadOnlyList<ManualQuoteLineDto> Lines, DateOnly? EarliestDelivery, DateOnly? LatestDelivery,
+    decimal PromotionDiscount = 0m, decimal ListSubtotal = 0m, PriceExplanation? Explanation = null);
 
-public sealed record ManualQuoteLineDto(Guid VariantId, string Sku, string Name, string? ColorName, string? Size, decimal UnitPrice, int Quantity, decimal LineTotal, int AvailableInBranch);
+public sealed record ManualQuoteLineDto(
+    Guid VariantId, string Sku, string Name, string? ColorName, string? Size, decimal UnitPrice, int Quantity, decimal LineTotal, int AvailableInBranch, decimal ListPrice = 0m, bool IsPreorder = false,
+    IReadOnlyList<PriceAdjustment>? Adjustments = null);
+
+// ---- Pre-order queue (module AA) ---------------------------------------------------------------------------
+
+public sealed record PreorderQuery(PreorderState? State, Guid? BranchId, Guid? VariantId, DateOnly? ExpectedBefore);
+
+public sealed record PreorderLineDto(Guid ItemId, Guid VariantId, string Sku, string Name, string? ColorName, string? Size, int Quantity, int Waiting, DateOnly? ExpectedShipDate, DateTimeOffset? AllocatedAt);
+
+public sealed record PreorderQueueItemDto(
+    Guid OrderId, string Number, Guid BranchId, string BranchCode, OrderStatus Status, PreorderState State, string? CustomerName, string CustomerMobile, DateTimeOffset PlacedAt, decimal GrandTotal,
+    decimal AdvanceRequired, decimal AdvancePaid, IReadOnlyList<PreorderLineDto> Lines);
+
+/// <summary>Allocate arriving stock to waiting pre-order lines, oldest order first. Both filters are optional; without them every waiting line in the branches you may manage is considered.</summary>
+public sealed record AllocatePreordersRequest(Guid? BranchId, Guid? VariantId);
+
+public sealed record AllocationResultDto(int LinesAllocated, int OrdersReady, IReadOnlyList<Guid> ReadyOrderIds);

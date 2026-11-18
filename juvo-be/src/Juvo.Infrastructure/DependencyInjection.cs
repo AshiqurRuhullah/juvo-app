@@ -88,6 +88,12 @@ public static class DependencyInjection
         services.AddHostedService<Reports.DailySummaryWorker>();
         services.AddSingleton<Juvo.Application.Reports.IReportPdfRenderer, Reports.ReportPdfRenderer>();
         services.AddHostedService<TicketAutoCloseWorker>();
+        services.AddOptions<LoyaltyJobOptions>().Bind(configuration.GetSection(LoyaltyJobOptions.SectionName)).ValidateDataAnnotations().ValidateOnStart();
+        services.AddHostedService<PointsExpiryWorker>();
+        services.AddOptions<MarketingJobOptions>().Bind(configuration.GetSection(MarketingJobOptions.SectionName)).ValidateDataAnnotations().ValidateOnStart();
+        services.Configure<Juvo.Application.Marketing.MarketingOptions>(configuration.GetSection(Juvo.Application.Marketing.MarketingOptions.SectionName));
+        services.AddHostedService<CampaignSendWorker>();
+        services.AddHostedService<AutomationWorker>();
 
         AddIdentity(services, configuration, environment);
 
@@ -128,6 +134,7 @@ public static class DependencyInjection
         {
             services.AddScoped<INotificationSender>(provider => new Notifications.SandboxNotificationSender(channel, provider.GetRequiredService<ILogger<Notifications.SandboxNotificationSender>>()));
         }
+        services.AddSingleton<Juvo.Application.Marketing.IUnsubscribeTokens, UnsubscribeTokenService>();
         services.AddScoped<IdentitySeeder>();
         services.AddScoped<Catalog.CatalogSeeder>();
         services.AddScoped<Catalog.SampleCatalogSeeder>();

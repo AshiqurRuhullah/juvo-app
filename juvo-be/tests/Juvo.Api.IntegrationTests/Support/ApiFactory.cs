@@ -30,7 +30,10 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         ["Couriers:Sync:Enabled"] = "false",
         ["Operations:RecurringExpensesEnabled"] = "false",
         ["Operations:TicketAutoCloseEnabled"] = "false",
+        ["MarketingJobs:CampaignSendEnabled"] = "false",
+        ["MarketingJobs:AutomationsEnabled"] = "false",
         ["Reports:DailySummaryEnabled"] = "false",
+        ["Loyalty:ExpiryEnabled"] = "false",
         ["Couriers:Sandbox:WebhookSecret"] = "test-courier-webhook-secret-0123456789",
     };
 

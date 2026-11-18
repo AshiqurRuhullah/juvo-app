@@ -112,6 +112,15 @@ public static class Permissions
         public const string SourceView = "orders.source.view";
     }
 
+    public static class Loyalty
+    {
+        public const string PointsView = "loyalty.points.view";
+        public const string PointsAdjust = "loyalty.points.adjust";
+        public const string GiftCardView = "loyalty.gift-card.view";
+        public const string GiftCardCreate = "loyalty.gift-card.create";
+        public const string ReferralView = "loyalty.referral.view";
+    }
+
     public static class Returns
     {
         public const string View = "returns.return.view";
@@ -137,6 +146,10 @@ public static class Permissions
 
     public static class Promotions
     {
+        public const string PromotionView = "promotions.promotion.view";
+        public const string PromotionCreate = "promotions.promotion.create";
+        public const string PromotionEdit = "promotions.promotion.edit";
+        public const string PromotionDelete = "promotions.promotion.delete";
         public const string CouponView = "promotions.coupon.view";
         public const string CouponCreate = "promotions.coupon.create";
         public const string CouponEdit = "promotions.coupon.edit";

@@ -55,6 +55,7 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
             t.HasCheckConstraint("CK_Products_SalePrice", "[SalePrice] IS NULL OR ([SalePrice] >= 0 AND [SalePrice] < [RegularPrice])");
         });
 
+        builder.Property(x => x.PreorderAdvancePercent).HasPrecision(5, 2);
         builder.Property(x => x.NameEn).HasMaxLength(200).IsRequired();
         builder.Property(x => x.NameBn).HasMaxLength(200);
         builder.Property(x => x.Slug).HasMaxLength(220).IsRequired();
@@ -96,6 +97,7 @@ internal sealed class ProductVariantConfiguration : IEntityTypeConfiguration<Pro
         builder.ToTable("ProductVariants", t =>
             t.HasCheckConstraint("CK_ProductVariants_PriceOverride", "[PriceOverride] IS NULL OR [PriceOverride] >= 0"));
 
+        builder.Property(x => x.PreorderAdvancePercent).HasPrecision(5, 2);
         builder.Property(x => x.Sku).HasMaxLength(60).IsRequired();
         builder.Property(x => x.ColorName).HasMaxLength(60);
         builder.Property(x => x.ColorHex).HasMaxLength(9);

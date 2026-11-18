@@ -8,7 +8,10 @@ public sealed record SaveTaxRuleRequest(string? Code, string? Name, decimal Rate
 
 public sealed record ActivateTaxRuleRequest(bool AcknowledgeUnverified);
 
-public sealed record InvoiceLineDto(string Name, string? NameBn, string Sku, string? Variant, int Quantity, decimal UnitPrice, decimal LineTotal, decimal TaxAmount);
+/// <summary><c>ListPrice</c> is the price before any sale or promotion and <c>PromotionDiscount</c> the line's share of bundle or buy-X-get-Y savings (both copied from the order line). A pre-order line carries its expected ship date and label.</summary>
+public sealed record InvoiceLineDto(
+    string Name, string? NameBn, string Sku, string? Variant, int Quantity, decimal UnitPrice, decimal LineTotal, decimal TaxAmount, decimal? ListPrice = null, decimal PromotionDiscount = 0m, bool IsPreorder = false,
+    DateOnly? PreorderExpectedShipDate = null, string? PreorderLabelEn = null, string? PreorderLabelBn = null);
 
 public sealed record CreditNoteSummaryDto(Guid Id, string Number, decimal Amount, decimal TaxAmount, DateTimeOffset IssuedAt);
 
@@ -17,7 +20,11 @@ public sealed record InvoiceSellerDto(string Name, string? Address, string? Phon
 public sealed record InvoiceDto(
     Guid Id, string Number, Guid OrderId, string OrderNumber, Guid BranchId, string BranchCode, DateTimeOffset IssuedAt, string Currency, InvoiceSellerDto Seller, string CustomerName, string CustomerMobile,
     string? CustomerEmail, string BillingAddress, IReadOnlyList<InvoiceLineDto> Lines, decimal Subtotal, decimal Discount, decimal DeliveryCharge, decimal GrandTotal, string? TaxRuleCode, string? TaxRuleName,
-    decimal? TaxRatePercent, decimal DeliveryTax, decimal TaxTotal, decimal NetTotal, string PaymentMethod, PaymentStatus PaymentStatus, decimal CreditedTotal, IReadOnlyList<CreditNoteSummaryDto> CreditNotes);
+    decimal? TaxRatePercent, decimal DeliveryTax, decimal TaxTotal, decimal NetTotal, string PaymentMethod, PaymentStatus PaymentStatus, decimal CreditedTotal, IReadOnlyList<CreditNoteSummaryDto> CreditNotes,
+    decimal OrderPromotionDiscount = 0m, decimal ListSubtotal = 0m, bool HasPreorder = false, IReadOnlyList<InvoiceTenderDto>? Tenders = null);
+
+/// <summary>A part of the invoice that was paid with points, store credit or a gift card (module AB). The grand total is unchanged; the amount due is the grand total minus these lines.</summary>
+public sealed record InvoiceTenderDto(string Method, string Description, decimal Amount);
 
 public sealed record InvoiceListQuery(Guid? BranchId, DateTimeOffset? From, DateTimeOffset? To);
 

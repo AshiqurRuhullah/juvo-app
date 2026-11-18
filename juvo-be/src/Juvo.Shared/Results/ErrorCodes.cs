@@ -161,6 +161,23 @@ public static class ErrorCodes
         public const string CodeTaken = "COUPON.CODE_TAKEN";
     }
 
+    public static class Promo
+    {
+        public const string NotFound = "PROMO.NOT_FOUND";
+        public const string MultipleCoupons = "PROMO.MULTIPLE_COUPONS";
+        public const string SlugTaken = "PROMO.SLUG_TAKEN";
+        public const string Archived = "PROMO.ARCHIVED";
+        public const string Incomplete = "PROMO.INCOMPLETE";
+        public const string CampaignNotFound = "PROMO.CAMPAIGN_NOT_FOUND";
+        public const string TargetNotFound = "PROMO.TARGET_NOT_FOUND";
+        public const string UsedUp = "PROMO.USED_UP";
+    }
+
+    public static class Preorder
+    {
+        public const string AwaitingStock = "PREORDER.AWAITING_STOCK";
+    }
+
     public static class Customer
     {
         public const string NotFound = "CUSTOMER.NOT_FOUND";
@@ -331,6 +348,29 @@ public static class ErrorCodes
         public const string BulkLimit = "TICKET.BULK_LIMIT";
     }
 
+    public static class Marketing
+    {
+        public const string SegmentNotFound = "MARKETING.SEGMENT_NOT_FOUND";
+        public const string SegmentInvalid = "MARKETING.SEGMENT_INVALID";
+        public const string SegmentInUse = "MARKETING.SEGMENT_IN_USE";
+        public const string SegmentBuiltIn = "MARKETING.SEGMENT_BUILT_IN";
+        public const string CampaignNotFound = "MARKETING.CAMPAIGN_NOT_FOUND";
+        public const string CampaignInvalid = "MARKETING.CAMPAIGN_INVALID";
+        public const string CampaignNotEditable = "MARKETING.CAMPAIGN_NOT_EDITABLE";
+        public const string CampaignInvalidState = "MARKETING.CAMPAIGN_INVALID_STATE";
+        public const string ChannelOff = "MARKETING.CHANNEL_OFF";
+        public const string ScheduleInvalid = "MARKETING.SCHEDULE_INVALID";
+        public const string TestNoContact = "MARKETING.TEST_NO_CONTACT";
+        public const string UnsubscribeTokenInvalid = "MARKETING.UNSUBSCRIBE_TOKEN_INVALID";
+        public const string AutomationNotFound = "MARKETING.AUTOMATION_NOT_FOUND";
+        public const string AutomationInvalid = "MARKETING.AUTOMATION_INVALID";
+        public const string SettingsInvalid = "MARKETING.SETTINGS_INVALID";
+        public const string VariantNotFound = "MARKETING.VARIANT_NOT_FOUND";
+        public const string VariantInStock = "MARKETING.VARIANT_IN_STOCK";
+        public const string ContactRequired = "MARKETING.CONTACT_REQUIRED";
+        public const string SubscriptionLimit = "MARKETING.SUBSCRIPTION_LIMIT";
+    }
+
     public static class Report
     {
         public const string Unknown = "REPORT.UNKNOWN";
@@ -338,5 +378,27 @@ public static class ErrorCodes
         public const string RangeTooLarge = "REPORT.RANGE_TOO_LARGE";
         public const string FormatInvalid = "REPORT.FORMAT_INVALID";
         public const string CostHidden = "REPORT.COST_HIDDEN";
+    }
+
+    public static class Loyalty
+    {
+        public const string FeatureOff = "LOYALTY.FEATURE_OFF";
+        public const string CustomerNotFound = "LOYALTY.CUSTOMER_NOT_FOUND";
+        public const string InsufficientPoints = "LOYALTY.INSUFFICIENT_POINTS";
+        public const string InsufficientCredit = "LOYALTY.INSUFFICIENT_CREDIT";
+        public const string BelowMinimumPoints = "LOYALTY.BELOW_MINIMUM_POINTS";
+        public const string TenderExceedsCap = "LOYALTY.TENDER_EXCEEDS_CAP";
+        public const string TenderExceedsTotal = "LOYALTY.TENDER_EXCEEDS_TOTAL";
+        public const string TenderNeedsSignIn = "LOYALTY.TENDER_NEEDS_SIGN_IN";
+        public const string GiftCardInvalid = "LOYALTY.GIFT_CARD_INVALID";
+        public const string GiftCardExpired = "LOYALTY.GIFT_CARD_EXPIRED";
+        public const string GiftCardInactive = "LOYALTY.GIFT_CARD_INACTIVE";
+        public const string GiftCardEmpty = "LOYALTY.GIFT_CARD_EMPTY";
+        public const string GiftCardNotFound = "LOYALTY.GIFT_CARD_NOT_FOUND";
+        public const string CodeLocked = "LOYALTY.CODE_LOCKED";
+        public const string ReferralCodeInvalid = "LOYALTY.REFERRAL_CODE_INVALID";
+        public const string ReferralSelf = "LOYALTY.REFERRAL_SELF";
+        public const string ReferralAlreadyApplied = "LOYALTY.REFERRAL_ALREADY_APPLIED";
+        public const string ReferralNotEligible = "LOYALTY.REFERRAL_NOT_ELIGIBLE";
     }
 }

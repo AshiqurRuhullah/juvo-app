@@ -97,7 +97,7 @@ public sealed class InvoiceService(
         var seller = await SellerAsync(branch, cancellationToken);
         var rule = order.TaxRuleCode is { } code ? await db.TaxRules.AsNoTracking().FirstOrDefaultAsync(r => r.Code == code, cancellationToken) : null;
         var items = order.Items.OrderBy(i => i.CreatedAt).ThenBy(i => i.Sku).ToList();
-        var discount = order.CouponDiscount + order.ManualDiscount;
+        var discount = order.PromotionDiscount + order.CouponDiscount + order.ManualDiscount; // the order's own snapshot: an invoice never reprices from live promotions
         var tax = TaxMath.ForOrder([.. items.Select(i => i.LineTotal)], discount, order.DeliveryCharge, order.TaxRatePercent ?? 0m, rule?.AppliesToDelivery ?? true);
         var lines = items.Select((i, n) => new NewInvoiceLine(i.Name, i.NameBn, i.Sku, string.Join(" / ", new[] { i.ColorName, i.Size }.Where(s => !string.IsNullOrWhiteSpace(s))) is { Length: > 0 } v ? v : null,
             i.Quantity, i.UnitPrice, i.LineTotal, tax.LineTax.Count > n ? tax.LineTax[n] : 0m)).ToList();
@@ -162,11 +162,27 @@ public sealed class InvoiceService(
         var branchCode = await db.Branches.AsNoTracking().Where(b => b.Id == i.BranchId).Select(b => b.Code).FirstAsync(cancellationToken);
         var order = await db.Orders.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Where(o => o.Id == i.OrderId).Select(o => new { o.PaymentMethod, o.PaymentStatus }).FirstAsync(cancellationToken);
         var notes = await db.CreditNotes.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Where(c => c.InvoiceId == i.Id).OrderBy(c => c.IssuedAt).ThenBy(c => c.Number).ToListAsync(cancellationToken);
+        var snapshot = await db.OrderItems.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Where(x => x.OrderId == i.OrderId).ToListAsync(cancellationToken); // list price and pre-order facts live on the order lines
         return new InvoiceDto(i.Id, i.Number, i.OrderId, i.OrderNumber, i.BranchId, branchCode, i.IssuedAt, i.Currency, new InvoiceSellerDto(i.SellerName, i.SellerAddress, i.SellerPhone, i.SellerEmail, i.SellerTaxId),
             i.CustomerName, i.CustomerMobile, i.CustomerEmail, i.BillingAddress,
-            [.. i.Lines.OrderBy(l => l.SortOrder).Select(l => new InvoiceLineDto(l.Name, l.NameBn, l.Sku, l.Variant, l.Quantity, l.UnitPrice, l.LineTotal, l.TaxAmount))],
+            [.. i.Lines.OrderBy(l => l.SortOrder).Select(l =>
+            {
+                var item = snapshot.FirstOrDefault(x => x.Sku == l.Sku);
+                return new InvoiceLineDto(l.Name, l.NameBn, l.Sku, l.Variant, l.Quantity, l.UnitPrice, l.LineTotal, l.TaxAmount, item?.ListPrice, item?.PromotionDiscount ?? 0m, item?.IsPreorder ?? false,
+                    item is { IsPreorder: true } ? item.PreorderExpectedShipDate : null, item is { IsPreorder: true } ? Preorders.PreorderRules.LabelEn(item.PreorderExpectedShipDate) : null,
+                    item is { IsPreorder: true } ? Preorders.PreorderRules.LabelBn(item.PreorderExpectedShipDate) : null);
+            })],
             i.Subtotal, i.Discount, i.DeliveryCharge, i.GrandTotal, i.TaxRuleCode, i.TaxRuleName, i.TaxRatePercent, i.DeliveryTax, i.TaxTotal, i.GrandTotal - i.TaxTotal, order.PaymentMethod, order.PaymentStatus,
-            notes.Sum(c => c.Amount), [.. notes.Select(c => new CreditNoteSummaryDto(c.Id, c.Number, c.Amount, c.TaxAmount, c.IssuedAt))]);
+            notes.Sum(c => c.Amount), [.. notes.Select(c => new CreditNoteSummaryDto(c.Id, c.Number, c.Amount, c.TaxAmount, c.IssuedAt))],
+            snapshot.Sum(x => x.PromotionDiscount), snapshot.Sum(x => x.Quantity * x.ListPrice), snapshot.Any(x => x.IsPreorder), await TenderLinesAsync(i.OrderId, cancellationToken));
+    }
+
+    /// <summary>What the order was paid with besides money (points, store credit, gift card): one line each, shown on the invoice as part of the amount already paid.</summary>
+    private async Task<IReadOnlyList<InvoiceTenderDto>> TenderLinesAsync(Guid orderId, CancellationToken cancellationToken)
+    {
+        var rows = await db.Payments.IgnoreQueryFilters(["BranchScope"]).AsNoTracking().Where(p => p.OrderId == orderId && p.Kind == PaymentKind.StoreCredit).OrderBy(p => p.CreatedAt).ThenBy(p => p.Method)
+            .Select(p => new { p.Method, p.Amount }).ToListAsync(cancellationToken);
+        return [.. rows.Select(r => new InvoiceTenderDto(r.Method, r.Method switch { "POINTS" => "Paid with points", "CREDIT" => "Paid with store credit", "GIFTCARD" => "Paid with a gift card", _ => "Paid with rewards" }, r.Amount))];
     }
 
     private static PdfDocumentModel ToModel(InvoiceDto d, string language)
@@ -174,8 +190,11 @@ public sealed class InvoiceService(
         var bn = language == "bn";
         return new PdfDocumentModel(false, bn ? "কর চালান" : "Tax invoice", d.Number, null, d.IssuedAt, language, d.Seller, d.CustomerName, d.CustomerMobile, d.CustomerEmail, d.BillingAddress, d.OrderNumber, d.Currency,
             [.. d.Lines.Select(l => new PdfLine(bn && !string.IsNullOrWhiteSpace(l.NameBn) ? l.NameBn : l.Name, l.Variant, l.Sku, l.Quantity, l.UnitPrice, l.LineTotal))], d.Subtotal, d.Discount, d.DeliveryCharge,
-            d.GrandTotal, d.TaxRuleCode is null ? null : $"{d.TaxRuleName ?? d.TaxRuleCode} {d.TaxRatePercent:0.##}%", d.TaxTotal, d.NetTotal, d.PaymentMethod, d.PaymentStatus.ToString(), null);
+            d.GrandTotal, d.TaxRuleCode is null ? null : $"{d.TaxRuleName ?? d.TaxRuleCode} {d.TaxRatePercent:0.##}%", d.TaxTotal, d.NetTotal, d.PaymentMethod, d.PaymentStatus.ToString(),
+            d.Tenders is { Count: > 0 } tenders ? string.Join("; ", tenders.Select(t => $"{(bn ? TenderBn(t.Method) : t.Description)}: {t.Amount:0.##}")) + $". {(bn ? "বাকি" : "Amount due")}: {d.GrandTotal - tenders.Sum(t => t.Amount):0.##}" : null);
     }
+
+    private static string TenderBn(string method) => method switch { "POINTS" => "পয়েন্ট দিয়ে পরিশোধ", "CREDIT" => "স্টোর ক্রেডিট দিয়ে পরিশোধ", "GIFTCARD" => "গিফট কার্ড দিয়ে পরিশোধ", _ => "রিওয়ার্ডস দিয়ে পরিশোধ" };
 
     private async Task<CreditNoteDto> ToDtoAsync(CreditNote c, CancellationToken cancellationToken)
     {

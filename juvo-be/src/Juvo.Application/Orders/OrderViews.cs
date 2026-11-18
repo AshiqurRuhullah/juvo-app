@@ -1,4 +1,5 @@
 using Juvo.Application.Abstractions;
+using Juvo.Application.Preorders;
 using Juvo.Domain.Orders;
 
 namespace Juvo.Application.Orders;
@@ -13,11 +14,14 @@ internal static class OrderViews
             o.ShipPostalCode, o.ShipLatitude, o.ShipLongitude);
 
     public static MoneyDto Money(Order o) =>
-        new(o.Currency, o.Subtotal, o.CouponDiscount, o.CouponCode, o.ManualDiscount, o.DeliveryCharge, o.GrandTotal, o.AdvanceRequired);
+        new(o.Currency, o.Subtotal, o.CouponDiscount, o.CouponCode, o.ManualDiscount, o.DeliveryCharge, o.GrandTotal, o.AdvanceRequired, o.PromotionDiscount, o.Items.Sum(i => Math.Max(i.ListPrice, i.UnitPrice) * i.Quantity));
 
     public static List<OrderLineDto> Lines(Order o, IFileStorage storage) =>
         [.. o.Items.OrderBy(i => i.CreatedAt).ThenBy(i => i.Sku).Select(i =>
-            new OrderLineDto(i.VariantId, i.ProductId, i.Name, i.NameBn, i.Sku, i.ColorName, i.Size, ImageUrl(i.ImagePath, storage), i.UnitPrice, i.Quantity, i.LineTotal))];
+            new OrderLineDto(i.VariantId, i.ProductId, i.Name, i.NameBn, i.Sku, i.ColorName, i.Size, ImageUrl(i.ImagePath, storage), i.UnitPrice, i.Quantity, i.LineTotal, Math.Max(i.ListPrice, i.UnitPrice), i.PromotionDiscount,
+                [.. i.Adjustments.OrderBy(a => a.Level).ThenBy(a => a.LabelEn).Select(a => new OrderLineAdjustmentDto(a.SourceType, a.SourceId, a.LabelEn, a.LabelBn, a.Amount, a.Level))],
+                i.IsPreorder, i.IsPreorder ? i.PreorderExpectedShipDate : null, i.IsPreorder ? PreorderRules.LabelEn(i.PreorderExpectedShipDate) : null,
+                i.IsPreorder ? PreorderRules.LabelBn(i.PreorderExpectedShipDate) : null, i.BackorderedQuantity > 0))];
 
     /// <summary>Full timeline for staff.</summary>
     public static List<TimelineDto> StaffTimeline(Order o) =>

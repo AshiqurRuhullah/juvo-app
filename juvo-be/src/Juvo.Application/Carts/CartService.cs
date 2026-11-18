@@ -2,6 +2,8 @@ using System.Security.Cryptography;
 using System.Text;
 using Juvo.Application.Abstractions;
 using Juvo.Application.Catalog;
+using Juvo.Application.Preorders;
+using Juvo.Application.Pricing;
 using Juvo.Application.Storefront;
 using Juvo.Domain.Carts;
 using Juvo.Domain.Catalog;
@@ -15,7 +17,7 @@ namespace Juvo.Application.Carts;
 /// one cart. A cart never reserves stock (assumptions Q7): it only checks the quantity against what is available now, and checkout
 /// (Step 8) checks again and reserves.
 /// </summary>
-public sealed class CartService(IApplicationDbContext db, ICurrentUser currentUser, StockAvailability stock, IFileStorage storage, TimeProvider clock)
+public sealed class CartService(IApplicationDbContext db, ICurrentUser currentUser, StockAvailability stock, IFileStorage storage, IPricingEngine pricing, TimeProvider clock)
 {
     private StorefrontOptions Options => stock.Options;
 
@@ -80,8 +82,11 @@ public sealed class CartService(IApplicationDbContext db, ICurrentUser currentUs
 
     private static CartView Empty() => new(null, null, [], 0, 0m, 0m, 0m, 0, null, false, false, null);
 
-    /// <summary>Lines with today's prices and stock, the coupon, and the totals.</summary>
-    public async Task<CartView> ViewAsync(Cart cart, string? newToken, CancellationToken cancellationToken)
+    /// <summary>Lines with today's prices and stock, the coupon, and the totals. Every price comes from the pricing engine (module Z), so the cart shows what checkout will bill.</summary>
+    public async Task<CartView> ViewAsync(Cart cart, string? newToken, CancellationToken cancellationToken) =>
+        (await ViewCoreAsync(cart, newToken, null, cancellationToken)).View;
+
+    private async Task<(CartView View, Error? CouponError)> ViewCoreAsync(Cart cart, string? newToken, string? couponCode, CancellationToken cancellationToken)
     {
         var now = clock.GetUtcNow();
         var variantIds = cart.Items.Select(i => i.VariantId).ToList();
@@ -93,10 +98,8 @@ public sealed class CartService(IApplicationDbContext db, ICurrentUser currentUs
         var images = await db.ProductImages.AsNoTracking().Where(i => productIds.Contains(i.ProductId)).OrderBy(i => i.SortOrder).ToListAsync(cancellationToken);
         var available = await stock.AvailableAsync(variantIds, cancellationToken);
 
-        var lines = new List<CartLineDto>();
-        decimal subtotal = 0;
-        var weight = 0;
-        var itemCount = 0;
+        // What can be ordered now per line (a line the shop has no stock of may still be a pre-order).
+        var items = new List<(CartItem Item, ProductVariant Variant, Product Product, int Max, int Effective, bool IsPreorder, PreorderInfo Pre)>();
         foreach (var item in cart.Items)
         {
             var row = rows.FirstOrDefault(r => r.Variant.Id == item.VariantId);
@@ -107,34 +110,73 @@ public sealed class CartService(IApplicationDbContext db, ICurrentUser currentUs
 
             var (variant, product) = (row.Variant, row.Product);
             var sellable = variant.IsActive && product.Status == ProductStatus.Published;
-            var max = sellable ? stock.Orderable(variant, available) : 0;
-            var unit = variant.PriceOverride ?? product.EffectivePrice(now);
-            var effective = Math.Min(item.Quantity, max);
-            var problem = max <= 0 ? "OUT_OF_STOCK" : item.Quantity > max ? "REDUCED" : null;
-            var image = images.Where(i => i.ProductId == product.Id).OrderBy(i => string.Equals(i.ColorName, variant.ColorName, StringComparison.OrdinalIgnoreCase) ? 0 : 1).ThenBy(i => i.SortOrder).FirstOrDefault();
-            var changed = unit != item.UnitPriceSnapshot;
-            lines.Add(new CartLineDto(variant.Id, product.Id, product.Slug, product.NameEn, product.NameBn, variant.Sku, variant.ColorName, variant.Size,
-                image is null ? null : ProductMediaService.ToDto(image, storage).CardUrl, unit, changed ? item.UnitPriceSnapshot : null, changed, item.Quantity, max, problem, unit * effective));
-            subtotal += unit * effective;
-            itemCount += effective;
-            weight += (variant.WeightGramsOverride ?? product.WeightGrams ?? 0) * effective;
+            var pre = PreorderRules.For(product, variant);
+            var isPre = sellable && PreorderRules.IsPreorderLine(pre, variant, available.GetValueOrDefault(variant.Id));
+            var max = !sellable ? 0 : isPre ? Options.MaxQuantityPerLine : stock.Orderable(variant, available);
+            items.Add((item, variant, product, max, Math.Min(item.Quantity, max), isPre, pre));
         }
 
-        CartCouponDto? couponDto = null;
-        decimal discount = 0;
-        if (cart.CouponId is { } couponId)
+        Coupon? couponRow = null;
+        if (couponCode is not null)
         {
-            var coupon = await db.Coupons.AsNoTracking().FirstOrDefaultAsync(c => c.Id == couponId, cancellationToken);
-            if (coupon is not null)
+            var normalized = Coupon.Normalize(couponCode);
+            couponRow = await db.Coupons.AsNoTracking().FirstOrDefaultAsync(c => c.Code == normalized, cancellationToken);
+        }
+        else if (cart.CouponId is { } couponId)
+        {
+            couponRow = await db.Coupons.AsNoTracking().FirstOrDefaultAsync(c => c.Id == couponId, cancellationToken);
+        }
+
+        var request = new PricingRequest([.. items.Select(i => new PricingLineRequest(i.Variant.Id, i.Effective))], CustomerId is { } cid ? new PricingCustomer(cid, null) : null,
+            couponRow is null ? null : [couponRow.Code], PricingChannel.Web, now);
+        var priced = await pricing.PriceAsync(request, cancellationToken);
+        if (priced.IsFailure)
+        {
+            throw new InvalidOperationException("The cart could not be priced: " + priced.Error!.Message);
+        }
+
+        var result = priced.Value;
+        var lines = new List<CartLineDto>();
+        var weight = 0;
+        var itemCount = 0;
+        var preorderAdvance = 0m;
+        foreach (var (item, variant, product, max, effective, isPre, pre) in items)
+        {
+            var line = result.Lines.First(l => l.VariantId == variant.Id);
+            var problem = max <= 0 ? "OUT_OF_STOCK" : item.Quantity > max ? "REDUCED" : null;
+            var image = images.Where(i => i.ProductId == product.Id).OrderBy(i => string.Equals(i.ColorName, variant.ColorName, StringComparison.OrdinalIgnoreCase) ? 0 : 1).ThenBy(i => i.SortOrder).FirstOrDefault();
+            var changed = line.UnitPrice != item.UnitPriceSnapshot;
+            var promotion = line.Adjustments.FirstOrDefault(a => a.SourceType == "Promotion");
+            lines.Add(new CartLineDto(variant.Id, product.Id, product.Slug, product.NameEn, product.NameBn, variant.Sku, variant.ColorName, variant.Size,
+                image is null ? null : ProductMediaService.ToDto(image, storage).CardUrl, line.UnitPrice, changed ? item.UnitPriceSnapshot : null, changed, item.Quantity, max, problem, line.LineTotal,
+                line.ListPrice, line.OrderDiscount, line.Adjustments, promotion?.LabelEn, promotion?.LabelBn, isPre, isPre ? pre.ExpectedShipDate : null,
+                isPre ? PreorderRules.LabelEn(pre.ExpectedShipDate) : null, isPre ? PreorderRules.LabelBn(pre.ExpectedShipDate) : null));
+            itemCount += effective;
+            weight += (variant.WeightGramsOverride ?? product.WeightGrams ?? 0) * effective;
+            if (isPre && effective > 0)
             {
-                var problem = coupon.Check(now, subtotal);
-                discount = problem == CouponProblem.None ? coupon.DiscountFor(subtotal) : 0;
-                couponDto = new CartCouponDto(coupon.Code, coupon.Description, discount, problem == CouponProblem.None ? null : CouponCodes.For(problem));
+                preorderAdvance += PreorderRules.Advance(line.NetTotal, pre.AdvancePercent);
             }
         }
 
-        return new CartView(cart.Id, newToken, lines, itemCount, subtotal, discount, subtotal - discount, weight, couponDto, lines.Any(l => l.Problem is not null),
-            lines.Any(l => l.PriceChanged), cart.ExpiresAt);
+        CartCouponDto? couponDto = null;
+        if (result.Coupon is { } outcome)
+        {
+            couponDto = new CartCouponDto(outcome.Code, couponRow?.Description, outcome.Discount, outcome.Problem, outcome.Applied, outcome.NotAppliedReasonEn, outcome.NotAppliedReasonBn);
+        }
+
+        var t = result.Totals;
+        var view = new CartView(cart.Id, newToken, lines, itemCount, t.Subtotal, t.CouponDiscount, t.GoodsTotal, weight, couponDto, lines.Any(l => l.Problem is not null),
+            lines.Any(l => l.PriceChanged), cart.ExpiresAt, t.PromotionDiscount, t.ListSubtotal, result.Explanation, result.FreeDelivery, lines.Any(l => l.IsPreorder), preorderAdvance);
+        return (view, result.CouponError);
+    }
+
+    /// <summary>The unit price a customer pays for one unit now (promotions included), stored when a line changes so the cart can show "price changed".</summary>
+    private async Task<decimal> SnapshotAsync(ProductVariant variant, Product product, CancellationToken cancellationToken)
+    {
+        var now = clock.GetUtcNow();
+        var priced = await pricing.PriceAsync(new PricingRequest([new PricingLineRequest(variant.Id, 1)], CustomerId is { } id ? new PricingCustomer(id, null) : null, null, PricingChannel.Web, now), cancellationToken);
+        return priced.IsSuccess ? priced.Value.Lines[0].UnitPrice : variant.PriceOverride ?? product.EffectivePrice(now);
     }
 
     // ---- Changing ---------------------------------------------------------------------------------------
@@ -161,14 +203,14 @@ public sealed class CartService(IApplicationDbContext db, ICurrentUser currentUs
             return Error.Conflict(ErrorCodes.Cart.TooManyLines, $"A cart can hold at most {Options.MaxCartLines} different items.");
         }
 
-        var limit = await LimitAsync(variant, cancellationToken);
+        var limit = await LimitAsync(variant, product, cancellationToken);
         var wanted = existing + request.Quantity;
         if (wanted > limit)
         {
             return StockError(limit, existing);
         }
 
-        cart.Add(variant.Id, request.Quantity, variant.PriceOverride ?? product.EffectivePrice(now));
+        cart.Add(variant.Id, request.Quantity, await SnapshotAsync(variant, product, cancellationToken));
         cart.Touch(now.AddDays(Options.CartDays));
         await db.SaveChangesAsync(cancellationToken);
         return await ViewAsync(cart, newToken, cancellationToken);
@@ -203,13 +245,13 @@ public sealed class CartService(IApplicationDbContext db, ICurrentUser currentUs
             }
 
             var (variant, product) = found.Value;
-            var limit = await LimitAsync(variant, cancellationToken);
+            var limit = await LimitAsync(variant, product, cancellationToken);
             if (request.Quantity > limit)
             {
                 return StockError(limit, 0);
             }
 
-            item.Set(request.Quantity, variant.PriceOverride ?? product.EffectivePrice(now));
+            item.Set(request.Quantity, await SnapshotAsync(variant, product, cancellationToken));
         }
 
         cart.Touch(now.AddDays(Options.CartDays));
@@ -249,16 +291,16 @@ public sealed class CartService(IApplicationDbContext db, ICurrentUser currentUs
             return Error.NotFound(ErrorCodes.Coupon.NotFound, "This coupon code does not exist.");
         }
 
-        var view = await ViewAsync(cart, null, cancellationToken);
-        var problem = coupon.Check(clock.GetUtcNow(), view.Subtotal);
-        if (problem != CouponProblem.None)
+        // The engine decides whether the coupon is valid for this cart and whether it combines with the promotions (module Z).
+        var (view, couponError) = await ViewCoreAsync(cart, null, coupon.Code, cancellationToken);
+        if (couponError is not null)
         {
-            return CouponCodes.ToError(problem, coupon);
+            return couponError;
         }
 
         cart.SetCoupon(coupon.Id);
         await db.SaveChangesAsync(cancellationToken);
-        return await ViewAsync(cart, null, cancellationToken);
+        return view;
     }
 
     public async Task<Result<CartView>> RemoveCouponAsync(string? token, CancellationToken cancellationToken)
@@ -328,12 +370,12 @@ public sealed class CartService(IApplicationDbContext db, ICurrentUser currentUs
                 }
 
                 var (variant, product) = found.Value;
-                var limit = await LimitAsync(variant, cancellationToken);
+                var limit = await LimitAsync(variant, product, cancellationToken);
                 var existing = mine.Find(variant.Id)?.Quantity ?? 0;
                 var quantity = Math.Min(existing + line.Quantity, limit);
                 if (quantity > 0)
                 {
-                    mine.Add(variant.Id, quantity - existing, variant.PriceOverride ?? product.EffectivePrice(now));
+                    mine.Add(variant.Id, quantity - existing, await SnapshotAsync(variant, product, cancellationToken));
                 }
             }
 
@@ -364,10 +406,12 @@ public sealed class CartService(IApplicationDbContext db, ICurrentUser currentUs
             : (row.Variant, row.Product);
     }
 
-    private async Task<int> LimitAsync(ProductVariant variant, CancellationToken cancellationToken)
+    private async Task<int> LimitAsync(ProductVariant variant, Product product, CancellationToken cancellationToken)
     {
         var available = await stock.AvailableAsync([variant.Id], cancellationToken);
-        return stock.Orderable(variant, available);
+        var limit = stock.Orderable(variant, available);
+        // An item the shop has none of can still be ordered when it allows pre-orders (module AA).
+        return limit <= 0 && PreorderRules.IsPreorderLine(PreorderRules.For(product, variant), variant, available.GetValueOrDefault(variant.Id)) ? Options.MaxQuantityPerLine : limit;
     }
 
     private static Error StockError(int limit, int alreadyInCart) =>

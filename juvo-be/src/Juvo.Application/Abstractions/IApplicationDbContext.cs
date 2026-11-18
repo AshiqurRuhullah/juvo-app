@@ -15,6 +15,7 @@ using Juvo.Domain.Couriers;
 using Juvo.Domain.Accounting;
 using Juvo.Domain.Purchasing;
 using Juvo.Domain.Support;
+using Juvo.Domain.Marketing;
 using Microsoft.EntityFrameworkCore;
 
 namespace Juvo.Application.Abstractions;
@@ -85,6 +86,10 @@ public interface IApplicationDbContext
     DbSet<Cart> Carts { get; }
 
     DbSet<Coupon> Coupons { get; }
+
+    DbSet<Juvo.Domain.Promotions.Promotion> Promotions { get; }
+
+    DbSet<Juvo.Domain.Orders.OrderItemAdjustment> OrderItemAdjustments { get; }
 
     DbSet<Order> Orders { get; }
 
@@ -183,6 +188,31 @@ public interface IApplicationDbContext
     DbSet<TicketStatusHistory> TicketStatusHistories { get; }
 
     DbSet<CannedReply> CannedReplies { get; }
+
+    DbSet<Juvo.Domain.Loyalty.LoyaltyAccount> LoyaltyAccounts { get; }
+
+    DbSet<Juvo.Domain.Loyalty.PointsLedgerEntry> PointsLedgerEntries { get; }
+
+    DbSet<Juvo.Domain.Loyalty.CreditLedgerEntry> CreditLedgerEntries { get; }
+
+    DbSet<Juvo.Domain.Loyalty.OrderTender> OrderTenders { get; }
+
+    DbSet<Juvo.Domain.Loyalty.GiftCard> GiftCards { get; }
+
+    DbSet<Juvo.Domain.Loyalty.GiftCardEntry> GiftCardEntries { get; }
+
+    DbSet<Juvo.Domain.Loyalty.ReferralCode> ReferralCodes { get; }
+
+    DbSet<Juvo.Domain.Loyalty.Referral> Referrals { get; }
+    DbSet<CustomerSegment> CustomerSegments { get; }
+
+    DbSet<Campaign> Campaigns { get; }
+
+    DbSet<CampaignRecipient> CampaignRecipients { get; }
+
+    DbSet<Automation> Automations { get; }
+
+    DbSet<BackInStockSubscription> BackInStockSubscriptions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 

@@ -175,6 +175,33 @@ public static class DependencyInjection
         services.AddScoped<TransfersService>();
         services.AddScoped<CountsService>();
 
+        // Promotions and the pricing engine (module Z), pre-orders and backorders (module AA).
+        services.AddScoped<Juvo.Application.Pricing.IBasePriceSource, Juvo.Application.Pricing.CatalogBasePriceSource>();
+        services.AddScoped<Juvo.Application.Pricing.IPricingEngine, Juvo.Application.Pricing.PricingEngine>();
+        services.AddScoped<Juvo.Application.Pricing.PricedDelivery>();
+        services.AddScoped<Juvo.Application.Promotions.PromotionsService>();
+        services.AddScoped<Juvo.Application.Promotions.PromotionReportService>();
+        services.AddScoped<Juvo.Application.Promotions.PromotionCardPricing>();
+        services.AddScoped<Juvo.Application.Promotions.StorefrontPromotionsService>();
+        services.AddScoped<Juvo.Application.Preorders.PreorderAllocator>();
+        services.AddScoped<Juvo.Application.Preorders.PreorderService>();
+        Juvo.Application.Loyalty.LoyaltyRegistration.AddLoyalty(services);
+        // Marketing (module AC): segments, campaigns, automations, unsubscribe, back in stock.
+        services.AddOptions<Juvo.Application.Marketing.MarketingOptions>();
+        services.AddScoped<Juvo.Application.Marketing.MarketingSettingsService>();
+        services.AddScoped<Juvo.Application.Marketing.SegmentQueryBuilder>();
+        services.AddScoped<Juvo.Application.Marketing.SegmentsService>();
+        services.AddScoped<Juvo.Application.Marketing.MarketingMessenger>();
+        services.AddScoped<Juvo.Application.Marketing.AttributionService>();
+        services.AddScoped<Juvo.Application.Marketing.CustomerFacts>();
+        services.AddScoped<Juvo.Application.Marketing.CampaignDispatchService>();
+        services.AddScoped<Juvo.Application.Marketing.CampaignsService>();
+        services.AddScoped<Juvo.Application.Marketing.AutomationSeeder>();
+        services.AddScoped<Juvo.Application.Marketing.AutomationEngine>();
+        services.AddScoped<Juvo.Application.Marketing.AutomationsService>();
+        services.AddScoped<Juvo.Application.Marketing.UnsubscribeService>();
+        services.AddScoped<Juvo.Application.Marketing.BackInStockService>();
+
         // No branch scope unless the host provides one (the API registers the per-request scope).
         services.TryAddScoped<IBranchContext>(_ => UnscopedBranchContext.Instance);
 
