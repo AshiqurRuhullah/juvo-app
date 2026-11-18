@@ -10,10 +10,12 @@ import { toast } from "@/components/ui/toaster";
 import { useApplyCoupon, useRemoveCoupon, type CartView } from "@/modules/store/api";
 import { useMoney } from "@/modules/catalog/format";
 import { useCartErrorText } from "./use-cart-error";
+import { CouponLostNotice } from "@/modules/promotions-store/price-explainer";
 
 /** Coupon code box: apply, see the discount, remove. COUPON.* answers are explained in plain words. */
 export function CouponBox({ coupon }: { coupon: CartView["coupon"] }) {
   const t = useTranslations("cart.coupon");
+  const tp = useTranslations("storepromo.coupon");
   const money = useMoney();
   const errorText = useCartErrorText();
   const apply = useApplyCoupon();
@@ -38,6 +40,23 @@ export function CouponBox({ coupon }: { coupon: CartView["coupon"] }) {
       setError(errorText(failure));
     }
   };
+
+  if (coupon && coupon.applied === false && !coupon.problem) {
+    // Decision P4: the coupon stays on the cart but the promotions already give a better price; the API says why.
+    return (
+      <div className="space-y-2" data-testid="coupon-kept">
+        <div className="flex items-start justify-between gap-3 rounded-control bg-sunken p-3">
+          <p className="flex min-w-0 flex-wrap items-center gap-2 font-semibold text-strong">
+            <TicketPercent className="size-5 shrink-0 text-muted" aria-hidden /> {tp("notUsedTitle")} <Badge variant="neutral">{coupon.code}</Badge>
+          </p>
+          <Button variant="ghost" size="icon" className="shrink-0" aria-label={t("remove", { code: coupon.code })} loading={remove.isPending} onClick={() => remove.mutate()}>
+            <X aria-hidden />
+          </Button>
+        </div>
+        <CouponLostNotice coupon={coupon} />
+      </div>
+    );
+  }
 
   if (coupon) {
     return (

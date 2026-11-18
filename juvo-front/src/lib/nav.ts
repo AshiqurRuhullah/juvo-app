@@ -8,6 +8,7 @@ import {
   Gauge,
   Globe,
   Headset,
+  Hourglass,
   Landmark,
   Layers,
   LogIn,
@@ -80,6 +81,7 @@ export const ADMIN_NAV: NavGroup[] = [
     items: [
       { id: "orders", label: "orders", href: "/admin/orders", icon: ClipboardList, permission: "orders.order.view", ready: true, bottom: true },
       { id: "social-orders", label: "socialOrders", href: "/admin/orders/new", icon: Store, permission: "orders.order.create", ready: true },
+      { id: "preorders", label: "preorders", href: "/admin/orders/preorders", icon: Hourglass, permission: "orders.order.view", ready: true },
       { id: "fraud", label: "fraud", href: "/admin/fraud", icon: ShieldAlert, permission: "fraud.flag.view", ready: true },
       { id: "returns", label: "returns", href: "/admin/returns", icon: RotateCcw, permission: "returns.return.view", ready: true },
     ],

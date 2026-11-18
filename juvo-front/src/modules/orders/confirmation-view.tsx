@@ -13,6 +13,7 @@ import type { CheckoutResult } from "./api";
 import { ORDER_STORAGE_PREFIX } from "./checkout-view";
 import { AmountList, useMethodLabel } from "./common";
 import { trackingLink } from "./status";
+import { PreorderConfirmed } from "@/modules/preorders/preorder-parts";
 import { LivePaymentPanel } from "@/modules/payments/customer-panels";
 
 const subscribe = () => () => undefined;
@@ -98,6 +99,8 @@ export function ConfirmationView({ number }: { number: string }) {
           ) : null}
         </Card>
       ) : null}
+
+      {result?.hasPreorder ? <PreorderConfirmed /> : null}
 
       {result && online ? <LivePaymentPanel number={number} /> : null}
 

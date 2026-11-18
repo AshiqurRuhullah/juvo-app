@@ -14,6 +14,8 @@ import { mediaUrl, toNumber, useMoney } from "@/modules/catalog/format";
 import { useAddToCart, type StoreProductCard as CardData, type StoreProductDetail } from "./api";
 import { usePickName, useStoreError } from "./hooks";
 import { WishlistHeart } from "./wishlist-heart";
+import { PromoBadge, PromotionCountdown, SavingLine } from "@/modules/promotions-store/promo-parts";
+import { PreorderBadge, PreorderTag } from "@/modules/preorders/preorder-parts";
 
 /**
  * The shop's product card (SRS 3.4): a framed 4:5 picture (the second picture shows on hover), badges (New, Sale, Low stock, Sold
@@ -22,6 +24,7 @@ import { WishlistHeart } from "./wishlist-heart";
  */
 export function StoreProductCard({ product, priority = false, className }: { product: CardData; priority?: boolean; className?: string }) {
   const t = useTranslations("store.card");
+  const tp = useTranslations("preorders.action");
   const money = useMoney();
   const pick = usePickName();
   const router = useRouter();
@@ -41,7 +44,7 @@ export function StoreProductCard({ product, priority = false, className }: { pro
     try {
       // The card does not know the variant id, so the one variant of a single-variant product is looked up first.
       const detail = unwrap(await api.GET("/api/v1/store/products/{slug}", { params: { path: { slug: product.slug } } })) as StoreProductDetail;
-      const variant = detail.variants.find((v) => v.inStock);
+      const variant = detail.variants.find((v) => v.inStock) ?? detail.variants.find((v) => v.isPreorder);
       if (!variant) {
         toast.error(t("soldOutNow"));
         return;
@@ -84,7 +87,9 @@ export function StoreProductCard({ product, priority = false, className }: { pro
           <div className="absolute start-2.5 top-2.5 flex flex-col items-start gap-1.5">
             {product.isNew ? <Badge variant="neutral" className="bg-card/95">{t("new")}</Badge> : null}
             {product.onSale && percent > 0 ? <Badge variant="sale">{t("sale", { percent })}</Badge> : null}
-            {product.soldOut ? <Badge variant="neutral" className="bg-card/95">{t("soldOut")}</Badge> : product.lowStock ? <Badge variant="warning" className="bg-card/95">{t("lowStock")}</Badge> : null}
+            <PromoBadge promotion={product.promotion} />
+            <PreorderBadge facts={product} />
+            {product.soldOut && !product.isPreorder ? <Badge variant="neutral" className="bg-card/95">{t("soldOut")}</Badge> : product.soldOut ? null : product.lowStock ? <Badge variant="warning" className="bg-card/95">{t("lowStock")}</Badge> : null}
           </div>
         </div>
 
@@ -99,6 +104,9 @@ export function StoreProductCard({ product, priority = false, className }: { pro
               </span>
             ) : null}
           </p>
+          <SavingLine price={product.price} regular={product.regularPrice} />
+          {product.promotion?.endsAt ? <PromotionCountdown promotion={product.promotion} /> : null}
+          {product.isPreorder ? <PreorderTag facts={product} /> : null}
           {product.swatches.length > 0 ? (
             <ul className="flex flex-wrap items-center gap-1.5" aria-label={t("colours")}>
               {product.swatches.slice(0, 5).map((swatch) => (
@@ -125,7 +133,7 @@ export function StoreProductCard({ product, priority = false, className }: { pro
       </Link>
 
       <div className="mt-auto p-3.5 pt-1.5 sm:p-4 sm:pt-1.5">
-        {product.soldOut ? (
+        {product.soldOut && !product.isPreorder ? (
           <p className="flex min-h-11 items-center justify-center rounded-control bg-neutral-soft px-3 text-sm font-medium text-neutral-ink">{t("soldOut")}</p>
         ) : single ? (
           <button
@@ -134,7 +142,7 @@ export function StoreProductCard({ product, priority = false, className }: { pro
             disabled={adding}
             className="flex min-h-11 w-full items-center justify-center gap-2 rounded-control border border-line bg-card px-3 text-sm font-medium text-strong transition-colors hover:bg-sunken disabled:opacity-60"
           >
-            <ShoppingBag className="size-4" aria-hidden /> {adding ? t("adding") : t("add")}
+            <ShoppingBag className="size-4" aria-hidden /> {adding ? t("adding") : product.isPreorder ? tp("preorderNow") : t("add")}
           </button>
         ) : (
           <Link href={href} className="flex min-h-11 w-full items-center justify-center gap-2 rounded-control border border-line bg-card px-3 text-sm font-medium text-strong transition-colors hover:bg-sunken">

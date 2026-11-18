@@ -10,11 +10,14 @@ import { Alert, Card, EmptyState, Skeleton } from "@/components/ui/surfaces";
 import { toast } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { mediaUrl, toNumber, useMoney } from "@/modules/catalog/format";
-import { useAddToCart, useCart, useRemoveCartLine, useSetCartQuantity, type CartLine, type DeliveryQuote } from "@/modules/store/api";
+import { useAddToCart, useCart, useRemoveCartLine, useSetCartQuantity, type CartLine, type CartView as CartViewData, type DeliveryQuote } from "@/modules/store/api";
 import { usePickName } from "@/modules/store/hooks";
 import { CouponBox } from "./coupon-box";
 import { DeliveryEstimate } from "./delivery-estimate";
 import { useCartErrorText } from "./use-cart-error";
+import { FreeDeliveryHint, LineOfferNote, SavingRowsList, useSavingRows, WhyThisPrice } from "@/modules/promotions-store/price-explainer";
+import { hasSavings } from "@/modules/promotions-store/logic";
+import { PreorderCartNotice, PreorderTag } from "@/modules/preorders/preorder-parts";
 
 function LineItem({ line }: { line: CartLine }) {
   const t = useTranslations("cart");
@@ -79,6 +82,8 @@ function LineItem({ line }: { line: CartLine }) {
           {line.priceChanged && line.previousUnitPrice != null ? <span className="text-muted line-through">{money(line.previousUnitPrice)}</span> : null}
           <span className="text-muted">{t("each")}</span>
         </p>
+        <LineOfferNote line={line} />
+        <PreorderTag facts={line} />
         {line.priceChanged ? <p className="text-sm font-medium text-warning-ink">{t("priceChanged")}</p> : null}
         {line.problem === "REDUCED" ? <p className="text-sm font-medium text-warning-ink">{t("reduced", { count: max })}</p> : null}
         {unavailable ? <p className="text-sm font-medium text-danger">{t("outOfStock")}</p> : null}
@@ -107,6 +112,12 @@ function LineItem({ line }: { line: CartLine }) {
       </div>
     </li>
   );
+}
+
+/** The breakdown of the summary: list price, each offer, the coupon. Its own component because it needs a hook after the cart loaded. */
+function SavingsBreakdown({ cart }: { cart: CartViewData }) {
+  const rows = useSavingRows({ explanation: cart.explanation, listSubtotal: cart.listSubtotal, subtotal: cart.subtotal, promotionDiscount: cart.promotionDiscount });
+  return <SavingRowsList rows={rows} />;
 }
 
 export function CartView() {
@@ -146,14 +157,17 @@ export function CartView() {
 
   const subtotal = toNumber(data.subtotal);
   const discount = toNumber(data.discount);
+  const promotionDiscount = toNumber(data.promotionDiscount);
+  const savings = hasSavings({ listSubtotal: data.listSubtotal, subtotal: data.subtotal, promotionDiscount: data.promotionDiscount });
   const delivery = quote ? toNumber(quote.total) : null;
   const total = toNumber(data.total) + (delivery ?? 0);
-  const cartKey = `${subtotal}-${toNumber(data.weightGrams)}-${discount}`;
+  const cartKey = `${subtotal}-${toNumber(data.weightGrams)}-${discount}-${promotionDiscount}`;
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-6 pb-24 lg:grid-cols-[1fr_380px] lg:pb-0 lg:gap-8">
       <div className="min-w-0 space-y-4">
         {data.hasProblems ? <Alert variant="warning">{t("hasProblems")}</Alert> : null}
+        {data.hasPreorder ? <PreorderCartNotice lines={lines} advance={data.preorderAdvance} /> : null}
         <Card className="px-4 sm:px-5">
           <ul className="divide-y divide-line" aria-label={t("linesLabel")}>
             {lines.map((line) => (
@@ -162,7 +176,7 @@ export function CartView() {
           </ul>
         </Card>
         <Card className="p-4 sm:p-5">
-          <DeliveryEstimate cartKey={cartKey} subtotal={subtotal - discount} onQuote={setQuote} />
+          <DeliveryEstimate cartKey={cartKey} subtotal={subtotal - promotionDiscount - discount} onQuote={setQuote} />
         </Card>
       </div>
 
@@ -171,12 +185,16 @@ export function CartView() {
           <h2 className="text-lg font-semibold text-strong">{t("summary.title")}</h2>
           <CouponBox coupon={data.coupon} />
           <dl className="space-y-2 border-t border-line pt-4 text-sm">
-            <div className="flex justify-between gap-3">
-              <dt className="text-muted">{t("summary.subtotal", { count: toNumber(data.itemCount) })}</dt>
-              <dd className="text-strong" data-testid="summary-subtotal">
-                {money(subtotal)}
-              </dd>
-            </div>
+            {savings ? (
+              <SavingsBreakdown cart={data} />
+            ) : (
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted">{t("summary.subtotal", { count: toNumber(data.itemCount) })}</dt>
+                <dd className="text-strong" data-testid="summary-subtotal">
+                  {money(subtotal)}
+                </dd>
+              </div>
+            )}
             {discount > 0 ? (
               <div className="flex justify-between gap-3 text-success-ink">
                 <dt>{t("summary.discount")}</dt>
@@ -204,6 +222,8 @@ export function CartView() {
               {t("checkout.note")}
             </p>
           </div>
+          <WhyThisPrice explanation={data.explanation} />
+          <FreeDeliveryHint offers={data.freeDelivery} />
           <ul className="space-y-2 border-t border-line pt-4 text-sm text-muted">
             <li className="flex items-center gap-2">
               <Wallet className="size-4 shrink-0 text-primary" aria-hidden /> {t("trust.cod")}

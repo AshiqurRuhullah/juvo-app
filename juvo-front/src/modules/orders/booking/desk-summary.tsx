@@ -7,6 +7,8 @@ import { toNumber, useMoney } from "@/modules/catalog/format";
 import { useOrderErrorText } from "../api";
 import { AmountList } from "../common";
 import type { ManualQuote } from "./use-desk-quote";
+import { LineOfferNote, useSavingRows, WhyThisPrice } from "@/modules/promotions-store/price-explainer";
+import { PreorderBadge } from "@/modules/preorders/preorder-parts";
 
 type QuoteState = { data?: ManualQuote; error: unknown; isError: boolean; isLoading: boolean; ready: boolean; settling: boolean };
 
@@ -21,6 +23,7 @@ export function DeskSummary({ quote }: { quote: QuoteState }) {
   const format = useFormatter();
   const errorText = useOrderErrorText();
   const data = quote.data;
+  const savingLines = useSavingRows({ explanation: data?.explanation, listSubtotal: data?.listSubtotal ?? 0, subtotal: data?.subtotal ?? 0, promotionDiscount: data?.promotionDiscount ?? 0 });
   const day = (value: string | null | undefined) => (value ? format.dateTime(new Date(value), { dateStyle: "medium" }) : null);
 
   if (!quote.ready) return <p className="text-sm text-muted" data-testid="desk-quote-hint">{t("needMore")}</p>;
@@ -50,6 +53,8 @@ export function DeskSummary({ quote }: { quote: QuoteState }) {
                 <span className="block text-muted">
                   <span className="font-mono">{l.sku}</span> · {t("inBranch", { count: toNumber(l.availableInBranch) })}
                 </span>
+                <LineOfferNote line={{ unitPrice: l.unitPrice, listPrice: l.listPrice, promotionLabelEn: l.adjustments?.[0]?.labelEn, promotionLabelBn: l.adjustments?.[0]?.labelBn }} />
+                {l.isPreorder ? <PreorderBadge facts={{ isPreorder: true }} className="mt-1" /> : null}
                 {short ? (
                   <span className="flex items-center gap-1 font-medium text-danger-ink">
                     <CircleAlert className="size-4" aria-hidden /> {t("short")}
@@ -64,7 +69,9 @@ export function DeskSummary({ quote }: { quote: QuoteState }) {
       <AmountList
         className="border-t border-line pt-4"
         rows={[
-          { key: "subtotal", label: t("subtotal"), value: data.subtotal, always: true },
+          ...(savingLines.length > 0
+            ? savingLines.map((r) => ({ key: r.key, label: r.text, value: r.value, negative: r.kind === "reason", always: true }))
+            : [{ key: "subtotal", label: t("subtotal"), value: data.subtotal, always: true }]),
           { key: "coupon", label: t("couponRow", { code: data.couponCode ?? "" }), value: data.couponDiscount, negative: true },
           { key: "discount", label: t("discount"), value: data.manualDiscount, negative: true },
           { key: "delivery", label: t("delivery"), value: data.deliveryCharge, always: true },
@@ -72,6 +79,7 @@ export function DeskSummary({ quote }: { quote: QuoteState }) {
           { key: "advance", label: t("advance"), value: data.advanceRequired },
         ]}
       />
+      <WhyThisPrice explanation={data.explanation} />
       {overridden ? (
         <p className="text-sm text-muted" data-testid="quote-override-note">
           {t("overridden", { standard: money(data.standardDeliveryCharge) })}
