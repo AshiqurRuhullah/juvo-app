@@ -88,3 +88,8 @@ test-results/
 !/docs/ui-checks/returns/queue-1280.png
 !/docs/ui-checks/returns/admin-detail-1280.png
 !/docs/ui-checks/returns/refund-dialog-360.png
+/docs/ui-checks/loyalty/*.png
+!/docs/ui-checks/loyalty/rewards-360.png
+!/docs/ui-checks/loyalty/checkout-tender-360.png
+!/docs/ui-checks/loyalty/settings-1280.png
+!/docs/ui-checks/loyalty/cards-1280.png

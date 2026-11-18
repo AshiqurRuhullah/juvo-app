@@ -234,7 +234,7 @@ function ReferralBody({ referral }: { referral: MyReferral }) {
             ) : null}
           </Alert>
         ) : (
-          <form onSubmit={(e) => void submit(e)} noValidate className="space-y-3" aria-label={t("applyTitle")}>
+          <form onSubmit={(e) => void submit(e)} noValidate className="space-y-3" aria-label={t("formLabel")}>
             <Field label={t("applyTitle")} htmlFor="rw-ref-code" hint={t("applyHint")} error={error ?? undefined}>
               <Input id="rw-ref-code" value={text} onChange={(e) => setText(e.target.value)} autoComplete="off" autoCapitalize="characters" maxLength={20} aria-invalid={!!error} className="font-mono uppercase" />
             </Field>

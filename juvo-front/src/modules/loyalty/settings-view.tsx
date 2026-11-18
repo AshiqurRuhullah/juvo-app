@@ -4,7 +4,7 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import { Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Field, Input, Label, RadioGroup, RadioItem, Switch } from "@/components/ui/form";
+import { ChoiceRow, Field, Input, Label, RadioGroup, RadioItem, Switch } from "@/components/ui/form";
 import { Alert, Skeleton } from "@/components/ui/surfaces";
 import { toast } from "@/components/ui/toaster";
 import { useMoney } from "@/modules/catalog/format";
@@ -93,17 +93,15 @@ function SettingsForm({ settings }: { settings: LoyaltySettings }) {
       {readOnly ? <Alert variant="info">{t("readOnly")}</Alert> : null}
 
       <section className="rounded-card border border-line bg-card p-4 sm:p-5" aria-labelledby="ls-switch">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <h2 id="ls-switch" className="text-lg font-semibold text-strong">
-              {t("enabled.title")}
-            </h2>
-            <p className="mt-1 text-sm text-muted" data-testid="enabled-consequence">
-              {form.enabled ? t("enabled.on") : t("enabled.off")}
-            </p>
-          </div>
-          <Switch checked={form.enabled} onCheckedChange={(v) => set("enabled", v)} disabled={readOnly} aria-labelledby="ls-switch" data-testid="setting-enabled" />
-        </div>
+        <h2 id="ls-switch" className="text-lg font-semibold text-strong">
+          <ChoiceRow htmlFor="ls-enabled" className="justify-between gap-4 font-semibold">
+            <span>{t("enabled.title")}</span>
+            <Switch id="ls-enabled" checked={form.enabled} onCheckedChange={(v) => set("enabled", v)} disabled={readOnly} data-testid="setting-enabled" />
+          </ChoiceRow>
+        </h2>
+        <p className="mt-1 text-sm text-muted" data-testid="enabled-consequence">
+          {form.enabled ? t("enabled.on") : t("enabled.off")}
+        </p>
         <p className="mt-3 text-sm font-medium text-strong" data-testid="enabled-state">
           {form.enabled ? t("enabled.stateOn") : t("enabled.stateOff")}
         </p>

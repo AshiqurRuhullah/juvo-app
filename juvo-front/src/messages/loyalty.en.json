@@ -206,6 +206,7 @@
       "referredAnon": "A referral code is already used on your account.",
       "status": { "Pending": "Waiting for your first delivery", "Rewarded": "Rewarded", "Rejected": "Not rewarded", "Reversed": "Taken back" },
       "applyTitle": "Got a friend's code?",
+      "formLabel": "Use a referral code",
       "applyHint": "You can enter it before your first order.",
       "apply": "Use this code",
       "applied": "Referral code applied.",

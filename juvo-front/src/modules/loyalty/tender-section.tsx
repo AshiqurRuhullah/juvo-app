@@ -208,9 +208,9 @@ function TenderBody({ quote, signedIn, onChange }: { quote: CheckoutQuote; signe
                 {money(left)}
               </dd>
             </div>
-            <p className="text-muted">{t("totalUnchanged", { total: money(total) })}</p>
           </dl>
         ) : null}
+        {rows.length > 0 && !plan.problem ? <p className="text-sm text-muted">{t("totalUnchanged", { total: money(total) })}</p> : null}
       </div>
     </Section>
   );
