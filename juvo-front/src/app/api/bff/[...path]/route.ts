@@ -94,6 +94,12 @@ async function handle(request: NextRequest, context: Context) {
 
   const cartAnswer = isCart && upstream.ok && (upstream.headers.get("content-type") ?? "").includes("json") ? upstream.clone() : null;
   let response = await relay(upstream);
+  // A "probe" call only asks whether a switchable feature is on. When the API answers "feature off" (409 *.FEATURE_OFF) the browser
+  // gets a plain 200 { enabled: false }, so the console shows no failed request on every page that asks.
+  if (request.headers.get("x-juvo-probe") === "feature" && upstream.status === 409) {
+    const code = ((await upstream.clone().json().catch(() => ({}))) as { code?: string }).code ?? "";
+    if (code.endsWith(".FEATURE_OFF")) response = NextResponse.json({ enabled: false }, { status: 200, headers: { "Cache-Control": "no-store" } });
+  }
   if (cartAnswer) {
     const answer = (await cartAnswer.json().catch(() => null)) as { token?: unknown } | null;
     if (answer && typeof answer.token === "string") {

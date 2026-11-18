@@ -168,7 +168,7 @@ function TenderBody({ quote, signedIn, onChange }: { quote: CheckoutQuote; signe
         {!signedIn ? (
           <p className="text-sm text-muted">
             {t("guestNote")}{" "}
-            <Link href={signInUrl("/checkout")} className="inline-flex min-h-11 items-center font-semibold text-primary underline-offset-4 hover:underline">
+            <Link href={signInUrl("/checkout")} className="inline-flex min-h-11 min-w-11 items-center justify-center font-semibold text-primary underline-offset-4 hover:underline">
               {t("signIn")}
             </Link>
           </p>
