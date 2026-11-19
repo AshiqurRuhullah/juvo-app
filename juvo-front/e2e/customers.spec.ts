@@ -73,7 +73,7 @@ test.describe("Customers: list and detail", () => {
 
     await page.getByTestId("customer-deactivate").click();
     const dialog = page.getByRole("dialog");
-    await expect(dialog).toContainText("cannot sign in");
+    await expect(dialog).toContainText(/not be able to sign in/);
     await expect(dialog).toContainText("sessions end");
     await dialog.getByRole("button", { name: "Cancel" }).click();
     await expect(page.getByRole("dialog")).toHaveCount(0);
@@ -162,7 +162,7 @@ test.describe("Customers: permissions", () => {
     await signInViaBff(page.context(), staff.email, staff.password);
     await page.goto("/admin");
     await expect(page.getByRole("link", { name: "Customers" })).toHaveCount(0);
-    const response = await page.goto("/admin/customers");
-    expect(response?.status()).toBeGreaterThanOrEqual(400);
+    await page.goto("/admin/customers");
+    await expect(page).toHaveURL(/forbidden/);
   });
 });
