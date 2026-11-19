@@ -15,6 +15,7 @@ using Juvo.Domain.Couriers;
 using Juvo.Domain.Accounting;
 using Juvo.Domain.Purchasing;
 using Juvo.Domain.Support;
+using Juvo.Domain.Content;
 using Juvo.Domain.Marketing;
 using Juvo.Domain.Platform;
 using Microsoft.AspNetCore.Identity;
@@ -205,6 +206,14 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
 
     public DbSet<Juvo.Domain.Loyalty.Referral> Referrals => Set<Juvo.Domain.Loyalty.Referral>();
     public DbSet<CustomerSegment> CustomerSegments => Set<CustomerSegment>();
+
+    public DbSet<ContentPage> ContentPages => Set<ContentPage>();
+
+    public DbSet<BrandProfile> BrandProfiles => Set<BrandProfile>();
+
+    public DbSet<SocialLink> SocialLinks => Set<SocialLink>();
+
+    public DbSet<TrustBadge> TrustBadges => Set<TrustBadge>();
 
     public DbSet<Campaign> Campaigns => Set<Campaign>();
 

@@ -202,6 +202,10 @@ public static class DependencyInjection
         services.AddScoped<Juvo.Application.Marketing.UnsubscribeService>();
         services.AddScoped<Juvo.Application.Marketing.BackInStockService>();
 
+        // Site content (module Q): pages, brand profile, social links, trust badges.
+        services.AddScoped<Juvo.Application.Content.ContentAdminService>();
+        services.AddScoped<Juvo.Application.Content.ContentPublicService>();
+
         // No branch scope unless the host provides one (the API registers the per-request scope).
         services.TryAddScoped<IBranchContext>(_ => UnscopedBranchContext.Instance);
 
