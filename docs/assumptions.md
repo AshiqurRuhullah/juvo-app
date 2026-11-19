@@ -643,3 +643,15 @@ Built by four parallel builders and merged on `feature/11b-front`. Notes with co
 | --- | --- | --- | --- |
 | X1 | The three error keys `PROMO_CAMPAIGN_NOT_FOUND`, `PROMO_USED_UP`, `PROMO_MULTIPLE_COUPONS` were added by two builders; the customer-facing wording is kept (it was already the effective one, the later key). | One key can hold one text; shoppers see these more often than staff. | `errors.*` in `en.json` and `bn.json`. |
 | X2 | Message links of campaigns still point at the API's GET unsubscribe address until `Marketing:UnsubscribeUrl` is set to `<web address>/unsubscribe` (the page confirms with a POST). | A mail scanner opening a GET link would unsubscribe a customer. | Setting `Marketing:UnsubscribeUrl` (Step 14 go-live settings). |
+
+## Y. Step 12a (staff Customers screens) decisions
+
+Notes with the full list: `docs/customers-admin-notes.md`. Screens: `/admin/customers`, `/admin/customers/[id]` (module `juvo-front/src/modules/customers`).
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| C1 | Personal data is shown exactly as the API sends it (masked without `customers.customer.view-pii`); the screen says plainly when data is hidden and the search then says "name only". | Unmasked reads are audit-logged by the API; the client never tries to unmask. | Grant `customers.customer.view-pii` to the role. |
+| C2 | Order history on the detail uses `GET /fraud/customers/{id}/stats` (needs `fraud.flag.view`); without it the card says so. The list has no orders count or spend because the list DTO lacks them. | The customer DTOs carry no lifetime figures. | Add lifetime orders, spend and last order to the customer DTOs, then drop `useCustomerOrderStats`. |
+| C3 | No link to a customer's orders: `GET /orders` has no customer filter and `/admin/orders` accepts only `?status=`. | No invented routes. | Add a customer filter to the orders API and list. |
+| C4 | Deactivate and activate ask first and state the consequence (cannot sign in, sessions end, history kept); only for `customers.customer.block`. | Matches the API behaviour. | `customer-detail.tsx`. |
+| C5 | Not built because the API has nothing: internal notes and tags (FR-N04), account deletion or anonymising (FR-E08), per-customer fraud signals (FR-E09), admin-created customers, sorting and export on the list, district and upazila names on addresses (ids only). | Nothing is faked. | API changes listed in `docs/customers-admin-notes.md`. |
