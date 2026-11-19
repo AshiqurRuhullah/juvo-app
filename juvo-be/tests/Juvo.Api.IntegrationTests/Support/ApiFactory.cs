@@ -80,6 +80,7 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Geo.GeoSeeder>().SeedAsync(); // reference categories and size charts, as at start-up
         await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Billing.BillingSeeder>().SeedAsync(); // the sample tax rule (inactive)
         await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Couriers.CourierSeeder>().SeedAsync(); // the sandbox courier (on) and the six real slots (off)
+        await scope.ServiceProvider.GetRequiredService<Juvo.Infrastructure.Content.ContentSeeder>().SeedAsync(); // the six draft pages, brand profile, Facebook link, four empty badges
 
         // The seeded Super Admin must change the password at first sign-in. Most tests want a usable admin, so clear that flag
         // here; tests of the forced change create a fresh user through the API instead.
