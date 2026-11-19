@@ -15,6 +15,8 @@ import {
   LogIn,
   Megaphone,
   Banknote,
+  BadgeCheck,
+  Share2,
   Package,
   PackageSearch,
   Receipt,
@@ -149,7 +151,12 @@ export const ADMIN_NAV: NavGroup[] = [
     id: "content",
     label: "content",
     icon: FileText,
-    items: [{ id: "cms", label: "cms", href: "/admin/cms", icon: FileText, permission: "cms.page.view", scope: "anywhere", ready: false }],
+    items: [
+      { id: "content-pages", label: "contentPages", href: "/admin/content/pages", icon: FileText, permission: "content.page.view", scope: "anywhere", ready: true },
+      { id: "content-brand", label: "contentBrand", href: "/admin/content/brand", icon: Store, permission: "content.brand.view", scope: "anywhere", ready: true },
+      { id: "content-social", label: "contentSocial", href: "/admin/content/social", icon: Share2, permission: "content.social.edit", scope: "anywhere", ready: true },
+      { id: "content-badges", label: "contentBadges", href: "/admin/content/badges", icon: BadgeCheck, permission: "content.badge.edit", scope: "anywhere", ready: true },
+    ],
   },
   {
     id: "insights",
