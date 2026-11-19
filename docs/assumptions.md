@@ -655,3 +655,17 @@ Notes with the full list: `docs/customers-admin-notes.md`. Screens: `/admin/cust
 | C3 | No link to a customer's orders: `GET /orders` has no customer filter and `/admin/orders` accepts only `?status=`. | No invented routes. | Add a customer filter to the orders API and list. |
 | C4 | Deactivate and activate ask first and state the consequence (cannot sign in, sessions end, history kept); only for `customers.customer.block`. | Matches the API behaviour. | `customer-detail.tsx`. |
 | C5 | Not built because the API has nothing: internal notes and tags (FR-N04), account deletion or anonymising (FR-E08), per-customer fraud signals (FR-E09), admin-created customers, sorting and export on the list, district and upazila names on addresses (ids only). | Nothing is faked. | API changes listed in `docs/customers-admin-notes.md`. |
+
+## Z. Step 12b (staff Delivery zones screens) decisions
+
+Notes with the full list: `docs/zones-admin-notes.md`. Screens: `/admin/delivery/zones`, `/new`, `/[id]` (tabs Details, Areas, Rates, Try a quote) and the Countries tab; module `juvo-front/src/modules/delivery`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| Z1 | Money is typed in taka (at most 2 decimals, 0 to 1,000,000, Latin or Bengali digits, commas and the taka sign accepted); weights are typed in kilograms (up to 3 decimals) and sent as whole grams. | Hard to mis-enter; the API stores grams and the owner thinks in kilograms. | `logic.ts` money and weight parsers. |
+| Z2 | Weight slabs are upper limits only, so they cannot overlap or leave gaps; the form errors on a repeated limit and warns on a heavier slab that is cheaper, a slab above the heaviest parcel and a per-kg fee that does nothing without slabs. The API still accepts a free threshold of 0 and falling fees (the screen only warns). | The model is what the API holds. | Server-side rules in the Delivery service. |
+| Z3 | The areas editor works on the whole saved list (the API replaces all areas of a zone); a district row means the whole district, an upazila row inside it is an override that wins and can be marked remote; a district held by another zone is labelled and moving it asks first. | Matches the quote rule and prevents silent moves. | `areas-editor.tsx`. |
+| Z4 | "Try a quote" calls the public `POST /store/delivery/quote`, so it includes a courier flat charge and a running free-delivery offer, and says when another source changed the number. | The owner sees exactly what a customer would see (BR-004: shown charge equals billed charge). | `quote-panel.tsx`. |
+| Z5 | The fallback zone and a zone used by a country cannot be deleted (the API refuses with `DELIVERY.NOT_DELIVERABLE`, which the screen explains); other deletes say the areas fall back to the fallback zone and placed orders keep their charge. | Matches the API. | `zone-editor.tsx`. |
+| Z6 | Zone type and code are fixed after creation; international zones have no areas (their countries are set on the Countries tab); the API creates a zone without rates, so rates and areas are set on the zone page afterwards. | The update request has neither. | API change. |
+| Z7 | Not built because the API has nothing: upazila import dry run, a paged zone list, upazila update or delete, the per-courier override on the zone screens, a remote flag in the quote answer, drag-to-reorder zones, country delete. | Nothing is faked. | API changes listed in `docs/zones-admin-notes.md` (G1 to G6). |
