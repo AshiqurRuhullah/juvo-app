@@ -122,6 +122,10 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 - Not built: reseller price list and POS (backend too), coupon/zone/customer admin screens (Step 12), WhatsApp campaigns. Owner actions: set `Marketing:UnsubscribeUrl` to `<web>/unsubscribe`; decide the Next.js security upgrade (`next build` first stops with an advisory notice, passes on a second run).
 - Working notes: error texts shared between builders must not repeat a key in `errors.*` (duplicate JSON keys parse silently; check with a duplicate-key script after merges); new Playwright specs must be added to the desktop `testMatch`; run e2e shards sequentially (each starts its own servers) and use `E2E_API_PORT`, `E2E_WEB_PORT`, `E2E_DB` to run builders side by side.
 
+### Step 12 so far (small steps, each merged and pushed)
+- 12a Customers admin: **done** (2026-11-19). `/admin/customers` and `/admin/customers/[id]` (module `src/modules/customers`); notes, tags, deletion and fraud signals need API work first (`docs/customers-admin-notes.md`, decisions `docs/assumptions.md` section Y).
+- Next: Delivery zones admin, Coupons admin, website content and SEO, dashboard check, settings and platform services. Machine note: this PC has little free memory; run browser specs in the foreground with the single configured worker, about 90 tests or one to two spec files per command, never in the background, never `--workers=2`.
+
 ### Step 6 detail
 - 6-a Catalog backend: **Done** (committed `f5aaf89`): categories tree, brands, size charts, products, variants, pricing/sale dates, publish rules, duplicate, cost-price visibility, audit, `CatalogSeeder`; endpoints `/api/v1/catalog/*`; migration `CatalogProducts`; SKU unique among live variants (case-insensitive); slugs unique among live rows.
 - 6-b Image pipeline: **Done** (gated). Endpoints `/api/v1/catalog/products/{id}/images` (upload, update focal/colour/alt, reorder, delete); SkiaSharp WebP main/card (4:5)/thumb + blur placeholder; min 1000 px, max 10 MB, max 12 per product (FR-B04..B06). **Next: 6-c inventory.**

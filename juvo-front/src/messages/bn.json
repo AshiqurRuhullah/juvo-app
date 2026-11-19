@@ -339,6 +339,7 @@
     "RETURN_PAYMENT_NOT_RECEIVED": "অর্ডারে ফেরত দেওয়ার মতো পাওয়া পেমেন্ট নেই।",
     "RETURN_REPLACEMENT_UNAVAILABLE": "বদলি পণ্য স্টকে নেই বা আর বিক্রি হয় না। স্টক বাড়ান, অন্য পণ্য বেছে নিন, অথবা বদল না করুন।",
     "LOYALTY_FEATURE_OFF": "এই দোকানে রিওয়ার্ড চালু নেই।",
+    "CUSTOMER_NOT_FOUND": "ওই গ্রাহককে খুঁজে পাওয়া যায়নি।",
     "LOYALTY_CUSTOMER_NOT_FOUND": "ওই গ্রাহককে খুঁজে পাওয়া যায়নি।",
     "LOYALTY_INSUFFICIENT_POINTS": "আপনার এত পয়েন্ট নেই।",
     "LOYALTY_INSUFFICIENT_CREDIT": "আপনার এত স্টোর ক্রেডিট নেই।",

@@ -1,0 +1,81 @@
+{
+  "common": { "cancel": "Cancel", "close": "Close", "search": "Search", "noMatch": "Nothing matches", "clear": "Clear filters", "loadFailed": "We could not load this. Please try again." },
+  "status": { "active": "Active", "inactive": "Deactivated" },
+  "level": { "Guest": "Guest", "Quick": "Quick profile", "Full": "Full profile" },
+  "masked": {
+    "title": "Personal details are hidden for your role",
+    "list": "Mobile numbers and emails are shown partly hidden because your role does not include the right to view personal data. Search works on names only.",
+    "detail": "Mobile number, email and address details are shown partly hidden because your role does not include the right to view personal data. Ask an administrator if you need it."
+  },
+  "list": {
+    "title": "Customers",
+    "subtitle": "Everyone who has signed in or ordered, shared by all branches. Newest first.",
+    "search": "Search customers",
+    "searchPlaceholder": "Search by name, mobile or email",
+    "searchPlaceholderNameOnly": "Search by name",
+    "anyStatus": "Any status",
+    "anyLevel": "Any profile",
+    "noName": "No name yet",
+    "neverSignedIn": "Never",
+    "view": "View",
+    "open": "View {name}",
+    "columns": { "name": "Name", "mobile": "Mobile", "level": "Profile", "status": "Status", "lastLogin": "Last sign-in", "joined": "Joined", "actions": "Actions" }
+  },
+  "detail": {
+    "crumb": "Customer",
+    "subtitle": "Profile, addresses, consents and order history.",
+    "back": "Back to customers",
+    "notFound": "Customer not found",
+    "noName": "No name yet",
+    "inactiveNote": "This customer is deactivated: they cannot sign in. Their orders and history are kept.",
+    "mobile": "Mobile",
+    "verified": "Verified",
+    "notVerified": "Not verified",
+    "email": "Email",
+    "noEmail": "None",
+    "joined": "Joined",
+    "lastSignIn": "Last sign-in",
+    "neverSignedIn": "Never",
+    "signInCount": "Successful sign-ins",
+    "wishlist": "Wishlist items",
+    "addresses": "Addresses",
+    "address": "Address",
+    "default": "Default",
+    "noAddresses": "No saved addresses.",
+    "addressesMasked": "Recipient, phone and street are partly hidden for your role."
+  },
+  "consent": {
+    "title": "Consent",
+    "granted": "Given",
+    "withdrawn": "Withdrawn",
+    "never": "Not asked yet",
+    "types": { "MarketingSms": "Marketing SMS", "MarketingEmail": "Marketing email", "PrivacyPolicy": "Privacy policy" }
+  },
+  "orders": {
+    "title": "Order history",
+    "noPermission": "Order history is shown to staff who may view fraud and order history. Your role does not include it.",
+    "loadFailed": "Order history could not be loaded.",
+    "total": "Orders",
+    "spent": "Total spent",
+    "delivered": "Delivered",
+    "open": "Open",
+    "cancelled": "Cancelled",
+    "returnedOrFailed": "Returned or failed",
+    "first": "First order",
+    "listNote": "To see the individual orders, search the Orders list by order number."
+  },
+  "access": {
+    "title": "Account access",
+    "stateActive": "This customer can sign in and order.",
+    "stateInactive": "This customer is deactivated and cannot sign in.",
+    "readOnly": "You can view this customer but not change their access. Your role does not include the right to block customers.",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "deactivateTitle": "Deactivate this customer?",
+    "deactivateDescription": "They will not be able to sign in and all their sessions end now. Their orders, addresses and history are kept. You can activate them again at any time.",
+    "activateTitle": "Activate this customer?",
+    "activateDescription": "They will be able to sign in again.",
+    "deactivated": "Customer deactivated",
+    "activated": "Customer activated"
+  }
+}
