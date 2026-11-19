@@ -401,4 +401,13 @@ public static class ErrorCodes
         public const string ReferralAlreadyApplied = "LOYALTY.REFERRAL_ALREADY_APPLIED";
         public const string ReferralNotEligible = "LOYALTY.REFERRAL_NOT_ELIGIBLE";
     }
+
+    public static class Content
+    {
+        public const string NotFound = "CONTENT.NOT_FOUND";
+        public const string Invalid = "CONTENT.INVALID";
+        public const string BodyUnsafe = "CONTENT.BODY_UNSAFE";
+        public const string PageIncomplete = "CONTENT.PAGE_INCOMPLETE";
+        public const string UrlInvalid = "CONTENT.URL_INVALID";
+    }
 }

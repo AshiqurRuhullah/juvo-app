@@ -139,6 +139,10 @@ public static class PermissionCatalog
         Add("cms", "contact", "view reply");
         Add("cms", "seo", "edit");
         Add("cms", "social", "edit");
+        Add("content", "page", "view edit publish");
+        Add("content", "brand", "view edit");
+        Add("content", "social", "edit");
+        Add("content", "badge", "edit");
         Add("settings", "system", "view edit");
         Add("settings", "integration", "view edit");
         Add("settings", "feature", "edit");

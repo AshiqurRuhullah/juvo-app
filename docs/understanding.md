@@ -561,14 +561,14 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-P05 | Courier: performance and COD settlement | S | 11A | Done | | Step 11A: courier delivered, failed and returned rates, average delivery time, cost per parcel, COD collected versus settled. |
 | FR-P06 | Customers: new vs. returning, top spenders, guest-to-profile conversion | S | 11A | Done | | Step 11A: new versus returning customers, top spenders, guest-to-profile conversion. |
 | FR-P07 | All reports exportable to Excel/PDF; scheduled email of daily summary to owner | S | 11A | Done | | Step 11A: exports CSV, Excel and PDF (English or Bengali); daily summary email worker is off until the owner sets an address (settings screen in Step 12). |
-| FR-Q01 | About Juvo page with sections editable in admin: brand story, mission and values, what we sell, quality promise, founder/team note (optiona… | M | 12 | Not started | | |
-| FR-Q02 | Brand details block: business name, logo, address or pickup location, phone/WhatsApp, email (juvobd@gmail.com), working hours | M | 12 | Not started | | |
-| FR-Q03 | Social links in header/footer/About/product pages: Facebook (facebook.com/juvobd), plus Instagram, TikTok, YouTube, WhatsApp as the owner e… | M | 12 | Not started | | |
+| FR-Q01 | About Juvo page with sections editable in admin: brand story, mission and values, what we sell, quality promise, founder/team note (optiona… | M | 12 | Partial | | Backend done (Step 12d): About page as markdown through `/content/pages/about`, public read `/store/content/pages/about`; screens not built yet. |
+| FR-Q02 | Brand details block: business name, logo, address or pickup location, phone/WhatsApp, email (juvobd@gmail.com), working hours | M | 12 | Partial | | Backend done (Step 12d): `/content/brand` and public `/store/content/brand`; screens not built yet. |
+| FR-Q03 | Social links in header/footer/About/product pages: Facebook (facebook.com/juvobd), plus Instagram, TikTok, YouTube, WhatsApp as the owner e… | M | 12 | Partial | | Backend done (Step 12d): `/content/social` (https only, WhatsApp as wa.me) and public `/store/content/social`; screens not built yet. |
 | FR-Q04 | Embedded Facebook feed or latest posts block on the home page (Could; depends on the provider's current embed terms) | C | 12 | Not started | | |
 | FR-Q05 | "Order via Messenger/WhatsApp" button as an alternative contact path; such enquiries can be turned into manual orders by staff (FR-D11) | S | 12 | Not started | | |
 | FR-Q06 | Contact page with form, map location of the shop (if there is a physical point), phone and email; messages arrive in an admin inbox | M | 12 | Not started | | |
-| FR-Q07 | Trust badges: secure payment, delivery coverage, return policy, support hours | S | 12 | Not started | | |
-| FR-Q08 | FAQ, Delivery policy, Return policy, Privacy policy, Terms pages editable in admin | M | 12 | Not started | | |
+| FR-Q07 | Trust badges: secure payment, delivery coverage, return policy, support hours | S | 12 | Partial | | Backend done (Step 12d): four badges, off and empty until the owner writes them; screens not built yet. |
+| FR-Q08 | FAQ, Delivery policy, Return policy, Privacy policy, Terms pages editable in admin | M | 12 | Partial | | Backend done (Step 12d): FAQ, delivery, return, privacy and terms pages as markdown, drafts until published; screens not built yet. |
 | FR-R01 | Clean URLs, page titles and descriptions, automatic XML sitemap, robots rules, canonical tags | M | 12 | Not started | | |
 | FR-R02 | Open Graph and social share previews for products, so shared links look premium on Facebook and WhatsApp | M | 12 | Not started | | |
 | FR-R03 | Structured data for products (price, availability, rating) so search engines can show rich results | S | 12 | Not started | | |

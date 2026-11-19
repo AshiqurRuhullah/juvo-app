@@ -15,6 +15,7 @@ using Juvo.Domain.Couriers;
 using Juvo.Domain.Accounting;
 using Juvo.Domain.Purchasing;
 using Juvo.Domain.Support;
+using Juvo.Domain.Content;
 using Juvo.Domain.Marketing;
 using Microsoft.EntityFrameworkCore;
 
@@ -205,6 +206,14 @@ public interface IApplicationDbContext
 
     DbSet<Juvo.Domain.Loyalty.Referral> Referrals { get; }
     DbSet<CustomerSegment> CustomerSegments { get; }
+
+    DbSet<ContentPage> ContentPages { get; }
+
+    DbSet<BrandProfile> BrandProfiles { get; }
+
+    DbSet<SocialLink> SocialLinks { get; }
+
+    DbSet<TrustBadge> TrustBadges { get; }
 
     DbSet<Campaign> Campaigns { get; }
 

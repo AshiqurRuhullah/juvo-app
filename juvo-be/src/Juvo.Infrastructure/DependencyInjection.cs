@@ -129,6 +129,7 @@ public static class DependencyInjection
         // Invoices and notifications.
         services.AddSingleton<IDocumentPdfRenderer, Billing.SkiaPdfRenderer>();
         services.AddScoped<Billing.BillingSeeder>();
+        services.AddScoped<Content.ContentSeeder>();
         services.Configure<NotificationDeliveryOptions>(configuration.GetSection(NotificationDeliveryOptions.SectionName));
         foreach (var channel in new[] { NotificationChannel.Sms, NotificationChannel.Email, NotificationChannel.WhatsApp })
         {

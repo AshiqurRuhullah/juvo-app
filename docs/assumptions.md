@@ -682,3 +682,18 @@ Notes with the full list: `docs/coupons-admin-notes.md`. Screen: `/admin/coupons
 | CP4 | Start and end are typed in Dhaka time and sent with +06:00; the end must be after the start; the code is upper-cased without spaces; money is taka with at most 2 decimals (Bengali digits accepted). | Matches the API checks and the shop's clock. | `logic.ts`. |
 | CP5 | The "combine with promotions" flag is explained in plain words with the stacking policy of `docs/pricing-engine.md` section 3. | One clear result for the customer (FR-Z04). | n/a |
 | CP6 | Not built because the API has nothing: per-customer limit, per-coupon report, bulk code generation and export, customer or referral coupons, category or product limits. | Nothing is faked; the screen says so next to the limit. | API changes listed in `docs/coupons-admin-notes.md` (gaps 1 to 8). |
+
+## AB. Step 12d slice 1 (site content backend) decisions
+
+Full list (16 decisions): `docs/step12d-content-notes.md`; contract `docs/content-api.md`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| CM1 | Page bodies are markdown only; raw HTML, `javascript:`, `data:` and `vbscript:` links and event handlers are rejected with `CONTENT.BODY_UNSAFE` (not stripped), autolinks included. | Safe to render on the storefront without a sanitiser. | Content rules in the Domain. |
+| CM2 | A page publishes only with an English title and body; emptying a published page takes it down. Public reads return only published pages (404 `CONTENT.NOT_FOUND` otherwise). | Never show an empty page. | n/a |
+| CM3 | No brand story or policy text is invented: the six pages are seeded empty and unpublished; the four trust badges are empty and off. | Owner supplies the real text (never invent facts). | Owner types it in the screens (next slice). |
+| CM4 | Seed: brand "Juvo BD" with `juvobd@gmail.com`, Facebook link `https://facebook.com/juvobd` (from FR-Q02 and Q03), written only when the brand profile is first created, so a link the owner removes stays removed. | SRS gives these two facts. | Edit in the screens. |
+| CM5 | Social links must be https; a WhatsApp number is normalised and stored as `https://wa.me/<digits>`. Brand phone is checked loosely so a landline works. | Safe links; one phone rule. | n/a |
+| CM6 | Public content reads are anonymous, rate limited, `Cache-Control: public, max-age=60` with a strong ETag (304 on match); each text is `{en, bn}`. | Cheap storefront reads. | n/a |
+| CM7 | Permissions `content.page.view|edit|publish`, `content.brand.view|edit`, `content.social.edit`, `content.badge.edit`; Manager and Content Editor get `content.*`; social and badge lists use the edit code (no view codes). Existing roles receive the new codes on upgrade without losing local edits. | Least surprise. | Role screens. |
+| CM8 | Not built yet: screens, logo upload endpoint (logo is a file reference), Facebook feed (Q04), Messenger and WhatsApp order button (Q05), contact form and inbox (Q06), all of SEO (module R). | Small steps. | Next slices. |
