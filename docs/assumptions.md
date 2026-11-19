@@ -669,3 +669,16 @@ Notes with the full list: `docs/zones-admin-notes.md`. Screens: `/admin/delivery
 | Z5 | The fallback zone and a zone used by a country cannot be deleted (the API refuses with `DELIVERY.NOT_DELIVERABLE`, which the screen explains); other deletes say the areas fall back to the fallback zone and placed orders keep their charge. | Matches the API. | `zone-editor.tsx`. |
 | Z6 | Zone type and code are fixed after creation; international zones have no areas (their countries are set on the Countries tab); the API creates a zone without rates, so rates and areas are set on the zone page afterwards. | The update request has neither. | API change. |
 | Z7 | Not built because the API has nothing: upazila import dry run, a paged zone list, upazila update or delete, the per-courier override on the zone screens, a remote flag in the quote answer, drag-to-reorder zones, country delete. | Nothing is faked. | API changes listed in `docs/zones-admin-notes.md` (G1 to G6). |
+
+## AA. Step 12c (staff Coupons screen) decisions
+
+Notes with the full list: `docs/coupons-admin-notes.md`. Screen: `/admin/coupons` (Marketing menu, next to Promotions); module `juvo-front/src/modules/coupons`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| CP1 | The screen loads every coupon (pages of 100) and filters, searches and pages in the browser; a warning shows above 5,000. | The API filters only by on or off; the owner needs expired, not started and used up. A shop has few coupons. | Add status and search filters to `GET /promotions/coupons`, then use the server pager. |
+| CP2 | Status (Active, Switched off, Not started, Expired, Used up) is worked out in the browser in the same order as the API check. | The DTO has no status field. | Add a status field to the DTO. |
+| CP3 | "Delete" on a used coupon, or one sitting in a cart: the API answers 409 `COUPON.INACTIVE`, so the dialog explains and then switches the coupon off through PUT (needs the edit right; with delete only it just explains). | The API refuses instead of switching off; staff expect "switched off and kept". | Let the API switch off itself, then drop the PUT in `delete-dialog.tsx`. |
+| CP4 | Start and end are typed in Dhaka time and sent with +06:00; the end must be after the start; the code is upper-cased without spaces; money is taka with at most 2 decimals (Bengali digits accepted). | Matches the API checks and the shop's clock. | `logic.ts`. |
+| CP5 | The "combine with promotions" flag is explained in plain words with the stacking policy of `docs/pricing-engine.md` section 3. | One clear result for the customer (FR-Z04). | n/a |
+| CP6 | Not built because the API has nothing: per-customer limit, per-coupon report, bulk code generation and export, customer or referral coupons, category or product limits. | Nothing is faked; the screen says so next to the limit. | API changes listed in `docs/coupons-admin-notes.md` (gaps 1 to 8). |
