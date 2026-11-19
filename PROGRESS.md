@@ -264,9 +264,17 @@ Branch `feature/12b-zones-admin`, merged to `main` 2026-11-19. Notes `docs/zones
 - **Not built (the API has nothing):** import dry run, a paged zone list, upazila edit or delete, the per-courier override on the zone screens (it lives on the courier), a remote flag in the quote, zone ordering by drag, country delete. Address autocomplete, pin checks, the destinations map and saved pins (FR-G04, G05, G11, G12) are customer or map features and are not part of this step.
 - **Gate (2026-11-19, run and seen by the lead after the builder's run):** `tsc --noEmit` clean; eslint clean on the module, pages and specs; `npm test` 447 passed (32 new); `npm run build` ok (second run); `dotnet build` 0 warnings; browser on desktop: `delivery.spec` 13 of 13 and `delivery-ui-checks` 7 of 7 (360/768/1280, dark theme, axe, 44 px, overflow). Tablet, Pixel 7 and iPhone 14 are not mapped to these specs. The full suite was not re-run (the step adds its own pages, the menu entry, one message fragment, nine error texts and one config line).
 
+### Step 12c result (staff Coupons screen)
+
+Branch `feature/12c-coupons-admin`, merged to `main` 2026-11-19. Notes `docs/coupons-admin-notes.md`; decisions `docs/assumptions.md` section AA.
+
+- **Built:** `/admin/coupons` with search, a status filter, the shared pager and cards on phones; one dialog to create or edit (percentage or fixed, cap, minimum order, Dhaka-time window, usage limit, on or off, combine with promotions, a worked example); delete dialog that tells the truth (unused: deleted; used: switched off and kept); read-only view without edit rights.
+- **Not built (the API has nothing):** per-customer limit, per-coupon report, bulk code generation and export, customer or referral coupons, a server-side status filter.
+- **Gate (2026-11-19, run and seen by the lead):** `tsc --noEmit` clean; eslint clean on the module, page and specs; `npm test` 475 passed (28 new); `npm run build` ok (second run); browser on desktop: `coupons.spec` 17 of 17 and `coupons-ui-checks` 23 of 23 (360/768/1280, dark theme, Bengali, axe, 44 px, overflow). Pixel 7 and iPhone 14 are not mapped to these specs. The full suite was not re-run (the step adds its own page, a menu entry, one message fragment and one config line).
+
 ## Next step
 
-**Step 11B, remaining work:** Step 12 in small steps (Coupons admin screens next; Customers and Delivery zones are done, then website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.
+**Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.
 
 ## Known issues / notes
 
