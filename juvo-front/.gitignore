@@ -111,3 +111,9 @@ test-results/
 !/docs/ui-checks/marketing/segment-editor-360.png
 !/docs/ui-checks/marketing/notify-me-360.png
 !/docs/ui-checks/marketing/unsubscribe-360.png
+/docs/ui-checks/customers/*.png
+!/docs/ui-checks/customers/list-1280.png
+!/docs/ui-checks/customers/list-360.png
+!/docs/ui-checks/customers/detail-1280.png
+!/docs/ui-checks/customers/detail-masked-360.png
+!/docs/ui-checks/customers/deactivate-dialog-360.png
