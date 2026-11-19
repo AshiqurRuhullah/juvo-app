@@ -7,19 +7,24 @@ import { storeGet } from "@/lib/server/store";
 import type { StoreCategory } from "@/modules/store/api";
 import { StoreHeader } from "@/modules/store/store-header";
 import { StoreSessionProvider } from "@/modules/store/store-session";
+import { getPublicBrand, getPublicSocial, getPublishedKeys } from "@/modules/content/public";
+import { FooterBrandBlock, FooterPageLinks, FooterSocial } from "@/modules/content/site-info";
 
 const footerLink = "inline-flex min-h-11 min-w-11 items-center text-muted hover:text-strong hover:underline";
 
 /** Public storefront frame: header with search, category navigation and cart; footer with contact and social links. */
 export default async function StorefrontLayout({ children }: { children: React.ReactNode }) {
   // Independent lookups run together instead of one after another.
-  const [t, s, sup, locale, session, categoriesRaw] = await Promise.all([
+  const [t, s, sup, locale, session, categoriesRaw, brand, social, publishedPages] = await Promise.all([
     getTranslations("storefront"),
     getTranslations("store.footer"),
     getTranslations("support.footer"),
     getLocale(),
     loadSession(),
     storeGet<StoreCategory[]>("/categories"),
+    getPublicBrand(),
+    getPublicSocial(),
+    getPublishedKeys(),
   ]);
   const signedIn = session.state === "ok";
   const customer = session.state === "ok" && session.me.subjectType === "customer";
@@ -67,17 +72,9 @@ export default async function StorefrontLayout({ children }: { children: React.R
                     {sup("contactUs")}
                   </Link>
                 </li>
-                <li>
-                  <a className={footerLink} href="mailto:juvobd@gmail.com">
-                    juvobd@gmail.com
-                  </a>
-                </li>
-                <li>
-                  <a className={footerLink} href="https://facebook.com/juvobd" target="_blank" rel="noopener noreferrer">
-                    facebook.com/juvobd
-                  </a>
-                </li>
               </ul>
+              <FooterBrandBlock brand={brand} />
+              <FooterSocial links={social} />
             </div>
             <div>
               <h2 className="mb-2 font-sans text-sm font-semibold text-strong">{t("account")}</h2>
@@ -100,6 +97,7 @@ export default async function StorefrontLayout({ children }: { children: React.R
               </ul>
             </div>
           </div>
+          <FooterPageLinks keys={publishedPages} />
           <p className="border-t border-line px-4 py-4 text-center text-xs text-muted">© {new Date().getFullYear()} Juvo BD</p>
         </footer>
       </div>

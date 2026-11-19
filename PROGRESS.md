@@ -280,6 +280,14 @@ Branch `feature/12d-content-backend`, merged to `main` 2026-11-19. Contract `doc
 - **Not built:** screens (staff editor and storefront pages), `gen:api`, logo upload, Facebook feed, Messenger or WhatsApp button, contact form and inbox, SEO.
 - **Gate (2026-11-19, run and seen by the lead):** `dotnet build --no-incremental` 0 warnings, 0 errors; domain 405 passed; application 217 passed; integration filtered to content, endpoint policy, permissions and roles: 73 passed. The full integration suite was not run (it took over an hour here); the builder also ran the Ums, Api and Persistence namespaces (134, one policy-allowlist failure that is fixed).
 
+### Step 12d slice 2 result (site content screens)
+
+Branch `feature/12d-content-ui`, merged to `main` 2026-11-19. Notes `docs/content-ui-notes.md`; decisions `docs/assumptions.md` section AC.
+
+- **Built:** staff screens for pages (list and editor with live preview, publish and unpublish), brand, social links and trust badges; shop pages About, FAQ, delivery, return, privacy and terms; footer with published page links, brand block and social links; trust badge row on the home page. Empty means hidden. **The owner can now type the real About story and policies.**
+- **Not built:** logo upload, banners, Facebook feed (Q04), Messenger or WhatsApp order button (Q05), contact form and inbox (Q06), SEO (module R).
+- **Gate (2026-11-19, run and seen by the lead):** `tsc --noEmit` clean; eslint clean on the changed files; `npm test` 500 passed (25 new); `npm run build` ok (second run); browser on desktop: `content.spec` 12 of 12 and `content-ui-checks` all passed (360/768/1280, dark theme, Bengali, read-only, axe, 44 px, overflow); `store.spec` (one line edited) 27 passed and 1 flake under load (quantity stepper) that passed when run alone. Pixel 7 and iPhone 14 not run; full suite not re-run.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.

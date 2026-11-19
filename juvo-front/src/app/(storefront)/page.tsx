@@ -1,12 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
-import { ArrowRight, Banknote, RotateCcw, Truck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { storeGet } from "@/lib/server/store";
 import { mediaUrl } from "@/lib/media";
 import type { StoreHome, StoreProductCard } from "@/modules/store/api";
 import { ProductGrid } from "@/modules/store/store-product-card";
+import { getPublicBadges } from "@/modules/content/public";
+import { TrustBadges } from "@/modules/content/site-info";
 import { PromoBanners } from "@/modules/promotions-store/promo-banners";
 
 function Section({ id, title, href, linkLabel, products }: { id: string; title: string; href: string; linkLabel: string; products: StoreProductCard[] }) {
@@ -30,14 +32,8 @@ function Section({ id, title, href, linkLabel, products }: { id: string; title: 
 export default async function StorefrontHome() {
   const t = await getTranslations("store.home");
   const locale = await getLocale();
-  const home = await storeGet<StoreHome>("/home", undefined, { fresh: true });
+  const [home, badges] = await Promise.all([storeGet<StoreHome>("/home", undefined, { fresh: true }), getPublicBadges()]);
   const categories = home?.categories ?? [];
-
-  const trust = [
-    { icon: Banknote, title: t("trustCodTitle"), body: t("trustCodBody") },
-    { icon: Truck, title: t("trustDeliveryTitle"), body: t("trustDeliveryBody") },
-    { icon: RotateCcw, title: t("trustReturnsTitle"), body: t("trustReturnsBody") },
-  ];
 
   return (
     <>
@@ -107,30 +103,7 @@ export default async function StorefrontHome() {
         </section>
       )}
 
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6" aria-labelledby="trust-heading">
-        <h2 id="trust-heading" className="sr-only">
-          {t("trustHeading")}
-        </h2>
-        <ul className="grid gap-4 sm:grid-cols-3">
-          {trust.map(({ icon: Icon, title, body }) => (
-            <li key={title} className="flex items-start gap-4 rounded-card border border-line bg-card p-5">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary-dark">
-                <Icon className="size-5" aria-hidden />
-              </span>
-              <div>
-                <h3 className="font-sans text-base font-semibold">{title}</h3>
-                <p className="text-sm text-muted">{body}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-8 text-center text-sm text-muted">
-          {t("brandLine")}{" "}
-          <a className="font-semibold text-primary hover:underline" href="https://facebook.com/juvobd" target="_blank" rel="noopener noreferrer">
-            facebook.com/juvobd
-          </a>
-        </p>
-      </section>
+      <TrustBadges badges={badges} />
     </>
   );
 }

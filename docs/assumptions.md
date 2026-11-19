@@ -697,3 +697,16 @@ Full list (16 decisions): `docs/step12d-content-notes.md`; contract `docs/conten
 | CM6 | Public content reads are anonymous, rate limited, `Cache-Control: public, max-age=60` with a strong ETag (304 on match); each text is `{en, bn}`. | Cheap storefront reads. | n/a |
 | CM7 | Permissions `content.page.view|edit|publish`, `content.brand.view|edit`, `content.social.edit`, `content.badge.edit`; Manager and Content Editor get `content.*`; social and badge lists use the edit code (no view codes). Existing roles receive the new codes on upgrade without losing local edits. | Least surprise. | Role screens. |
 | CM8 | Not built yet: screens, logo upload endpoint (logo is a file reference), Facebook feed (Q04), Messenger and WhatsApp order button (Q05), contact form and inbox (Q06), all of SEO (module R). | Small steps. | Next slices. |
+
+## AC. Step 12d slice 2 (site content screens) decisions
+
+Notes: `docs/content-ui-notes.md`. Staff screens under `/admin/content/*` (menu group Content); shop pages `/about`, `/faq`, `/delivery-policy`, `/return-policy`, `/privacy`, `/terms`; module `juvo-front/src/modules/content`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| CU1 | Content comes only from the API: the old hard-coded footer e-mail, Facebook link and home-page trust text are removed; anything empty is hidden. | No invented or stale text. | Owner edits the Content screens. |
+| CU2 | Page bodies are markdown shown with a small own renderer (headings, paragraphs, lists, bold, italic, safe links); no markdown package added. The staff editor has a live preview. | No new dependency or licence. | `src/modules/content`. |
+| CU3 | An unpublished page answers a real 404 with a plain "not available yet" state; the footer lists only published pages. | Search engines and customers see the truth. | n/a |
+| CU4 | Page bodies are read fresh; brand, social and badges are cached for `CONTENT_REVALIDATE_SECONDS` (default 60). | Cheap shop reads; edits show within a minute. | Environment value. |
+| CU5 | Social links show a generic icon plus the platform name (this icon set has no brand icons). | No new package. | Add brand icons later. |
+| CU6 | Contract gaps: the content brand DTO shares the name `BrandDto` with the catalogue brand (the screen uses a local type); no public list of published pages (the footer makes six cached reads); no logo upload. | Listed, not hidden. | Back-end follow-up. |
