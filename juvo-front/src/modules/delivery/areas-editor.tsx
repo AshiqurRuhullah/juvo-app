@@ -186,7 +186,7 @@ export function AreasEditor({ zone, canEdit, onDirty }: { zone: Zone; canEdit: b
       ) : null}
 
       {canEdit ? (
-        <div className="sticky bottom-0 z-10 -mx-1 flex flex-col-reverse gap-2 rounded-card border border-line bg-card p-3 shadow-pop sm:flex-row sm:items-center sm:justify-end">
+        <div className="flex md:sticky md:bottom-0 md:z-10 -mx-1 flex-col-reverse gap-2 rounded-card border border-line bg-card p-3 shadow-pop sm:flex-row sm:items-center sm:justify-end">
           {dirty ? <Badge variant="warning">{tc("unsaved")}</Badge> : null}
           <Button type="button" variant="secondary" disabled={!dirty || save.isPending} onClick={() => { setDraft(saved); setFailure(null); }}>
             {tc("discard")}
