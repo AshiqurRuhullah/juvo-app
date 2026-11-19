@@ -272,6 +272,14 @@ Branch `feature/12c-coupons-admin`, merged to `main` 2026-11-19. Notes `docs/cou
 - **Not built (the API has nothing):** per-customer limit, per-coupon report, bulk code generation and export, customer or referral coupons, a server-side status filter.
 - **Gate (2026-11-19, run and seen by the lead):** `tsc --noEmit` clean; eslint clean on the module, page and specs; `npm test` 475 passed (28 new); `npm run build` ok (second run); browser on desktop: `coupons.spec` 17 of 17 and `coupons-ui-checks` 23 of 23 (360/768/1280, dark theme, Bengali, axe, 44 px, overflow). Pixel 7 and iPhone 14 are not mapped to these specs. The full suite was not re-run (the step adds its own page, a menu entry, one message fragment and one config line).
 
+### Step 12d slice 1 result (site content backend)
+
+Branch `feature/12d-content-backend`, merged to `main` 2026-11-19. Contract `docs/content-api.md`; notes `docs/step12d-content-notes.md`; decisions `docs/assumptions.md` section AB.
+
+- **Built:** pages (About, FAQ, delivery, return, privacy, terms), brand details, social links and trust badges, with staff endpoints under `/api/v1/content`, public reads under `/api/v1/store/content`, new permissions, audit, migration `SiteContent`. Nothing invented: pages are empty drafts.
+- **Not built:** screens (staff editor and storefront pages), `gen:api`, logo upload, Facebook feed, Messenger or WhatsApp button, contact form and inbox, SEO.
+- **Gate (2026-11-19, run and seen by the lead):** `dotnet build --no-incremental` 0 warnings, 0 errors; domain 405 passed; application 217 passed; integration filtered to content, endpoint policy, permissions and roles: 73 passed. The full integration suite was not run (it took over an hour here); the builder also ran the Ums, Api and Persistence namespaces (134, one policy-allowlist failure that is fixed).
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.
