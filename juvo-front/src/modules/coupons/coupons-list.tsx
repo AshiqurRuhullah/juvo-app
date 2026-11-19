@@ -153,7 +153,7 @@ export function CouponsList() {
           const c = row.original;
           if (!canChange) return null;
           return (
-            <span className="flex flex-wrap justify-end gap-2">
+            <span className="flex flex-col items-stretch gap-2 md:flex-row md:flex-wrap md:justify-end">
               {rights.edit ? (
                 <Button variant="secondary" onClick={() => setEditing(c)} aria-label={t("edit", { code: c.code })} data-testid="coupon-edit">
                   <Pencil aria-hidden /> {t("editShort")}

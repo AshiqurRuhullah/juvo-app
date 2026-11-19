@@ -34,7 +34,7 @@
     "noStart": "Starts at once",
     "noEnd": "No end date",
     "always": "Always valid",
-    "usedUnlimited": "{used} times, no limit",
+    "usedUnlimited": "{used, plural, one {# time} other {# times}}, no limit",
     "usedOf": "{used} of {limit}",
     "stacksYes": "Can be combined",
     "stacksNo": "Better of the two",
@@ -83,7 +83,7 @@
     "endsHint": "Empty means no end date. After this moment the coupon stops working.",
     "limit": "Total uses (optional)",
     "limitHint": "How many orders in all may use this coupon, over all customers. Empty means no limit. A use is counted when an order is placed and given back if the order is cancelled.",
-    "usedNote": "Already used {used} times. The limit cannot be lower than this.",
+    "usedNote": "Already used {used, plural, one {# time} other {# times}}. The limit cannot be lower than this.",
     "perCustomerNote": "The shop cannot yet limit a coupon to one use per customer; the limit above is shared by everyone.",
     "active": "Coupon is switched on",
     "activeOn": "Customers can use it while the dates, the minimum and the limit allow.",
@@ -132,17 +132,17 @@
     },
     "switchOff": {
       "title": "Switch off coupon {code}?",
-      "description": "Coupon {code} was used {used} times, or sits in a customer's cart, so it cannot be deleted: the record stays for the orders and reports. It will be switched off instead. Nobody can use it any more, existing orders do not change, and you can switch it on again later.",
+      "description": "Coupon {code} was used {used, plural, one {# time} other {# times}}, or sits in a customer's cart, so it cannot be deleted: the record stays for the orders and reports. It will be switched off instead. Nobody can use it any more, existing orders do not change, and you can switch it on again later.",
       "confirm": "Switch off coupon"
     },
     "alreadyOff": {
       "title": "Coupon {code} is already switched off",
-      "description": "Coupon {code} was used {used} times, so it cannot be deleted: the record stays for the orders and reports. It is already switched off and nobody can use it.",
+      "description": "Coupon {code} was used {used, plural, one {# time} other {# times}}, so it cannot be deleted: the record stays for the orders and reports. It is already switched off and nobody can use it.",
       "confirm": "Close"
     },
     "noEditRight": {
       "title": "Coupon {code} cannot be deleted",
-      "description": "Coupon {code} was used {used} times, so it cannot be deleted: the record stays for the orders and reports. Switching it off needs the coupon edit permission, which you do not have.",
+      "description": "Coupon {code} was used {used, plural, one {# time} other {# times}}, so it cannot be deleted: the record stays for the orders and reports. Switching it off needs the coupon edit permission, which you do not have.",
       "confirm": "Close"
     },
     "inCart": "This coupon is in a customer's cart, so it cannot be deleted. You can switch it off instead.",

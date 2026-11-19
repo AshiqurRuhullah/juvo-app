@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogDescription, DialogTitle, ModalContent } from "@/components/ui/overlays";
 import { Alert } from "@/components/ui/surfaces";
@@ -30,7 +30,6 @@ export function DeleteCouponDialog({ coupon, canSwitchOff, onClose }: { coupon: 
 function Body({ coupon, canSwitchOff, close }: { coupon: Coupon; canSwitchOff: boolean; close: () => void }) {
   const t = useTranslations("coupons.remove");
   const tc = useTranslations("coupons.common");
-  const format = useFormatter();
   const problem = useCouponProblem();
   const del = useDeleteCoupon();
   const save = useSaveCoupon();
@@ -64,7 +63,7 @@ function Body({ coupon, canSwitchOff, close }: { coupon: Coupon; canSwitchOff: b
     <>
       <DialogTitle className="font-display text-xl font-semibold text-strong">{t(`${plan}.title`, { code: coupon.code })}</DialogTitle>
       <DialogDescription className="mt-2 text-muted" data-testid="remove-consequence" data-plan={plan}>
-        {t(`${plan}.description`, { code: coupon.code, used: format.number(used) })}
+        {t(`${plan}.description`, { code: coupon.code, used })}
       </DialogDescription>
       {inCart ? (
         <Alert variant="warning" className="mt-4" data-testid="remove-in-cart">

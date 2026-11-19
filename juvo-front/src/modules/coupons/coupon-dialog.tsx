@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChoiceRow, Field, Input, RadioGroup, RadioItem, Switch, Textarea } from "@/components/ui/form";
@@ -39,7 +39,6 @@ function CouponBody({ coupon, close }: { coupon: Coupon | null; close: () => voi
   const te = useTranslations("coupons.form.errors");
   const tc = useTranslations("coupons.common");
   const money = useMoney();
-  const format = useFormatter();
   const problem = useCouponProblem();
   const save = useSaveCoupon();
   const isNew = !coupon;
@@ -155,7 +154,7 @@ function CouponBody({ coupon, close }: { coupon: Coupon | null; close: () => voi
       </div>
       {!isNew ? (
         <p className="text-sm text-muted" data-testid="coupon-used-note">
-          {t("usedNote", { used: format.number(usedCount) })}
+          {t("usedNote", { used: usedCount })}
         </p>
       ) : null}
       <p className="text-sm text-muted" data-testid="coupon-per-customer-note">
