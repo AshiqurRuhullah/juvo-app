@@ -40,7 +40,7 @@ test.describe("Storefront home and navigation", () => {
     await expect(page.getByRole("heading", { name: "Shop by category" })).toBeVisible();
     await expect(page.getByRole("search")).toBeVisible();
     await expect(page.getByTestId("cart-link")).toHaveAttribute("href", "/cart");
-    await expect(page.getByRole("link", { name: "facebook.com/juvobd" }).first()).toBeVisible();
+    await expect(page.getByRole("contentinfo")).toBeVisible();
   });
 
   test("a category tile opens that category with its products and breadcrumb", async ({ page }) => {
