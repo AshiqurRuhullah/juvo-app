@@ -256,9 +256,17 @@ Branch `feature/12a-customers-admin`, merged to `main` 2026-11-19. Notes `docs/c
 - **Not built (the API has nothing):** internal notes and tags (FR-N04), account deletion or anonymising (FR-E08), per-customer fraud signals (FR-E09), admin-created customers, sorting and export, a link to a customer's orders, lifetime orders and spend on the list, district names on addresses.
 - **Gate (2026-11-19, run and seen):** `tsc --noEmit` clean; eslint clean on the module, pages and specs; `npm test` 415 passed (13 new); `npm run build` ok (second run; the first run of each build stops at the Next.js advisory notice after compiling); backend unchanged, `dotnet build` 0 warnings. Browser: `customers.spec` 6 of 6 and `customers-ui-checks` 8 of 8 (360/768/1280, dark theme, axe, 44 px, overflow) on desktop. The first run of these specs found 9 failures that are fixed: a link label that did not contain its visible text, a 39 px name link at 768 px, a dialog wording assertion, and a forbidden-page assertion. Pixel 7 and iPhone 14 projects are not mapped to these specs. The full suite was not re-run for this step (customers touch only their own pages plus the menu entry, one message fragment and one config line).
 
+### Step 12b result (staff Delivery zones screens)
+
+Branch `feature/12b-zones-admin`, merged to `main` 2026-11-19. Notes `docs/zones-admin-notes.md`; decisions `docs/assumptions.md` section Z.
+
+- **Built:** menu item Delivery zones is live. Zone list with search, the shared pager and cards on phones; zone editor with Details, Areas (search, division filter, whole-division selection, upazila overrides with a Remote switch, "In <zone>" labels and a confirm when areas move), Rates (base fee, remote surcharge, free-delivery threshold, heaviest parcel, weight slabs, per-extra-kg fee, checked before sending) and "Try a quote" (the exact breakdown a customer would see); Countries tab (enable or disable, zone per country, add a country); upazila import dialog (paste or CSV, local checks, max 1,000 lines). **The owner can now type the real delivery rates.**
+- **Not built (the API has nothing):** import dry run, a paged zone list, upazila edit or delete, the per-courier override on the zone screens (it lives on the courier), a remote flag in the quote, zone ordering by drag, country delete. Address autocomplete, pin checks, the destinations map and saved pins (FR-G04, G05, G11, G12) are customer or map features and are not part of this step.
+- **Gate (2026-11-19, run and seen by the lead after the builder's run):** `tsc --noEmit` clean; eslint clean on the module, pages and specs; `npm test` 447 passed (32 new); `npm run build` ok (second run); `dotnet build` 0 warnings; browser on desktop: `delivery.spec` 13 of 13 and `delivery-ui-checks` 7 of 7 (360/768/1280, dark theme, axe, 44 px, overflow). Tablet, Pixel 7 and iPhone 14 are not mapped to these specs. The full suite was not re-run (the step adds its own pages, the menu entry, one message fragment, nine error texts and one config line).
+
 ## Next step
 
-**Step 11B, remaining work:** Step 12 in small steps (Delivery zones and Coupons admin screens next, Customers are done, then website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.
+**Step 11B, remaining work:** Step 12 in small steps (Coupons admin screens next; Customers and Delivery zones are done, then website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.
 
 ## Known issues / notes
 

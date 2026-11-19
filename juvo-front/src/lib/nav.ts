@@ -112,7 +112,7 @@ export const ADMIN_NAV: NavGroup[] = [
     label: "delivery",
     icon: Truck,
     items: [
-      { id: "zones", label: "zones", href: "/admin/delivery/zones", icon: Globe, permission: "delivery.zone.view", scope: "anywhere", ready: false },
+      { id: "zones", label: "zones", href: "/admin/delivery/zones", icon: Globe, permission: "delivery.zone.view", scope: "anywhere", ready: true },
       { id: "couriers", label: "couriers", href: "/admin/couriers", icon: Truck, permission: "couriers.courier.view", ready: true },
       { id: "shipments", label: "shipments", href: "/admin/shipments", icon: Package, permission: "couriers.shipment.view", ready: true },
       { id: "cod", label: "codSettlements", href: "/admin/cod", icon: Banknote, permission: "couriers.cod.view", ready: true },
