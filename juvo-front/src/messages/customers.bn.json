@@ -18,7 +18,7 @@
     "noName": "এখনও নাম নেই",
     "neverSignedIn": "কখনও না",
     "view": "দেখুন",
-    "open": "{name} খুলুন",
+    "open": "দেখুন: {name}",
     "columns": { "name": "নাম", "mobile": "মোবাইল", "level": "প্রোফাইল", "status": "অবস্থা", "lastLogin": "শেষ সাইন-ইন", "joined": "যোগ দিয়েছেন", "actions": "কাজ" }
   },
   "detail": {

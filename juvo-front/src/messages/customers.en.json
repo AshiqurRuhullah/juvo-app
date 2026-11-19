@@ -18,7 +18,7 @@
     "noName": "No name yet",
     "neverSignedIn": "Never",
     "view": "View",
-    "open": "Open {name}",
+    "open": "View {name}",
     "columns": { "name": "Name", "mobile": "Mobile", "level": "Profile", "status": "Status", "lastLogin": "Last sign-in", "joined": "Joined", "actions": "Actions" }
   },
   "detail": {

@@ -35,7 +35,7 @@ export function CustomersList() {
         enableSorting: false,
         meta: { primary: true },
         cell: ({ row }) => (
-          <Link href={`/admin/customers/${row.original.id}`} className="inline-flex min-h-11 items-center rounded-control font-semibold text-strong [overflow-wrap:anywhere] hover:text-primary hover:underline" data-testid="customer-link">
+          <Link href={`/admin/customers/${row.original.id}`} className="inline-flex min-h-11 min-w-24 items-center rounded-control font-semibold text-strong [overflow-wrap:anywhere] hover:text-primary hover:underline" data-testid="customer-link">
             {row.original.fullName ?? <span className="font-normal text-muted">{t("noName")}</span>}
           </Link>
         ),
