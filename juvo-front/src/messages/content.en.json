@@ -26,6 +26,7 @@
   },
   "editor": {
     "pageTitle": "Edit page",
+    "viewOnShop": "View on the shop",
     "back": "All pages",
     "readOnly": "You can read this page but not change it. Ask an administrator for the page edit permission.",
     "english": "English",

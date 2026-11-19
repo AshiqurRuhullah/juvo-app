@@ -117,3 +117,8 @@ test-results/
 !/docs/ui-checks/customers/detail-1280.png
 !/docs/ui-checks/customers/detail-masked-360.png
 !/docs/ui-checks/customers/deactivate-dialog-360.png
+/docs/ui-checks/content/*.png
+!/docs/ui-checks/content/editor-1280.png
+!/docs/ui-checks/content/social-360.png
+!/docs/ui-checks/content/shop-home-with-badges-and-footer-360.png
+!/docs/ui-checks/content/shop-published-page-1280.png
