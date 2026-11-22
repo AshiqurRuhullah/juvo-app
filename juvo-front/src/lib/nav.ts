@@ -10,6 +10,7 @@ import {
   Globe,
   Headset,
   Hourglass,
+  Inbox,
   Landmark,
   Layers,
   LogIn,
@@ -156,6 +157,7 @@ export const ADMIN_NAV: NavGroup[] = [
       { id: "content-brand", label: "contentBrand", href: "/admin/content/brand", icon: Store, permission: "content.brand.view", scope: "anywhere", ready: true },
       { id: "content-social", label: "contentSocial", href: "/admin/content/social", icon: Share2, permission: "content.social.edit", scope: "anywhere", ready: true },
       { id: "content-badges", label: "contentBadges", href: "/admin/content/badges", icon: BadgeCheck, permission: "content.badge.edit", scope: "anywhere", ready: true },
+      { id: "content-messages", label: "contentMessages", href: "/admin/content/messages", icon: Inbox, permission: "content.message.view", scope: "anywhere", ready: true },
     ],
   },
   {
