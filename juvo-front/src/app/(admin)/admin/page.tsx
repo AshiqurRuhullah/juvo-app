@@ -40,7 +40,7 @@ export default async function AdminDashboardPage() {
       {canAnywhere(me, "reports.dashboard.view") ? (
         <DashboardView
           branchId={me.isAllBranches ? undefined : (active ?? undefined)}
-          links={{ orders: canAnywhere(me, "orders.order.view"), fraud: canAnywhere(me, "fraud.flag.view"), returns: canAnywhere(me, "returns.return.view"), inventory: canAnywhere(me, "inventory.stock.view") }}
+          links={{ orders: canAnywhere(me, "orders.order.view"), fraud: canAnywhere(me, "fraud.flag.view"), returns: canAnywhere(me, "returns.return.view"), inventory: canAnywhere(me, "inventory.stock.view"), products: canAnywhere(me, "catalog.product.view"), customers: canAnywhere(me, "customers.customer.view"), payments: canAnywhere(me, "payments.payment.view"), cod: canAnywhere(me, "couriers.cod.view"), shipments: canAnywhere(me, "couriers.shipment.view") }}
         />
       ) : (
         <QuickLinks access={me} />

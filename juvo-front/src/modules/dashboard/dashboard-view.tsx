@@ -4,7 +4,7 @@ import * as React from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
-import { ArrowRight, Banknote, ClipboardCheck, PackageCheck, PackageX, RotateCcw, ShieldAlert, ShoppingBag, TrendingDown, TrendingUp, Truck, Wallet, ReceiptText } from "lucide-react";
+import { ArrowRight, Ban, Banknote, CircleCheck, ClipboardCheck, PackageCheck, PackageX, RotateCcw, ShieldAlert, Undo2, TriangleAlert, ShoppingBag, TrendingDown, TrendingUp, Truck, Wallet, ReceiptText } from "lucide-react";
 import { Alert, Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, EmptyState, Skeleton } from "@/components/ui/surfaces";
 import { ApiError } from "@/lib/api/client";
 import { useProblemMessage } from "@/lib/api/use-problem-message";
@@ -13,6 +13,8 @@ import { useMoney } from "@/modules/catalog/format";
 import { useDashboard } from "@/modules/reports/api";
 import { num } from "@/modules/reports/logic";
 import { buildKpis, type Kpi } from "./logic";
+import { ordersLink, statusCounts } from "./period";
+import { RangeSections } from "./range-sections";
 
 // Recharts is large: it loads after the page is usable and is drawn in the browser only.
 const SalesChart = dynamic(() => import("./charts").then((m) => m.SalesChart), { ssr: false, loading: () => <Skeleton className="size-full" /> });
@@ -20,7 +22,7 @@ const StatusDonut = dynamic(() => import("./charts").then((m) => m.StatusDonut),
 const Sparkline = dynamic(() => import("./charts").then((m) => m.Sparkline), { ssr: false, loading: () => <Skeleton className="size-full" /> });
 
 /** Which screens the person may open from the action queue (decided on the server). */
-export type DashboardLinks = { orders: boolean; fraud: boolean; returns: boolean; inventory: boolean };
+export type DashboardLinks = { orders: boolean; fraud: boolean; returns: boolean; inventory: boolean; products: boolean; customers: boolean; payments: boolean; cod: boolean; shipments: boolean };
 
 const STATUS_COLOUR: Record<string, string> = {
   Placed: "var(--text-muted)",
@@ -91,6 +93,42 @@ function KpiCard({ kpi }: { kpi: Kpi }) {
   );
 }
 
+/** FR-M01: to pack, in delivery, delivered, cancelled and returned. "To pack" is all open orders; the rest are orders placed in the last 30 days (the dashboard feed). */
+function StatusStrip({ pack, counts, links }: { pack: number; counts: ReturnType<typeof statusCounts>; links: DashboardLinks }) {
+  const t = useTranslations("dashboard2.strip");
+  const format = useFormatter();
+  const cards: { key: string; label: string; value: number; hint: string; icon: React.ComponentType<{ className?: string }>; href?: string }[] = [
+    { key: "toPack", label: t("toPack"), value: pack, hint: t("openHint"), icon: PackageCheck, href: links.orders ? ordersLink({ status: "Confirmed" }) : undefined },
+    { key: "inDelivery", label: t("inDelivery"), value: counts.inDelivery, hint: t("windowHint"), icon: Truck, href: links.shipments ? "/admin/shipments" : undefined },
+    { key: "delivered", label: t("delivered"), value: counts.delivered, hint: t("windowHint"), icon: CircleCheck, href: links.orders ? ordersLink({ status: "Delivered" }) : undefined },
+    { key: "cancelled", label: t("cancelled"), value: counts.cancelled, hint: t("windowHint"), icon: Ban, href: links.orders ? ordersLink({ status: "Cancelled" }) : undefined },
+    { key: "returned", label: t("returned"), value: counts.returned, hint: t("windowHint"), icon: Undo2, href: links.returns ? "/admin/returns" : undefined },
+  ];
+  return (
+    <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5" data-testid="status-strip">
+      {cards.map((c) => {
+        const Icon = c.icon;
+        const body = (
+          <>
+            <span className="flex items-center gap-2 text-sm font-medium text-muted"><Icon className="size-4 shrink-0" aria-hidden /> <span className="min-w-0">{c.label}</span></span>
+            <span className="mt-2 block text-2xl font-bold tabular-nums text-strong" data-testid="strip-value">{format.number(c.value)}</span>
+            <span className="mt-1 block text-xs text-muted">{c.hint}</span>
+          </>
+        );
+        return (
+          <li key={c.key} data-testid={`strip-${c.key}`}>
+            {c.href ? (
+              <Link href={c.href} className="block min-h-11 rounded-card border border-line bg-card p-4 shadow-card [@media(hover:hover)]:hover:bg-sunken/60">{body}</Link>
+            ) : (
+              <div className="rounded-card border border-line bg-card p-4 shadow-card">{body}</div>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 function DashboardSkeleton() {
   return (
     <div className="space-y-5" aria-hidden data-testid="dashboard-skeleton">
@@ -144,9 +182,11 @@ export function DashboardView({ branchId, links }: { branchId?: string; links: D
   const topMax = Math.max(1, ...data.topProducts.map((p) => num(p.units)));
   const summary = t("chart.summary", { count: days.length, from: day(data.series[0]!.date), to: day(data.today), best: best.label, amount: money(best.sales) });
 
-  const actions: { key: "toConfirm" | "toPack" | "heldByFraud" | "returnsWaiting" | "lowStock"; count: number; href?: string; icon: React.ComponentType<{ className?: string }>; warn?: boolean }[] = [
+  const counts = statusCounts(data.ordersByStatus);
+  const actions: { key: "toConfirm" | "toPack" | "heldByFraud" | "returnsWaiting" | "lowStock" | "deliveryFailed"; count: number; href?: string; icon: React.ComponentType<{ className?: string }>; warn?: boolean }[] = [
     { key: "toConfirm", count: num(data.pending.toConfirm), href: links.orders ? "/admin/orders?status=Placed" : undefined, icon: ClipboardCheck },
     { key: "toPack", count: num(data.pending.toPack), href: links.orders ? "/admin/orders?status=Confirmed" : undefined, icon: PackageCheck },
+    { key: "deliveryFailed", count: counts.failed, href: links.orders ? ordersLink({ status: "DeliveryFailed" }) : undefined, icon: TriangleAlert, warn: true },
     { key: "heldByFraud", count: num(data.pending.heldByFraud), href: links.fraud ? "/admin/fraud" : undefined, icon: ShieldAlert, warn: true },
     { key: "returnsWaiting", count: num(data.pending.returnsWaiting), href: links.returns ? "/admin/returns" : undefined, icon: RotateCcw },
     { key: "lowStock", count: num(data.pending.lowStock), href: links.inventory ? "/admin/inventory" : undefined, icon: PackageX, warn: true },
@@ -159,6 +199,8 @@ export function DashboardView({ branchId, links }: { branchId?: string; links: D
           <KpiCard key={kpi.key} kpi={kpi} />
         ))}
       </div>
+
+      <StatusStrip pack={num(data.pending.toPack)} counts={counts} links={links} />
 
       <div className="grid gap-4 xl:grid-cols-3">
         <Card className="xl:col-span-2">
@@ -257,6 +299,19 @@ export function DashboardView({ branchId, links }: { branchId?: string; links: D
                 );
               })}
             </ul>
+            {links.payments || links.shipments ? (
+              <div className="mt-3 border-t border-line/70 pt-3" data-testid="action-screens">
+                <p className="text-xs text-muted">{tr("actions.noCounts")}</p>
+                <ul className="mt-1 flex flex-wrap gap-x-5">
+                  {links.payments ? (
+                    <li><Link href="/admin/payments" className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-primary underline-offset-2 hover:underline" data-testid="action-payments-screen">{tr("actions.paymentsScreen")} <ArrowRight className="size-4 rtl:rotate-180" aria-hidden /></Link></li>
+                  ) : null}
+                  {links.shipments ? (
+                    <li><Link href="/admin/shipments" className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-primary underline-offset-2 hover:underline" data-testid="action-shipments-screen">{tr("actions.bookingsScreen")} <ArrowRight className="size-4 rtl:rotate-180" aria-hidden /></Link></li>
+                  ) : null}
+                </ul>
+              </div>
+            ) : null}
           </CardContent>
         </Card>
 
@@ -318,6 +373,8 @@ export function DashboardView({ branchId, links }: { branchId?: string; links: D
           </CardContent>
         </Card>
       </div>
+
+      <RangeSections branchId={branchId} links={links} />
     </div>
   );
 }
