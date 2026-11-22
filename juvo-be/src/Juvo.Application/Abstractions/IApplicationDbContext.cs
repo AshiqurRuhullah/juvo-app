@@ -215,6 +215,8 @@ public interface IApplicationDbContext
 
     DbSet<TrustBadge> TrustBadges { get; }
 
+    DbSet<ContactMessage> ContactMessages { get; }
+
     DbSet<Campaign> Campaigns { get; }
 
     DbSet<CampaignRecipient> CampaignRecipients { get; }

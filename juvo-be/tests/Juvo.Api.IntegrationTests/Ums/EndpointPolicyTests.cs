@@ -75,6 +75,8 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
             "unsubscribe", "products/{slug}/notify-me",
             // Step 12d (module Q): published pages, brand profile, enabled social links and badges, read only.
             "content/pages/{key}", "content/brand", "content/social", "content/badges",
+            // Step 12d slice 3: the public contact form (honeypot, per address and per contact limits).
+            "content/contact",
         }.Select(r => "/api/v{version:apiVersion}/store/" + r);
 
         var actual = ApiEndpoints().Where(e => e.AllowAnonymous).Select(e => e.Route).Distinct().Order().ToList();

@@ -3,6 +3,8 @@ using System.Text.Json;
 using Juvo.Api.Configuration;
 using Juvo.Api.Http;
 using Juvo.Application.Content;
+using Juvo.Domain.Content;
+using Juvo.Shared.Pagination;
 using Juvo.Shared.Results;
 using Juvo.Shared.Security;
 
@@ -20,6 +22,7 @@ internal static class ContentEndpoints
     {
         var v1 = app.MapApiV1();
         MapStaff(v1.MapGroup("/content").WithTags("Site content"));
+        MapInbox(v1.MapGroup("/content/messages").WithTags("Contact inbox"));
         MapPublic(v1.MapGroup("/store/content").WithTags("Storefront").AllowAnonymous().RequireRateLimiting(RateLimitSettings.StorefrontPolicy));
         return app;
     }
@@ -65,8 +68,33 @@ internal static class ContentEndpoints
             .RequirePermission(ContentPermissions.BadgeEdit).Produces<TrustBadgeDto>().WithSummary("Word, switch on or off, and order one badge. A badge needs English text to be switched on.");
     }
 
+    private static void MapInbox(RouteGroupBuilder g)
+    {
+        g.MapGet("", async ([AsParameters] ListParams list, ContactMessageStatus? status, ContactInboxService s, CancellationToken ct) =>
+                (await s.ListAsync(list.ToRequest(), new ContactMessageQuery(status), ct)).ToHttpResult())
+            .RequirePermission(ContentPermissions.MessageView).Produces<PagedResult<ContactMessageListItemDto>>()
+            .WithSummary("Contact-form messages, newest first. Filter by status (New, Read, Replied, Archived); search name, subject and text (also mobile and email with customers.customer.view-pii). Mobile and email are masked without that permission; unmasked views are audit-logged.");
+
+        g.MapGet("/{id:guid}", async (Guid id, ContactInboxService s, CancellationToken ct) => (await s.GetAsync(id, ct)).ToHttpResult())
+            .RequirePermission(ContentPermissions.MessageView).Produces<ContactMessageDto>().WithSummary("One message with its internal notes (personal data masked without view-pii).");
+
+        g.MapPost("/{id:guid}/status", async (Guid id, SetContactStatusRequest r, ContactInboxService s, CancellationToken ct) => (await s.SetStatusAsync(id, r.Status, ct)).ToHttpResult())
+            .RequirePermission(ContentPermissions.MessageHandle).Produces<ContactMessageDto>().WithSummary("Set the status (New, Read, Replied, Archived). Handled by and time are stamped; New clears them.");
+
+        g.MapPost("/{id:guid}/note", async (Guid id, AddContactNoteRequest r, ContactInboxService s, CancellationToken ct) => (await s.AddNoteAsync(id, r.Note, ct)).ToHttpResult())
+            .RequirePermission(ContentPermissions.MessageHandle).Produces<ContactMessageDto>().WithSummary("Add an internal note (kept with author and time, never shown to the sender).");
+
+        g.MapPost("/{id:guid}/archive", async (Guid id, ContactInboxService s, CancellationToken ct) => (await s.SetStatusAsync(id, ContactMessageStatus.Archived, ct)).ToHttpResult())
+            .RequirePermission(ContentPermissions.MessageHandle).Produces<ContactMessageDto>().WithSummary("Archive a message (it is never deleted).");
+    }
+
     private static void MapPublic(RouteGroupBuilder g)
     {
+        g.MapPost("/contact", async (ContactFormRequest r, ContactPublicService s, CancellationToken ct) =>
+                (await s.SubmitAsync(r, ct)).ToHttpResult(v => Results.Accepted(null, v)))
+            .RequireRateLimiting(RateLimitSettings.ContactPolicy).Produces<ContactReceiptDto>(StatusCodes.Status202Accepted)
+            .WithSummary("The public contact form: name, mobile or email (one is required), optional subject, message, optional source page and an empty honeypot field `website`. Answers 202 with a reference, the same whoever the sender is. Plain text only. Limited per address and per mobile or email (CONTENT.RATE_LIMITED, 429).");
+
         g.MapGet("/pages/{key}", async (string key, HttpContext http, ContentPublicService s, CancellationToken ct) => Cached(http, await s.GetPageAsync(key, ct)))
             .Produces<PublicPageDto>().WithSummary("A published page in both languages. A draft or unknown page answers 404 CONTENT.NOT_FOUND.");
 

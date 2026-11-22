@@ -63,3 +63,25 @@ internal sealed class TrustBadgeConfiguration : IEntityTypeConfiguration<TrustBa
         builder.HasIndex(x => x.Key).IsUnique();
     }
 }
+
+internal sealed class ContactMessageConfiguration : IEntityTypeConfiguration<ContactMessage>
+{
+    public void Configure(EntityTypeBuilder<ContactMessage> builder)
+    {
+        builder.ToTable("ContactMessages");
+        builder.Property(x => x.Name).HasMaxLength(120).IsRequired();
+        builder.Property(x => x.Mobile).HasMaxLength(30);
+        builder.Property(x => x.Email).HasMaxLength(254);
+        builder.Property(x => x.Subject).HasMaxLength(200);
+        builder.Property(x => x.Message).HasMaxLength(4000).IsRequired();
+        builder.Property(x => x.Status).HasConversion<int>();
+        builder.Property(x => x.SourcePage).HasMaxLength(200);
+        builder.Property(x => x.IpHash).HasMaxLength(64);
+        builder.Property(x => x.InternalNote).HasMaxLength(ContactMessage.InternalNoteMax);
+        builder.Ignore(x => x.Reference);
+        builder.HasIndex(x => new { x.Status, x.ReceivedAt });
+        builder.HasIndex(x => new { x.IpHash, x.ReceivedAt });
+        builder.HasIndex(x => new { x.Mobile, x.ReceivedAt });
+        builder.HasIndex(x => new { x.Email, x.ReceivedAt });
+    }
+}

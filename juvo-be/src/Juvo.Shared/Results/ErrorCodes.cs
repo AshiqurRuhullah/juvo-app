@@ -409,5 +409,6 @@ public static class ErrorCodes
         public const string BodyUnsafe = "CONTENT.BODY_UNSAFE";
         public const string PageIncomplete = "CONTENT.PAGE_INCOMPLETE";
         public const string UrlInvalid = "CONTENT.URL_INVALID";
+        public const string RateLimited = "CONTENT.RATE_LIMITED";
     }
 }

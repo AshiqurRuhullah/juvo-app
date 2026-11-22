@@ -215,6 +215,8 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
 
     public DbSet<TrustBadge> TrustBadges => Set<TrustBadge>();
 
+    public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
+
     public DbSet<Campaign> Campaigns => Set<Campaign>();
 
     public DbSet<CampaignRecipient> CampaignRecipients => Set<CampaignRecipient>();

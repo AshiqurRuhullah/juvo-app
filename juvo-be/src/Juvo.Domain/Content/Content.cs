@@ -241,3 +241,116 @@ public sealed class TrustBadge : Entity
         SortOrder = sortOrder;
     }
 }
+
+/// <summary>Where a contact-form message stands in the admin inbox (FR-Q06).</summary>
+public enum ContactMessageStatus
+{
+    New = 1,
+    Read = 2,
+    Replied = 3,
+    Archived = 4,
+}
+
+/// <summary>
+/// A message sent from the public contact page (FR-Q06). The sender gives a mobile number or an email (at least one). Personal data is kept out of the audit trail
+/// and the client address is stored only as a hash. Messages are never erased: staff archive them.
+/// </summary>
+public sealed class ContactMessage : Entity
+{
+    public const int InternalNoteMax = 4000;
+
+    private ContactMessage()
+    {
+    }
+
+    public ContactMessage(string name, string? mobile, string? email, string? subject, string message, string? sourcePage, string? ipHash, DateTimeOffset now)
+    {
+        if (ContentText.Clean(mobile) is null && ContentText.Clean(email) is null)
+        {
+            throw new ArgumentException("A mobile number or an email address is required.", nameof(mobile));
+        }
+
+        Name = name.Trim();
+        Mobile = ContentText.Clean(mobile);
+        Email = ContentText.Clean(email);
+        Subject = ContentText.Clean(subject);
+        Message = message.Trim();
+        SourcePage = ContentText.Clean(sourcePage);
+        IpHash = ipHash;
+        ReceivedAt = now;
+        Status = ContactMessageStatus.New;
+    }
+
+    [AuditIgnore]
+    public string Name { get; private set; } = string.Empty;
+
+    /// <summary>Normalised (+880...) mobile number, or null when the sender left an email only.</summary>
+    [AuditIgnore]
+    public string? Mobile { get; private set; }
+
+    [AuditIgnore]
+    public string? Email { get; private set; }
+
+    public string? Subject { get; private set; }
+
+    [AuditIgnore]
+    public string Message { get; private set; } = string.Empty;
+
+    public ContactMessageStatus Status { get; private set; }
+
+    /// <summary>The shop page the form was sent from (a path such as <c>/contact</c>).</summary>
+    public string? SourcePage { get; private set; }
+
+    public DateTimeOffset ReceivedAt { get; private set; }
+
+    /// <summary>SHA-256 of the client address (never the address itself), used only to limit abuse.</summary>
+    [AuditIgnore]
+    public string? IpHash { get; private set; }
+
+    public Guid? HandledBy { get; private set; }
+
+    public DateTimeOffset? HandledAt { get; private set; }
+
+    [AuditIgnore]
+    public string? InternalNote { get; private set; }
+
+    /// <summary>The short reference given to the sender (last eight hex digits of the id).</summary>
+    public string Reference => "CM-" + Id.ToString("N")[^8..].ToUpperInvariant();
+
+    /// <summary>Moves to a status (any move is allowed, so a mistaken archive can be undone). Returns false when nothing changed.</summary>
+    public bool SetStatus(ContactMessageStatus status, Guid? by, DateTimeOffset now)
+    {
+        if (Status == status)
+        {
+            return false;
+        }
+
+        Status = status;
+        if (status == ContactMessageStatus.New)
+        {
+            HandledBy = null;
+            HandledAt = null;
+        }
+        else
+        {
+            HandledBy = by;
+            HandledAt = now;
+        }
+
+        return true;
+    }
+
+    /// <summary>Appends a note (with who and when) to the internal note. Returns false when the result would be longer than <see cref="InternalNoteMax"/>.</summary>
+    public bool AddNote(string text, string? authorName, DateTimeOffset now)
+    {
+        var line = $"[{now:yyyy-MM-dd HH:mm} UTC, {authorName ?? "staff"}] {text.Trim()}";
+        var next = InternalNote is null ? line : InternalNote + "\n" + line;
+        if (next.Length > InternalNoteMax)
+        {
+            return false;
+        }
+
+        InternalNote = next;
+        return true;
+    }
+}

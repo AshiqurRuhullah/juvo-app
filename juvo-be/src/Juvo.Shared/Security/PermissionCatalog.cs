@@ -143,6 +143,7 @@ public static class PermissionCatalog
         Add("content", "brand", "view edit");
         Add("content", "social", "edit");
         Add("content", "badge", "edit");
+        Add("content", "message", "view handle");
         Add("settings", "system", "view edit");
         Add("settings", "integration", "view edit");
         Add("settings", "feature", "edit");

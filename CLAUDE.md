@@ -128,7 +128,8 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 - 12c Coupons admin: **done** (2026-11-19). `/admin/coupons` (module `src/modules/coupons`; `docs/coupons-admin-notes.md`, decisions section AA).
 - 12d slice 1 Site content backend: **done** (2026-11-19). `/api/v1/content/*` and public `/store/content/*` (`docs/content-api.md`, decisions section AB); screens next, then contact inbox, then SEO.
 - 12d slice 2 Site content screens: **done** (2026-11-19). `/admin/content/*` and shop pages (module `src/modules/content`; `docs/content-ui-notes.md`, decisions section AC).
-- Next: contact form and admin inbox, then SEO, dashboard check, settings and platform services. Machine note: this PC has little free memory; run browser specs in the foreground with the single configured worker, about 90 tests or one to two spec files per command, never in the background, never `--workers=2`.
+- 12d slice 3 Contact inbox backend: **done** (2026-11-22). Public `POST /store/content/contact`, staff `/content/messages` (`docs/content-contact-notes.md`, decisions section AD).
+- Next: contact screens (shop page and staff inbox), then SEO, dashboard check, settings and platform services. Machine note: this PC has little free memory; run browser specs in the foreground with the single configured worker, about 90 tests or one to two spec files per command, never in the background, never `--workers=2`.
 
 ### Step 6 detail
 - 6-a Catalog backend: **Done** (committed `f5aaf89`): categories tree, brands, size charts, products, variants, pricing/sale dates, publish rules, duplicate, cost-price visibility, audit, `CatalogSeeder`; endpoints `/api/v1/catalog/*`; migration `CatalogProducts`; SKU unique among live variants (case-insensitive); slugs unique among live rows.

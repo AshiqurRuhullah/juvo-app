@@ -53,7 +53,7 @@ public static class DefaultRoles
 
         new(Support, "Answers customers and handles tickets.", false,
         [
-            "orders.order.view", "orders.order.note", "customers.customer.view", "support.*", "returns.return.view", "returns.return.approve",
+            "orders.order.view", "orders.order.note", "customers.customer.view", "support.*", "content.message.*", "returns.return.view", "returns.return.approve",
             "couriers.shipment.view", "delivery.zone.view", "notifications.log.view", "payments.payment.view", "tax.invoice.view", "tax.invoice.download", "reports.dashboard.view",
         ],
         []),
