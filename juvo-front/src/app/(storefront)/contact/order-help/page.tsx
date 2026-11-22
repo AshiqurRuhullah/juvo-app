@@ -6,7 +6,7 @@ import { ContactFormView } from "@/modules/support/contact-form";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("support.contact");
-  return { title: t("title") };
+  return { title: t("title"), robots: { index: false, follow: false } };
 }
 
 /** `/contact/order-help`: the guest order-help form (opens a support ticket). A signed-in customer goes to the new-request page of their account (they can read the answers there). */

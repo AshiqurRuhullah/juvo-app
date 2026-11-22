@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -7,7 +8,8 @@ import { storeGet } from "@/lib/server/store";
 import { mediaUrl } from "@/lib/media";
 import type { StoreHome, StoreProductCard } from "@/modules/store/api";
 import { ProductGrid } from "@/modules/store/store-product-card";
-import { getPublicBadges } from "@/modules/content/public";
+import { absoluteUrl, buildOrganizationJsonLd, jsonLdString, shopName } from "@/lib/seo";
+import { getPublicBadges, getPublicBrand, getPublicSocial } from "@/modules/content/public";
 import { TrustBadges } from "@/modules/content/site-info";
 import { PromoBanners } from "@/modules/promotions-store/promo-banners";
 
@@ -28,15 +30,25 @@ function Section({ id, title, href, linkLabel, products }: { id: string; title: 
   );
 }
 
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
 /** Storefront home: hero, categories, then the shelves the API prepares (new arrivals, best sellers, sale, featured). */
 export default async function StorefrontHome() {
   const t = await getTranslations("store.home");
   const locale = await getLocale();
-  const [home, badges] = await Promise.all([storeGet<StoreHome>("/home", undefined, { fresh: true }), getPublicBadges()]);
+  const [home, badges, brand, social] = await Promise.all([storeGet<StoreHome>("/home", undefined, { fresh: true }), getPublicBadges(), getPublicBrand(), getPublicSocial()]);
+  // Organization data only from real values of the public brand details and the enabled social links.
+  const organizationLd = buildOrganizationJsonLd({
+    name: shopName(brand?.businessName),
+    url: absoluteUrl("/") as string,
+    logo: absoluteUrl(brand?.logoUrl),
+    sameAs: (social ?? []).map((link) => link.url),
+  });
   const categories = home?.categories ?? [];
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(organizationLd) }} />
       <section className="relative isolate overflow-hidden bg-secondary text-accent" aria-labelledby="hero-heading">
         <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-12 sm:px-6 md:grid-cols-2 md:py-20">
           <div className="space-y-5">

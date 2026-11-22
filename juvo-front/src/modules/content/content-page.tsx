@@ -5,7 +5,7 @@ import { getFormatter, getLocale, getTranslations } from "next-intl/server";
 import { FileX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/surfaces";
-import { pickText, type PageKey } from "./logic";
+import { pickText, publicPath, type PageKey } from "./logic";
 import { Markdown } from "./markdown-view";
 import { getPublicPage } from "./public";
 
@@ -15,7 +15,7 @@ export async function contentMetadata(key: PageKey): Promise<Metadata> {
   if (!page) return { title: t(key), robots: { index: false } };
   const title = pickText(page.metaTitle, locale) ?? pickText(page.title, locale) ?? t(key);
   const description = pickText(page.metaDescription, locale);
-  return { title, ...(description ? { description } : {}) };
+  return { title, ...(description ? { description } : {}), alternates: { canonical: publicPath(key) }, openGraph: { title, ...(description ? { description } : {}), type: "article", url: publicPath(key) } };
 }
 
 /** A published page of the shop. An unpublished, emptied or unknown page is a real 404 with a plain "not available yet" message. */
