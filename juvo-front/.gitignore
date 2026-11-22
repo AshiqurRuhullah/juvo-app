@@ -122,3 +122,11 @@ test-results/
 !/docs/ui-checks/content/social-360.png
 !/docs/ui-checks/content/shop-home-with-badges-and-footer-360.png
 !/docs/ui-checks/content/shop-published-page-1280.png
+/docs/ui-checks/contact/*.png
+!/docs/ui-checks/contact/form-1280.png
+!/docs/ui-checks/contact/form-errors-360.png
+!/docs/ui-checks/contact/sent-360.png
+!/docs/ui-checks/contact/inbox-list-1280.png
+!/docs/ui-checks/contact/inbox-list-360.png
+!/docs/ui-checks/contact/message-with-notes-1280.png
+!/docs/ui-checks/contact/message-read-only-360.png
