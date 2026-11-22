@@ -25,7 +25,7 @@ export async function ContactBrandPanel({ brand }: { brand: PublicBrand | null }
   if (!address && !hours && !phone && !email && !whatsApp && !mapHref) return null;
 
   return (
-    <aside aria-labelledby="contact-brand-heading" className="space-y-4 rounded-card border border-line bg-card p-5" data-testid="contact-brand">
+    <aside aria-labelledby="contact-brand-heading" className="space-y-4 self-start rounded-card border border-line bg-card p-5" data-testid="contact-brand">
       <h2 id="contact-brand-heading" className="font-display text-xl font-semibold text-strong">
         {t("heading")}
       </h2>
