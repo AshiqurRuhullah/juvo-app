@@ -15,10 +15,11 @@ const footerLink = "inline-flex min-h-11 min-w-11 items-center text-muted hover:
 /** Public storefront frame: header with search, category navigation and cart; footer with contact and social links. */
 export default async function StorefrontLayout({ children }: { children: React.ReactNode }) {
   // Independent lookups run together instead of one after another.
-  const [t, s, sup, locale, session, categoriesRaw, brand, social, publishedPages] = await Promise.all([
+  const [t, s, sup, cf, locale, session, categoriesRaw, brand, social, publishedPages] = await Promise.all([
     getTranslations("storefront"),
     getTranslations("store.footer"),
     getTranslations("support.footer"),
+    getTranslations("contact.footer"),
     getLocale(),
     loadSession(),
     storeGet<StoreCategory[]>("/categories"),
@@ -70,6 +71,11 @@ export default async function StorefrontLayout({ children }: { children: React.R
                 <li>
                   <Link className={footerLink} href="/contact">
                     {sup("contactUs")}
+                  </Link>
+                </li>
+                <li>
+                  <Link className={footerLink} href="/contact/order-help">
+                    {cf("orderHelp")}
                   </Link>
                 </li>
               </ul>

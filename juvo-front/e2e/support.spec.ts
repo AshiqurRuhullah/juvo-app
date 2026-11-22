@@ -21,7 +21,7 @@ const status = (page: Page) => page.getByTestId("ticket-status").first();
 
 test.describe("Support: guest contact form", () => {
   test("a guest sends the contact form, sees the reference and staff find the ticket", async ({ page }) => {
-    await page.goto("/contact");
+    await page.goto("/contact/order-help");
     await expect(page.getByRole("heading", { level: 1, name: "Contact us" })).toBeVisible();
     await page.getByTestId("contact-submit").click();
     await expect(page.getByText("This is required.").first()).toBeVisible();
@@ -52,7 +52,7 @@ test.describe("Support: guest contact form", () => {
 
   test("a signed-in customer is sent to the account request page instead", async ({ page, context }) => {
     await signInCustomer(context);
-    await page.goto("/contact");
+    await page.goto("/contact/order-help");
     await expect(page).toHaveURL(/\/account\/support\/new/);
     await expect(page.getByRole("heading", { level: 1, name: "New request" })).toBeVisible();
   });
@@ -61,7 +61,7 @@ test.describe("Support: guest contact form", () => {
     const mobile = freshMobile();
     const guest = (n: number) => api("POST", "/api/v1/store/contact", { name: "Rate", mobile, email: null, subject: `Limit ${n}`, message: "x", category: "other", orderNumber: null });
     for (let i = 1; i <= 5; i++) expect((await guest(i)).status).toBe(201);
-    await page.goto("/contact");
+    await page.goto("/contact/order-help");
     await page.getByLabel("Your name").fill("Rate");
     await page.getByLabel("Mobile number").fill(mobile);
     await page.getByLabel("Subject").fill("One too many");
