@@ -725,3 +725,16 @@ Notes: `docs/content-contact-notes.md`; contract `docs/content-api.md` section 7
 | CT6 | The IP is stored only as a SHA-256 hash with no secret salt (weak against brute force for IPv4); an HMAC pepper is the fix. | Known limit, recorded. | Add a pepper setting. |
 | CT7 | Permissions `content.message.view` and `content.message.handle`; Manager, Content Editor and Support get them. | Least surprise. | Role screens. |
 | CT8 | Not built: staff notification of new messages, an unread count, reply from the inbox, convert to ticket or manual order, attachments, retention. | The notification service has no staff recipients. | Later slices. |
+
+## AE. Step 12d slice 4 (contact page and staff inbox screens) decisions
+
+Notes: `docs/contact-ui-notes.md`. Screens: shop `/contact`, `/contact/order-help`; staff `/admin/content/messages` and `/[id]`; module `juvo-front/src/modules/contact`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| CX1 | `/contact` is now the general contact page. The earlier guest support-ticket form (Step 11A) moved to `/contact/order-help` and is linked from the contact page and the footer ("Help with an order"). | Two different purposes (a general message vs an order problem with a ticket number) need two forms; the footer's "Contact us" must be the general one. | Swap the two routes if the owner prefers. |
+| CX2 | Opening a message does not change its status (the API contract); staff press "Mark as read". | Matches the API. | API change. |
+| CX3 | The New count on the filter reads the total of a list call with status New (no count endpoint). | Nothing invented. | Add a count endpoint. |
+| CX4 | Without a map component for display, a brand map point is shown as a link to OpenStreetMap, not an embedded map. | No new package; the only map component is an address picker. | Build a read-only map later. |
+| CX5 | Spec rate limits: the e2e server turns the per-minute limit off; specs reset the stored address key between messages in the throw-away test database. Production limits are untouched. | Tests share one local address. | n/a |
+| CX6 | Contract gaps: two DTOs named `ContactReceiptDto` (support `{number}`, contact `{reference}`) so the generated type is wrong and a local type is used; `handledBy` is an id only, so the screen shows the handled time. | Listed, not hidden. | Backend follow-up. |

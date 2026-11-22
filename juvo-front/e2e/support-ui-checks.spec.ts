@@ -47,7 +47,7 @@ for (const width of WIDTHS) {
     const errors: string[] = [];
     page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
     await page.setViewportSize({ width, height: 900 });
-    await page.goto("/contact");
+    await page.goto("/contact/order-help");
     await expect(page.getByTestId("contact-form")).toBeVisible();
     await checks(page, width, errors, `contact-${width}`);
   });

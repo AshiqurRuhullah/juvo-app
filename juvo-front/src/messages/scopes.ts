@@ -20,7 +20,7 @@ export const SCOPES = {
   /** Staff and customer sign-in, password and first-login pages. */
   auth: [...ROOT, "auth", "otp", "firstLogin", "twoFactor"],
   /** Shop, product pages, cart, checkout, payment pages, order tracking. */
-  storefront: [...ROOT, "cart", "orders", "payments", "booking", "store", "support", "storepromo", "preorders", "loyalty", "marketingStore"],
+  storefront: [...ROOT, "cart", "orders", "payments", "booking", "store", "support", "storepromo", "preorders", "loyalty", "marketingStore", "contact"],
   /** Signed-in customer pages. */
   account: [...ROOT, "cart", "myaccount", "nav", "orders", "payments", "returns", "booking", "sessions", "shell", "store", "support", "storepromo", "preorders", "loyalty"],
   /** Staff screens use almost everything. */
