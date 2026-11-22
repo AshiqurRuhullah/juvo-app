@@ -10,4 +10,6 @@ public static class ContentPermissions
     public const string BrandEdit = "content.brand.edit";
     public const string SocialEdit = "content.social.edit";
     public const string BadgeEdit = "content.badge.edit";
+    public const string MessageView = "content.message.view";
+    public const string MessageHandle = "content.message.handle";
 }

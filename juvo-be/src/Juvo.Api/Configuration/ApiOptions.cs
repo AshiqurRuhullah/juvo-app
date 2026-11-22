@@ -38,6 +38,7 @@ public sealed class RateLimitSettings
     public const string OtpPolicy = "otp";
     public const string CheckoutPolicy = "checkout";
     public const string StorefrontPolicy = "storefront";
+    public const string ContactPolicy = "contact";
 
     public bool Enabled { get; set; } = true;
 
@@ -56,6 +57,10 @@ public sealed class RateLimitSettings
     /// <summary>Anonymous shop traffic that changes or searches data (cart, quote, suggestions): per client address.</summary>
     [Range(1, 10000)]
     public int StorefrontPerMinute { get; set; } = 120;
+
+    /// <summary>The public contact form: per client address.</summary>
+    [Range(1, 1000)]
+    public int ContactPerMinute { get; set; } = 3;
 }
 
 /// <summary>Interactive API documentation. Section: <c>OpenApi</c>.</summary>

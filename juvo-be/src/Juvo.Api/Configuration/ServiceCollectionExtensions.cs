@@ -100,6 +100,10 @@ internal static class ServiceCollectionExtensions
                 ? RateLimitPartition.GetFixedWindowLimiter("storefront:" + ClientKey(context), _ => Window(settings.StorefrontPerMinute))
                 : RateLimitPartition.GetNoLimiter("storefront"));
 
+            options.AddPolicy(RateLimitSettings.ContactPolicy, context => settings.Enabled
+                ? RateLimitPartition.GetFixedWindowLimiter("contact:" + ClientKey(context), _ => Window(settings.ContactPerMinute))
+                : RateLimitPartition.GetNoLimiter("contact"));
+
             options.OnRejected = async (context, cancellationToken) =>
             {
                 var http = context.HttpContext;
