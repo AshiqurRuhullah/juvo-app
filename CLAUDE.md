@@ -130,7 +130,8 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 - 12d slice 2 Site content screens: **done** (2026-11-19). `/admin/content/*` and shop pages (module `src/modules/content`; `docs/content-ui-notes.md`, decisions section AC).
 - 12d slice 3 Contact inbox backend: **done** (2026-11-22). Public `POST /store/content/contact`, staff `/content/messages` (`docs/content-contact-notes.md`, decisions section AD).
 - 12d slice 4 Contact page and staff inbox: **done** (2026-11-22). Shop `/contact` (old guest support form now at `/contact/order-help`), staff `/admin/content/messages` (module `src/modules/contact`; `docs/contact-ui-notes.md`, decisions section AE).
-- Next: SEO (module R), then dashboard check, traceability clean-up, settings centre, dashboard check, settings and platform services. Machine note: this PC has little free memory; run browser specs in the foreground with the single configured worker, about 90 tests or one to two spec files per command, never in the background, never `--workers=2`.
+- 12e SEO basics: **done** (2026-11-22). `robots.txt`, `sitemap.xml`, canonical, Open Graph, product JSON-LD (`juvo-front/docs/seo-notes.md`, decisions section AF). Set `NEXT_PUBLIC_SITE_URL` before go-live.
+- Next: dashboard check, traceability clean-up, settings centre and platform services, dashboard check, settings and platform services. Machine note: this PC has little free memory; run browser specs in the foreground with the single configured worker, about 90 tests or one to two spec files per command, never in the background, never `--workers=2`.
 
 ### Step 6 detail
 - 6-a Catalog backend: **Done** (committed `f5aaf89`): categories tree, brands, size charts, products, variants, pricing/sale dates, publish rules, duplicate, cost-price visibility, audit, `CatalogSeeder`; endpoints `/api/v1/catalog/*`; migration `CatalogProducts`; SKU unique among live variants (case-insensitive); slugs unique among live rows.
