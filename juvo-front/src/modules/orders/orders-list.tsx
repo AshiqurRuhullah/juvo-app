@@ -49,7 +49,7 @@ const BulkBookDialog = dynamic(() => import("./booking/bulk-book-dialog"), { ssr
 type Filters = { status?: string; paymentStatus?: string; deliveryStatus?: string; source?: string; fraudState?: string; branchId?: string; from?: string; to?: string; held?: string };
 
 /** The order list: filters for every track, branch, source, fraud state and dates; bulk actions; source summary chips. */
-export function OrdersList({ initialStatus }: { initialStatus?: string } = {}) {
+export function OrdersList({ initialStatus, initialFrom, initialTo }: { initialStatus?: string; initialFrom?: string; initialTo?: string } = {}) {
   const t = useTranslations("orders.list");
   const ts = useTranslations("orders.status");
   const tc = useTranslations("orders.common");
@@ -63,7 +63,7 @@ export function OrdersList({ initialStatus }: { initialStatus?: string } = {}) {
   const perms = useOrderPermissions();
   const courierPerms = useCourierPermissions();
   const live = useOrdersListLive();
-  const state = useListState<Filters>(initialStatus ? { status: initialStatus } : {});
+  const state = useListState<Filters>({ ...(initialStatus ? { status: initialStatus } : {}), ...(initialFrom && initialTo ? { from: initialFrom, to: initialTo } : {}) });
   const bulk = useBulkAction();
   const [bookOpen, setBookOpen] = React.useState(false);
   // Status of every order that was ticked, so a selection that spans pages still knows which ones are packed.
