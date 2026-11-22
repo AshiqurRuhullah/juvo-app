@@ -266,4 +266,11 @@ public static class Permissions
         public const string ShipmentPrintLabel = "couriers.shipment.print-label";
         public const string ShipmentSimulate = "couriers.shipment.simulate";
     }
+
+    public static class Settings
+    {
+        public const string SystemView = "settings.system.view";
+        public const string SystemEdit = "settings.system.edit";
+        public const string FeatureEdit = "settings.feature.edit";
+    }
 }

@@ -56,6 +56,8 @@ public static class DependencyInjection
         services.AddScoped<BranchWriteGuardInterceptor>();
         services.AddScoped<AuditSaveChangesInterceptor>();
         services.AddScoped<DomainEventsOutboxInterceptor>();
+        services.TryAddSingleton<Juvo.Application.Settings.SettingsCache>();
+        services.AddScoped<SettingsCacheInterceptor>();
 
         services.AddDbContext<JuvoDbContext>((provider, builder) =>
         {
@@ -70,7 +72,8 @@ public static class DependencyInjection
             builder.AddInterceptors(
                 provider.GetRequiredService<BranchWriteGuardInterceptor>(),
                 provider.GetRequiredService<DomainEventsOutboxInterceptor>(),
-                provider.GetRequiredService<AuditSaveChangesInterceptor>());
+                provider.GetRequiredService<AuditSaveChangesInterceptor>(),
+                provider.GetRequiredService<SettingsCacheInterceptor>());
         });
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<JuvoDbContext>());
 

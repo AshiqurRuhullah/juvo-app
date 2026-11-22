@@ -49,17 +49,21 @@ public sealed record OrderSettings(
     OtpMode OtpMode, decimal CodAdvanceThreshold, int DuplicateWindowMinutes, int PaymentHoldMinutes, DeductAt DeductAt, RoutingMode RoutingMode, int MaxManualQuantity);
 
 /// <summary>Reads and writes <see cref="PlatformSetting"/> rows. Missing or unreadable values fall back to the defaults documented in docs/assumptions.md section M.</summary>
-public sealed class SettingsService(IApplicationDbContext db)
+public sealed class SettingsService(IApplicationDbContext db, Juvo.Application.Settings.ISettingsReader reader)
 {
     public static readonly OrderSettings Defaults = new(OtpMode.CodOnly, 10_000m, 5, 30, DeductAt.Packing, RoutingMode.AllStock, 100);
 
     public async Task<Dictionary<string, string>> ReadAsync(IReadOnlyCollection<string> keys, CancellationToken cancellationToken) =>
         await db.PlatformSettings.AsNoTracking().Where(s => keys.Contains(s.Key)).ToDictionaryAsync(s => s.Key, s => s.Value, cancellationToken);
 
+    /// <summary>The same as <see cref="ReadAsync"/> but through the settings cache (emptied by every save of a setting). Used by the hot paths and by the settings centre consumers.</summary>
+    public async Task<Dictionary<string, string>> ReadCachedAsync(IReadOnlyCollection<string> keys, CancellationToken cancellationToken) =>
+        new(await reader.ReadAsync(keys, cancellationToken));
+
     public async Task<OrderSettings> OrdersAsync(CancellationToken cancellationToken)
     {
         string[] keys = [SettingKeys.OtpMode, SettingKeys.CodAdvanceThreshold, SettingKeys.DuplicateWindowMinutes, SettingKeys.PaymentHoldMinutes, SettingKeys.DeductAt, SettingKeys.RoutingMode, SettingKeys.MaxManualQuantity];
-        var values = await ReadAsync(keys, cancellationToken);
+        var values = await ReadCachedAsync(keys, cancellationToken);
         return new OrderSettings(
             EnumValue(values, SettingKeys.OtpMode, Defaults.OtpMode),
             Number(values, SettingKeys.CodAdvanceThreshold, Defaults.CodAdvanceThreshold, 0m),
