@@ -8,7 +8,7 @@ import { PromoBanners } from "@/modules/promotions-store/promo-banners";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("store.shop");
-  return { title: t("title"), description: t("description") };
+  return { title: t("title"), description: t("description"), alternates: { canonical: "/shop" } };
 }
 
 /** Every published product, with filters and sorting. */

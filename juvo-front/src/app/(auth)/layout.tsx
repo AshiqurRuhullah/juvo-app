@@ -1,9 +1,13 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { Logo } from "@/components/layout/logo";
 import { LanguageSwitch, ThemeToggle } from "@/components/layout/preferences";
 import { ScopedIntl } from "@/components/providers/scoped-intl";
 import { Card, CardContent } from "@/components/ui/surfaces";
+
+// Sign-in and password pages are never indexed.
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 /** Centered, branded frame for sign-in and password pages. */
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {

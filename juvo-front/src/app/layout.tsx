@@ -7,6 +7,8 @@ import { Providers } from "@/components/providers/providers";
 import { COOKIES } from "@/lib/auth/cookies";
 import { toLocale } from "@/i18n/request";
 import { loadScopedMessages } from "@/messages/scopes";
+import { getPublicBrand } from "@/modules/content/public";
+import { shopName, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 // Self-hosted by next/font at build time (no request to Google when a visitor opens the site). Roboto is Apache-2.0, Noto Sans Bengali is SIL OFL.
@@ -14,19 +16,20 @@ const roboto = Roboto({ subsets: ["latin"], weight: ["400", "500", "700"], varia
 const bengali = Noto_Sans_Bengali({ subsets: ["bengali"], variable: "--font-bengali", display: "swap" });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("meta");
+  const [t, brand] = await Promise.all([getTranslations("meta"), getPublicBrand()]);
+  const name = shopName(brand?.businessName); // business name from the public brand details, else the neutral default
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
-    title: { default: t("title"), template: "%s | Juvo BD" },
+    metadataBase: new URL(siteUrl()),
+    title: { default: t("title"), template: `%s | ${name}` },
     description: t("description"),
-    applicationName: "Juvo BD",
+    applicationName: name,
     manifest: "/manifest.webmanifest",
     openGraph: {
       type: "website",
-      siteName: "Juvo BD",
+      siteName: name,
       title: t("title"),
       description: t("description"),
-      images: [{ url: "/brand/og-image.png", width: 1200, height: 630, alt: "Juvo BD" }],
+      images: [{ url: "/brand/og-image.png", width: 1200, height: 630, alt: name }],
     },
     robots: { index: true, follow: true },
   };

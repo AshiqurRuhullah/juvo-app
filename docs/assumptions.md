@@ -738,3 +738,16 @@ Notes: `docs/contact-ui-notes.md`. Screens: shop `/contact`, `/contact/order-hel
 | CX4 | Without a map component for display, a brand map point is shown as a link to OpenStreetMap, not an embedded map. | No new package; the only map component is an address picker. | Build a read-only map later. |
 | CX5 | Spec rate limits: the e2e server turns the per-minute limit off; specs reset the stored address key between messages in the throw-away test database. Production limits are untouched. | Tests share one local address. | n/a |
 | CX6 | Contract gaps: two DTOs named `ContactReceiptDto` (support `{number}`, contact `{reference}`) so the generated type is wrong and a local type is used; `handledBy` is an id only, so the screen shows the handled time. | Listed, not hidden. | Backend follow-up. |
+
+## AF. Step 12e (SEO basics) decisions
+
+Notes: `juvo-front/docs/seo-notes.md`. Code: `juvo-front/src/lib/seo.ts`, `src/app/robots.ts`, `src/app/sitemap.ts`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| SE1 | The site address comes from `NEXT_PUBLIC_SITE_URL` (or `SITE_URL` at run time); nothing is hard-coded. Before go-live set the real https address. | No production domain is known yet. | Environment values. |
+| SE2 | `robots.txt` allows the shop and disallows admin, account, cart, checkout, API, login, password pages, tracking, order and payment pages, search, unsubscribe, order help and the design page; it points to the sitemap. | Private and thin pages stay out of search. | `src/lib/seo.ts` private-path list. |
+| SE3 | The sitemap lists only public, indexable pages: home, shop, contact, categories, published products (100 per request, up to 5,000) and published content pages with their real update time. Catalogue data is read through the one-minute cache. | Honest, cheap. | `src/app/sitemap.ts`. |
+| SE4 | Structured data uses real values only: no rating without real reviews, no organisation fields without real brand data; JSON is escaped so it cannot close the script tag. | Never invent facts; safe markup. | `src/lib/seo.ts`. |
+| SE5 | hreflang is not used: the language is a cookie with no URL prefix, so English and Bengali share one URL. | Matches the site design. | Needs a URL-based language scheme. |
+| SE6 | Not in this step: analytics and ad tracking hooks with a cookie banner (R04), catalogue feed for Facebook and Instagram (R05), newsletter export (R06), page-speed measurement (R07). Contract gaps: no update time on products and categories, no public reviews endpoint, no public campaign list, no category description, no brand pages. | Small steps; nothing is faked. | Later steps and API work. |

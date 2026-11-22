@@ -304,6 +304,15 @@ Branch `feature/12d-contact-ui`, merged to `main` 2026-11-22. Notes `docs/contac
 - **Not built:** staff alert for new messages, reply from the inbox, embedded map, convert to ticket or order, native Bengali review.
 - **Gate (2026-11-22, run and seen by the lead):** `tsc --noEmit` clean; eslint clean on the changed files; `npm test` 515 passed (15 new); `npm run build` ok (second run); browser on desktop: `contact.spec` and `contact-ui-checks` 35 passed together with setup and cleanup (360/768/1280, dark theme, Bengali, axe, 44 px, overflow); `support.spec` and `support-ui-checks` 31 passed (their route changed). Pixel 7 and iPhone 14 not run; full suite not re-run. Machine note: with under 500 MB free the test web server did not start in time; shutting down the dotnet build servers (`dotnet build-server shutdown`) and the running dev servers freed memory.
 
+### Step 12e result (SEO basics)
+
+Branch `feature/12e-seo`, merged to `main` 2026-11-22. Notes `juvo-front/docs/seo-notes.md`; decisions `docs/assumptions.md` section AF.
+
+- **Built:** `robots.txt`, `sitemap.xml`, titles with the brand name, canonical links, noindex on private pages, Open Graph and Twitter cards, product JSON-LD (price, availability), breadcrumbs and organisation data. Real values only.
+- **Not built:** analytics hooks and cookie banner (R04), catalogue feed (R05), newsletter export (R06), aggregate rating (no reviews endpoint), page-speed measurement (R07).
+- **Gate (2026-11-22, run and seen by the lead):** `tsc --noEmit` clean; eslint clean on the changed files; `npm test` 532 passed (17 new); `npm run build` ok (the Next.js advisory notice stopped two runs; the third completed); browser on desktop: `seo.spec` 6 of 6 and `store.spec` 27 of 28. The one failure (quantity stepper) picks a product with one unit left that earlier tests in the same file use up; it passes alone and also failed in the full run of the content step, so it looks like test-data fragility, not from this change (here its "One more" button was disabled). Pixel 7 and iPhone 14 not run; full suite not re-run.
+- **Open for the owner:** set the real https address in `NEXT_PUBLIC_SITE_URL` before go-live.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.

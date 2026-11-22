@@ -7,7 +7,7 @@ import { ContactMessageForm } from "@/modules/contact/contact-message-form";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("contact.public");
-  return { title: t("title"), description: t("metaDescription") };
+  return { title: t("title"), description: t("metaDescription"), alternates: { canonical: "/contact" } };
 }
 
 /**
