@@ -288,6 +288,14 @@ Branch `feature/12d-content-ui`, merged to `main` 2026-11-19. Notes `docs/conten
 - **Not built:** logo upload, banners, Facebook feed (Q04), Messenger or WhatsApp order button (Q05), contact form and inbox (Q06), SEO (module R).
 - **Gate (2026-11-19, run and seen by the lead):** `tsc --noEmit` clean; eslint clean on the changed files; `npm test` 500 passed (25 new); `npm run build` ok (second run); browser on desktop: `content.spec` 12 of 12 and `content-ui-checks` all passed (360/768/1280, dark theme, Bengali, read-only, axe, 44 px, overflow); `store.spec` (one line edited) 27 passed and 1 flake under load (quantity stepper) that passed when run alone. Pixel 7 and iPhone 14 not run; full suite not re-run.
 
+### Step 12d slice 3 result (contact inbox backend)
+
+Branch `feature/12d-contact-backend`, merged to `main` 2026-11-22. Notes `docs/content-contact-notes.md`; decisions `docs/assumptions.md` section AD.
+
+- **Built:** public contact endpoint with honeypot and rate limits, staff inbox endpoints (list, filter, search, status, note, archive), permissions, masking, audit, migration `ContactInbox`.
+- **Not built:** screens (shop contact page and staff inbox), staff notification, reply, convert to ticket, FR-Q05 button.
+- **Gate (2026-11-22, run and seen by the lead):** `dotnet build --no-incremental` 0 warnings, 0 errors; domain 409 passed; application 225 passed; integration filtered to content, endpoint policy, permissions, roles, seeder and courier admin: 97 passed (one courier test is slow under load and passed on re-run). The full integration suite was not run.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.

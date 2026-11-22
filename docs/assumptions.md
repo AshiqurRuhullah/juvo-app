@@ -710,3 +710,18 @@ Notes: `docs/content-ui-notes.md`. Staff screens under `/admin/content/*` (menu 
 | CU4 | Page bodies are read fresh; brand, social and badges are cached for `CONTENT_REVALIDATE_SECONDS` (default 60). | Cheap shop reads; edits show within a minute. | Environment value. |
 | CU5 | Social links show a generic icon plus the platform name (this icon set has no brand icons). | No new package. | Add brand icons later. |
 | CU6 | Contract gaps: the content brand DTO shares the name `BrandDto` with the catalogue brand (the screen uses a local type); no public list of published pages (the footer makes six cached reads); no logo upload. | Listed, not hidden. | Back-end follow-up. |
+
+## AD. Step 12d slice 3 (contact form and inbox, backend) decisions
+
+Notes: `docs/content-contact-notes.md`; contract `docs/content-api.md` section 7.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| CT1 | A contact message is its own inbox inside Content, not a support ticket. | The existing `POST /store/contact` creates a guest ticket, needs a mobile and sends SMS; the contact page may give an email only. | Add convert-to-ticket later. |
+| CT2 | The public form needs a name, a message of 5 to 4000 characters and a mobile or an email; a hidden `website` field is a honeypot (same 202 answer, nothing stored); markup is rejected. | Spam and injection control without a captcha. | Content rules. |
+| CT3 | Limits: 3 a minute per address, 3 an hour per mobile or email and 10 an hour per IP hash (429 `CONTENT.RATE_LIMITED`); the answer never reveals whether a number exists. | Abuse control and privacy. | `RateLimiting:ContactPerMinute` and the service constants. |
+| CT4 | Staff statuses New, Read, Replied, Archived, any to any; the internal note is appended with author and time. | An archive can be undone. | n/a |
+| CT5 | Mobile and email are masked without `customers.customer.view-pii`; unmasked views are audited; message text and contact data are not written to the audit trail. | Same rule as customers. | n/a |
+| CT6 | The IP is stored only as a SHA-256 hash with no secret salt (weak against brute force for IPv4); an HMAC pepper is the fix. | Known limit, recorded. | Add a pepper setting. |
+| CT7 | Permissions `content.message.view` and `content.message.handle`; Manager, Content Editor and Support get them. | Least surprise. | Role screens. |
+| CT8 | Not built: staff notification of new messages, an unread count, reply from the inbox, convert to ticket or manual order, attachments, retention. | The notification service has no staff recipients. | Later slices. |
