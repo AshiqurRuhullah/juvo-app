@@ -67,3 +67,39 @@ Every row is an `Entity`, so each create, change and delete (including publish a
 ## 6. Error codes
 
 `CONTENT.NOT_FOUND` (404), `CONTENT.INVALID` (400, field map), `CONTENT.BODY_UNSAFE` (400), `CONTENT.PAGE_INCOMPLETE` (400), `CONTENT.URL_INVALID` (400). Missing permission gives 403, no token 401.
+
+
+## 7. Contact form and admin inbox (slice 3, FR-Q06)
+
+Messages from the public contact page land in an inbox inside the Content module. They are not tickets (see `docs/content-contact-notes.md`). New error code: `CONTENT.RATE_LIMITED` (429).
+
+### Permissions
+
+| Code | Allows |
+| --- | --- |
+| `content.message.view` | list and read messages |
+| `content.message.handle` | set status, add internal notes, archive |
+
+Held by Super Admin (all), Manager (`content.*`), Content Editor (`content.*`) and Support (`content.message.*`). Existing databases receive the new codes for those roles when the application starts.
+
+### Public: `POST /store/content/contact` (anonymous)
+
+```json
+{ "name": "Nadia Rahman", "mobile": "01712345678", "email": null, "subject": "Late parcel", "message": "Where is my parcel?", "sourcePage": "/contact", "website": "" }
+```
+
+`202 { "reference": "CM-1A2B3C4D" }`. `name` and `message` (5 to 4000 characters) are required; at least one of `mobile` (normalised to `+880...`) or `email`; `subject` at most 200; `name` at most 120; `sourcePage` is a site path starting with `/` (at most 200). `website` is the honeypot: when filled, the answer is the same 202 with a made-up reference and nothing is stored. Any `<` followed by a letter, `/`, `!` or `?` in a text field is rejected (400 `CONTENT.INVALID`, field map) and nothing is stored. The answer never depends on whether the number or email belongs to a customer. Limits: policy `contact` per client address (`RateLimiting:ContactPerMinute`, default 3 per minute, answers 429 `GENERAL.TOO_MANY_REQUESTS` with `Retry-After`) and, counted from stored rows, 3 messages per hour per mobile or email and 10 per hour per client address hash (429 `CONTENT.RATE_LIMITED`).
+
+### Staff: `/content/messages`
+
+| Method and path | Permission | Notes |
+| --- | --- | --- |
+| `GET /content/messages?status&search&page&pageSize` | message.view | newest first; `status` is `New`, `Read`, `Replied` or `Archived`; search matches name, subject and text, and mobile or email only with `customers.customer.view-pii` |
+| `GET /content/messages/{id}` | message.view | full text, `sourcePage`, `handledBy`, `handledAt`, `internalNote` |
+| `POST /content/messages/{id}/status` | message.handle | `{ "status": "Read" }`; any status can be set (an archive can be undone); Read, Replied and Archived stamp `handledBy` and `handledAt`, New clears them |
+| `POST /content/messages/{id}/note` | message.handle | `{ "note": "..." }` appended as `[date UTC, author] text`; plain text, 4000 characters in total |
+| `POST /content/messages/{id}/archive` | message.handle | same as status Archived |
+
+List item: `{ id, reference, name, mobile, email, subject, messagePreview, status, receivedAt, piiMasked }`. Detail: `{ id, reference, name, mobile, email, subject, message, status, sourcePage, receivedAt, handledBy, handledAt, internalNote, piiMasked }`. Without `customers.customer.view-pii` mobile and email are masked and `piiMasked` is true; with it, each list or detail view is written to the audit log as `Viewed` on entity `ContactMessage`. Unknown id: 404 `CONTENT.NOT_FOUND`. Bad note or status: 400 `CONTENT.INVALID`.
+
+Audit: create and status changes are logged by the persistence layer; name, mobile, email, message text, IP hash and the internal note are excluded from the logged values. The client address is stored only as a SHA-256 hash.
