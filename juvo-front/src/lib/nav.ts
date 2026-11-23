@@ -6,6 +6,8 @@ import {
   ClipboardList,
   FileText,
   Activity,
+  KeyRound,
+  Webhook,
   Gauge,
   Gift,
   Globe,
@@ -179,6 +181,8 @@ export const ADMIN_NAV: NavGroup[] = [
       { id: "settings", label: "settings", href: "/admin/settings", icon: Settings, permission: "settings.system.view", scope: "anywhere", ready: true },
       { id: "system-jobs", label: "systemJobs", href: "/admin/system/jobs", icon: Activity, permission: "system.jobs.view", scope: "anywhere", ready: true },
       { id: "system-health", label: "systemHealth", href: "/admin/system/health", icon: HeartPulse, permission: "system.health.view", scope: "anywhere", ready: true },
+      { id: "api-keys", label: "apiKeys", href: "/admin/integrations/api-keys", icon: KeyRound, permission: "integrations.apikey.view", scope: "anywhere", ready: true },
+      { id: "webhooks", label: "webhooks", href: "/admin/integrations/webhooks", icon: Webhook, permission: "integrations.webhook.view", scope: "anywhere", ready: true },
     ],
   },
   {

@@ -387,6 +387,14 @@ Branch `feature/12i-privacy-ui`, merged to `main` 2026-11-23. Notes `docs/privac
 - **Not built:** customer self-service deletion (needs a backend endpoint), an `anonymisedAt` date after reload.
 - **Gate (2026-11-23, run and seen by the lead, on the tree merged with main):** `tsc --noEmit` clean; `npm test` 607 passed (16 new); `npm run build` ok (second run); browser on desktop: `privacy.spec`, `privacy-ui-checks`, `customers.spec` and `customers-ui-checks` 31 passed together with setup and cleanup (permissions, export download, anonymise blocked and done, re-sign-in as a new customer, 360/768/1280, dark theme, Bengali, axe, 44 px, overflow). The lead's lint run found two react-hooks/refs errors the builder had not seen (a ref passed to a function during render); fixed and re-checked before merging. The full suite was not re-run.
 
+### Step 12j slice 2 result (API keys and webhooks screens)
+
+Branch `feature/12j-apikeys-ui`, merged to `main` 2026-11-23. Notes `docs/apikeys-ui-notes.md`; decisions `docs/assumptions.md` section AO.
+
+- **Built:** API key list, create, edit, rotate, disable, enable, delete with a one-time secret dialog and a "how to use" block; webhook endpoints with test event, rotate, enable and disable, a delivery log with filters and redeliver, and signature help; two menu items in the System group.
+- **Not built:** a delivery payload view, a public API address setting.
+- **Gate (2026-11-23, run and seen by the lead, on the tree merged with main; the merge conflict in the generated API client was resolved by keeping this branch's newer one, which contains every endpoint of the other side):** `tsc --noEmit` clean; eslint clean on the changed files; `npm test` 641 passed; `npm run build` ok (second run); browser on desktop: `integrations.spec` and `integrations-ui-checks` 41 passed together with setup and cleanup (key lifecycle against the real public API, secret never on the page, permissions, 360/768/1280, dark theme, Bengali, axe, 44 px, overflow); menu specs (shell, permissions, settings, system): 43 passed, 9 skipped and one timing flake (the sidebar-collapse width check) that passed alone. The full suite was not re-run.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.
