@@ -208,7 +208,7 @@
     "logLabel": "{name} এর পাঠানোর রেকর্ড দেখুন",
     "testLabel": "{name} এ পরীক্ষামূলক ঘটনা পাঠান",
     "editLabel": "{name} ওয়েবহুক সম্পাদনা করুন",
-    "rotateLabel": "{name} এর জন্য নতুন স্বাক্ষর সিক্রেট বানান",
+    "rotateLabel": "{name} এর নতুন সিক্রেট",
     "enableLabel": "{name} ওয়েবহুক চালু করুন",
     "disableLabel": "{name} ওয়েবহুক বন্ধ করুন",
     "deleteLabel": "{name} ওয়েবহুক মুছুন",
