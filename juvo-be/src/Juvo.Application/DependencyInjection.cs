@@ -74,6 +74,12 @@ public static class DependencyInjection
         // Orders, checkout and fraud basics (Step 8).
         services.AddScoped<Juvo.Application.Orders.SettingsService>();
         services.AddSingleton<Juvo.Application.Settings.SettingsCache>();
+
+        // Background jobs, integration health and monitoring (FR-AF02, FR-AF04). The recorder and the request buffer are in memory, per process.
+        services.AddSingleton<Juvo.Application.Monitoring.IIntegrationHealthRecorder, Juvo.Application.Monitoring.IntegrationHealthRecorder>();
+        services.AddSingleton<Juvo.Application.Monitoring.RequestMonitor>();
+        services.AddScoped<Juvo.Application.Monitoring.SystemJobsService>();
+        services.AddScoped<Juvo.Application.Monitoring.SystemHealthService>();
         services.AddScoped<Juvo.Application.Settings.ISettingsReader, Juvo.Application.Settings.SettingsReader>();
         services.AddScoped<Juvo.Application.Settings.SettingsCentreService>();
         services.AddScoped<Juvo.Application.Orders.OrderStock>();
@@ -100,7 +106,8 @@ public static class DependencyInjection
         services.AddScoped<IOutboxMessageHandler, Juvo.Application.Returns.ReturnStatusChangedHandler>();
 
         // Payments, refunds (module I), tax and invoices (module U), notifications (module K).
-        services.AddScoped<Juvo.Application.Payments.IPaymentGatewayRegistry, Juvo.Application.Payments.PaymentGatewayRegistry>();
+        services.AddScoped<Juvo.Application.Payments.IPaymentGatewayRegistry>(sp => new Juvo.Application.Payments.PaymentGatewayRegistry(
+            sp.GetServices<Juvo.Application.Payments.IPaymentGateway>().Select(g => Juvo.Application.Monitoring.RecordingAdapters.Wrap(g, sp.GetRequiredService<Juvo.Application.Monitoring.IIntegrationHealthRecorder>()))));
         services.AddScoped<Juvo.Application.Payments.PaymentSettingsService>();
         services.AddScoped<Juvo.Application.Payments.PaymentOutcomes>();
         services.AddScoped<Juvo.Application.Payments.CustomerPaymentsService>();
@@ -115,7 +122,8 @@ public static class DependencyInjection
         services.AddScoped<IOutboxMessageHandler, Juvo.Application.Orders.InvoiceOnConfirmedHandler>();
 
         // Couriers, shipments, COD settlement (module H) and real-time updates (module J).
-        services.AddScoped<Juvo.Application.Couriers.ICourierProviderRegistry, Juvo.Application.Couriers.CourierProviderRegistry>();
+        services.AddScoped<Juvo.Application.Couriers.ICourierProviderRegistry>(sp => new Juvo.Application.Couriers.CourierProviderRegistry(
+            sp.GetServices<Juvo.Application.Couriers.ICourierProvider>().Select(p => Juvo.Application.Monitoring.RecordingAdapters.Wrap(p, sp.GetRequiredService<Juvo.Application.Monitoring.IIntegrationHealthRecorder>()))));
         services.AddScoped<Juvo.Application.Couriers.CourierSelector>();
         services.AddScoped<Juvo.Application.Couriers.CourierAdminService>();
         services.AddScoped<Juvo.Application.Couriers.ShipmentViews>();

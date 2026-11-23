@@ -48,6 +48,10 @@ public interface IApplicationDbContext
 
     DbSet<AuditLog> AuditLogs { get; }
 
+    DbSet<OutboxMessage> OutboxMessages { get; }
+
+    DbSet<JobLog> JobLogs { get; }
+
     DbSet<Category> Categories { get; }
 
     DbSet<Brand> Brands { get; }

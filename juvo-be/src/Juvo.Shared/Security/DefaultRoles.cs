@@ -26,7 +26,7 @@ public static class DefaultRoles
             "orders.*", "returns.*", "customers.*", "catalog.*", "inventory.*", "purchasing.*", "delivery.*", "couriers.*",
             "payments.payment.*", "payments.refund.*", "payments.ledger.view", "tax.*", "notifications.*", "fraud.*",
             "support.*", "promotions.*", "loyalty.*", "marketing.*", "partners.*", "pos.*", "accounting.*", "reports.*",
-            "cms.*", "content.*", "platform.job.view", "ums.user.view", "ums.branch.view", "ums.audit.view",
+            "cms.*", "content.*", "platform.job.view", "system.jobs.view", "system.health.view", "ums.user.view", "ums.branch.view", "ums.audit.view",
         ],
         ["catalog.product.view-cost", "reports.finance.*", "accounting.pnl.view", "accounting.export.run"]),
 

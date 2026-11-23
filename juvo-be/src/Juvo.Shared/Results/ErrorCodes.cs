@@ -418,4 +418,14 @@ public static class ErrorCodes
         public const string InvalidValue = "SETTINGS.INVALID_VALUE";
         public const string ReadOnly = "SETTINGS.READ_ONLY";
     }
+
+    public static class Platform
+    {
+        public const string NotSupported = "SYSTEM.NOT_SUPPORTED";
+        public const string UnknownIntegration = "SYSTEM.UNKNOWN_INTEGRATION";
+        public const string JobNotFound = "SYSTEM.JOB_NOT_FOUND";
+        public const string MessageNotFound = "SYSTEM.MESSAGE_NOT_FOUND";
+        public const string NotRequeueable = "SYSTEM.NOT_REQUEUEABLE";
+        public const string TooMany = "SYSTEM.TOO_MANY";
+    }
 }

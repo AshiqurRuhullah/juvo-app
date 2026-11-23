@@ -18,6 +18,7 @@ internal static class ServiceCollectionExtensions
         services.AddOptions<CorsSettings>().Bind(configuration.GetSection(CorsSettings.SectionName)).ValidateDataAnnotations().ValidateOnStart();
         services.AddOptions<RateLimitSettings>().Bind(configuration.GetSection(RateLimitSettings.SectionName)).ValidateDataAnnotations().ValidateOnStart();
         services.AddOptions<OpenApiSettings>().Bind(configuration.GetSection(OpenApiSettings.SectionName)).ValidateOnStart();
+        services.Configure<Juvo.Application.Monitoring.MonitoringOptions>(configuration.GetSection(Juvo.Application.Monitoring.MonitoringOptions.SectionName));
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, HttpCurrentUser>();

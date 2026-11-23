@@ -273,4 +273,11 @@ public static class Permissions
         public const string SystemEdit = "settings.system.edit";
         public const string FeatureEdit = "settings.feature.edit";
     }
+
+    public static class SystemOps
+    {
+        public const string JobsView = "system.jobs.view";
+        public const string JobsRetry = "system.jobs.retry";
+        public const string HealthView = "system.health.view";
+    }
 }

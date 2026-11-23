@@ -134,7 +134,8 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 - 12g slice 1 Settings registry backend: **done** (2026-11-23). `/api/v1/settings` over `PlatformSettings` (`docs/settings-api.md`, decisions section AG); the screen is next.
 - 12f Dashboard completion (module M): **done** (2026-11-23). Range filter, compare, top lists, zone, cash, stock health (`docs/dashboard-notes.md`, decisions section AH).
 - 12g slice 2 Settings screen: **done** (2026-11-23). `/admin/settings` (`docs/settings-ui-notes.md`, decisions section AI). Traceability table reconciled 2026-11-23 (see PROGRESS.md).
-- Next: jobs dashboard and integration health (backend built, screens next), backup tools, API keys and webhooks, privacy tools, PWA, staff guide, dashboard check, settings and platform services. Machine note: this PC has little free memory; run browser specs in the foreground with the single configured worker, about 90 tests or one to two spec files per command, never in the background, never `--workers=2`.
+- 12h slice 1 Jobs and integration health backend: **done** (2026-11-23). `/api/v1/system/*` (`docs/system-api.md`, decisions section AJ); screens next.
+- Next: jobs and health screens, backup tools, API keys and webhooks, privacy tools, PWA, staff guide, dashboard check, settings and platform services. Machine note: this PC has little free memory; run browser specs in the foreground with the single configured worker, about 90 tests or one to two spec files per command, never in the background, never `--workers=2`.
 
 ### Step 6 detail
 - 6-a Catalog backend: **Done** (committed `f5aaf89`): categories tree, brands, size charts, products, variants, pricing/sale dates, publish rules, duplicate, cost-price visibility, audit, `CatalogSeeder`; endpoints `/api/v1/catalog/*`; migration `CatalogProducts`; SKU unique among live variants (case-insensitive); slugs unique among live rows.

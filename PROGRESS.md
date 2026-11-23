@@ -347,6 +347,14 @@ Branch `feature/12g-settings-ui`, merged to `main` 2026-11-23. Notes `docs/setti
 - **Built:** `/admin/settings` with groups, search, a control per type, defaults and sources, restart notes, versioned save, reset with confirm, confirms on risky switches, read-only and no-permission states, a recent-changes panel. The menu item is live, so no menu item is marked "Soon" any more.
 - **Gate (2026-11-23, run and seen by the lead, on the tree merged with the dashboard step):** `tsc --noEmit` clean; eslint clean on the changed files; `npm test` 572 passed (25 new); `npm run build` ok (second run); browser on desktop: `settings.spec` and `settings-ui-checks` 40 passed together with setup and cleanup (360/768/1280, view-only, dark theme, Bengali, axe, 44 px, overflow); `shell.spec` on desktop, tablet, Pixel 7 and iPhone 14: 29 passed, 9 skipped (device-specific, as before). The full suite was not re-run.
 
+### Step 12h slice 1 result (jobs and integration health backend)
+
+Branch `feature/12h-system-backend`, merged to `main` 2026-11-23. Contract `docs/system-api.md`; notes `docs/step12h-system-notes.md`; decisions `docs/assumptions.md` section AJ.
+
+- **Built:** `/api/v1/system/jobs` (runs, summary, outbox queue and requeue, failed notification sends and retry), `/system/integrations/health` (7 payment gateways, 7 couriers, SMS, email, WhatsApp), `/system/integrations/{key}/test` (sandbox courier only), `/system/status` (database, outbox backlog, failed jobs, slow routes, recent errors). No migration, no new package.
+- **Not built:** the screens (next slice); recording of failed courier bookings and webhooks; external alerting (Step 14).
+- **Gate (2026-11-23, run and seen by the lead):** `dotnet build --no-incremental` 0 warnings, 0 errors; domain 409 passed; application 271 passed; integration filtered to the new system tests, endpoint policy, seeder, roles, notifications, couriers, payments and settings: 122 passed. The full integration suite was not run.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.

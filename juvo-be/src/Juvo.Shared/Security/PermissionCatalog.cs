@@ -152,6 +152,8 @@ public static class PermissionCatalog
         Add("platform", "webhook", "view edit");
         Add("platform", "backup", "run restore");
         Add("platform", "health", "view");
+        Add("system", "jobs", "view retry");
+        Add("system", "health", "view");
         Add("privacy", "data", "view-consent export anonymise");
 
         return list;

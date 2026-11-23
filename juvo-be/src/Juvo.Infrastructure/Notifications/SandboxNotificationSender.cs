@@ -8,7 +8,7 @@ namespace Juvo.Infrastructure.Notifications;
 /// Sandbox sender for one channel (SMS, email or WhatsApp): no provider is called. The notification log row, which already holds the rendered message, is the record, so the whole
 /// platform runs end to end without any provider account. A real sender (Step 14) is registered after this one and takes over its channel.
 /// </summary>
-internal sealed class SandboxNotificationSender(NotificationChannel channel, ILogger<SandboxNotificationSender> logger) : INotificationSender
+internal sealed class SandboxNotificationSender(NotificationChannel channel, ILogger<SandboxNotificationSender> logger) : INotificationSender, Juvo.Application.Monitoring.ISandboxAdapter
 {
     public NotificationChannel Channel => channel;
 
