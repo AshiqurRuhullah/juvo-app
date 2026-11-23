@@ -355,6 +355,14 @@ Branch `feature/12h-system-backend`, merged to `main` 2026-11-23. Contract `docs
 - **Not built:** the screens (next slice); recording of failed courier bookings and webhooks; external alerting (Step 14).
 - **Gate (2026-11-23, run and seen by the lead):** `dotnet build --no-incremental` 0 warnings, 0 errors; domain 409 passed; application 271 passed; integration filtered to the new system tests, endpoint policy, seeder, roles, notifications, couriers, payments and settings: 122 passed. The full integration suite was not run.
 
+### Step 12i slice 1 result (customer privacy tools backend)
+
+Branch `feature/12i-privacy-backend`, merged to `main` 2026-11-23. Contract `docs/privacy-api.md`; notes `docs/step12i-privacy-notes.md`; decisions `docs/assumptions.md` section AK (owner questions O1 to O5 there).
+
+- **Built:** `GET /customers/{id}/consents/history`, `POST /customers/{id}/privacy/export` (JSON download, audited without content), `POST /customers/{id}/privacy/anonymise` (reason and confirmation, refuses while money or orders are open, keeps the books), new permissions for Super Admin only, migration `PrivacyTools` (one column).
+- **Not built:** screens, customer self-service deletion, retention rules, legal review.
+- **Gate (2026-11-23, run and seen by the lead):** `dotnet build --no-incremental` 0 warnings, 0 errors; domain 413 passed; application 291 passed; integration filtered to privacy, endpoint policy, seeder, roles, store account, loyalty, segments, customers, marketing and permissions: 215 passed. The full integration suite was not run. The lead also read the data-changing statements of the anonymise code: each is scoped to the customer's id, their own orders or their own mobile and email.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.

@@ -802,3 +802,18 @@ Full list H1 to H15: `docs/step12h-system-notes.md`; contract `docs/system-api.m
 | SY5 | `POST /system/integrations/{key}/test` works only for the sandbox courier (a price quote); every other slot answers 409 `SYSTEM.NOT_SUPPORTED` because the payment sandbox has no safe ping and SMS, email and WhatsApp would message a person. | Never message a customer from a test button. | Add pings when real providers exist. |
 | SY6 | `GET /system/status` reads a ring buffer (last 500 requests, last 100 unhandled errors) with route template, status and duration only: no path, query string or user. Error text is scrubbed (first line, secrets, phone numbers and emails hidden, 300 characters). | Useful without leaking. | n/a |
 | SY7 | Not built: reporting of OTP and system mail outcomes to health, maps or push rows (no adapters), an alert for a stopped worker (it shows as an old last-run time), uptime alerts. | Step 14 with the hosting choice. | Later. |
+
+## AK. Step 12i slice 1 (customer privacy tools backend) decisions
+
+Full list P1 to P12: `docs/step12i-privacy-notes.md`; contract `docs/privacy-api.md`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| PV1 | The consent history is read from the existing append-only `ConsentLogs` (customer changes and unsubscribe links); no new table. Migration `PrivacyTools` only adds `Customers.AnonymisedAt`. | One record of truth. | n/a |
+| PV2 | Export is a JSON file download; nothing is stored and there is no signed link. It is audited without its content and limited to 10 per staff member per hour. New permissions `customers.privacy.export` and `customers.privacy.anonymise` are Super Admin only (Manager is denied `customers.privacy.*`). | Least data kept; high-risk actions. | Role screens. |
+| PV3 | Anonymisation needs a reason (5 to 300 characters) and the customer id echoed as confirmation; it is transactional and idempotent (a second call writes nothing) and is refused for staff accounts and while orders, unsettled COD, payments under review, returns or refunds are open. | Irreversible: guard rails. | n/a |
+| PV4 | It replaces name, mobile, email, addresses, notes and free text across orders, shipments, returns, tickets, contact messages, notifications, ledgers, sign-in history and the stored values in audit rows; it deletes addresses, wishlist, carts, sessions, OTP codes, back-in-stock requests and ticket attachments. It keeps order totals, taxes, status, history and lines, invoices and credit notes exactly as issued, payments and refunds (payer name removed), stock movements, ledger amounts and the consent history without addresses. | The books must stay whole; the person is removed. | `PrivacyService`. |
+| PV5 | An anonymised mobile number can register again as a new customer (the unique index holds a placeholder). | Right to return. | n/a |
+| PV6 | Not covered: customer self-service deletion, retention rules, order status-history reasons, risk-flag messages, shipment events, return photos, backups and logs outside the database. | Later steps. | Follow-up. |
+
+**Owner decisions needed (the cautious choice is implemented):** O1 how long invoices must be kept and whether buyer details on invoices must ever be blanked (kept now; VAT and tax rules are unverified); O2 store credit, points and gift card balances on a closed account are forfeited (decide whether to refuse or refund first); O3 accept that audit values are blanked for erasure requests; O4 a legal review of Bangladesh data-protection rules is still needed; O5 whether support staff may export (now Super Admin only).

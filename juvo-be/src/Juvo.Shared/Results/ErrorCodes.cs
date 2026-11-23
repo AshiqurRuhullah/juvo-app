@@ -428,4 +428,13 @@ public static class ErrorCodes
         public const string NotRequeueable = "SYSTEM.NOT_REQUEUEABLE";
         public const string TooMany = "SYSTEM.TOO_MANY";
     }
+
+    public static class Privacy
+    {
+        public const string OpenOrders = "PRIVACY.OPEN_ORDERS";
+        public const string StaffAccount = "PRIVACY.STAFF_ACCOUNT";
+        public const string ConfirmMismatch = "PRIVACY.CONFIRM_MISMATCH";
+        public const string ReasonRequired = "PRIVACY.REASON_REQUIRED";
+        public const string ExportLimit = "PRIVACY.EXPORT_LIMIT";
+    }
 }

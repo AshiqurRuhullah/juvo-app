@@ -50,7 +50,34 @@ public sealed class Customer : SoftDeletableEntity
 
     public void SetPreferredLanguage(string? language) => PreferredLanguage = string.IsNullOrWhiteSpace(language) ? null : language.Trim().ToLowerInvariant();
 
+    /// <summary>When the personal data was irreversibly removed (FR-AF06, FR-E08). Null for a normal customer.</summary>
+    public DateTimeOffset? AnonymisedAt { get; private set; }
+
+    public bool IsAnonymised => AnonymisedAt is not null;
+
     public void Deactivate() => IsActive = false;
+
+    /// <summary>
+    /// Replaces every personal field with a neutral placeholder and deactivates the customer. Irreversible. The placeholder mobile keeps the unique
+    /// index free for the real number, which may register again as a new customer. Calling it again changes nothing.
+    /// </summary>
+    public void Anonymise(DateTimeOffset now)
+    {
+        if (IsAnonymised)
+        {
+            return;
+        }
+
+        Mobile = PrivacyPlaceholders.MobileFor(Id);
+        Email = null;
+        FullName = PrivacyPlaceholders.Name;
+        ProfileLevel = ProfileLevel.Guest;
+        MobileVerified = false;
+        LastLoginAt = null;
+        PreferredLanguage = null;
+        IsActive = false;
+        AnonymisedAt = now;
+    }
 
     public void Activate() => IsActive = true;
 
