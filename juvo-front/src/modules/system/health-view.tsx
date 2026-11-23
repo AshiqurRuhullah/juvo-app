@@ -15,6 +15,7 @@ import { useIntegrationHealth, useSystemStatus, useTestIntegration, type Integra
 import { ErrorText, Fact, StatusBadge } from "./common";
 import { HEALTH_GROUPS, formatMs, hasNoCalls, healthGroup, shownStatus, type IntegrationStatus } from "./logic";
 import { StatusPanel } from "./status-panel";
+import { InventoryCard } from "./inventory-card";
 
 /**
  * `/admin/system/health`: one card per integration (payment gateways, couriers, SMS, e-mail, WhatsApp) and the system status panel.
@@ -98,6 +99,8 @@ export function HealthView() {
       </section>
 
       <StatusPanel query={status} />
+
+      <InventoryCard />
     </div>
   );
 }
