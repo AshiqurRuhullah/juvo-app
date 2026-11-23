@@ -764,3 +764,15 @@ Full list S1 to S12: `docs/step12g-settings-notes.md`; contract `docs/settings-a
 | ST4 | Reads go through `ISettingsReader` with a singleton cache emptied on save and a 10-second lifetime; the cache is per process (one app server, as in the known issues). | Cheap reads, no stale values for long. | Shared cache when more servers exist. |
 | ST5 | A value equal to the default is stored as an explicit row; DELETE removes it (reset to default). Every change is audited with old and new value; sensitive values are never returned and are masked in the audit trail (none is sensitive today). | Clear history. | n/a |
 | ST6 | Gaps (cannot change at run time): OTP length, expiry, cooldown, attempts; feature flags for pre-orders, reviews, social desk, POS, reseller; storefront default language; display currencies and rates; fraud rules, delivery, tax and courier slots keep their own screens and tables. | Nothing faked. | Later steps. |
+
+## AH. Step 12f (dashboard completion) decisions
+
+Notes with the audit table and all gaps: `docs/dashboard-notes.md`. Code: `juvo-front/src/modules/dashboard`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| DB1 | Range, grouping and compare live in the address (`from`, `to`, `groupBy`, `compare=0`) in Dhaka days; compare is on by default; a range that is too large sends no request. | Shareable, reload-safe. | `period.ts`. |
+| DB2 | Each report section loads on its own; a 403 hides that section silently; a role with the dashboard permission only sees the live cards and a short note. | One slow or forbidden report must not blank the page. | n/a |
+| DB3 | Cards link only to lists that accept the filter: orders list now accepts any valid status and a from and to day range (a small shared change); other lists are linked without a filter. | No invented query parameters. | Add filters to those lists. |
+| DB4 | Where the API has no number the card says so instead of showing zero: payments to verify, failed courier bookings, refunds due, paid versus unpaid online orders, district grouping; "to pack" covers all open orders and delivery counts cover the last 30 days. | Never show a number that is not true. | API additions listed in the notes. |
+| DB5 | Out of stock counts only items that have a reorder level, and shows "at least" when the list was cut. | The stock report omits variants with level 0. | Add an out-of-stock count to the report. |

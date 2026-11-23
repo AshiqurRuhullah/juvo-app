@@ -130,3 +130,8 @@ test-results/
 !/docs/ui-checks/contact/inbox-list-360.png
 !/docs/ui-checks/contact/message-with-notes-1280.png
 !/docs/ui-checks/contact/message-read-only-360.png
+/docs/ui-checks/dashboard/*.png
+!/docs/ui-checks/dashboard/dashboard-360.png
+!/docs/ui-checks/dashboard/dashboard-1280.png
+!/docs/ui-checks/dashboard/dashboard-dark-1280.png
+!/docs/ui-checks/dashboard/dashboard-bn-360.png
