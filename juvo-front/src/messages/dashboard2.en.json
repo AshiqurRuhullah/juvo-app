@@ -34,5 +34,100 @@
   },
   "cash": {
     "title": "Cash and COD"
+  },
+  "strip": {
+    "toPack": "Orders to pack",
+    "inDelivery": "In delivery",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled",
+    "returned": "Returned",
+    "openHint": "All open orders",
+    "windowHint": "Orders placed in the last 30 days"
+  },
+  "period": {
+    "title": "In the selected period",
+    "subtitle": "{from} to {to}. The sections below follow the date filter; the cards above are live.",
+    "loading": "Loading",
+    "noReports": "Your role has no report access, so there are no period figures to show.",
+    "ordersInRange": "See the orders placed in this period",
+    "trend": {
+      "title": "Sales over time",
+      "subtitle": "Net sales and orders from {from} to {to}",
+      "groupLabel": "Group the chart by",
+      "compare": "Compare with the previous period",
+      "current": "This period",
+      "previous": "Previous period",
+      "changeNet": "Net sales against the previous period",
+      "changeOrders": "Orders against the previous period",
+      "noPrevious": "Nothing to compare with",
+      "wasAmount": "Previous period: {amount}",
+      "wasOrders": "Previous period: {count} orders",
+      "previousRange": "Compared with the same number of days directly before: {from} to {to}.",
+      "previousFailed": "The previous period could not be loaded, so the comparison is not shown.",
+      "chartHint": "Each point is one day, week or month, matched by position with the previous period.",
+      "none": "No sales in this period.",
+      "summary": "Net sales in {count} points. The best was {best} with {amount}. Total {total}.",
+      "tableCaption": "Net sales per point, this period and the previous one"
+    },
+    "products": {
+      "title": "Best sellers in the period",
+      "subtitle": "By units sold",
+      "emptyTitle": "No sales in this period",
+      "emptyText": "Best sellers appear here once orders come in."
+    },
+    "categories": {
+      "title": "Top categories",
+      "subtitle": "By net sales",
+      "emptyTitle": "No category sales",
+      "emptyText": "Categories appear here once orders come in.",
+      "units": "{count} units"
+    },
+    "customers": {
+      "title": "Top customers",
+      "subtitle": "By amount spent. Names and numbers are shown as the server allows.",
+      "emptyTitle": "No customer orders",
+      "emptyText": "Top customers appear here once orders come in.",
+      "orders": "{count} orders"
+    },
+    "zones": {
+      "title": "Orders by delivery zone",
+      "subtitle": "Orders placed in the period",
+      "emptyTitle": "No orders in this period",
+      "emptyText": "Zones appear here once orders come in.",
+      "orders": "{count} orders",
+      "districtNote": "The reports API groups by delivery zone, not by district, so zones are shown."
+    },
+    "cash": {
+      "title": "Cash view",
+      "subtitle": "Money in the selected period",
+      "online": "Online-payment orders",
+      "onlineHint": "{count} orders placed with an online method",
+      "codPending": "COD pending with couriers",
+      "codPendingHint": "Collected by the courier, not yet paid to you",
+      "codTransit": "COD on parcels in transit",
+      "codTransitHint": "Parcels still on the way",
+      "codCollected": "COD collected",
+      "codSettled": "COD settled",
+      "refunds": "Refunds completed",
+      "refundsHint": "Refunds finished in the period",
+      "gap": "The reports API does not separate online payments that were confirmed from online orders that are still unpaid, and it has no figure for refunds due. The two figures shown are the closest it offers.",
+      "openCod": "COD settlements",
+      "openPayments": "Payments"
+    },
+    "stock": {
+      "title": "Stock health",
+      "subtitle": "Stock right now (not changed by the date filter)",
+      "low": "Low stock",
+      "lowHint": "At or under the reorder level",
+      "out": "Out of stock",
+      "outHint": "Among items with a reorder level",
+      "outCut": "At least this many: the list was cut",
+      "slow": "Slow movers",
+      "slowHint": "No sale for {days} days, worth {value}",
+      "row": "{available} left of {level} ({branch})",
+      "allGood": "Nothing is at or under its reorder level.",
+      "gap": "Items without a reorder level are not counted as low or out of stock by the API.",
+      "open": "Open inventory"
+    }
   }
 }

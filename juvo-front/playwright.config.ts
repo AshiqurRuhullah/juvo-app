@@ -46,7 +46,11 @@ export default defineConfig({
       name: "desktop",
       use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 800 } },
       dependencies: ["setup"],
+<<<<<<< HEAD
       testMatch: /(auth|permissions|shell|ui-checks|ums|catalog|lookups|inventory|design|store|cart|myaccount|orders|returns|returns-ui-checks|billing|payments|notifications|couriers|couriers-ui-checks|shipments|shipments-ui-checks|cod|cod-ui-checks|live|purchasing|purchasing-ui-checks|accounting|accounting-ui-checks|support|support-ui-checks|reports|reports-ui-checks|pagination|promotions|promotions-ui-checks|promo-store|promo-store-ui-checks|loyalty|loyalty-ui-checks|marketing|marketing-ui-checks|customers|customers-ui-checks|delivery|delivery-ui-checks|coupons|coupons-ui-checks|content|content-ui-checks|contact|contact-ui-checks|settings|settings-ui-checks|seo).spec.ts/,
+=======
+      testMatch: /(auth|permissions|shell|ui-checks|ums|catalog|lookups|inventory|design|store|cart|myaccount|orders|returns|returns-ui-checks|billing|payments|notifications|couriers|couriers-ui-checks|shipments|shipments-ui-checks|cod|cod-ui-checks|live|purchasing|purchasing-ui-checks|accounting|accounting-ui-checks|support|support-ui-checks|reports|reports-ui-checks|dashboard|dashboard-ui-checks|pagination|promotions|promotions-ui-checks|promo-store|promo-store-ui-checks|loyalty|loyalty-ui-checks|marketing|marketing-ui-checks|customers|customers-ui-checks|delivery|delivery-ui-checks|coupons|coupons-ui-checks|content|content-ui-checks|contact|contact-ui-checks|seo).spec.ts/,
+>>>>>>> main
     },
     { name: "tablet", use: { ...devices["Desktop Chrome"], viewport: { width: 820, height: 1180 }, hasTouch: true }, dependencies: ["setup"], testMatch: /(shell|devices)\.spec\.ts/ },
     { name: "android", use: mobile("Pixel 7"), dependencies: ["setup"], testMatch: /(shell|devices)\.spec\.ts/ },

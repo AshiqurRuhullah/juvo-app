@@ -315,7 +315,11 @@
       "toPack": "Orders to pack",
       "heldByFraud": "Orders held by fraud checks",
       "returnsWaiting": "Returns waiting for you",
-      "lowStock": "Low-stock items"
+      "lowStock": "Low-stock items",
+      "deliveryFailed": "Failed deliveries (last 30 days)",
+      "noCounts": "The dashboard feed has no counts for these two. Open the screens to check them:",
+      "paymentsScreen": "Payments to verify",
+      "bookingsScreen": "Failed courier bookings"
     },
     "topSubtitle": "Most sold in the last 30 days",
     "noTopTitle": "No sales yet",

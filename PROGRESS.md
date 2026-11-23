@@ -321,6 +321,25 @@ Branch `feature/12g-settings-backend`, merged to `main` 2026-11-23. Contract `do
 - **Not built:** the settings screen; feature flags for pre-orders, reviews, social desk, POS and reseller; OTP lengths; display currencies.
 - **Gate (2026-11-23, run and seen by the lead):** `dotnet build --no-incremental` 0 warnings, 0 errors; domain 409 passed; application 249 passed; integration filtered to settings, endpoint policy, permissions, roles, seeder, loyalty, order flow and payments: 177 passed (the builder saw one order-flow test fail once under load and pass alone; it passed here). The full integration suite was not run.
 
+### Step 12f result (dashboard completion)
+
+Branch `feature/12f-dashboard`, merged to `main` 2026-11-23. Notes `docs/dashboard-notes.md`; decisions `docs/assumptions.md` section AH.
+
+- **Built:** date range filter in the address, day, week and month chart with previous-period comparison, status strip, best sellers, top categories and top customers, orders by zone, cash view, stock health, links to the filtered lists. Existing test ids kept.
+- **Not available from the API (said on screen):** payments to verify, failed courier bookings, refunds due, paid versus unpaid online split, district grouping, status counts that follow the range; most lists accept no filters.
+- **Gate (2026-11-23, run and seen by the lead):** `tsc --noEmit` clean; eslint clean on the changed files; `npm test` 547 passed (15 new); `npm run build` ok (second run); browser on desktop: `dashboard.spec` and `dashboard-ui-checks` 19 passed together with setup and cleanup (360/768/1280, dark theme, Bengali, axe, 44 px, overflow, permissions); `orders.spec` 21 passed (the orders list address handling changed). The test web server timed out at start once under load and passed on the retry. Pixel 7 and iPhone 14 not run; full suite not re-run.
+
+### Traceability clean-up (2026-11-23)
+
+A read-only audit compared every Not started or Partial row outside the rows updated in Step 12 with the code, the contracts and this file; the lead spot-checked the strongest "Done" claims (concurrent-checkout stock test, order numbering, size guide, delivery refusal, audit screen). 32 statuses and 15 notes were changed in `docs/understanding.md`. Totals now: 139 Done, 82 Partial, 36 Not started (257 FR and NFR rows plus BR rows counted by the table).
+
+Owner decisions raised by the audit (nothing was decided on the owner's behalf):
+1. FR-AD02 asks for an affiliate link with commission; the built referral gives store credit to both people and has no commission or payout (left Not started).
+2. FR-C06 abandoned-cart reminders reach signed-in customers only, because guests have no known contact (marked Partial).
+3. FR-G08 the per-courier override is one flat fee for every domestic zone, not a rate per zone and courier (left Partial).
+4. FR-A08 the notify-me form asks a guest for a mobile number only, although the API also takes an email; FR-A01 the home hero is fixed text, only banners are admin-managed.
+5. BR-G1 is marked Done because checkout and manual orders refuse an address outside an enabled zone; confirm that refusing at placement is what "cannot be confirmed" means.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.
