@@ -657,14 +657,14 @@ Generated from `docs/source/brd-srs.md` by `scripts/gen_traceability.py` (257 FR
 | FR-AE01 | Simple POS screen: scan or search, cart, discount, payment (cash, wallet, card), receipt | C | 11B | Not started | | |
 | FR-AE02 | Shared stock between online and shop, with location-wise availability | C | 11B | Not started | | |
 | FR-AE03 | Shop cash register open/close report | C | 11B | Not started | | |
-| FR-AF01 | Settings centre: feature switches (turn modules, payment methods, OTP rules on/off without code change) | M | 12 | Partial | | Backend done (Step 12g): `/api/v1/settings` registry (about 80 settings with range, default, en and bn text), change, reset, history, audit, cache; wired to `Loyalty.Enabled` and the order settings (`Inventory.DeductAt`). Open: the settings screen, feature flags for pre-orders, reviews, social desk, POS and reseller, OTP lengths (appsettings only). |
+| FR-AF01 | Settings centre: feature switches (turn modules, payment methods, OTP rules on/off without code change) | M | 12 | Partial | | Backend done (Step 12g): `/api/v1/settings` registry (about 80 settings with range, default, en and bn text), change, reset, history, audit, cache; wired to `Loyalty.Enabled` and the order settings (`Inventory.DeductAt`). Open: the settings screen, feature flags for pre-orders, reviews, social desk, POS and reseller, OTP lengths (appsettings only). Screen `/admin/settings` built (Step 12g): grouped, searchable, change, reset with confirm, history, read-only and no-permission states, confirms on risky switches. Still open: module switches beyond rewards and channels, OTP lengths. |
 | FR-AF02 | Background job dashboard: failed SMS, courier, payment, webhook jobs with retry | M | 12 | Partial | JobLogs table + OutboxProcessor (retry/backoff, manual Requeue) | Dashboard UI in Step 12. |
 | FR-AF03 | Backup, restore and data export/import tools; restore tested before launch | M | 12 | Not started | | |
 | FR-AF04 | Monitoring: error log, uptime alerts, slow-request alerts, integration health page | M | 12 | Partial | /health/live, /health/ready, correlation id, structured logs | Integration health page in Step 12. |
 | FR-AF05 | Public REST API with API keys and webhooks for orders, products, stock (documented) | S | 12 | Not started | | |
 | FR-AF06 | Data privacy tools: consent log, customer data export and anonymisation | S | 12 | Not started | | |
 | FR-AF07 | Installable web app (PWA) with home-screen icon and push notifications | S | 12 | Not started | | |
-| FR-AF08 | Multi-language and multi-currency admin settings | S | 12 | Partial | | Default message language is a setting and the store currency BDT is shown read-only (BR-005). Open: storefront language default (a cookie), display currencies and conversion rates (no store). |
+| FR-AF08 | Multi-language and multi-currency admin settings | S | 12 | Partial | | Default message language is a setting and the store currency BDT is shown read-only (BR-005). Open: storefront language default (a cookie), display currencies and conversion rates (no store). The settings screen shows the language and currency entries the registry has (BDT read-only) (Step 12g). |
 | FR-AF09 | Staff guide and in-app help tips for the admin panel | S | 12 | Not started | | |
 
 ### Business rules
