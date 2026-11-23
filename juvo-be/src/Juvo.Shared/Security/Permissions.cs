@@ -81,6 +81,8 @@ public static class Permissions
         public const string CustomerBlock = "customers.customer.block";
         public const string CustomerExport = "customers.customer.export";
         public const string CustomerViewPii = "customers.customer.view-pii";
+        public const string PrivacyExport = "customers.privacy.export";
+        public const string PrivacyAnonymise = "customers.privacy.anonymise";
     }
 
     public static class Delivery
