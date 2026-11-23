@@ -352,6 +352,13 @@ export function PrivacyCard({ id, canExport, canAnonymise: mayAnonymise, anonymi
   const t = useTranslations("privacy");
   const [exportOpen, setExportOpen] = React.useState(false);
   const [anonymiseOpen, setAnonymiseOpen] = React.useState(false);
+  const exportButton = React.useRef<HTMLButtonElement>(null);
+  const anonymiseButton = React.useRef<HTMLButtonElement>(null);
+  // Radix returns focus to a Dialog trigger only; these dialogs open from plain buttons, so the focus goes back here (WCAG 2.4.3).
+  const closing = (setOpen: (open: boolean) => void, button: React.RefObject<HTMLButtonElement | null>) => (open: boolean) => {
+    setOpen(open);
+    if (!open) requestAnimationFrame(() => button.current?.focus());
+  };
   return (
     <Card data-testid="privacy-card">
       <CardHeader>
@@ -372,16 +379,16 @@ export function PrivacyCard({ id, canExport, canAnonymise: mayAnonymise, anonymi
             {canExport ? (
               <div className="space-y-2">
                 <p className="text-sm text-muted">{t("export.help")}</p>
-                <Button variant="secondary" onClick={() => setExportOpen(true)} data-testid="privacy-export">
+                <Button ref={exportButton} variant="secondary" onClick={() => setExportOpen(true)} data-testid="privacy-export">
                   <Download aria-hidden /> {t("export.button")}
                 </Button>
-                <ExportDialog id={id} open={exportOpen} onOpenChange={setExportOpen} />
+                <ExportDialog id={id} open={exportOpen} onOpenChange={closing(setExportOpen, exportButton)} />
               </div>
             ) : null}
             {mayAnonymise ? (
               <div className="space-y-2">
                 <p className="text-sm text-muted">{t("anonymise.help")}</p>
-                <Button variant="danger" onClick={() => setAnonymiseOpen(true)} data-testid="privacy-anonymise">
+                <Button ref={anonymiseButton} variant="danger" onClick={() => setAnonymiseOpen(true)} data-testid="privacy-anonymise">
                   <UserX aria-hidden /> {t("anonymise.button")}
                 </Button>
               </div>
@@ -390,7 +397,7 @@ export function PrivacyCard({ id, canExport, canAnonymise: mayAnonymise, anonymi
         )}
       </CardContent>
       {/* Outside the branches above so the result stays on screen after the card switches to its anonymised note. */}
-      {anonymiseOpen && mayAnonymise ? <AnonymiseDialog id={id} open={anonymiseOpen} onOpenChange={setAnonymiseOpen} onDone={onAnonymised} /> : null}
+      {anonymiseOpen && mayAnonymise ? <AnonymiseDialog id={id} open={anonymiseOpen} onOpenChange={closing(setAnonymiseOpen, anonymiseButton)} onDone={onAnonymised} /> : null}
     </Card>
   );
 }
