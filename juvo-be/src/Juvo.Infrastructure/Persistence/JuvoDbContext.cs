@@ -247,6 +247,8 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
 
     public DbSet<JobLog> JobLogs => Set<JobLog>();
 
+    public DbSet<BackupRun> BackupRuns => Set<BackupRun>();
+
     public void DiscardUnsavedAdditions()
     {
         foreach (var entry in ChangeTracker.Entries().Where(e => e.State == EntityState.Added).ToList())

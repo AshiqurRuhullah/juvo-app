@@ -72,3 +72,8 @@ desktop.ini
 
 # Local agent worktrees
 .claude/
+
+# ---- Backups and file archives (never commit) ----
+backups/
+*.bak
+juvo-files-*.zip

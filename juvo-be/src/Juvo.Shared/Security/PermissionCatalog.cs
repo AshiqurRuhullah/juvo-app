@@ -155,6 +155,7 @@ public static class PermissionCatalog
         Add("platform", "health", "view");
         Add("system", "jobs", "view retry");
         Add("system", "health", "view");
+        Add("system", "backup", "view run");
         Add("privacy", "data", "view-consent export anonymise");
         Add("integrations", "apikey", "view manage");
         Add("integrations", "webhook", "view manage");

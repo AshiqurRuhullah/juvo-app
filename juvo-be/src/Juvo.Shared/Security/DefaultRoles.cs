@@ -28,7 +28,7 @@ public static class DefaultRoles
             "support.*", "promotions.*", "loyalty.*", "marketing.*", "partners.*", "pos.*", "accounting.*", "reports.*",
             "cms.*", "content.*", "platform.job.view", "system.jobs.view", "system.health.view", "ums.user.view", "ums.branch.view", "ums.audit.view",
         ],
-        ["catalog.product.view-cost", "reports.finance.*", "accounting.pnl.view", "accounting.export.run", "customers.privacy.*", "integrations.*"]),
+        ["catalog.product.view-cost", "reports.finance.*", "accounting.pnl.view", "accounting.export.run", "customers.privacy.*", "integrations.*", "system.backup.*"]),
 
         new(OrderManager, "Processes orders and shipments.", false,
         [

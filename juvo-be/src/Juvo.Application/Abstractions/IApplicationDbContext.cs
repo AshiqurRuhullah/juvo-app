@@ -52,6 +52,8 @@ public interface IApplicationDbContext
 
     DbSet<JobLog> JobLogs { get; }
 
+    DbSet<BackupRun> BackupRuns { get; }
+
     DbSet<Category> Categories { get; }
 
     DbSet<Brand> Brands { get; }

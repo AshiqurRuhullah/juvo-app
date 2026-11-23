@@ -427,6 +427,8 @@ public static class ErrorCodes
         public const string MessageNotFound = "SYSTEM.MESSAGE_NOT_FOUND";
         public const string NotRequeueable = "SYSTEM.NOT_REQUEUEABLE";
         public const string TooMany = "SYSTEM.TOO_MANY";
+        public const string BackupRunning = "SYSTEM.BACKUP_RUNNING";
+        public const string BackupNotFound = "SYSTEM.BACKUP_NOT_FOUND";
     }
 
     public static class PublicApi
