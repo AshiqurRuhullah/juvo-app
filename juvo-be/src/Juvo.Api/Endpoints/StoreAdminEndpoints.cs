@@ -3,6 +3,7 @@ using Juvo.Api.Http;
 using Juvo.Application.Carts;
 using Juvo.Application.Customers;
 using Juvo.Application.Delivery;
+using Juvo.Application.Privacy;
 using Juvo.Domain.Customers;
 using Juvo.Shared.Pagination;
 using Juvo.Shared.Security;
@@ -37,6 +38,22 @@ internal static class StoreAdminEndpoints
 
         g.MapPost("/{id:guid}/activate", async (Guid id, CustomersAdminService s, CancellationToken ct) => (await s.SetActiveAsync(id, true, ct)).ToHttpResult())
             .RequirePermission(Permissions.Customers.CustomerBlock).Produces<CustomerListItemDto>().WithSummary("Activate a deactivated customer.");
+
+        g.MapGet("/{id:guid}/consents/history", async (Guid id, PrivacyService s, CancellationToken ct) => (await s.ConsentHistoryAsync(id, ct)).ToHttpResult())
+            .RequirePermission(Permissions.Customers.CustomerView).Produces<ConsentHistoryDto>()
+            .WithSummary("Every consent change of one customer, newest first: type, channel, old and new value, source (customer, staff, unsubscribe link, import) and time. IP addresses are partly hidden without view-pii.");
+
+        g.MapPost("/{id:guid}/privacy/export", async (Guid id, PrivacyService s, CancellationToken ct) =>
+            {
+                var result = await s.ExportAsync(id, ct);
+                return result.IsSuccess ? Results.File(result.Value.Content, result.Value.ContentType, result.Value.FileName) : ResultHttpExtensions.ToProblem(result.Error!);
+            })
+            .RequirePermission(Permissions.Customers.PrivacyExport).Produces(StatusCodes.Status200OK, contentType: "application/json")
+            .WithSummary("Download everything held about one customer as JSON (profile, addresses, consents, orders, payments, invoices, returns, tickets, messages, wishlist, loyalty, message log, marketing state, sign-ins). Audited without the content; 10 per staff member per hour.");
+
+        g.MapPost("/{id:guid}/privacy/anonymise", async (Guid id, AnonymiseCustomerRequest r, PrivacyService s, CancellationToken ct) => (await s.AnonymiseAsync(id, r, ct)).ToHttpResult())
+            .RequirePermission(Permissions.Customers.PrivacyAnonymise).Produces<AnonymiseResultDto>()
+            .WithSummary("Irreversibly replace the personal data of one customer (reason and the customer id as confirm are required). Orders, invoices and payments stay without the personal details; refused with 409 PRIVACY.OPEN_ORDERS while orders, unsettled cash on delivery, returns or refunds are open, and for staff accounts. Repeating the call is safe.");
     }
 
     private static void MapCoupons(RouteGroupBuilder g)
