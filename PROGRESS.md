@@ -395,6 +395,14 @@ Branch `feature/12j-apikeys-ui`, merged to `main` 2026-11-23. Notes `docs/apikey
 - **Not built:** a delivery payload view, a public API address setting.
 - **Gate (2026-11-23, run and seen by the lead, on the tree merged with main; the merge conflict in the generated API client was resolved by keeping this branch's newer one, which contains every endpoint of the other side):** `tsc --noEmit` clean; eslint clean on the changed files; `npm test` 641 passed; `npm run build` ok (second run); browser on desktop: `integrations.spec` and `integrations-ui-checks` 41 passed together with setup and cleanup (key lifecycle against the real public API, secret never on the page, permissions, 360/768/1280, dark theme, Bengali, axe, 44 px, overflow); menu specs (shell, permissions, settings, system): 43 passed, 9 skipped and one timing flake (the sidebar-collapse width check) that passed alone. The full suite was not re-run.
 
+### Step 12k slice 1 result (backup, restore and data inventory)
+
+Branch `feature/12k-backup`, merged to `main` 2026-11-23. Runbook `docs/backup-api.md`; notes `docs/step12k-backup-notes.md`; decisions `docs/assumptions.md` section AP (owner questions there).
+
+- **Built:** `/api/v1/system/backups` (list, start, status; Super Admin only), nightly worker (off by default), `/system/data-inventory`, migration `BackupRuns`, and the scripts `backup-db.ps1`, `restore-db.ps1`, `restore-test.ps1`, `backup-files.ps1`. The builder ran every script for real on throw-away LocalDB databases (good backup restores and passes; a corrupted order total makes the restore test FAIL; an existing database and a wrong confirmation are refused).
+- **Not built:** the screen, alerting, off-site copy, encryption, log backups.
+- **Gate (2026-11-23, run and seen by the lead, on the tree merged with main):** `dotnet build --no-incremental` 0 warnings, 0 errors; `has-pending-model-changes` none; migrations in order (PrivacyTools, PublicApi, BackupRuns); domain 420 passed; application 383 passed; integration filtered to backup (real LocalDB backups), endpoint policy, seeder, roles, settings, system, public API and privacy: 81 passed. The lead also read the overwrite guards of `restore-db.ps1`. The full integration suite was not run; the scripts were not re-run by the lead.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.

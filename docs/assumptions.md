@@ -869,3 +869,18 @@ Notes: `docs/apikeys-ui-notes.md`. Screens `/admin/integrations/api-keys` and `/
 | AU3 | The webhook form mirrors the API checks (https only, no credentials) and shows the API's own refusal for private or internal addresses; the delivery log has filters and Redeliver for failed rows with a confirm. | The API guard decides. | n/a |
 | AU4 | The "How to use" block shows `https://YOUR_API_HOST/api/public/v1` and `/openapi/public-v1.json` with a note, because the app has no public API address setting. | Nothing invented. | Add a setting. |
 | AU5 | Gaps: the webhook list makes one small request per row for the last delivery (no field in the DTO); redeliver is offered for Failed rows only although the API also accepts Succeeded; no payload view; creating a webhook cannot succeed in automated tests because the real guard refuses every reachable address (rows for the log tests are inserted by SQL). | Listed, not hidden. | Backend and test follow-ups. |
+
+## AP. Step 12k slice 1 (backup, restore and data inventory) decisions
+
+Full list K1 to K16 and real script outputs: `docs/step12k-backup-notes.md`; runbook `docs/backup-api.md`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| BK1 | A backup is written with a checksum and counts as Succeeded only after `RESTORE VERIFYONLY ... WITH CHECKSUM` passes; compression is used only where the edition supports it (not on LocalDB or Express). Runs are recorded in `BackupRuns` (migration `BackupRuns`). | A backup nobody verified is not a backup. | n/a |
+| BK2 | The nightly worker is off by default everywhere (setting `Backup.Enabled`); folder, retention (14 days) and the time (02:30 Dhaka) come from the `Backup` configuration section; each night is one attempt and writes a job log row. | The operator chooses when and where. | Configuration. |
+| BK3 | Retention deletes only files this service created for this database and never the newest verified one. | Never delete anything else. | n/a |
+| BK4 | There is no restore endpoint and no download in the web API; restore is an operator script (`scripts/restore-db.ps1`) that verifies the file first, refuses an existing database unless `-ReplaceExisting` plus the typed database name, and `scripts/restore-test.ps1` restores the latest backup into a throw-away database, checks it (DBCC CHECKDB, table counts, last migration, order totals), prints PASS or FAIL and drops it. | Too dangerous to expose; the restore must be provable. | n/a |
+| BK5 | The uploads folder is not part of a database backup: `scripts/backup-files.ps1` zips it and the operator must schedule it. | Files live outside the database. | Step 14. |
+| BK6 | Permissions `system.backup.view` and `system.backup.run` are Super Admin only (Manager is denied); manual runs are audited. | High-risk. | Role screens. |
+
+**Owner decisions needed:** how much data loss you can accept (RPO: with one nightly backup and no log backups, up to a day) and how long a restore may take (RTO: measure with the restore test on real data); where the off-site copy goes (a backup on the same disk is not disaster recovery); whether backup files must be encrypted (needs certificates; Step 14).
