@@ -1,0 +1,113 @@
+{
+  "title": "Backups",
+  "subtitle": "Is the database being backed up, and when was the last good copy taken? Backups are written to a folder on the server; there is no download here on purpose.",
+  "refresh": "Refresh",
+  "loadFailed": "The backup status could not be loaded. Check your connection and try again.",
+  "units": {
+    "d": "d",
+    "h": "h",
+    "min": "min",
+    "s": "s"
+  },
+  "off": {
+    "title": "Automatic backups are off",
+    "text": "No nightly backup is taken until the setting \"Backup.Enabled\" is switched on. You can still back up by hand below.",
+    "link": "Open Settings"
+  },
+  "status": {
+    "title": "Backup status",
+    "state": {
+      "ok": "OK",
+      "old": "Old",
+      "never": "Never",
+      "manual": "Manual only"
+    },
+    "stateText": {
+      "ok": "The last verified backup is recent.",
+      "old": "The last verified backup is more than 26 hours old, so a night was missed. Check the runs below.",
+      "never": "No verified backup exists yet. Until one does, nothing can be restored.",
+      "manual": "Automatic backups are off, so there is no schedule to be late for. The last verified backup is shown below."
+    },
+    "lastVerified": "Last verified backup",
+    "age": "{age} ago",
+    "noneYet": "None yet",
+    "file": "File",
+    "folder": "Folder on the server",
+    "freeSpace": "Free space in that folder",
+    "freeUnknown": "Not available (for example a network path)",
+    "retention": "Kept for",
+    "retentionDays": "{days} days",
+    "next": "Next automatic backup",
+    "nextDhaka": "{time} (Dhaka time)",
+    "nextNone": "Not scheduled (automatic backups are off or the nightly worker is switched off)",
+    "daily": "Every day at {time} ({zone})"
+  },
+  "notes": {
+    "title": "What this does not do",
+    "disk": "A backup kept on the same disk as the database is not disaster recovery. If the disk, the machine or the site is lost, both are lost. Copy the backup folder to another machine or to cloud storage every night.",
+    "encryption": "The backup files are not encrypted. Anyone who can read the folder can read every customer's data. Keep the folder locked down.",
+    "uploads": "The uploads folder (product pictures, return photos, ticket attachments) is not inside the database backup. It needs its own copy.",
+    "restore": "Restoring is done by an operator with the scripts scripts/restore-db.ps1 (restore) and scripts/restore-test.ps1 (check a backup on a throw-away copy). There is no restore button on purpose.",
+    "docs": "Steps and examples: docs/backup-api.md."
+  },
+  "run": {
+    "button": "Back up now",
+    "confirmTitle": "Back up the database now?",
+    "confirmText": "A verified backup is written to the configured folder on the server. It can take a while, and the page keeps showing its progress. Only one backup can run at a time.",
+    "confirm": "Start backup",
+    "cancel": "Cancel",
+    "close": "Close",
+    "running": "A backup is running",
+    "runningText": "Started {time}. This page refreshes every 15 seconds until it finishes.",
+    "starting": "Starting the backup",
+    "already": "A backup is already running. This page will show it when it finishes.",
+    "started": "The backup was started."
+  },
+  "runs": {
+    "title": "Backup runs",
+    "empty": "No backups yet",
+    "emptyDescription": "Runs appear here when a backup is taken, by hand or by the nightly schedule.",
+    "loadFailed": "The list of backup runs could not be loaded.",
+    "columns": {
+      "started": "Started",
+      "size": "Size",
+      "verified": "Verified",
+      "trigger": "Triggered by",
+      "duration": "Duration",
+      "error": "Error",
+      "status": "Status"
+    },
+    "status": {
+      "Running": "Running",
+      "Succeeded": "Succeeded",
+      "Failed": "Failed"
+    },
+    "verifiedYes": "Verified",
+    "verifiedNo": "Not verified",
+    "trigger": {
+      "User": "Staff member",
+      "Schedule": "Nightly schedule"
+    },
+    "fileDeleted": "File removed by retention {time}",
+    "compressed": "compressed"
+  },
+  "inventory": {
+    "title": "What the system holds",
+    "subtitle": "A snapshot of how much the system stores. Counts only: no personal data is shown. Archived rows and every branch are included.",
+    "snapshot": "Counted {time}",
+    "loadFailed": "The data inventory could not be loaded.",
+    "uploads": "Uploaded files",
+    "uploadsValue": "{size} in {files} files",
+    "uploadsTruncated": "Counting stopped at {files} files; the real size is larger.",
+    "rows": {
+      "customers": "Customers",
+      "orders": "Orders",
+      "products": "Products",
+      "variants": "Product variants",
+      "stockLevels": "Stock levels",
+      "invoices": "Invoices",
+      "payments": "Payments",
+      "auditLogs": "Audit log entries"
+    }
+  }
+}

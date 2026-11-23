@@ -75,5 +75,7 @@ desktop.ini
 
 # ---- Backups and file archives (never commit) ----
 backups/
+# The backups admin page is source code, not a backup folder.
+!juvo-front/src/app/(admin)/admin/system/backups/
 *.bak
 juvo-files-*.zip
