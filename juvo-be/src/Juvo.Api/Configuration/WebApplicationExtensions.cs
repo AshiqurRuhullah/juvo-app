@@ -69,6 +69,7 @@ internal static class WebApplicationExtensions
         app.MapLoyaltyEndpoints();
         app.MapSettingsEndpoints();
         app.MapSystemOpsEndpoints();
+        app.MapBackupEndpoints();
         app.MapHub<Juvo.Api.Realtime.OrdersHub>(Juvo.Api.Realtime.RealtimeAuth.HubPath);
         app.MapNotificationsEndpoints();
         app.MapMarketingEndpoints();
