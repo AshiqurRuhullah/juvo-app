@@ -26,6 +26,9 @@ public static class Policies
 
     public const string Customer = "Customer";
 
+    /// <summary>The public API: a valid, enabled, unexpired API key (X-Api-Key). Each endpoint adds the scope it needs with <see cref="PermissionEndpointExtensions.RequireApiScope"/>.</summary>
+    public const string PublicApi = "PublicApi";
+
     public const string PermissionPrefix = "perm:";
     public const string PermissionAnywherePrefix = "perm-any:";
 
@@ -42,6 +45,11 @@ public static class PermissionEndpointExtensions
     public static TBuilder RequirePermission<TBuilder>(this TBuilder builder, string permission)
         where TBuilder : IEndpointConventionBuilder =>
         builder.RequireAuthorization(Policies.Anywhere(permission));
+
+    /// <summary>Requires an API key that holds <paramref name="scope"/> (public API). The key itself is checked by the PublicApi policy of the route group.</summary>
+    public static TBuilder RequireApiScope<TBuilder>(this TBuilder builder, string scope)
+        where TBuilder : IEndpointConventionBuilder =>
+        builder.RequireAuthorization(Juvo.Application.Integrations.ApiKeyRules.PolicyPrefix + scope);
 
     /// <summary>Requires a staff member who holds <paramref name="permission"/> in the active branch (branch-scoped features).</summary>
     public static TBuilder RequireBranchPermission<TBuilder>(this TBuilder builder, string permission)
@@ -73,6 +81,14 @@ internal sealed class PermissionPolicyProvider(IOptions<AuthorizationOptions> op
 {
     public override async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
+        if (policyName.StartsWith(Juvo.Application.Integrations.ApiKeyRules.PolicyPrefix, StringComparison.Ordinal))
+        {
+            return new AuthorizationPolicyBuilder(ApiKeyAuthenticationHandler.SchemeName)
+                .RequireAuthenticatedUser()
+                .RequireClaim(ApiKeyAuthenticationHandler.ScopeClaim, policyName[Juvo.Application.Integrations.ApiKeyRules.PolicyPrefix.Length..])
+                .Build();
+        }
+
         PermissionScope? scope = policyName.StartsWith(Policies.PermissionAnywherePrefix, StringComparison.Ordinal) ? PermissionScope.Anywhere
             : policyName.StartsWith(Policies.PermissionPrefix, StringComparison.Ordinal) ? PermissionScope.ActiveBranch
             : null;
@@ -110,7 +126,8 @@ internal static class AuthSetup
 {
     public static IServiceCollection AddJuvoAuth(this IServiceCollection services)
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer().AddJwtBearer(RealtimeAuth.Scheme, _ => { });
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer().AddJwtBearer(RealtimeAuth.Scheme, _ => { })
+            .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationHandler.SchemeName, _ => { });
         services.AddRealtimeAuth();
 
         services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
@@ -176,6 +193,7 @@ internal static class AuthSetup
                 .RequireAuthenticatedUser().RequireClaim("stype", "staff"))
             .AddPolicy(Policies.Staff, p => p.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                 .RequireAuthenticatedUser().RequireClaim("stype", "staff").AddRequirements(new NotLimitedRequirement()))
+            .AddPolicy(Policies.PublicApi, p => p.AddAuthenticationSchemes(ApiKeyAuthenticationHandler.SchemeName).RequireAuthenticatedUser())
             .AddPolicy(Policies.Customer, p => p.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                 .RequireAuthenticatedUser().RequireClaim("stype", "customer"));
 

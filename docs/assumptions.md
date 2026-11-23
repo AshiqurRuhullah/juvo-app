@@ -830,3 +830,18 @@ Notes: `docs/system-ui-notes.md`. Screens `/admin/system/jobs` and `/admin/syste
 | SS4 | The status panel refreshes every 30 seconds and pauses while the tab is hidden; it says it is per server process and resets on restart. | Honest, cheap. | Step 14 monitoring. |
 | SS5 | The jobs page lists the failure kinds the platform does not record (courier bookings, webhooks). | Nothing is faked. | Add a failure record. |
 | SS6 | Observed: the error scrubber hides `api_key=` but not "api key=" with a space; the slow-routes table only holds requests of 1000 ms or more, so it is usually empty (shown honestly). | Listed for a backend follow-up. | Backend. |
+
+## AM. Step 12j slice 1 (public API and webhooks backend) decisions
+
+Full list J1 to J20: `docs/step12j-api-notes.md`; contract `docs/public-api.md`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| PA1 | Read-only public API under `/api/public/v1` with the `X-Api-Key` header, its own OpenAPI document (`/openapi/public-v1.json`) and a separate authentication scheme: a staff token does not open it and a key does not open the staff API. No write scope exists. | Safe first release. | Add scopes with a decision. |
+| PA2 | Keys look like `jv_live_<id>_<secret>`; only the SHA-256 hash is stored; lookup by prefix then a constant-time compare with a dummy hash for unknown prefixes; the secret is shown once (create or rotate) and never listed or audited. Missing, unknown and wrong keys all answer `PUBLICAPI.INVALID_KEY`; disabled and expired are only reported after the secret is proven right. | Standard key hygiene. | n/a |
+| PA3 | Scopes: `orders:read`, `products:read`, `stock:read`, `customers:read`, `pii:read` (off by default). Customer mobile and email are masked and names and street addresses are empty without `pii:read`; cost prices, internal notes, fraud data and tracking secrets are never returned. The customers endpoints were added so `customers:read` opens something. | Least data. | Scope catalogue. |
+| PA4 | Per-key rate limit (setting `PublicApi.RateLimitPerMinute`, default 60, a key can override) with 429 and `Retry-After`; counters are per process. | Abuse control; one server today. | Shared counters with more servers. |
+| PA5 | Webhooks: https only, secret stored with Data Protection (keys must stay persistent or secrets need rotating), signature `Juvo-Signature: t=<unix>,v1=<hmac>` like the payment webhooks, 5 attempts (30 seconds, 2, 8 and 32 minutes) then Failed with manual redeliver, 2-minute lease so two workers never send the same attempt, payloads without personal data. | At-least-once, verifiable. | n/a |
+| PA6 | Address protection: every resolved address must be public (checked on save, before each delivery and on the exact address the socket uses, covering DNS rebinding); no redirects, no proxy, 5-second timeout, response body never read. Only the test project can allow loopback. | Staff must not be able to point a webhook at internal servers. | n/a |
+| PA7 | Permissions `integrations.apikey.view|manage` and `integrations.webhook.view|manage` are Super Admin only (Manager explicitly denied). Events: `order.placed`, `order.status_changed`, `product.published`, `product.updated`, `stock.low` (once per fall below the reorder level, using a new column `StockLevels.LowAlertedAt`). | High-risk access. | Role screens. |
+| PA8 | Gaps: no screens, no write API, counters per process, small unused outbox rows for product and stock edits when nobody subscribes, the jobs page still lists webhooks as "not recorded". | Later steps. | Follow-up. |

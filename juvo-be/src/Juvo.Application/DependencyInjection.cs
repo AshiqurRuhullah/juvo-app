@@ -220,6 +220,20 @@ public static class DependencyInjection
         services.AddScoped<Juvo.Application.Content.ContactPublicService>();
         services.AddScoped<Juvo.Application.Content.ContactInboxService>();
 
+        // Public REST API, API keys and webhooks (FR-AF05).
+        services.AddSingleton<Juvo.Application.Integrations.ApiKeyRateLimiter>();
+        services.AddScoped<Juvo.Application.Integrations.ApiKeyService>();
+        services.AddScoped<Juvo.Application.Integrations.ApiKeyAuthenticator>();
+        services.AddScoped<Juvo.Application.Integrations.PublicApiService>();
+        services.AddScoped<Juvo.Application.Integrations.WebhookService>();
+        services.AddScoped<Juvo.Application.Integrations.WebhookFanout>();
+        services.AddScoped<Juvo.Application.Integrations.WebhookDispatcher>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Integrations.WebhookOrderPlacedHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Integrations.WebhookOrderStatusHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Integrations.WebhookProductPublishedHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Integrations.WebhookProductUpdatedHandler>();
+        services.AddScoped<IOutboxMessageHandler, Juvo.Application.Integrations.WebhookStockLowHandler>();
+
         // No branch scope unless the host provides one (the API registers the per-request scope).
         services.TryAddScoped<IBranchContext>(_ => UnscopedBranchContext.Instance);
 

@@ -87,7 +87,7 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
     [Fact]
     public void Every_admin_endpoint_requires_a_named_permission_that_exists_in_the_catalog()
     {
-        var ums = ApiEndpoints().Where(e => e.Route.Contains("/ums/", StringComparison.Ordinal) || e.Route.Contains("/catalog/", StringComparison.Ordinal) ||
+        var ums = ApiEndpoints().Where(e => !e.Route.StartsWith("/api/public/", StringComparison.Ordinal)).Where(e => e.Route.Contains("/ums/", StringComparison.Ordinal) || e.Route.Contains("/catalog/", StringComparison.Ordinal) ||
                                             e.Route.Contains("/customers", StringComparison.Ordinal) || e.Route.Contains("/promotions/", StringComparison.Ordinal) ||
                                             e.Route.Contains("/delivery/", StringComparison.Ordinal) && !e.Route.Contains("/store/", StringComparison.Ordinal) ||
                                             e.Route.Contains("/v{version:apiVersion}/orders", StringComparison.Ordinal) || e.Route.Contains("/fraud/", StringComparison.Ordinal) ||
@@ -96,7 +96,8 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
                                             e.Route.Contains("/v{version:apiVersion}/couriers", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/shipments", StringComparison.Ordinal) ||
                                             e.Route.Contains("/v{version:apiVersion}/expenses", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/accounts", StringComparison.Ordinal) ||
                                             e.Route.Contains("/v{version:apiVersion}/suppliers", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/purchasing", StringComparison.Ordinal) ||
-                                            e.Route.Contains("/v{version:apiVersion}/support", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/reports", StringComparison.Ordinal)).ToList();
+                                            e.Route.Contains("/v{version:apiVersion}/support", StringComparison.Ordinal) || e.Route.Contains("/v{version:apiVersion}/reports", StringComparison.Ordinal) ||
+                                            e.Route.Contains("/v{version:apiVersion}/integrations", StringComparison.Ordinal)).ToList();
 
         Assert.NotEmpty(ums);
         foreach (var endpoint in ums)
@@ -108,6 +109,30 @@ public class EndpointPolicyTests(ApiFactory factory) : IClassFixture<ApiFactory>
             var code = permissionPolicies[0][(permissionPolicies[0].IndexOf(':', StringComparison.Ordinal) + 1)..];
             Assert.True(PermissionCatalog.Exists(code), $"{endpoint.Route} requires unknown permission '{code}'");
         }
+    }
+
+    [Fact]
+    public void Every_public_api_endpoint_is_read_only_needs_the_key_policy_and_exactly_one_known_scope()
+    {
+        var publicApi = ApiEndpoints().Where(e => e.Route.StartsWith("/api/public/", StringComparison.Ordinal)).ToList();
+
+        Assert.NotEmpty(publicApi);
+        foreach (var endpoint in publicApi)
+        {
+            var label = $"{endpoint.Methods} {endpoint.Route}";
+            Assert.False(endpoint.AllowAnonymous, label + " must not be anonymous");
+            Assert.Equal("GET", endpoint.Methods);
+            Assert.Contains(Policies.PublicApi, endpoint.Policies);
+
+            var scopes = endpoint.Policies.Where(p => p.StartsWith(Juvo.Application.Integrations.ApiKeyRules.PolicyPrefix, StringComparison.Ordinal)).ToList();
+            Assert.True(scopes.Count == 1, $"{label} must name exactly one scope, found: {string.Join(",", endpoint.Policies)}");
+            var scope = scopes[0][Juvo.Application.Integrations.ApiKeyRules.PolicyPrefix.Length..];
+            Assert.True(Juvo.Application.Integrations.ApiKeyScopes.IsKnown(scope), $"{label} requires unknown scope '{scope}'");
+            Assert.DoesNotContain(endpoint.Policies, p => p.StartsWith(Policies.PermissionPrefix, StringComparison.Ordinal) || p.StartsWith(Policies.PermissionAnywherePrefix, StringComparison.Ordinal));
+        }
+
+        // The staff API and the public API never share a route group.
+        Assert.DoesNotContain(ApiEndpoints().Where(e => e.Route.StartsWith("/api/v", StringComparison.Ordinal)), e => e.Policies.Contains(Policies.PublicApi));
     }
 
     [Fact]

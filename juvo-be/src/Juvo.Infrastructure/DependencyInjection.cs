@@ -56,6 +56,7 @@ public static class DependencyInjection
         services.AddScoped<BranchWriteGuardInterceptor>();
         services.AddScoped<AuditSaveChangesInterceptor>();
         services.AddScoped<DomainEventsOutboxInterceptor>();
+        services.AddScoped<Integrations.WebhookEventsInterceptor>();
         services.TryAddSingleton<Juvo.Application.Settings.SettingsCache>();
         services.AddScoped<SettingsCacheInterceptor>();
 
@@ -72,6 +73,7 @@ public static class DependencyInjection
             builder.AddInterceptors(
                 provider.GetRequiredService<BranchWriteGuardInterceptor>(),
                 provider.GetRequiredService<DomainEventsOutboxInterceptor>(),
+                provider.GetRequiredService<Integrations.WebhookEventsInterceptor>(),
                 provider.GetRequiredService<AuditSaveChangesInterceptor>(),
                 provider.GetRequiredService<SettingsCacheInterceptor>());
         });
@@ -97,6 +99,13 @@ public static class DependencyInjection
         services.Configure<Juvo.Application.Marketing.MarketingOptions>(configuration.GetSection(Juvo.Application.Marketing.MarketingOptions.SectionName));
         services.AddHostedService<CampaignSendWorker>();
         services.AddHostedService<AutomationWorker>();
+
+        // Public API webhooks (FR-AF05): protected secrets, the SSRF guard, the HTTP sender and the delivery worker.
+        services.AddOptions<Integrations.WebhookJobOptions>().Bind(configuration.GetSection(Integrations.WebhookJobOptions.SectionName)).ValidateDataAnnotations().ValidateOnStart();
+        services.AddSingleton<Juvo.Application.Integrations.ISecretProtector, Integrations.DataProtectionSecretProtector>();
+        services.AddSingleton<Juvo.Application.Integrations.IWebhookTargetGuard, Integrations.WebhookTargetGuard>();
+        services.AddSingleton<Juvo.Application.Integrations.IWebhookSender, Integrations.WebhookHttpSender>();
+        services.AddHostedService<Integrations.WebhookDeliveryWorker>();
 
         AddIdentity(services, configuration, environment);
 

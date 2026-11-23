@@ -115,6 +115,13 @@ public sealed class StockLevel : Entity, IBranchScoped, INotAudited
     }
 
     public void SetReorderLevel(int level) => ReorderLevel = Math.Max(0, level);
+
+    /// <summary>When the stock.low webhook event was last sent for this row while it stayed low; null once it is above its level again. Makes the event fire once per fall, not once per order.</summary>
+    public DateTimeOffset? LowAlertedAt { get; private set; }
+
+    public void MarkLowAlerted(DateTimeOffset now) => LowAlertedAt = now;
+
+    public void ClearLowAlert() => LowAlertedAt = null;
 }
 
 /// <summary>

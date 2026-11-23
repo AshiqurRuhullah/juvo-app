@@ -211,6 +211,12 @@ public interface IApplicationDbContext
     DbSet<Juvo.Domain.Loyalty.Referral> Referrals { get; }
     DbSet<CustomerSegment> CustomerSegments { get; }
 
+    DbSet<Juvo.Domain.Integrations.ApiKey> ApiKeys { get; }
+
+    DbSet<Juvo.Domain.Integrations.WebhookEndpoint> WebhookEndpoints { get; }
+
+    DbSet<Juvo.Domain.Integrations.WebhookDelivery> WebhookDeliveries { get; }
+
     DbSet<ContentPage> ContentPages { get; }
 
     DbSet<BrandProfile> BrandProfiles { get; }
