@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Lock, RotateCcw, Save, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { Input, Switch, Textarea } from "@/components/ui/form";
+import { ChoiceRow, Input, Switch, Textarea } from "@/components/ui/form";
 import { Select } from "@/components/ui/select";
 import { Alert, Badge } from "@/components/ui/surfaces";
 import { toast } from "@/components/ui/toaster";
@@ -94,9 +94,15 @@ export function SettingRow({ setting, notice, onNotice, onStale }: { setting: Se
     <li className="rounded-card border border-line bg-card p-4 sm:p-5" data-testid="setting-row" data-key={setting.key} data-source={setting.source} data-dirty={dirty ? "true" : "false"}>
       <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
         <div className="min-w-0 flex-1">
-          <label htmlFor={id} className="block font-semibold text-strong [overflow-wrap:anywhere]" data-testid="setting-title">
-            {title}
-          </label>
+          {type === "bool" ? (
+            <span id={`${id}-title`} className="block font-semibold text-strong [overflow-wrap:anywhere]" data-testid="setting-title">
+              {title}
+            </span>
+          ) : (
+            <label htmlFor={id} className="block font-semibold text-strong [overflow-wrap:anywhere]" data-testid="setting-title">
+              {title}
+            </label>
+          )}
           <p className="font-mono text-sm text-muted [overflow-wrap:anywhere]" data-testid="setting-key">
             {setting.key}
           </p>
@@ -109,12 +115,10 @@ export function SettingRow({ setting, notice, onNotice, onStale }: { setting: Se
 
       <div className="mt-3 max-w-xl">
         {type === "bool" ? (
-          <div className="flex min-h-11 items-center gap-3">
-            <Switch id={id} checked={draft === "true"} onCheckedChange={(on) => setDraft(on ? "true" : "false")} disabled={disabled} aria-describedby={describedBy} data-testid="setting-input" />
-            <span className="text-strong" aria-hidden>
-              {draft === "true" ? t("on") : t("off")}
-            </span>
-          </div>
+          <ChoiceRow htmlFor={id}>
+            <Switch id={id} checked={draft === "true"} onCheckedChange={(on) => setDraft(on ? "true" : "false")} disabled={disabled} aria-labelledby={`${id}-title`} aria-describedby={describedBy} data-testid="setting-input" />
+            <span>{draft === "true" ? t("on") : t("off")}</span>
+          </ChoiceRow>
         ) : type === "choice" ? (
           <Select
             id={id}
