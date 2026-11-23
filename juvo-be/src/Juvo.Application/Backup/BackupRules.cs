@@ -40,7 +40,7 @@ public static partial class BackupNaming
     private const string Prefix = "juvo-backup_";
     private const string StampFormat = "yyyyMMdd'T'HHmmss'Z'";
 
-    [GeneratedRegex(@"^juvo-backup_(?<db>[A-Za-z0-9_]{1,64})_(?<ts>\d{8}T\d{6}Z)_(?<id>[0-9a-f]{8})\.bak$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"^juvo-backup_(?<db>[A-Za-z0-9_]{1,64})_(?<ts>\d{8}T\d{6}Z)_(?<id>[0-9a-f]{8})\.bak\z", RegexOptions.CultureInvariant)]
     private static partial Regex Pattern();
 
     /// <summary>The database name as it appears in file names: letters, digits and underscore only, at most 64 characters.</summary>
