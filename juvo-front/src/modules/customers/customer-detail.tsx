@@ -14,7 +14,9 @@ import { ApiError } from "@/lib/api/client";
 import { useProblemMessage } from "@/lib/api/use-problem-message";
 import { toNumber, useMoney } from "@/modules/catalog/format";
 import { useCustomer, useCustomerOrderStats, useSetCustomerActive, type CustomerAddress, type CustomerDetail } from "./api";
-import { ActiveBadge, LevelBadge, MaskedNotice, useCustomerRights } from "./common";
+import { ActiveBadge, LevelBadge, MaskedNotice, useCustomerRights, usePrivacyRights } from "./common";
+import { AnonymisedBanner, ConsentHistoryCard, PrivacyCard } from "./privacy-cards";
+import { isAnonymisedMobile, privacySections } from "./privacy-logic";
 import { CONSENT_TYPES, allowedActions, consentState, initials, isKnownConsent, type CustomerRights } from "./logic";
 
 /** One customer for staff: profile facts, addresses, consents, sign-in summary, order history, and (with the block permission) deactivate or activate. */
@@ -61,8 +63,14 @@ export function CustomerDetailView({ id }: { id: string }) {
 function Loaded({ detail, crumbs }: { detail: CustomerDetail; crumbs: { label: string; href?: string }[] }) {
   const t = useTranslations("customers.detail");
   const rights = useCustomerRights();
+  const privacy = usePrivacyRights();
+  const sections = privacySections({ view: rights.view, ...privacy });
+  // The customer DTO has no anonymisedAt: an anonymised customer is recognised by the placeholder mobile the API writes (ANON...).
+  // The date is known only when the action ran in this browser session.
+  const [anonymisedAt, setAnonymisedAt] = React.useState<string | null>(null);
   const c = detail.customer;
-  const actions = allowedActions(c.isActive, rights);
+  const anonymised = isAnonymisedMobile(c.mobile);
+  const actions = anonymised ? [] : allowedActions(c.isActive, rights);
   return (
     <>
       <PageHeader
@@ -79,7 +87,8 @@ function Loaded({ detail, crumbs }: { detail: CustomerDetail; crumbs: { label: s
       />
       <div className="space-y-4" data-testid="customer-detail">
         {detail.piiMasked ? <MaskedNotice where="detail" /> : null}
-        {!c.isActive ? (
+        {anonymised ? <AnonymisedBanner anonymisedAt={anonymisedAt} /> : null}
+        {!c.isActive && !anonymised ? (
           <Alert variant="warning" data-testid="customer-inactive-note">
             {t("inactiveNote")}
           </Alert>
@@ -88,11 +97,13 @@ function Loaded({ detail, crumbs }: { detail: CustomerDetail; crumbs: { label: s
           <div className="space-y-4 lg:col-span-2">
             <ProfileCard detail={detail} />
             <AddressesCard addresses={detail.addresses} masked={detail.piiMasked} />
+            {sections.history ? <ConsentHistoryCard id={c.id} /> : null}
           </div>
           <div className="space-y-4">
             <AccessCard id={c.id} isActive={c.isActive} actions={actions} rights={rights} />
             <OrdersCard id={c.id} rights={rights} />
             <ConsentCard consents={detail.consents} />
+            {sections.privacyCard ? <PrivacyCard id={c.id} canExport={privacy.exportData} canAnonymise={privacy.anonymise} anonymised={anonymised} onAnonymised={setAnonymisedAt} /> : null}
           </div>
         </div>
       </div>

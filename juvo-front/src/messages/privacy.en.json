@@ -1,0 +1,103 @@
+{
+  "history": {
+    "title": "Consent history",
+    "description": "Every change to this customer's marketing and privacy choices, newest first. Entries are never edited or removed.",
+    "empty": "No consent changes recorded",
+    "loadFailed": "We could not load the consent history. Please try again.",
+    "ipMasked": "IP addresses are partly hidden for your role.",
+    "ip": "IP address",
+    "noIp": "No IP address recorded",
+    "source": "Source",
+    "whatsapp": "Also covers WhatsApp",
+    "channel": {
+      "Sms": "SMS",
+      "Email": "Email",
+      "Policy": "Privacy policy",
+      "unknown": "Other"
+    },
+    "change": {
+      "firstGiven": "Given (first record)",
+      "firstDeclined": "Not given (first record)",
+      "given": "Given",
+      "withdrawn": "Withdrawn"
+    },
+    "sourceKind": {
+      "Customer": "The customer, in their profile",
+      "Staff": "Staff",
+      "UnsubscribeLink": "Unsubscribe link",
+      "Import": "Import",
+      "Other": "Other"
+    }
+  },
+  "card": {
+    "title": "Privacy",
+    "description": "Tools for this customer's personal data. Each use is written to the audit log, without the personal data itself.",
+    "anonymisedNote": "This customer is anonymised. Export and anonymise are no longer available."
+  },
+  "export": {
+    "button": "Export customer data",
+    "help": "Download everything held about this customer as a JSON file.",
+    "title": "Export customer data?",
+    "description": "The file contains personal data: profile, addresses, orders, messages, sign-ins and consent history. Keep it safe and share it only with the customer. Every export is logged under your name.",
+    "confirm": "Download file",
+    "done": "The file was downloaded.",
+    "limit": "You have reached the limit of 10 exports per hour. Try again later."
+  },
+  "anonymise": {
+    "button": "Anonymise customer",
+    "help": "Permanently replace this customer's personal details. This cannot be undone.",
+    "title": "Anonymise this customer?",
+    "irreversible": "This cannot be undone. The person's details are replaced for good and the customer can no longer sign in with this account.",
+    "replacedTitle": "Replaced with neutral text",
+    "replaced": {
+      "profile": "Name, mobile number and email of the customer",
+      "orders": "Contact and delivery details on orders, shipments and returns",
+      "text": "Free text on tickets, contact messages, notes and notification logs",
+      "signins": "Sign-in details and the IP address of consent records",
+      "audit": "Old and new values in the audit trail of this person's records"
+    },
+    "deletedTitle": "Deleted",
+    "deleted": {
+      "addresses": "Saved addresses",
+      "wishlist": "Wishlist and carts",
+      "sessions": "Sign-in sessions and one-time codes",
+      "backInStock": "Back-in-stock requests",
+      "attachments": "Ticket attachments"
+    },
+    "keptTitle": "Kept",
+    "kept": {
+      "invoices": "Invoices and credit notes exactly as issued, including the buyer details printed on them",
+      "orders": "Order totals, taxes, items and status history",
+      "money": "Payments, refunds and stock movements: amounts and dates",
+      "audit": "Who did what and when, in the audit trail"
+    },
+    "keptSummary": "Invoices and order totals are kept for the books.",
+    "balances": "Loyalty points and store credit stay on the closed account and cannot be used.",
+    "again": "The same mobile number can sign in again, as a new customer.",
+    "reason": "Reason",
+    "reasonHint": "Why is this being done? It is written to the audit log. 5 to 300 characters.",
+    "reasonShort": "Write at least 5 characters.",
+    "reasonLong": "Use at most 300 characters.",
+    "count": "{count} of {max}",
+    "confirmLabel": "Type the customer id to confirm",
+    "confirmHint": "Customer id",
+    "confirmWrong": "This is not the id of this customer.",
+    "submit": "Anonymise permanently",
+    "blockedTitle": "This customer cannot be anonymised yet",
+    "blockedDetail": "What the system found",
+    "blockedOpen": "Finish or cancel the open work first, then try again.",
+    "blockedStaff": "This is a staff account. Staff are deactivated in the user screen.",
+    "doneTitle": "Customer anonymised",
+    "doneBody": "{orders} orders, {returns} returns and {tickets} tickets were cleaned of personal details.",
+    "forfeited": "{points} points and {credit} store credit stay on the closed account.",
+    "alreadyTitle": "Already anonymised",
+    "alreadyBody": "This customer was anonymised before. Nothing was changed.",
+    "close": "Close",
+    "failed": "We could not anonymise this customer. Nothing was changed."
+  },
+  "banner": {
+    "title": "Anonymised on {date}",
+    "titleNoDate": "This customer is anonymised",
+    "body": "Personal details were replaced and the customer cannot sign in. Orders and invoices are kept for the books."
+  }
+}

@@ -7,6 +7,7 @@ import { Alert, Badge } from "@/components/ui/surfaces";
 import { useSession } from "@/components/providers/session-provider";
 import { canAnywhere } from "@/lib/auth/permissions";
 import { levelTone, statusTone, type CustomerRights, type ProfileLevel } from "./logic";
+import type { PrivacyRights } from "./privacy-logic";
 
 /** What this staff member may do with customers (all global permissions). Display only: the API still refuses. */
 export function useCustomerRights(): CustomerRights {
@@ -20,6 +21,12 @@ export function useCustomerRights(): CustomerRights {
     }),
     [me],
   );
+}
+
+/** The two privacy permissions (export and anonymise). Display only: the API still refuses. */
+export function usePrivacyRights(): PrivacyRights {
+  const { me } = useSession();
+  return React.useMemo(() => ({ exportData: canAnywhere(me, "customers.privacy.export"), anonymise: canAnywhere(me, "customers.privacy.anonymise") }), [me]);
 }
 
 /** Active or deactivated, always with an icon and a word. */
