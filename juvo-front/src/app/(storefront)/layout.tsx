@@ -7,6 +7,7 @@ import { storeGet } from "@/lib/server/store";
 import type { StoreCategory } from "@/modules/store/api";
 import { StoreHeader } from "@/modules/store/store-header";
 import { StoreSessionProvider } from "@/modules/store/store-session";
+import { PwaClient } from "@/modules/pwa/pwa-client";
 import { getPublicBrand, getPublicSocial, getPublishedKeys } from "@/modules/content/public";
 import { FooterBrandBlock, FooterPageLinks, FooterSocial } from "@/modules/content/site-info";
 
@@ -106,6 +107,7 @@ export default async function StorefrontLayout({ children }: { children: React.R
           <FooterPageLinks keys={publishedPages} />
           <p className="border-t border-line px-4 py-4 text-center text-xs text-muted">© {new Date().getFullYear()} Juvo BD</p>
         </footer>
+        <PwaClient />
       </div>
     </StoreSessionProvider>
     </ScopedIntl>

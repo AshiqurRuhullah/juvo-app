@@ -6,6 +6,7 @@ import { fieldErrors } from "@/lib/api/problem";
 import type { Schemas } from "@/lib/api/types";
 import { useProblemMessage } from "@/lib/api/use-problem-message";
 import { toast } from "@/components/ui/toaster";
+import { markMeaningfulAction } from "@/lib/pwa/rules";
 
 /**
  * Typed access to the shop endpoints (Step 7-a: public catalog, cart, delivery, customer account). Every call goes through the BFF.
@@ -121,7 +122,11 @@ function useStoreMutation<TVars, TData>(run: (vars: TVars) => Promise<TData>, ke
   return useMutation({ mutationFn: run, onSuccess: () => Promise.all(keys.map((queryKey) => queryClient.invalidateQueries({ queryKey }))) });
 }
 
-export const useAddToCart = () => useStoreMutation(async (body: { variantId: string; quantity: number }) => unwrap(await api.POST("/api/v1/store/cart/items", { body })));
+export const useAddToCart = () => useStoreMutation(async (body: { variantId: string; quantity: number }) => {
+    const cart = unwrap(await api.POST("/api/v1/store/cart/items", { body }));
+    markMeaningfulAction(); // makes the install prompt eligible (docs/pwa-notes.md)
+    return cart;
+  });
 export const useSetCartQuantity = () =>
   useStoreMutation(async (vars: { variantId: string; quantity: number }) => unwrap(await api.PUT("/api/v1/store/cart/items/{variantId}", { params: { path: { variantId: vars.variantId } }, body: { quantity: vars.quantity } })));
 export const useRemoveCartLine = () => useStoreMutation(async (variantId: string) => unwrap(await api.DELETE("/api/v1/store/cart/items/{variantId}", { params: { path: { variantId } } })));

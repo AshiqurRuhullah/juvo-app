@@ -1,0 +1,26 @@
+{
+  "install": {
+    "region": "Install the app",
+    "title": "Install the Juvo app",
+    "body": "Open the shop from your home screen, full screen and fast.",
+    "action": "Install",
+    "dismiss": "Not now",
+    "dismissLabel": "Dismiss the install suggestion"
+  },
+  "ios": {
+    "title": "Add Juvo to your home screen",
+    "body": "Tap the Share button, then choose Add to Home Screen.",
+    "dismiss": "Got it"
+  },
+  "update": {
+    "ready": "A new version is ready.",
+    "reload": "Reload"
+  },
+  "offline": {
+    "title": "You are offline",
+    "body": "Check your connection and try again. Browsing needs the internet, and orders can only be placed online.",
+    "retry": "Try again",
+    "home": "Home page",
+    "shop": "Shop"
+  }
+}
