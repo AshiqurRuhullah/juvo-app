@@ -11883,6 +11883,257 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/customers/{id}/consents/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Every consent change of one customer, newest first: type, channel, old and new value, source (customer, staff, unsubscribe link, import) and time. IP addresses are partly hidden without view-pii. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ConsentHistoryDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/{id}/privacy/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Download everything held about one customer as JSON (profile, addresses, consents, orders, payments, invoices, returns, tickets, messages, wishlist, loyalty, message log, marketing state, sign-ins). Audited without the content; 10 per staff member per hour. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/{id}/privacy/anonymise": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Irreversibly replace the personal data of one customer (reason and the customer id as confirm are required). Orders, invoices and payments stay without the personal details; refused with 409 PRIVACY.OPEN_ORDERS while orders, unsettled cash on delivery, returns or refunds are open, and for staff accounts. Repeating the call is safe. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["AnonymiseCustomerRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AnonymiseResultDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/promotions/coupons": {
         parameters: {
             query?: never;
@@ -40134,6 +40385,63 @@ export interface components {
             ordersReady: number | string;
             readyOrderIds: string[];
         };
+        AnonymiseCountsDto: {
+            /** Format: int32 */
+            orders: number | string;
+            /** Format: int32 */
+            returns: number | string;
+            /** Format: int32 */
+            tickets: number | string;
+            /** Format: int32 */
+            ticketMessages: number | string;
+            /** Format: int32 */
+            contactMessages: number | string;
+            /** Format: int32 */
+            notificationLogs: number | string;
+            /** Format: int32 */
+            shipments: number | string;
+            /** Format: int32 */
+            payments: number | string;
+            /** Format: int32 */
+            auditRows: number | string;
+            /** Format: int32 */
+            outboxMessages: number | string;
+            /** Format: int32 */
+            addressesRemoved: number | string;
+            /** Format: int32 */
+            wishlistRemoved: number | string;
+            /** Format: int32 */
+            sessionsRemoved: number | string;
+            /** Format: int32 */
+            cartsRemoved: number | string;
+            /** Format: int32 */
+            otpCodesRemoved: number | string;
+            /** Format: int32 */
+            signInRows: number | string;
+            /** Format: int32 */
+            consentRows: number | string;
+            /** Format: int32 */
+            loyaltyRows: number | string;
+            /** Format: int32 */
+            otherRows: number | string;
+        };
+        AnonymiseCustomerRequest: {
+            reason: null | string;
+            confirm: null | string;
+        };
+        AnonymiseResultDto: {
+            /** Format: uuid */
+            customerId: string;
+            alreadyAnonymised: boolean;
+            /** Format: date-time */
+            anonymisedAt: string;
+            scrubbed: components["schemas"]["AnonymiseCountsDto"];
+            kept: string[];
+            /** Format: int32 */
+            forfeitedPoints: number | string;
+            /** Format: double */
+            forfeitedCredit: number | string;
+        };
         AppliedPromotion: {
             /** Format: uuid */
             id: string;
@@ -40932,6 +41240,26 @@ export interface components {
             granted: boolean;
             /** Format: date-time */
             at: null | string;
+        };
+        ConsentHistoryDto: {
+            /** Format: uuid */
+            customerId: string;
+            piiMasked: boolean;
+            items: components["schemas"]["ConsentHistoryEntryDto"][];
+        };
+        ConsentHistoryEntryDto: {
+            /** Format: uuid */
+            id: string;
+            type: string;
+            channel: string;
+            appliesTo: string[];
+            oldValue: null | boolean;
+            newValue: boolean;
+            source: string;
+            sourceKind: string;
+            ipAddress: null | string;
+            /** Format: date-time */
+            at: string;
         };
         /** @enum {unknown} */
         ConsentType: "MarketingSms" | "MarketingEmail" | "PrivacyPolicy";
