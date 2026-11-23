@@ -60,6 +60,7 @@ public static class PermissionCatalog
 
         // ---- Customers, fraud, support (modules E, F, T, Y) ----
         Add("customers", "customer", "view edit block export view-pii");
+        Add("customers", "privacy", "export anonymise");
         Add("fraud", "flag", "view");
         Add("fraud", "review", "decide");
         Add("fraud", "blacklist", "view create delete");

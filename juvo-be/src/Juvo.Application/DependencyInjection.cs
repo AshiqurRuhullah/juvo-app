@@ -69,6 +69,7 @@ public static class DependencyInjection
         services.AddScoped<Juvo.Application.Customers.CustomerAccountService>();
         services.AddScoped<Juvo.Application.Customers.WishlistService>();
         services.AddScoped<Juvo.Application.Customers.CustomersAdminService>();
+        services.AddScoped<Juvo.Application.Privacy.PrivacyService>();
         services.AddScoped<Juvo.Application.Delivery.DeliveryService>();
 
         // Orders, checkout and fraud basics (Step 8).
