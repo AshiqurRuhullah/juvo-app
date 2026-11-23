@@ -201,5 +201,11 @@ export function formatMs(ms: number | string | null | undefined, seconds = "s"):
   return value >= 1000 ? `${(value / 1000).toFixed(1)} ${seconds}` : `${value} ms`;
 }
 
+export type HealthGroup = "payment" | "courier" | "messaging";
+export const HEALTH_GROUPS: HealthGroup[] = ["payment", "courier", "messaging"];
+
+/** Payment gateways, couriers, and the three message channels (sms, email, whatsapp) under one heading. */
+export const healthGroup = (kind: string): HealthGroup => (kind === "payment" ? "payment" : kind === "courier" ? "courier" : "messaging");
+
 /** The jobs the summary knows, as filter options (sorted, distinct). */
 export const jobNames = (summary: readonly { jobName: string }[]): string[] => [...new Set(summary.map((s) => s.jobName))].sort((a, b) => a.localeCompare(b));
