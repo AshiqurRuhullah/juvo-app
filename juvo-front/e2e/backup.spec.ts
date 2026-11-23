@@ -60,7 +60,7 @@ test.describe("Status on a fresh database", () => {
     await expect(page.getByTestId("note-restore")).toContainText("no restore button on purpose");
     await expect(notes).toContainText("docs/backup-api.md");
 
-    await expect(page.getByText("No backups yet")).toBeVisible();
+    await expect(page.getByText("No backups yet").filter({ visible: true })).toHaveCount(1);
     // The API serves no backup file, so the page has no download link and no restore button.
     await expect(page.locator('a[download], a[href$=".bak"], a[href*="/files/"]')).toHaveCount(0);
     await expect(page.getByRole("button", { name: /restore|download/i })).toHaveCount(0);
@@ -130,12 +130,21 @@ test.describe("Back up now", () => {
     await openBackups(page);
     await expect(page.getByTestId("backup-now")).toBeEnabled();
 
-    // Somebody else (or the night) starts a backup after this page loaded: this page does not know yet.
-    expect(await startBackupViaApi()).toBe(202);
+    // Somebody else (or the night) starts a backup just before this page sends its own request. The request still goes to the real
+    // API; only its timing is arranged, because a backup of this small database ends in about a second.
+    let started = 0;
+    await page.route(
+      (url) => url.pathname.endsWith("/system/backups"),
+      async (route) => {
+        if (route.request().method() === "POST") started = await startBackupViaApi();
+        await route.continue();
+      },
+    );
     await page.getByTestId("backup-now").click();
     await page.getByRole("dialog").getByRole("button", { name: "Start backup" }).click();
     await expect(page.getByTestId("backup-already")).toContainText("A backup is already running");
     await expect(page.getByTestId("backup-start-error")).toHaveCount(0);
+    expect(started).toBe(202);
     await waitUntilIdle();
   });
 });
