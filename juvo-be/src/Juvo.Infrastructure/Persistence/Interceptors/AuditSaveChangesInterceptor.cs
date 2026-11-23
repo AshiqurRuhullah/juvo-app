@@ -143,6 +143,8 @@ internal sealed class AuditSaveChangesInterceptor(TimeProvider timeProvider, ICu
                     newValues[property.Metadata.Name] = property.CurrentValue;
                 }
 
+                MaskSensitive(entry, oldValues);
+                MaskSensitive(entry, newValues);
                 if (newValues.Count == 0)
                 {
                     return null;
@@ -171,7 +173,17 @@ internal sealed class AuditSaveChangesInterceptor(TimeProvider timeProvider, ICu
             values[property.Metadata.Name] = current ? property.CurrentValue : property.OriginalValue;
         }
 
+        MaskSensitive(entry, values);
         return Serialize(values);
+    }
+
+    /// <summary>A setting marked sensitive in the settings registry never has its value written to the audit log.</summary>
+    private static void MaskSensitive(EntityEntry entry, Dictionary<string, object?> values)
+    {
+        if (entry.Entity is Juvo.Domain.Orders.PlatformSetting setting && Juvo.Application.Settings.SettingRegistry.IsSensitive(setting.Key) && values.ContainsKey(nameof(setting.Value)))
+        {
+            values[nameof(setting.Value)] = Juvo.Application.Settings.SettingsCentreService.Masked;
+        }
     }
 
     private static bool IsIgnored(PropertyEntry property) =>

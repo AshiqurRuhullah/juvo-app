@@ -73,6 +73,9 @@ public static class DependencyInjection
 
         // Orders, checkout and fraud basics (Step 8).
         services.AddScoped<Juvo.Application.Orders.SettingsService>();
+        services.AddSingleton<Juvo.Application.Settings.SettingsCache>();
+        services.AddScoped<Juvo.Application.Settings.ISettingsReader, Juvo.Application.Settings.SettingsReader>();
+        services.AddScoped<Juvo.Application.Settings.SettingsCentreService>();
         services.AddScoped<Juvo.Application.Orders.OrderStock>();
         services.AddScoped<Juvo.Application.Orders.OrderRouter>();
         services.AddScoped<Juvo.Application.Orders.OrderAccess>();

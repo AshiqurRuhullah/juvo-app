@@ -313,6 +313,14 @@ Branch `feature/12e-seo`, merged to `main` 2026-11-22. Notes `juvo-front/docs/se
 - **Gate (2026-11-22, run and seen by the lead):** `tsc --noEmit` clean; eslint clean on the changed files; `npm test` 532 passed (17 new); `npm run build` ok (the Next.js advisory notice stopped two runs; the third completed); browser on desktop: `seo.spec` 6 of 6 and `store.spec` 27 of 28. The one failure (quantity stepper) picks a product with one unit left that earlier tests in the same file use up; it passes alone and also failed in the full run of the content step, so it looks like test-data fragility, not from this change (here its "One more" button was disabled). Pixel 7 and iPhone 14 not run; full suite not re-run.
 - **Open for the owner:** set the real https address in `NEXT_PUBLIC_SITE_URL` before go-live.
 
+### Step 12g slice 1 result (settings registry backend)
+
+Branch `feature/12g-settings-backend`, merged to `main` 2026-11-23. Contract `docs/settings-api.md`; notes `docs/step12g-settings-notes.md`; decisions `docs/assumptions.md` section AG.
+
+- **Built:** `/api/v1/settings` (list, get, change, reset, history), about 80 definitions, audit, cache, read-only entries for appsettings and the store currency; wired to `Loyalty.Enabled` and the order settings.
+- **Not built:** the settings screen; feature flags for pre-orders, reviews, social desk, POS and reseller; OTP lengths; display currencies.
+- **Gate (2026-11-23, run and seen by the lead):** `dotnet build --no-incremental` 0 warnings, 0 errors; domain 409 passed; application 249 passed; integration filtered to settings, endpoint policy, permissions, roles, seeder, loyalty, order flow and payments: 177 passed (the builder saw one order-flow test fail once under load and pass alone; it passed here). The full integration suite was not run.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.
