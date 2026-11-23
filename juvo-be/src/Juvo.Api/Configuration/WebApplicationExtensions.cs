@@ -20,6 +20,7 @@ internal static class WebApplicationExtensions
     {
         // Correlation id first so every log line and error response carries it.
         app.UseMiddleware<CorrelationIdMiddleware>();
+        app.UseMiddleware<RequestMonitorMiddleware>(); // before the exception handler so the final status (500 for a crash) is the one recorded
         app.UseExceptionHandler();
         app.UseStatusCodePages();
 
@@ -67,6 +68,7 @@ internal static class WebApplicationExtensions
         app.MapSupportEndpoints();
         app.MapLoyaltyEndpoints();
         app.MapSettingsEndpoints();
+        app.MapSystemOpsEndpoints();
         app.MapHub<Juvo.Api.Realtime.OrdersHub>(Juvo.Api.Realtime.RealtimeAuth.HubPath);
         app.MapNotificationsEndpoints();
         app.MapMarketingEndpoints();

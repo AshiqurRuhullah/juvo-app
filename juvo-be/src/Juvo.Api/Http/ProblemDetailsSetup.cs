@@ -69,6 +69,7 @@ internal sealed class GlobalExceptionHandler(
 
         if (status >= 500)
         {
+            httpContext.RequestServices.GetService<Juvo.Application.Monitoring.RequestMonitor>()?.RecordError(CorrelationIdMiddleware.Get(httpContext), RequestMonitorMiddleware.RouteOf(httpContext), exception);
             logger.LogError(exception, "Unhandled exception for {Method} {Path}", httpContext.Request.Method, httpContext.Request.Path);
         }
         else
