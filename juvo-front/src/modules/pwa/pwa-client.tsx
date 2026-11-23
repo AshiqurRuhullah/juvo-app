@@ -52,16 +52,23 @@ export function PwaClient() {
   React.useEffect(() => {
     if (process.env.NODE_ENV !== "production" || !("serviceWorker" in navigator)) return;
     let cancelled = false;
+    let accepted = false; // reload only after the customer chose to; the first install also fires controllerchange
     let reloading = false;
     const askToReload = (worker: ServiceWorker) => {
       toast(updateText, {
         id: "pwa-update",
         duration: Infinity,
-        action: { label: reloadText, onClick: () => worker.postMessage({ type: "SKIP_WAITING" }) },
+        action: {
+          label: reloadText,
+          onClick: () => {
+            accepted = true;
+            worker.postMessage({ type: "SKIP_WAITING" });
+          },
+        },
       });
     };
     const onControllerChange = () => {
-      if (reloading) return;
+      if (!accepted || reloading) return;
       reloading = true;
       window.location.reload();
     };
