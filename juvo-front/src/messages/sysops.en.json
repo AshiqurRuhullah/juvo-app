@@ -224,13 +224,13 @@
     "slowRequests": "Slow requests",
     "slowDetail": "{threshold} or more. {seen} requests seen, {kept} kept in the recent list.",
     "routes": {
-      "title": "Slowest routes",
+      "title": "Slow routes",
       "route": "Route",
       "count": "Calls",
       "average": "Average",
       "max": "Slowest",
-      "empty": "No requests recorded yet",
-      "emptyDescription": "Routes appear here as the server receives requests."
+      "empty": "No slow requests recorded",
+      "emptyDescription": "A route appears here when one of its requests took the slow limit or longer since this server started."
     },
     "errors": {
       "title": "Recent errors",
