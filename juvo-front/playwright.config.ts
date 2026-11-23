@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { resolve } from "node:path";
 
 /**
  * End-to-end and UI checks against the REAL stack: the compiled Next.js app (npm run build first) talking to the real ASP.NET
@@ -15,11 +16,15 @@ const WEB_PORT = Number(process.env.E2E_WEB_PORT ?? 3100);
 const apiUrl = `http://localhost:${API_PORT}`;
 const sqlServer = process.env.JUVO_TEST_SQL_SERVER ?? "(localdb)\\MSSQLLocalDB";
 
+// Backups taken by the e2e API go into a git-ignored folder under test-results (removed by the backup specs).
+const backupFolder = resolve(process.cwd(), "test-results", `e2e-backup-${process.env.E2E_DB}`);
+
 export const E2E = {
   db: process.env.E2E_DB,
   apiUrl,
   webUrl: `http://localhost:${WEB_PORT}`,
   sqlServer,
+  backupFolder,
   adminEmail: "admin@e2e.test",
   seedPassword: "E2e-Passw0rd!x1",
   adminPassword: "E2e-Admin#Pass1",
@@ -46,7 +51,7 @@ export default defineConfig({
       name: "desktop",
       use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 800 } },
       dependencies: ["setup"],
-      testMatch: /(auth|permissions|shell|ui-checks|ums|catalog|lookups|inventory|design|store|cart|myaccount|orders|returns|returns-ui-checks|billing|payments|notifications|couriers|couriers-ui-checks|shipments|shipments-ui-checks|cod|cod-ui-checks|live|purchasing|purchasing-ui-checks|accounting|accounting-ui-checks|support|support-ui-checks|reports|reports-ui-checks|pagination|promotions|promotions-ui-checks|promo-store|promo-store-ui-checks|loyalty|loyalty-ui-checks|marketing|marketing-ui-checks|customers|customers-ui-checks|delivery|delivery-ui-checks|coupons|coupons-ui-checks|content|content-ui-checks|contact|contact-ui-checks|settings|settings-ui-checks|system|system-ui-checks|integrations|integrations-ui-checks|seo|dashboard|dashboard-ui-checks|privacy|privacy-ui-checks).spec.ts/,
+      testMatch: /(auth|backup|backup-ui-checks|permissions|shell|ui-checks|ums|catalog|lookups|inventory|design|store|cart|myaccount|orders|returns|returns-ui-checks|billing|payments|notifications|couriers|couriers-ui-checks|shipments|shipments-ui-checks|cod|cod-ui-checks|live|purchasing|purchasing-ui-checks|accounting|accounting-ui-checks|support|support-ui-checks|reports|reports-ui-checks|pagination|promotions|promotions-ui-checks|promo-store|promo-store-ui-checks|loyalty|loyalty-ui-checks|marketing|marketing-ui-checks|customers|customers-ui-checks|delivery|delivery-ui-checks|coupons|coupons-ui-checks|content|content-ui-checks|contact|contact-ui-checks|settings|settings-ui-checks|system|system-ui-checks|integrations|integrations-ui-checks|seo|dashboard|dashboard-ui-checks|privacy|privacy-ui-checks).spec.ts/,
     },
     { name: "tablet", use: { ...devices["Desktop Chrome"], viewport: { width: 820, height: 1180 }, hasTouch: true }, dependencies: ["setup"], testMatch: /(shell|devices)\.spec\.ts/ },
     { name: "android", use: mobile("Pixel 7"), dependencies: ["setup"], testMatch: /(shell|devices)\.spec\.ts/ },
@@ -72,6 +77,7 @@ export default defineConfig({
         Cors__AllowedOrigins__0: E2E.webUrl, // the live-update socket connects from the browser to the API directly
         RateLimiting__Enabled: "false", // every browser reaches the API through the BFF's single address in tests
         DataProtection__KeysPath: `${process.env.TEMP ?? "/tmp"}/juvo-e2e-keys-${E2E.db}`,
+        Backup__Folder: backupFolder,
         Storage__RootPath: `${process.env.TEMP ?? "/tmp"}/juvo-e2e-files-${E2E.db}`,
       },
     },
