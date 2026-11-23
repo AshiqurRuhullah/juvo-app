@@ -282,4 +282,12 @@ public static class Permissions
         public const string JobsRetry = "system.jobs.retry";
         public const string HealthView = "system.health.view";
     }
+
+    public static class Integrations
+    {
+        public const string ApiKeyView = "integrations.apikey.view";
+        public const string ApiKeyManage = "integrations.apikey.manage";
+        public const string WebhookView = "integrations.webhook.view";
+        public const string WebhookManage = "integrations.webhook.manage";
+    }
 }

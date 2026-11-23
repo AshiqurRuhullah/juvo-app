@@ -429,6 +429,22 @@ public static class ErrorCodes
         public const string TooMany = "SYSTEM.TOO_MANY";
     }
 
+    public static class PublicApi
+    {
+        public const string InvalidKey = "PUBLICAPI.INVALID_KEY";
+        public const string KeyDisabled = "PUBLICAPI.KEY_DISABLED";
+        public const string KeyExpired = "PUBLICAPI.KEY_EXPIRED";
+        public const string ScopeMissing = "PUBLICAPI.SCOPE_MISSING";
+        public const string RateLimited = "PUBLICAPI.RATE_LIMITED";
+        public const string KeyNotFound = "INTEGRATIONS.KEY_NOT_FOUND";
+        public const string InvalidScope = "INTEGRATIONS.INVALID_SCOPE";
+        public const string WebhookNotFound = "INTEGRATIONS.WEBHOOK_NOT_FOUND";
+        public const string DeliveryNotFound = "INTEGRATIONS.DELIVERY_NOT_FOUND";
+        public const string InvalidEvent = "INTEGRATIONS.INVALID_EVENT";
+        public const string UrlRefused = "INTEGRATIONS.URL_REFUSED";
+        public const string NotRedeliverable = "INTEGRATIONS.NOT_REDELIVERABLE";
+    }
+
     public static class Privacy
     {
         public const string OpenOrders = "PRIVACY.OPEN_ORDERS";
