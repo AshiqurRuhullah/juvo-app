@@ -845,3 +845,15 @@ Full list J1 to J20: `docs/step12j-api-notes.md`; contract `docs/public-api.md`.
 | PA6 | Address protection: every resolved address must be public (checked on save, before each delivery and on the exact address the socket uses, covering DNS rebinding); no redirects, no proxy, 5-second timeout, response body never read. Only the test project can allow loopback. | Staff must not be able to point a webhook at internal servers. | n/a |
 | PA7 | Permissions `integrations.apikey.view|manage` and `integrations.webhook.view|manage` are Super Admin only (Manager explicitly denied). Events: `order.placed`, `order.status_changed`, `product.published`, `product.updated`, `stock.low` (once per fall below the reorder level, using a new column `StockLevels.LowAlertedAt`). | High-risk access. | Role screens. |
 | PA8 | Gaps: no screens, no write API, counters per process, small unused outbox rows for product and stock edits when nobody subscribes, the jobs page still lists webhooks as "not recorded". | Later steps. | Follow-up. |
+
+## AN. Step 12i slice 2 (privacy screens) decisions
+
+Notes (decisions U1 to U7): `docs/privacy-ui-notes.md`. Cards on `/admin/customers/[id]`; code `juvo-front/src/modules/customers/privacy-*`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| PU1 | The consent history card needs `customers.customer.view`; the privacy card shows each action only to staff who hold its permission (Super Admin by default). | Same access model as the API. | Role screens. |
+| PU2 | Export asks for confirmation (the file holds personal data and the export is logged), downloads through the existing report download path, and shows the hourly limit message plainly. | Clear consequences. | n/a |
+| PU3 | Anonymise lists what is replaced, deleted and kept, shows the API's blocking reasons in plain words, needs a reason of 5 to 300 characters and the typed customer id before the button works, has no default focus on the destructive button and says it cannot be undone and that invoices and totals are kept for the books. | Irreversible action. | `privacy-cards.tsx`. |
+| PU4 | The customer data has no "anonymised on" field: an anonymised customer is recognised by the placeholder mobile, and the date is shown only in the session that ran the action. | The DTO lacks `anonymisedAt`. | Add it to the customer DTO. |
+| PU5 | The consent history has no paging in the API, so the card pages it in the browser; focus returns to the opening button in code because the shared confirm dialog has no trigger reference (the deactivate dialog has the same limit). | Accessibility without changing shared code. | A `triggerRef` on the shared dialog. |

@@ -379,6 +379,14 @@ Branch `feature/12j-public-api`, merged to `main` 2026-11-23. Contract `docs/pub
 - **Not built:** the screens, write scopes.
 - **Gate (2026-11-23, run and seen by the lead, on the tree merged with main):** `dotnet build --no-incremental` 0 warnings, 0 errors; `has-pending-model-changes` none; domain 420 passed; application 359 passed; integration filtered to the new public API, keys, webhooks and address-protection classes, endpoint policy, seeder, roles, privacy, settings and system: 133 passed; and order flow, order stock, payment flow, catalog, inventory, outbox and interceptors: 149 passed. The full integration suite was not run.
 
+### Step 12i slice 2 result (privacy screens)
+
+Branch `feature/12i-privacy-ui`, merged to `main` 2026-11-23. Notes `docs/privacy-ui-notes.md`; decisions `docs/assumptions.md` section AN.
+
+- **Built:** on the customer page, a consent history card, an export action and a guarded anonymise dialog with an "anonymised" banner afterwards. No new route or menu item.
+- **Not built:** customer self-service deletion (needs a backend endpoint), an `anonymisedAt` date after reload.
+- **Gate (2026-11-23, run and seen by the lead, on the tree merged with main):** `tsc --noEmit` clean; `npm test` 607 passed (16 new); `npm run build` ok (second run); browser on desktop: `privacy.spec`, `privacy-ui-checks`, `customers.spec` and `customers-ui-checks` 31 passed together with setup and cleanup (permissions, export download, anonymise blocked and done, re-sign-in as a new customer, 360/768/1280, dark theme, Bengali, axe, 44 px, overflow). The lead's lint run found two react-hooks/refs errors the builder had not seen (a ref passed to a function during render); fixed and re-checked before merging. The full suite was not re-run.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.
