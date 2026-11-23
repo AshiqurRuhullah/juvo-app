@@ -232,7 +232,8 @@ test.describe("Settings centre: permissions and menu", () => {
   test("the menu opens the settings centre", async ({ page }) => {
     await adminSignIn(page);
     await page.goto("/admin");
-    const link = page.getByRole("link", { name: "Settings", exact: true }).first(); // a one-item menu group is a plain link
+    await page.getByRole("button", { name: "System", exact: true }).click(); // Settings is a child of the System parent
+    const link = page.getByRole("link", { name: "Settings", exact: true }).first();
     await expect(link).toBeVisible();
     await link.click();
     await expect(page).toHaveURL(/\/admin\/settings$/);

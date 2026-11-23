@@ -183,7 +183,12 @@ test("every menu item is built: linked, and none is marked as coming soon", asyn
   const delivery = scope.getByRole("button", { name: "Delivery" });
   if ((await delivery.getAttribute("aria-expanded")) !== "true") await delivery.click();
   await expect(scope.locator('a[href="/admin/delivery/zones"]')).toHaveCount(1);
+  // Settings, Background jobs and System health sit under the System parent (closed until it is opened).
+  const system = scope.getByRole("button", { name: "System", exact: true });
+  if ((await system.getAttribute("aria-expanded")) !== "true") await system.click();
   await expect(scope.getByRole("link", { name: "Settings", exact: true })).toHaveAttribute("href", "/admin/settings");
+  await expect(scope.locator("a[href=\"/admin/system/jobs\"]")).toHaveCount(1);
+  await expect(scope.locator("a[href=\"/admin/system/health\"]")).toHaveCount(1);
   // The "Soon" mark stays in the menu code for future modules; today nothing needs it.
   await expect(scope.getByText("Soon", { exact: true })).toHaveCount(0);
 });

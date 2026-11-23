@@ -1,0 +1,241 @@
+{
+  "common": {
+    "all": "All",
+    "from": "From",
+    "to": "To",
+    "clear": "Clear filters",
+    "cancel": "Cancel",
+    "close": "Close",
+    "search": "Search",
+    "noMatch": "No match",
+    "loadFailed": "This list could not be loaded. Check your connection and try again."
+  },
+  "status": {
+    "Healthy": "Healthy",
+    "Degraded": "Degraded",
+    "Down": "Down",
+    "Disabled": "Disabled",
+    "Sandbox": "Sandbox",
+    "Unknown": "No calls yet"
+  },
+  "outcome": {
+    "Running": "Running",
+    "Succeeded": "Succeeded",
+    "Failed": "Failed"
+  },
+  "state": {
+    "Pending": "Pending",
+    "Retrying": "Retrying",
+    "DeadLettered": "Dead-lettered"
+  },
+  "channel": {
+    "Sms": "SMS",
+    "Email": "E-mail",
+    "WhatsApp": "WhatsApp"
+  },
+  "units": {
+    "d": "d",
+    "h": "h",
+    "min": "min",
+    "s": "s"
+  },
+  "result": {
+    "title": "{done} of {total} done",
+    "counts": "{done, plural, one {1 item was} other {# items were}} put back in line. {skipped, plural, =0 {Nothing was skipped.} one {1 item was skipped:} other {# items were skipped:}}",
+    "dismiss": "Dismiss",
+    "reason": {
+      "notFound": "Not found.",
+      "alreadyDelivered": "Not waiting or failed, so there was nothing to requeue (already delivered).",
+      "notFailed": "Not failed (already pending, sent or skipped)."
+    }
+  },
+  "bulk": {
+    "selected": "{count} of {limit} selected",
+    "limit": "You can pick at most {limit} at a time.",
+    "selectPage": "Select this page",
+    "clear": "Clear selection"
+  },
+  "jobs": {
+    "title": "Background jobs",
+    "subtitle": "What the server did in the background: scheduled jobs, the message queue and messages that failed to send.",
+    "refresh": "Refresh",
+    "summaryTitle": "Jobs at a glance",
+    "loadFailed": "The job summary could not be loaded.",
+    "noJobs": {
+      "title": "No job has run yet",
+      "description": "Jobs appear here after their first run."
+    },
+    "lastRun": "Last run",
+    "lastSuccess": "Last success",
+    "never": "Never",
+    "runs24h": "Runs in 24 h",
+    "failures24h": "Failures in 24 h",
+    "failuresCount": "{count, plural, one {1 failed} other {# failed}}",
+    "lastError": "Last error",
+    "unrecorded": "Not recorded by the platform: {kinds}. These failures are not listed here.",
+    "kinds": {
+      "courier-bookings": "failed courier bookings",
+      "webhooks": "failed webhooks"
+    },
+    "tabs": {
+      "runs": "Job runs",
+      "outbox": "Queue",
+      "failed": "Failed sends"
+    }
+  },
+  "runs": {
+    "title": "Job runs",
+    "search": "Search job runs",
+    "searchPlaceholder": "Job, reference or correlation id",
+    "anyJob": "All jobs",
+    "anyOutcome": "Any outcome",
+    "reference": "Reference",
+    "columns": {
+      "job": "Job",
+      "outcome": "Outcome",
+      "started": "Started",
+      "duration": "Duration",
+      "attempt": "Attempt",
+      "reference": "Reference",
+      "actions": "Actions"
+    },
+    "details": "Details",
+    "detailsFor": "Details of the run of {job}",
+    "detailTitle": "Job run",
+    "finished": "Finished",
+    "correlation": "Correlation id",
+    "error": "Error (secrets are hidden)",
+    "empty": "No job runs yet",
+    "emptyDescription": "Runs appear here as the server works."
+  },
+  "outbox": {
+    "title": "Message queue",
+    "intro": "Messages waiting to be delivered in the background. A message that used all its tries is dead-lettered. The content of a message is never shown here.",
+    "stateFilter": "Queue state",
+    "search": "Search the queue",
+    "searchPlaceholder": "Type or correlation id",
+    "type": "Message type",
+    "typeHint": "A name or the start of one, for example order.",
+    "columns": {
+      "select": "Select",
+      "type": "Type",
+      "state": "State",
+      "attempts": "Attempts",
+      "lastError": "Last error",
+      "next": "Next try",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "gaveUp": "Gave up {when}",
+    "selectRow": "Select message {type}",
+    "requeue": "Requeue",
+    "requeueFor": "Requeue message {type}",
+    "requeueSelected": "Requeue selected",
+    "notRequeueable": "Waiting for its first try",
+    "requeuedOne": "The message is back in line.",
+    "confirmTitle": "Requeue this message?",
+    "confirmOne": "The message goes back to waiting with its attempts set to 0 and the server tries to deliver it again right away, with the usual retries. Delivery is safe to repeat.",
+    "confirmBulkTitle": "{count, plural, one {Requeue 1 message?} other {Requeue # messages?}}",
+    "confirmBulk": "Each message goes back to waiting with its attempts set to 0 and is delivered again with the usual retries. A message that is not dead-lettered or retrying is skipped, and you will see the reason for each one afterwards.",
+    "confirmAction": "Requeue",
+    "empty": "Nothing has failed",
+    "emptyDescription": "The queue has no waiting, retrying or dead-lettered messages."
+  },
+  "failed": {
+    "title": "Failed sends",
+    "intro": "SMS, e-mail and WhatsApp messages that could not be sent. The recipient is masked and the text is not shown.",
+    "search": "Search failed sends",
+    "searchPlaceholder": "Template or error",
+    "anyChannel": "All channels",
+    "template": "Template",
+    "columns": {
+      "select": "Select",
+      "template": "Template",
+      "channel": "Channel",
+      "recipient": "Recipient",
+      "error": "Error",
+      "attempts": "Attempts",
+      "queued": "Queued",
+      "actions": "Actions"
+    },
+    "selectRow": "Select {template} to {recipient}",
+    "retry": "Retry",
+    "retryFor": "Retry {template} to {recipient}",
+    "retrySelected": "Retry selected",
+    "retriedOne": "The message was queued to send again.",
+    "confirmTitle": "Retry this send?",
+    "confirmOne": "The message goes back to pending with its attempts set to 0 and one new delivery is queued. The text and the customer consent that were fixed when it was written are not checked again.",
+    "confirmBulkTitle": "{count, plural, one {Retry 1 send?} other {Retry # sends?}}",
+    "confirmBulk": "Each message goes back to pending and one new delivery is queued for it. A message that is no longer failed is skipped, and you will see the reason for each one afterwards.",
+    "confirmAction": "Retry",
+    "empty": "Nothing has failed",
+    "emptyDescription": "No SMS, e-mail or WhatsApp message is waiting for a retry."
+  },
+  "health": {
+    "title": "System health",
+    "subtitle": "Is each outside service working? Payment gateways, couriers, SMS, e-mail and WhatsApp, plus the state of this server.",
+    "updated": "Updated {when}",
+    "autoRefresh": "Refreshes by itself every 30 seconds while this tab is open.",
+    "refresh": "Refresh",
+    "integrations": "Integrations",
+    "memoryNote": "Health is recorded by this server process only. It starts empty after a restart, so a service nobody has called yet shows that no calls are recorded, not Healthy.",
+    "loadFailed": "The integration list could not be loaded.",
+    "none": {
+      "title": "No integrations found",
+      "description": "Integrations appear here once they are set up."
+    },
+    "groups": {
+      "payment": "Payment gateways",
+      "courier": "Couriers",
+      "messaging": "Messages"
+    },
+    "mode": "Mode",
+    "modes": {
+      "Live": "Live",
+      "Sandbox": "Sandbox"
+    },
+    "noCalls": "No calls recorded yet.",
+    "disabledNote": "Switched off, so no calls are made.",
+    "lastSuccess": "Last success",
+    "lastFailure": "Last failure",
+    "lastError": "Last error (secrets are hidden)",
+    "never": "Never",
+    "failuresInRow": "Failures in a row",
+    "test": "Test connection",
+    "testUnavailable": "A connection test is not available for this integration.",
+    "testOk": "Connection works ({ms}).",
+    "testFailed": "Connection test failed ({ms})."
+  },
+  "status2": {
+    "title": "Server status",
+    "scopeNote": "These figures come from this server process only. They start again from zero when the server restarts and do not include other servers.",
+    "loadFailed": "The server status could not be loaded.",
+    "database": "Database",
+    "reachable": "Reachable",
+    "unreachable": "Not reachable",
+    "version": "Version",
+    "uptime": "Uptime",
+    "since": "Since {when}",
+    "failedJobs": "Failed jobs in 24 h",
+    "backlog": "Queue backlog",
+    "backlogCounts": "{pending} pending, {retrying} retrying, {dead} dead-lettered",
+    "noOpen": "No open messages.",
+    "oldest": "Oldest open message: {age}",
+    "slowRequests": "Slow requests",
+    "slowDetail": "{threshold} or more. {seen} requests seen, {kept} kept in the recent list.",
+    "routes": {
+      "title": "Slow routes",
+      "route": "Route",
+      "count": "Calls",
+      "average": "Average",
+      "max": "Slowest",
+      "empty": "No slow requests recorded",
+      "emptyDescription": "A route appears here when one of its requests took the slow limit or longer since this server started."
+    },
+    "errors": {
+      "title": "Recent errors",
+      "empty": "No unhandled errors since this server started.",
+      "correlation": "Correlation id"
+    }
+  }
+}
