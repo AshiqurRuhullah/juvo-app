@@ -1,4 +1,5 @@
 using Juvo.Application.Billing;
+using Juvo.Application.Integrations;
 using Juvo.Application.Loyalty;
 using Juvo.Application.Marketing;
 using Juvo.Application.Notifications;
@@ -145,6 +146,9 @@ public static class SettingRegistry
             Whole(OpsSettingKeys.ReopenDays, SettingGroups.Operations, 7, 0, 365, "Days a resolved ticket may be reopened.", "সমাধান হওয়া টিকিট যত দিন পুনরায় খোলা যাবে।"),
             Whole(OpsSettingKeys.AutoCloseDays, SettingGroups.Operations, 7, 1, 365, "Days a resolved ticket waits before it closes by itself.", "সমাধান হওয়া টিকিট নিজে বন্ধ হওয়ার আগে যত দিন অপেক্ষা করে।"),
             Whole(OpsSettingKeys.MaxTicketsPerHour, SettingGroups.Operations, 5, 1, 1000, "Most support tickets one mobile number may open per hour.", "একটি মোবাইল নম্বর ঘণ্টায় সর্বোচ্চ যত সাপোর্ট টিকিট খুলতে পারে।"),
+
+            // ---- public API (FR-AF05) ------------------------------------------------------------------
+            Whole(PublicApiSettingKeys.RateLimitPerMinute, SettingGroups.Security, PublicApiSettingKeys.DefaultRateLimitPerMinute, 1, 10_000, "Requests per minute one public API key may make (a key can have its own limit).", "একটি পাবলিক এপিআই কী মিনিটে সর্বোচ্চ যত অনুরোধ করতে পারে (কোনো কীর নিজস্ব সীমা থাকতে পারে)।", Sys),
 
             // ---- reports -------------------------------------------------------------------------------
             Text(DailySummarySettings.Email, SettingGroups.Reports, string.Empty, "Owner email for the daily summary (empty = no summary is sent).", "দৈনিক সারাংশের জন্য মালিকের ইমেইল (খালি = সারাংশ যাবে না)।", 150, SettingFormat.Email),

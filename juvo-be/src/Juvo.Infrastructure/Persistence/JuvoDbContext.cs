@@ -237,6 +237,12 @@ public sealed class JuvoDbContext : IdentityUserContext<StaffUser, Guid>, IAppli
 
     public DbSet<NotificationTemplateVersion> NotificationTemplateVersions => Set<NotificationTemplateVersion>();
 
+    public DbSet<Juvo.Domain.Integrations.ApiKey> ApiKeys => Set<Juvo.Domain.Integrations.ApiKey>();
+
+    public DbSet<Juvo.Domain.Integrations.WebhookEndpoint> WebhookEndpoints => Set<Juvo.Domain.Integrations.WebhookEndpoint>();
+
+    public DbSet<Juvo.Domain.Integrations.WebhookDelivery> WebhookDeliveries => Set<Juvo.Domain.Integrations.WebhookDelivery>();
+
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
     public DbSet<JobLog> JobLogs => Set<JobLog>();

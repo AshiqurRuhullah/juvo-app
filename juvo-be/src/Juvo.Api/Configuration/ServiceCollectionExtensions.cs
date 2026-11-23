@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using System.Threading.RateLimiting;
 using Asp.Versioning;
+using Juvo.Api.Endpoints;
 using Juvo.Api.Http;
 using Juvo.Application.Abstractions;
 using Juvo.Infrastructure.Persistence;
@@ -144,6 +145,19 @@ internal static class ServiceCollectionExtensions
                 options.SubstituteApiVersionInUrl = true;
             })
             .AddOpenApi(); // one OpenAPI document per API version (v1 at /openapi/v1.json)
+
+        // The public API has its own document (/openapi/public-v1.json) so it is never mixed up with the staff API.
+        services.AddOpenApi(PublicApiEndpoints.DocumentName, options =>
+        {
+            options.ShouldInclude = description => string.Equals(description.GroupName, PublicApiEndpoints.DocumentName, StringComparison.Ordinal);
+            options.AddDocumentTransformer((document, _, _) =>
+            {
+                document.Info.Title = "Juvo BD public API";
+                document.Info.Version = "1.0";
+                document.Info.Description = "Read-only REST API for integrations. Send your key in the X-Api-Key header. Money is in BDT. See docs/public-api.md.";
+                return Task.CompletedTask;
+            });
+        });
     }
 
     private static void AddJuvoHealthChecks(this IServiceCollection services)

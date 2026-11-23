@@ -28,6 +28,7 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         ["RateLimiting:Enabled"] = "false",
         ["Orders:HoldJobEnabled"] = "false",
         ["Couriers:Sync:Enabled"] = "false",
+        ["Webhooks:WorkerEnabled"] = "false",
         ["Operations:RecurringExpensesEnabled"] = "false",
         ["Operations:TicketAutoCloseEnabled"] = "false",
         ["MarketingJobs:CampaignSendEnabled"] = "false",

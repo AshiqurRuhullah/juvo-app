@@ -371,6 +371,14 @@ Branch `feature/12h-system-ui`, merged to `main` 2026-11-23. Notes `docs/system-
 - **Not built:** alerting, health history, a durable record of failed courier bookings and webhooks, external uptime monitoring.
 - **Gate (2026-11-23, run and seen by the lead, on the tree merged with main):** `tsc --noEmit` clean; eslint clean on the changed files; `npm test` 591 passed (19 new); `npm run build` ok (second run); browser on desktop: `system.spec` and `system-ui-checks` 46 passed together with setup and cleanup (360/768/1280, view-only, dark theme, Bengali, axe, 44 px, overflow, 30-second refresh with a fake clock); `shell.spec` (desktop, tablet, Pixel 7, iPhone 14), `permissions.spec` and `settings.spec`: 47 passed, 9 skipped (device-specific, as before). The full suite was not re-run.
 
+### Step 12j slice 1 result (public API and webhooks backend)
+
+Branch `feature/12j-public-api`, merged to `main` 2026-11-23. Contract `docs/public-api.md`; notes `docs/step12j-api-notes.md`; decisions `docs/assumptions.md` section AM.
+
+- **Built:** API keys (create, rotate, disable, delete, scopes), read-only public API (orders, products, stock, customers), webhooks (CRUD, ping, deliveries, redeliver, signed, retried, address-protected), migration `PublicApi` (three tables and one column).
+- **Not built:** the screens, write scopes.
+- **Gate (2026-11-23, run and seen by the lead, on the tree merged with main):** `dotnet build --no-incremental` 0 warnings, 0 errors; `has-pending-model-changes` none; domain 420 passed; application 359 passed; integration filtered to the new public API, keys, webhooks and address-protection classes, endpoint policy, seeder, roles, privacy, settings and system: 133 passed; and order flow, order stock, payment flow, catalog, inventory, outbox and interceptors: 149 passed. The full integration suite was not run.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.

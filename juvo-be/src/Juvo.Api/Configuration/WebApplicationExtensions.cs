@@ -73,6 +73,8 @@ internal static class WebApplicationExtensions
         app.MapNotificationsEndpoints();
         app.MapMarketingEndpoints();
         app.MapContentEndpoints();
+        app.MapIntegrationsEndpoints();
+        app.MapPublicApiEndpoints();
 
         if (app.Services.GetRequiredService<IOptions<OpenApiSettings>>().Value.Enabled)
         {
