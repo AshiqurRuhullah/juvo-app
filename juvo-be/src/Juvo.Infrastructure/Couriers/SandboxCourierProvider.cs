@@ -30,7 +30,7 @@ public sealed class SandboxCourierOptions
 /// running count, so booking the same order again gives the next id); the parcel's progress is its own table row that staff, tests or a signed webhook move along; polling reads it.
 /// Reports carry ids <c>consignment:version</c>, so a repeated report is recognised. Bookings and cancels are saved at once (they are the courier's own side effects).
 /// </summary>
-internal sealed class SandboxCourierProvider(JuvoDbContext db, IOptions<SandboxCourierOptions> options, TimeProvider clock) : ICourierProvider, ICourierSimulator
+internal sealed class SandboxCourierProvider(JuvoDbContext db, IOptions<SandboxCourierOptions> options, TimeProvider clock) : ICourierProvider, ICourierSimulator, Juvo.Application.Monitoring.ISandboxAdapter
 {
     private static readonly string ProcessSecret = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
 

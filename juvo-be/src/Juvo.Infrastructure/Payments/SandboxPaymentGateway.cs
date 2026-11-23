@@ -33,7 +33,7 @@ public sealed class SandboxGatewayOptions
 /// The sandbox payment gateway (module I): a hosted-page style provider that needs no keys. Initiate makes a session and returns the sandbox pay page; the customer picks success,
 /// failure or cancel there; the sandbox then sends the shop a signed webhook (the same signature scheme a real provider uses) and answers server-side verification from its session.
 /// </summary>
-internal sealed class SandboxPaymentGateway(JuvoDbContext db, IOptions<SandboxGatewayOptions> options) : IPaymentGateway
+internal sealed class SandboxPaymentGateway(JuvoDbContext db, IOptions<SandboxGatewayOptions> options) : IPaymentGateway, Juvo.Application.Monitoring.ISandboxAdapter
 {
     private static readonly string ProcessSecret = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
 

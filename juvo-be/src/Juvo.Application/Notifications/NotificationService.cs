@@ -204,7 +204,7 @@ public sealed partial class NotificationService(IApplicationDbContext db, IOutbo
 /// retries with exponential backoff; after the configured attempts the log row becomes DeadLetter (the outbox message is then finished, and staff can resend from the log).
 /// Idempotent: a message that is already Sent is left alone.
 /// </summary>
-public sealed class NotificationDeliverHandler(IApplicationDbContext db, IEnumerable<INotificationSender> senders, IOptions<NotificationDeliveryOptions> options, TimeProvider clock) : IOutboxMessageHandler
+public sealed class NotificationDeliverHandler(IApplicationDbContext db, IEnumerable<INotificationSender> senders, IOptions<NotificationDeliveryOptions> options, Monitoring.IIntegrationHealthRecorder health, TimeProvider clock) : IOutboxMessageHandler
 {
     public string MessageType => "notification.deliver";
 
@@ -236,6 +236,16 @@ public sealed class NotificationDeliverHandler(IApplicationDbContext db, IEnumer
         }
 
         var now = clock.GetUtcNow();
+        var healthKey = Monitoring.SystemHealthService.ChannelKey(log.Channel);
+        if (outcome.Success)
+        {
+            health.Success(healthKey);
+        }
+        else
+        {
+            health.Failure(healthKey, outcome.Error);
+        }
+
         if (outcome.Success)
         {
             log.MarkSent(outcome.ProviderResponse, now);
