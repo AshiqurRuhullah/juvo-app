@@ -136,7 +136,8 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 - 12g slice 2 Settings screen: **done** (2026-11-23). `/admin/settings` (`docs/settings-ui-notes.md`, decisions section AI). Traceability table reconciled 2026-11-23 (see PROGRESS.md).
 - 12h slice 1 Jobs and integration health backend: **done** (2026-11-23). `/api/v1/system/*` (`docs/system-api.md`, decisions section AJ); screens next.
 - 12i slice 1 Privacy tools backend: **done** (2026-11-23). Consent history, data export, anonymisation (`docs/privacy-api.md`, decisions section AK with owner questions); screens next.
-- Next: jobs and health screens (in progress), privacy screens, backup tools, API keys and webhooks, PWA, staff guide, dashboard check, settings and platform services. Machine note: this PC has little free memory; run browser specs in the foreground with the single configured worker, about 90 tests or one to two spec files per command, never in the background, never `--workers=2`.
+- 12h slice 2 Jobs and health screens: **done** (2026-11-23). `/admin/system/jobs` and `/admin/system/health` (`docs/system-ui-notes.md`, decisions section AL); the menu has a System parent row.
+- Next: public API keys and webhooks (backend in progress), privacy screens, backup tools, PWA, staff guide, dashboard check, settings and platform services. Machine note: this PC has little free memory; run browser specs in the foreground with the single configured worker, about 90 tests or one to two spec files per command, never in the background, never `--workers=2`.
 
 ### Step 6 detail
 - 6-a Catalog backend: **Done** (committed `f5aaf89`): categories tree, brands, size charts, products, variants, pricing/sale dates, publish rules, duplicate, cost-price visibility, audit, `CatalogSeeder`; endpoints `/api/v1/catalog/*`; migration `CatalogProducts`; SKU unique among live variants (case-insensitive); slugs unique among live rows.

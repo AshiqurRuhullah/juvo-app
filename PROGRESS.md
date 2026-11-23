@@ -363,6 +363,14 @@ Branch `feature/12i-privacy-backend`, merged to `main` 2026-11-23. Contract `doc
 - **Not built:** screens, customer self-service deletion, retention rules, legal review.
 - **Gate (2026-11-23, run and seen by the lead):** `dotnet build --no-incremental` 0 warnings, 0 errors; domain 413 passed; application 291 passed; integration filtered to privacy, endpoint policy, seeder, roles, store account, loyalty, segments, customers, marketing and permissions: 215 passed. The full integration suite was not run. The lead also read the data-changing statements of the anonymise code: each is scoped to the customer's id, their own orders or their own mobile and email.
 
+### Step 12h slice 2 result (jobs and health screens)
+
+Branch `feature/12h-system-ui`, merged to `main` 2026-11-23. Notes `docs/system-ui-notes.md`; decisions `docs/assumptions.md` section AL.
+
+- **Built:** `/admin/system/jobs` (summaries, runs with filters and a scrubbed error, queue with requeue one or up to 100, failed sends with retry) and `/admin/system/health` (a card per integration, test button only where supported, status panel with auto refresh); the menu has a System parent row (Settings, Background jobs, System health).
+- **Not built:** alerting, health history, a durable record of failed courier bookings and webhooks, external uptime monitoring.
+- **Gate (2026-11-23, run and seen by the lead, on the tree merged with main):** `tsc --noEmit` clean; eslint clean on the changed files; `npm test` 591 passed (19 new); `npm run build` ok (second run); browser on desktop: `system.spec` and `system-ui-checks` 46 passed together with setup and cleanup (360/768/1280, view-only, dark theme, Bengali, axe, 44 px, overflow, 30-second refresh with a fake clock); `shell.spec` (desktop, tablet, Pixel 7, iPhone 14), `permissions.spec` and `settings.spec`: 47 passed, 9 skipped (device-specific, as before). The full suite was not re-run.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.
