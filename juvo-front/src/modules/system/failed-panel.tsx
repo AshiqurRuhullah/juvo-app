@@ -69,13 +69,15 @@ export function FailedPanel({ canRetry }: { canRetry: boolean }) {
               meta: { primary: true },
               enableSorting: false,
               cell: ({ row }: { row: { original: FailedSend } }) => (
-                <Checkbox
-                  checked={selection.selected.has(row.original.id)}
-                  onCheckedChange={() => selection.toggle(row.original.id)}
-                  disabled={!selection.selected.has(row.original.id) && selection.selected.size >= selection.limit}
-                  aria-label={t("selectRow", { template: row.original.template, recipient: row.original.recipientMasked })}
-                  data-testid="failed-select"
-                />
+                <label className="-m-2 inline-flex size-11 cursor-pointer items-center justify-center">
+                  <Checkbox
+                    checked={selection.selected.has(row.original.id)}
+                    onCheckedChange={() => selection.toggle(row.original.id)}
+                    disabled={!selection.selected.has(row.original.id) && selection.selected.size >= selection.limit}
+                    aria-label={t("selectRow", { template: row.original.template, recipient: row.original.recipientMasked })}
+                    data-testid="failed-select"
+                  />
+                </label>
               ),
             } satisfies ColumnDef<FailedSend, unknown>,
           ]

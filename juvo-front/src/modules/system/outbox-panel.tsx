@@ -72,13 +72,15 @@ export function OutboxPanel({ canRetry }: { canRetry: boolean }) {
               enableSorting: false,
               cell: ({ row }: { row: { original: OutboxMessage } }) =>
                 canRequeue(row.original.state as OutboxState) ? (
-                  <Checkbox
-                    checked={selection.selected.has(row.original.id)}
-                    onCheckedChange={() => selection.toggle(row.original.id)}
-                    disabled={!selection.selected.has(row.original.id) && selection.selected.size >= selection.limit}
-                    aria-label={t("selectRow", { type: row.original.type })}
-                    data-testid="outbox-select"
-                  />
+                  <label className="-m-2 inline-flex size-11 cursor-pointer items-center justify-center">
+                    <Checkbox
+                      checked={selection.selected.has(row.original.id)}
+                      onCheckedChange={() => selection.toggle(row.original.id)}
+                      disabled={!selection.selected.has(row.original.id) && selection.selected.size >= selection.limit}
+                      aria-label={t("selectRow", { type: row.original.type })}
+                      data-testid="outbox-select"
+                    />
+                  </label>
                 ) : null,
             } satisfies ColumnDef<OutboxMessage, unknown>,
           ]
