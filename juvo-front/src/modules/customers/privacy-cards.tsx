@@ -355,9 +355,13 @@ export function PrivacyCard({ id, canExport, canAnonymise: mayAnonymise, anonymi
   const exportButton = React.useRef<HTMLButtonElement>(null);
   const anonymiseButton = React.useRef<HTMLButtonElement>(null);
   // Radix returns focus to a Dialog trigger only; these dialogs open from plain buttons, so the focus goes back here (WCAG 2.4.3).
-  const closing = (setOpen: (open: boolean) => void, button: React.RefObject<HTMLButtonElement | null>) => (open: boolean) => {
-    setOpen(open);
-    if (!open) requestAnimationFrame(() => button.current?.focus());
+  const closeExport = (open: boolean) => {
+    setExportOpen(open);
+    if (!open) requestAnimationFrame(() => exportButton.current?.focus());
+  };
+  const closeAnonymise = (open: boolean) => {
+    setAnonymiseOpen(open);
+    if (!open) requestAnimationFrame(() => anonymiseButton.current?.focus());
   };
   return (
     <Card data-testid="privacy-card">
@@ -382,7 +386,7 @@ export function PrivacyCard({ id, canExport, canAnonymise: mayAnonymise, anonymi
                 <Button ref={exportButton} variant="secondary" onClick={() => setExportOpen(true)} data-testid="privacy-export">
                   <Download aria-hidden /> {t("export.button")}
                 </Button>
-                <ExportDialog id={id} open={exportOpen} onOpenChange={closing(setExportOpen, exportButton)} />
+                <ExportDialog id={id} open={exportOpen} onOpenChange={closeExport} />
               </div>
             ) : null}
             {mayAnonymise ? (
@@ -397,7 +401,7 @@ export function PrivacyCard({ id, canExport, canAnonymise: mayAnonymise, anonymi
         )}
       </CardContent>
       {/* Outside the branches above so the result stays on screen after the card switches to its anonymised note. */}
-      {anonymiseOpen && mayAnonymise ? <AnonymiseDialog id={id} open={anonymiseOpen} onOpenChange={closing(setAnonymiseOpen, anonymiseButton)} onDone={onAnonymised} /> : null}
+      {anonymiseOpen && mayAnonymise ? <AnonymiseDialog id={id} open={anonymiseOpen} onOpenChange={closeAnonymise} onDone={onAnonymised} /> : null}
     </Card>
   );
 }
