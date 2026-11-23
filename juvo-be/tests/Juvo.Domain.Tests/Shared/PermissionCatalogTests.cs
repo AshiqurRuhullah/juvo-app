@@ -27,7 +27,7 @@ public partial class PermissionCatalogTests
                  {
                      "orders", "returns", "customers", "catalog", "inventory", "purchasing", "delivery", "couriers",
                      "payments", "tax", "notifications", "fraud", "support", "promotions", "loyalty", "marketing",
-                     "partners", "pos", "accounting", "reports", "cms", "settings", "platform", "ums",
+                     "partners", "pos", "accounting", "reports", "cms", "settings", "platform", "system", "ums",
                  })
         {
             Assert.Contains(expected, modules);
