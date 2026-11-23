@@ -66,6 +66,8 @@
       "settings": "সেটিংস",
       "systemJobs": "ব্যাকগ্রাউন্ড জব",
       "systemHealth": "সিস্টেমের অবস্থা",
+      "apiKeys": "এপিআই কী",
+      "webhooks": "ওয়েবহুক",
       "users": "ব্যবহারকারী",
       "roles": "ভূমিকা",
       "branches": "শাখা",

@@ -1,0 +1,311 @@
+{
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "search": "Search",
+    "noMatch": "Nothing matches.",
+    "clear": "Clear filters",
+    "loadFailed": "This could not be loaded. Please try again.",
+    "dismiss": "Dismiss",
+    "copyCode": "Copy example",
+    "copiedCode": "Example copied",
+    "copyFailed": "Copy did not work. Select the text and copy it by hand."
+  },
+  "errors": {
+    "INTEGRATIONS_KEY_NOT_FOUND": "This API key no longer exists. Reload the list.",
+    "INTEGRATIONS_INVALID_SCOPE": "Choose at least one of the listed access rights.",
+    "INTEGRATIONS_WEBHOOK_NOT_FOUND": "This webhook no longer exists. Reload the list.",
+    "INTEGRATIONS_DELIVERY_NOT_FOUND": "This delivery no longer exists.",
+    "INTEGRATIONS_INVALID_EVENT": "Choose at least one of the listed events.",
+    "INTEGRATIONS_URL_REFUSED": "This address is not allowed.",
+    "INTEGRATIONS_NOT_REDELIVERABLE": "This delivery is still waiting for its attempt, so it cannot be sent again yet."
+  },
+  "scopes": {
+    "orders_read": {
+      "title": "Read orders",
+      "description": "Orders with their lines, status, payment and delivery state. Customer details stay hidden unless the key may also read personal data."
+    },
+    "products_read": {
+      "title": "Read products",
+      "description": "Published products with variants, prices and pictures."
+    },
+    "stock_read": {
+      "title": "Read stock",
+      "description": "Units on hand and available per variant and branch."
+    },
+    "customers_read": {
+      "title": "Read customers",
+      "description": "Customer list with order counts. Mobile number and e-mail are masked and names are left out unless the key may also read personal data."
+    },
+    "pii_read": {
+      "title": "Read personal data",
+      "description": "Shows customer names, mobile numbers, e-mail and delivery addresses in full, in orders and customers.",
+      "caution": "Only for systems you fully trust."
+    }
+  },
+  "events": {
+    "order_placed": {
+      "title": "Order placed",
+      "description": "A new order was placed (online or by staff). The order details are sent without customer personal data."
+    },
+    "order_status_changed": {
+      "title": "Order status changed",
+      "description": "The order, payment or delivery status of an order changed."
+    },
+    "product_published": {
+      "title": "Product published",
+      "description": "A product became visible in the shop."
+    },
+    "product_updated": {
+      "title": "Product updated",
+      "description": "A published product, one of its variants or its pictures changed."
+    },
+    "stock_low": {
+      "title": "Stock low",
+      "description": "A variant in a branch fell to or below its reorder level (sent once per fall)."
+    }
+  },
+  "secret": {
+    "notice": "You will not see this again. Copy it now and keep it somewhere safe. If you lose it, the only way out is to create a new one.",
+    "done": "I have saved it",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyFailed": "Copy did not work: select and copy by hand",
+    "key": {
+      "createdTitle": "API key created: {name}",
+      "createdDescription": "This is the full key. Give it to the system that will read your data and send it in the X-Api-Key header, never in the web address.",
+      "rotatedTitle": "New key for {name}",
+      "rotatedDescription": "The old key has stopped working. Give this new key to the system that uses it.",
+      "fieldLabel": "API key"
+    },
+    "webhook": {
+      "createdTitle": "Webhook created: {name}",
+      "createdDescription": "This is the signing secret. Your receiving system uses it to check that a request really comes from Juvo BD.",
+      "rotatedTitle": "New signing secret for {name}",
+      "rotatedDescription": "The old secret no longer signs new requests. Update your receiving system with this one.",
+      "fieldLabel": "Signing secret"
+    }
+  },
+  "keys": {
+    "title": "API keys",
+    "subtitle": "Keys let another system (accounting, ERP, a marketplace, a dashboard) read your shop's data without a staff login. Keys can only read, never change anything.",
+    "readOnly": "You can see the keys but not change them.",
+    "new": "New API key",
+    "search": "Search API keys",
+    "searchPlaceholder": "Search by name or key start",
+    "anyState": "Any state",
+    "filterEnabled": "On",
+    "filterDisabled": "Off",
+    "columns": {
+      "name": "Name and key start",
+      "scopes": "Access",
+      "branch": "Branch limit",
+      "state": "State",
+      "expires": "Expires",
+      "limit": "Requests per minute",
+      "lastUsed": "Last used",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "state": {
+      "Enabled": "On",
+      "Disabled": "Off",
+      "Expired": "Expired"
+    },
+    "allBranches": "All branches",
+    "expiresOn": "Until {day}",
+    "never": "Never",
+    "defaultLimit": "Default",
+    "perMinute": "{count} per minute",
+    "neverUsed": "Never used",
+    "edit": "Edit",
+    "rotate": "Rotate",
+    "enable": "Turn on",
+    "disable": "Turn off",
+    "delete": "Delete",
+    "editLabel": "Edit key {name}",
+    "rotateLabel": "Rotate key {name}",
+    "enableLabel": "Turn on key {name}",
+    "disableLabel": "Turn off key {name}",
+    "deleteLabel": "Delete key {name}",
+    "enabledToast": "Key {name} is on.",
+    "disabledToast": "Key {name} is off. It is refused from now on.",
+    "deletedToast": "Key {name} was deleted.",
+    "empty": "No API keys yet",
+    "emptyDescription": "Create a key when another system needs to read your orders, products or stock.",
+    "rotateTitle": "Rotate key {name}?",
+    "rotateDescription": "A new key is created and shown once. The old key stops working at once, so any system still using it will be refused until you give it the new key.",
+    "rotateConfirm": "Rotate key",
+    "deleteTitle": "Delete key {name}?",
+    "deleteDescription": "The key stops working at once and cannot be brought back. Create a new key if you need one later.",
+    "deleteConfirm": "Delete key"
+  },
+  "keyForm": {
+    "newTitle": "New API key",
+    "newDescription": "Choose what the key may read. The key itself is shown once, after you save.",
+    "editTitle": "Edit key {name}",
+    "editDescription": "The key itself does not change. To get a new key value, use Rotate.",
+    "name": "Name",
+    "nameHint": "Who or what uses this key, for example Accounting sync.",
+    "scopes": "What can this key read?",
+    "scopesHint": "Choose only what the other system really needs.",
+    "piiWarning": "With this access the key can read customer names, mobile numbers, e-mail and delivery addresses in full. Anyone who holds the key can read them.",
+    "branch": "Limit to one branch",
+    "branchHint": "Orders and stock of other branches stay hidden from this key.",
+    "allBranches": "All branches",
+    "expires": "Expires on (optional)",
+    "expiresHint": "The key works until the end of this day, Dhaka time.",
+    "rate": "Requests per minute (optional)",
+    "rateHint": "From {min} to {max}. Leave empty to use the shop's default limit.",
+    "ratePlaceholder": "Default",
+    "create": "Create key",
+    "save": "Save changes",
+    "saved": "Key {name} was saved.",
+    "errors": {
+      "nameLength": "Give the key a name of 2 to 80 characters.",
+      "noScope": "Choose at least one access right.",
+      "unknownScope": "One of the chosen access rights is not known. Reload the page.",
+      "expiryInvalid": "Enter a real date.",
+      "expiryPast": "The expiry must be in the future.",
+      "rateInvalid": "Use a whole number from 1 to 10,000, or leave it empty."
+    }
+  },
+  "usage": {
+    "title": "How to use a key",
+    "intro": "Send the key in the X-Api-Key header of every request. Never put it in the web address. In the example, YOUR_API_KEY stands for the key you copied when you created it.",
+    "baseUrl": "Base address",
+    "spec": "Description of the API (OpenAPI)",
+    "hostNote": "Replace {host} with the address of your Juvo BD server (the API host). This staff site does not forward these requests; your technical contact can tell you the address.",
+    "curlLabel": "Example request with curl",
+    "limits": "Lists answer 20 items per page by default (up to 100). A key that sends too many requests in a minute gets a 429 answer with a Retry-After header."
+  },
+  "hooks": {
+    "title": "Webhooks",
+    "subtitle": "A webhook makes Juvo BD send a signed message to your system when something happens, for example when an order is placed. Addresses must be https and public.",
+    "readOnly": "You can see the webhooks and their deliveries but not change them.",
+    "new": "New webhook",
+    "limitReached": "The limit of {max} webhooks is reached. Delete one before adding another.",
+    "search": "Search webhooks",
+    "searchPlaceholder": "Search by name or address",
+    "noDeliveries": "No deliveries yet",
+    "columns": {
+      "name": "Name and address",
+      "events": "Events",
+      "enabled": "State",
+      "lastDelivery": "Last delivery",
+      "failed": "Failed deliveries",
+      "actions": "Actions"
+    },
+    "on": "On",
+    "off": "Off",
+    "log": "Delivery log",
+    "test": "Send test event",
+    "edit": "Edit",
+    "rotate": "New secret",
+    "enable": "Turn on",
+    "disable": "Turn off",
+    "delete": "Delete",
+    "logLabel": "Show deliveries of {name}",
+    "testLabel": "Send a test event to {name}",
+    "editLabel": "Edit webhook {name}",
+    "rotateLabel": "Create a new signing secret for {name}",
+    "enableLabel": "Turn on webhook {name}",
+    "disableLabel": "Turn off webhook {name}",
+    "deleteLabel": "Delete webhook {name}",
+    "enabledToast": "Webhook {name} is on.",
+    "disabledToast": "Webhook {name} is off. No new events are sent to it.",
+    "deletedToast": "Webhook {name} and its delivery log were deleted.",
+    "testTitle": "Test event sent to {name}",
+    "testHttp": "The receiver answered with HTTP {code}.",
+    "empty": "No webhooks yet",
+    "emptyDescription": "Add a webhook when another system should be told about orders, products or stock as they change.",
+    "rotateTitle": "Create a new signing secret for {name}?",
+    "rotateDescription": "A new secret is created and shown once. Requests are signed with it from now on, so your receiving system must be updated with the new secret.",
+    "rotateConfirm": "Create new secret",
+    "deleteTitle": "Delete webhook {name}?",
+    "deleteDescription": "No more events are sent to this address and its delivery log is deleted. This cannot be undone.",
+    "deleteConfirm": "Delete webhook"
+  },
+  "hookForm": {
+    "newTitle": "New webhook",
+    "newDescription": "Choose the address and the events. The signing secret is shown once, after you save.",
+    "editTitle": "Edit webhook {name}",
+    "editDescription": "The signing secret does not change. To get a new one, use New secret.",
+    "name": "Name",
+    "nameHint": "For your own reference, for example ERP orders.",
+    "url": "Address (https)",
+    "urlHint": "Must start with https:// and point to a public server. No user name or password in the address. Addresses on private networks are refused.",
+    "events": "Which events?",
+    "eventsHint": "You can choose several. The test event is always available.",
+    "enabled": "Send events to this address",
+    "enabledHint": "Turn off to pause without deleting.",
+    "create": "Create webhook",
+    "save": "Save changes",
+    "saved": "Webhook {name} was saved.",
+    "errors": {
+      "nameLength": "Give the webhook a name of 2 to 80 characters.",
+      "noEvent": "Choose at least one event.",
+      "unknownEvent": "One of the chosen events is not known. Reload the page.",
+      "empty": "Enter the https address that should receive the events.",
+      "tooLong": "The address can be 500 characters at most.",
+      "invalid": "This is not a complete web address. Start with https://",
+      "notHttps": "Only https addresses are allowed.",
+      "credentials": "Remove the user name and password from the address."
+    }
+  },
+  "verify": {
+    "title": "Check that a request is from Juvo BD",
+    "intro": "Every request carries a Juvo-Signature header like t=1700000000,v1=abcdef... Your system should check it before it trusts the message.",
+    "step1": "Read t (seconds since 1970) and v1 from the header.",
+    "step2": "Compute the HMAC-SHA256 of the text t, a dot, and the raw request body, using the signing secret, as lower-case hex.",
+    "step3": "Compare it with v1 in constant time, and refuse the request if t is more than {seconds} seconds from your clock.",
+    "step4": "Each event has an id that is the same on every retry: ignore an id you have already handled.",
+    "sampleLabel": "Example in Node.js",
+    "answer": "Answer with any 2xx status within 5 seconds. A failed attempt is retried after 30 seconds, 2, 8 and 32 minutes; after the fifth failure it is marked failed and can be sent again from the log below."
+  },
+  "log": {
+    "title": "Delivery log",
+    "intro": "Every message sent to a webhook, newest first. Errors are short and never contain your address or the receiver's answer.",
+    "search": "Search deliveries",
+    "searchPlaceholder": "Search by event or delivery id",
+    "anyEndpoint": "Any webhook",
+    "anyStatus": "Any status",
+    "anyEvent": "Any event",
+    "columns": {
+      "select": "Select",
+      "time": "Time",
+      "endpoint": "Webhook",
+      "event": "Event",
+      "attempt": "Attempt",
+      "status": "Status",
+      "http": "HTTP code",
+      "error": "Problem",
+      "next": "Next attempt",
+      "actions": "Actions"
+    },
+    "status": {
+      "Pending": "Waiting",
+      "Succeeded": "Delivered",
+      "Failed": "Failed"
+    },
+    "attemptOf": "{attempt} of {max}",
+    "selectRow": "Select the failed {event} delivery",
+    "redeliver": "Send again",
+    "redeliverLabel": "Send the failed {event} delivery again",
+    "selectFailed": "Select the {count, plural, one {# failed delivery} other {# failed deliveries}} on this page",
+    "selected": "{count, plural, one {# delivery selected} other {# deliveries selected}}",
+    "redeliverSelected": "Send selected again",
+    "clearSelection": "Clear selection",
+    "redeliverQueued": "{count, plural, one {# delivery was queued again.} other {# deliveries were queued again.}}",
+    "redeliverNone": "Nothing was queued again.",
+    "redeliverNow": "Now:",
+    "redeliverRefused": "{count, plural, one {# delivery was refused by the server.} other {# deliveries were refused by the server.}}",
+    "empty": "No deliveries yet",
+    "emptyDescription": "Deliveries appear here after an event happens or after you send a test event.",
+    "confirmTitle": "Send this delivery again?",
+    "confirmOne": "The same message (same event id and body) is queued to be sent again with a fresh set of attempts. Your system should ignore it if it already handled this event id.",
+    "confirmBulkTitle": "Send {count, plural, one {# delivery} other {# deliveries}} again?",
+    "confirmBulk": "The same messages (same event ids and bodies) are queued again, each with a fresh set of attempts. Your system should ignore event ids it already handled.",
+    "confirmAction": "Send again"
+  }
+}
