@@ -173,16 +173,17 @@ test("the notification centre shows an honest empty state", async ({ page }) => 
   await expect(page.getByText("You are all caught up")).toBeVisible();
 });
 
-test("modules that are not built yet are marked, not linked", async ({ page }) => {
+test("every menu item is built: linked, and none is marked as coming soon", async ({ page }) => {
   const layout = await layoutOf(page);
   if (layout !== "desktop") await page.getByRole("button", { name: "Open menu" }).click();
   const scope = layout === "desktop" ? page.getByRole("complementary", { name: "Navigation" }) : page.getByRole("dialog", { name: "Menu" });
 
   await expect(scope.getByRole("link", { name: "Dashboard" })).toBeVisible();
-  await expect(scope.locator('a[href="/admin/delivery/zones"]')).toHaveCount(0); // no dead link
-  // Delivery zones (its admin screen is a later step) is a child of the Delivery parent, which is closed until it is opened.
+  // Delivery zones is a child of the Delivery parent, which is closed until it is opened; its screen exists, so it is a real link.
   const delivery = scope.getByRole("button", { name: "Delivery" });
   if ((await delivery.getAttribute("aria-expanded")) !== "true") await delivery.click();
-  await expect(scope.getByText("Delivery zones", { exact: true })).toBeVisible();
-  await expect(scope.locator("li", { hasText: "Delivery zones" }).getByText("Soon")).toBeVisible();
+  await expect(scope.locator('a[href="/admin/delivery/zones"]')).toHaveCount(1);
+  await expect(scope.getByRole("link", { name: "Settings", exact: true })).toHaveAttribute("href", "/admin/settings");
+  // The "Soon" mark stays in the menu code for future modules; today nothing needs it.
+  await expect(scope.getByText("Soon", { exact: true })).toHaveCount(0);
 });
