@@ -54,12 +54,12 @@ export const useDashboard = (branchId: string | undefined) =>
 
 /**
  * Downloads a file from a BFF address and saves it under the name the server chose. A refusal (for example cost access missing)
- * throws an ApiError carrying the API's problem, so the caller shows the translated text.
+ * throws an ApiError carrying the API's problem, so the caller shows the translated text. `init` lets a caller use POST (privacy export).
  */
-export async function downloadFile(url: string, fallbackName: string): Promise<{ name: string; size: number; type: string }> {
+export async function downloadFile(url: string, fallbackName: string, init?: RequestInit): Promise<{ name: string; size: number; type: string }> {
   let response: Response;
   try {
-    response = await fetch(url, { credentials: "same-origin" });
+    response = await fetch(url, { credentials: "same-origin", ...init });
   } catch {
     throw new ApiError({ status: 0, code: "NETWORK" });
   }
