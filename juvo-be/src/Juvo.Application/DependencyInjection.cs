@@ -81,6 +81,10 @@ public static class DependencyInjection
         services.AddSingleton<Juvo.Application.Monitoring.RequestMonitor>();
         services.AddScoped<Juvo.Application.Monitoring.SystemJobsService>();
         services.AddScoped<Juvo.Application.Monitoring.SystemHealthService>();
+        services.AddSingleton<Juvo.Application.Backup.BackupCoordinator>();
+        services.AddScoped<Juvo.Application.Backup.BackupRunner>();
+        services.AddScoped<Juvo.Application.Backup.BackupService>();
+        services.AddScoped<Juvo.Application.Backup.DataInventoryService>();
         services.AddScoped<Juvo.Application.Settings.ISettingsReader, Juvo.Application.Settings.SettingsReader>();
         services.AddScoped<Juvo.Application.Settings.SettingsCentreService>();
         services.AddScoped<Juvo.Application.Orders.OrderStock>();

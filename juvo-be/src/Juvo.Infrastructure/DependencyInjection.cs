@@ -107,6 +107,11 @@ public static class DependencyInjection
         services.AddSingleton<Juvo.Application.Integrations.IWebhookSender, Integrations.WebhookHttpSender>();
         services.AddHostedService<Integrations.WebhookDeliveryWorker>();
 
+        // Database backups (FR-AF03): options (appsettings section Backup), the SQL Server engine and the nightly worker.
+        services.Configure<Juvo.Application.Backup.BackupOptions>(configuration.GetSection(Juvo.Application.Backup.BackupOptions.SectionName));
+        services.AddScoped<Juvo.Application.Backup.IBackupEngine, Backup.SqlServerBackupEngine>();
+        services.AddHostedService<Backup.BackupWorker>();
+
         AddIdentity(services, configuration, environment);
 
         services.AddSingleton<SigningKeyProvider>();

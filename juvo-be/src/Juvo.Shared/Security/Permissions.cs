@@ -281,6 +281,8 @@ public static class Permissions
         public const string JobsView = "system.jobs.view";
         public const string JobsRetry = "system.jobs.retry";
         public const string HealthView = "system.health.view";
+        public const string BackupView = "system.backup.view";
+        public const string BackupRun = "system.backup.run";
     }
 
     public static class Integrations

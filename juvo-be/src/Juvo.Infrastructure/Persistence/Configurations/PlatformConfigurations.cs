@@ -51,3 +51,17 @@ internal sealed class JobLogConfiguration : IEntityTypeConfiguration<JobLog>
         builder.HasIndex(x => x.Status);
     }
 }
+
+internal sealed class BackupRunConfiguration : IEntityTypeConfiguration<BackupRun>
+{
+    public void Configure(EntityTypeBuilder<BackupRun> builder)
+    {
+        builder.ToTable("BackupRuns");
+        builder.Property(x => x.Trigger).HasConversion<int>();
+        builder.Property(x => x.Status).HasConversion<int>();
+        builder.Property(x => x.FileName).HasMaxLength(200);
+        builder.Property(x => x.Error).HasMaxLength(2000);
+        builder.HasIndex(x => x.StartedAt);
+        builder.HasIndex(x => x.Status);
+    }
+}
