@@ -857,3 +857,15 @@ Notes (decisions U1 to U7): `docs/privacy-ui-notes.md`. Cards on `/admin/custome
 | PU3 | Anonymise lists what is replaced, deleted and kept, shows the API's blocking reasons in plain words, needs a reason of 5 to 300 characters and the typed customer id before the button works, has no default focus on the destructive button and says it cannot be undone and that invoices and totals are kept for the books. | Irreversible action. | `privacy-cards.tsx`. |
 | PU4 | The customer data has no "anonymised on" field: an anonymised customer is recognised by the placeholder mobile, and the date is shown only in the session that ran the action. | The DTO lacks `anonymisedAt`. | Add it to the customer DTO. |
 | PU5 | The consent history has no paging in the API, so the card pages it in the browser; focus returns to the opening button in code because the shared confirm dialog has no trigger reference (the deactivate dialog has the same limit). | Accessibility without changing shared code. | A `triggerRef` on the shared dialog. |
+
+## AO. Step 12j slice 2 (API keys and webhooks screens) decisions
+
+Notes: `docs/apikeys-ui-notes.md`. Screens `/admin/integrations/api-keys` and `/admin/integrations/webhooks` (System menu group, Super Admin only by default); module `juvo-front/src/modules/integrations`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| AU1 | The secret of a new or rotated key or webhook is shown once in a dialog that cannot be dismissed by an outside click or Escape; it is held only in component state (not in the address, caches, browser storage or logs) and is absent after a reload. | A secret must not leak. | n/a |
+| AU2 | Scopes are explained in plain words; `pii:read` carries a warning that customer personal data becomes readable. Rotate and delete ask first and say the old key stops working at once. | Clear consequences. | `logic.ts`. |
+| AU3 | The webhook form mirrors the API checks (https only, no credentials) and shows the API's own refusal for private or internal addresses; the delivery log has filters and Redeliver for failed rows with a confirm. | The API guard decides. | n/a |
+| AU4 | The "How to use" block shows `https://YOUR_API_HOST/api/public/v1` and `/openapi/public-v1.json` with a note, because the app has no public API address setting. | Nothing invented. | Add a setting. |
+| AU5 | Gaps: the webhook list makes one small request per row for the last delivery (no field in the DTO); redeliver is offered for Failed rows only although the API also accepts Succeeded; no payload view; creating a webhook cannot succeed in automated tests because the real guard refuses every reachable address (rows for the log tests are inserted by SQL). | Listed, not hidden. | Backend and test follow-ups. |

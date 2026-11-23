@@ -66,6 +66,8 @@
       "settings": "Settings",
       "systemJobs": "Background jobs",
       "systemHealth": "System health",
+      "apiKeys": "API keys",
+      "webhooks": "Webhooks",
       "users": "Users",
       "roles": "Roles",
       "branches": "Branches",

@@ -3,7 +3,7 @@
  * own file next to it (`catalog.en.json`, `inventory.en.json` ...) so modules can be built side by side without editing one huge file.
  * Each fragment becomes one top-level namespace with the fragment's name.
  */
-export const MESSAGE_FRAGMENTS = ["catalog", "lookups", "inventory", "otp", "dashboard2", "store", "cart", "myaccount", "orders", "returns", "payments", "billing", "notifications", "couriers", "shipments", "cod", "live", "booking", "purchasing", "accounting", "support", "reports", "promotions", "storepromo", "preorders", "loyalty", "marketing", "marketingStore", "customers", "delivery", "coupons", "content", "contact", "settings", "sysops", "privacy"] as const;
+export const MESSAGE_FRAGMENTS = ["catalog", "lookups", "inventory", "otp", "dashboard2", "store", "cart", "myaccount", "orders", "returns", "payments", "billing", "notifications", "couriers", "shipments", "cod", "live", "booking", "purchasing", "accounting", "support", "reports", "promotions", "storepromo", "preorders", "loyalty", "marketing", "marketingStore", "customers", "delivery", "coupons", "content", "contact", "settings", "sysops", "integrations", "privacy"] as const;
 
 export type MessageLocale = "en" | "bn";
 
