@@ -403,6 +403,14 @@ Branch `feature/12k-backup`, merged to `main` 2026-11-23. Runbook `docs/backup-a
 - **Not built:** the screen, alerting, off-site copy, encryption, log backups.
 - **Gate (2026-11-23, run and seen by the lead, on the tree merged with main):** `dotnet build --no-incremental` 0 warnings, 0 errors; `has-pending-model-changes` none; migrations in order (PrivacyTools, PublicApi, BackupRuns); domain 420 passed; application 383 passed; integration filtered to backup (real LocalDB backups), endpoint policy, seeder, roles, settings, system, public API and privacy: 81 passed. The lead also read the overwrite guards of `restore-db.ps1`. The full integration suite was not run; the scripts were not re-run by the lead.
 
+### Step 12l result (installable web app)
+
+Branch `feature/12l-pwa`, merged to `main` 2026-11-23. Notes `juvo-front/docs/pwa-notes.md`; decisions `docs/assumptions.md` section AQ.
+
+- **Built:** manifest, hand-written service worker with strict never-cache rules, offline page, install prompt with an iPhone hint, update toast, cache headers.
+- **Not built:** push notifications; Lighthouse and real-device checks.
+- **Gate (2026-11-23, run and seen by the lead, on the tree merged with main):** `tsc --noEmit` clean; eslint clean on the changed files including the two shared message files the builder had skipped; `npm test` 663 passed; `npm run build` ok (second run); browser on desktop: `pwa.spec` 11 passed twice alone; in a longer run with `store.spec` and `cart.spec` 41 passed and 2 failed: the offline test once (a page load right after going back online showed the offline page; the worker has no timeout, so this is a one-off network failure) and the quantity-stepper test in `store.spec`. The stepper test has now failed in every full run of `store.spec` and passes alone: it picks a product with one unit left that earlier tests in the file use up. It is a test-data problem to fix in Step 13. The lead also read the never-cache rules of `sw.js`. Pixel 7, iPhone 14 and the full suite were not run.
+
 ## Next step
 
 **Step 11B, remaining work:** Step 12 in small steps (Customers, Delivery zones and Coupons admin screens are done; next website content and SEO, dashboard check, settings and platform services), reseller and POS (backend first: neither exists), 13, 14. Also decide on the Next.js security upgrade and set `Marketing:UnsubscribeUrl`.

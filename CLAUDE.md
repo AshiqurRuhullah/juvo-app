@@ -141,7 +141,8 @@ Conventions: `Result<T>` with stable codes (`AREA.REASON`) for expected failures
 - 12i slice 2 Privacy screens: **done** (2026-11-23). Consent history, export and anonymise on the customer page (`docs/privacy-ui-notes.md`, decisions section AN).
 - 12j slice 2 API key and webhook screens: **done** (2026-11-23). `/admin/integrations/*` (`docs/apikeys-ui-notes.md`, decisions section AO).
 - 12k slice 1 Backup, restore and data inventory: **done** (2026-11-23). `/api/v1/system/backups`, scripts in `scripts/` (`docs/backup-api.md`, decisions section AP with owner questions); the screen is next.
-- Next: backup screen, PWA (in progress), staff guide, remaining admin gaps, dashboard check, settings and platform services. Machine note: this PC has little free memory; run browser specs in the foreground with the single configured worker, about 90 tests or one to two spec files per command, never in the background, never `--workers=2`.
+- 12l Installable web app: **done** (2026-11-23). `public/sw.js`, manifest, offline page, install prompt (`juvo-front/docs/pwa-notes.md`, decisions section AQ); bump `VERSION` in `sw.js` when the cache rules change; push notifications need a backend.
+- Next: backup screen (in progress), staff guide, remaining admin gaps, Step 13 (fix the flaky stepper test in `store.spec`), dashboard check, settings and platform services. Machine note: this PC has little free memory; run browser specs in the foreground with the single configured worker, about 90 tests or one to two spec files per command, never in the background, never `--workers=2`.
 
 ### Step 6 detail
 - 6-a Catalog backend: **Done** (committed `f5aaf89`): categories tree, brands, size charts, products, variants, pricing/sale dates, publish rules, duplicate, cost-price visibility, audit, `CatalogSeeder`; endpoints `/api/v1/catalog/*`; migration `CatalogProducts`; SKU unique among live variants (case-insensitive); slugs unique among live rows.

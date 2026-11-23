@@ -884,3 +884,16 @@ Full list K1 to K16 and real script outputs: `docs/step12k-backup-notes.md`; run
 | BK6 | Permissions `system.backup.view` and `system.backup.run` are Super Admin only (Manager is denied); manual runs are audited. | High-risk. | Role screens. |
 
 **Owner decisions needed:** how much data loss you can accept (RPO: with one nightly backup and no log backups, up to a day) and how long a restore may take (RTO: measure with the restore test on real data); where the off-site copy goes (a backup on the same disk is not disaster recovery); whether backup files must be encrypted (needs certificates; Step 14).
+
+## AQ. Step 12l (installable web app) decisions
+
+Notes: `juvo-front/docs/pwa-notes.md`. Files: `public/sw.js`, `src/app/manifest.ts`, `src/app/offline/page.tsx`, `src/modules/pwa`, `src/lib/pwa`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| PW1 | A hand-written service worker, no new package, registered only in production builds and only on shop pages; the admin has no worker and no install prompt. | No new dependency; the admin must never be cached. | `pwa-client.tsx`. |
+| PW2 | The worker never stores or answers anything under `/api`, `/admin`, `/account`, `/checkout`, `/cart`, `/login`, `/pay`, `/order`, `/track` or the password-reset paths, any request that is not GET or carries an Authorization header, or any response with Set-Cookie, Authorization, no-store or private. Because Next sends shop pages as no-store, shop HTML is never stored: only static files, brand files, product pictures and the offline page are kept on the device. | Personal data must never land in a cache. | `public/sw.js` (bump `VERSION` when the rules change). |
+| PW3 | Shop pages go network first; when the network fails the stored offline page (English and Bengali together) is shown; there is no offline browsing or ordering by design. A new version takes over only after the customer taps Reload on the update toast, so an open checkout is never broken. | Safe updates. | n/a |
+| PW4 | The install prompt appears after the second browser session or after adding to the cart, stays hidden for 30 days after a dismissal, is hidden when already installed and on checkout, cart, pay, order, track, sign-in, account, admin and offline pages; iPhone Safari gets a one-time Share then Add to Home Screen hint. | Respectful. | `pwa-client.tsx`. |
+| PW5 | The manifest is in English only (one manifest per site). | Platform limit. | n/a |
+| PW6 | Not built: push notifications (a backend for VAPID keys, subscriptions and sending); the Lighthouse installability audit, a real Android or iOS device test, HTTPS on the real host were not checked (manifest fields, icons and a controlling worker were checked in a production Chromium on localhost). | Honest limits. | Step 13 and 14. |
