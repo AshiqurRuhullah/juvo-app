@@ -173,7 +173,7 @@ export const ADMIN_NAV: NavGroup[] = [
     id: "system",
     label: "system",
     icon: Settings,
-    items: [{ id: "settings", label: "settings", href: "/admin/settings", icon: Settings, permission: "settings.system.view", scope: "anywhere", ready: false }],
+    items: [{ id: "settings", label: "settings", href: "/admin/settings", icon: Settings, permission: "settings.system.view", scope: "anywhere", ready: true }],
   },
   {
     id: "ums",

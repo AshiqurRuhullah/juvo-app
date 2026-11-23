@@ -1,0 +1,96 @@
+{
+  "title": "Settings",
+  "subtitle": "The switches and rules the shop runs on. A change takes effect at once, is saved with your name, and shows under Recent changes. Settings that are fixed by the server configuration are listed so the picture is complete, but they cannot be changed here.",
+  "search": "Search settings",
+  "searchPlaceholder": "Search by name or key",
+  "groupsLabel": "Setting groups",
+  "searchCount": "{count, plural, one {# setting matches} other {# settings match}}",
+  "empty": { "title": "No settings are listed", "description": "The server returned no settings. Reload the page or ask an administrator." },
+  "noMatch": { "title": "No setting matches", "description": "Try other words, or clear the search to see every group." },
+  "common": {
+    "loadFailed": "The settings could not be loaded. Please try again.",
+    "retry": "Try again",
+    "clear": "Clear the search"
+  },
+  "groups": {
+    "features": "Features",
+    "loyalty": "Rewards",
+    "payments": "Payments",
+    "orders": "Checkout and orders",
+    "inventory": "Stock",
+    "returns": "Returns",
+    "business": "Business details",
+    "notifications": "Notifications",
+    "marketing": "Marketing",
+    "operations": "Purchasing, expenses and support",
+    "reports": "Reports",
+    "locale": "Language and currency",
+    "security": "Sign-in and security"
+  },
+  "row": {
+    "on": "On",
+    "off": "Off",
+    "empty": "(empty)",
+    "choose": "Choose",
+    "search": "Search",
+    "noMatch": "Nothing matches.",
+    "saved": "Saved: {name}.",
+    "wasReset": "Back to the default: {name}.",
+    "source": { "changed": "Changed", "default": "Default", "config": "Server configuration" },
+    "defaultIs": "Default: {value}",
+    "range": "Allowed: {min} to {max}",
+    "rangeMin": "At least {min}",
+    "rangeMax": "At most {max}",
+    "maxLength": "Up to {length} characters",
+    "restart": "The server must be restarted before a change takes effect.",
+    "blocked": {
+      "noPermission": "You can see this setting but not change it. It needs the permission {permission}.",
+      "readOnlyConfig": "Set in the server configuration, so it cannot be changed here. Changing it needs the configuration file edited and the server restarted.",
+      "readOnlyFixed": "This value is fixed by the shop's rules and cannot be changed."
+    },
+    "stale": "Someone else changed this setting while you were editing, so it was reloaded. Check the value and save again if it is still wanted.",
+    "save": "Save",
+    "undo": "Undo changes",
+    "reset": "Reset to default",
+    "cancel": "Cancel",
+    "close": "Close",
+    "danger": {
+      "warning": "This reaches customers at once. Check it before you continue.",
+      "loyaltyOn": { "title": "Turn rewards on?", "description": "Customers will start to see and earn points, referral credit, gift cards and store credit, and checkout will accept them as payment.", "confirm": "Turn rewards on" },
+      "loyaltyOff": { "title": "Turn rewards off?", "description": "Customers will no longer see or use points, referral credit, gift cards or store credit. Balances are kept and come back when rewards are turned on again.", "confirm": "Turn rewards off" },
+      "paymentOn": { "title": "Offer {method} at checkout?", "description": "Customers will be able to choose {method} to pay for new orders straight away.", "confirm": "Offer {method}" },
+      "paymentOff": { "title": "Stop offering {method}?", "description": "Customers will no longer be able to choose {method} for new orders. Orders already placed are not changed. If this was the only method, nobody can check out.", "confirm": "Stop offering {method}" },
+      "autoConfirm": { "title": "Change automatic confirmation of paid orders?", "description": "This decides whether an order is confirmed by itself once its payment is verified, or waits for staff. New orders follow the new rule at once.", "confirm": "Change it" },
+      "otpMode": { "title": "Change when customers must confirm by code?", "description": "The code check at checkout will become: {value}. It changes how every new customer order is confirmed and can add steps or remove a safeguard against fake orders.", "confirm": "Change it" }
+    },
+    "resetConfirm": {
+      "title": "Reset to the default?",
+      "description": "\"{name}\" will go back to its default, {default}. The saved value, {current}, is removed. The change is kept in Recent changes.",
+      "confirm": "Reset to default"
+    }
+  },
+  "errors": {
+    "required": "Enter a value.",
+    "notWhole": "Enter a whole number, without decimals.",
+    "notNumber": "Enter a number, for example 10 or 2.5.",
+    "tooManyDecimals": "Use at most 4 decimals.",
+    "belowMin": "The value must be at least {min}.",
+    "aboveMax": "The value must be at most {max}.",
+    "tooLong": "The text can have at most {length} characters.",
+    "notAllowed": "Choose one of the listed values.",
+    "SETTINGS_UNKNOWN_KEY": "The server does not know this setting. Reload the page.",
+    "SETTINGS_INVALID_VALUE": "This value is not valid for this setting.",
+    "SETTINGS_READ_ONLY": "This setting cannot be changed here."
+  },
+  "history": {
+    "title": "Recent changes",
+    "subtitle": "The latest changes to settings, newest first: who changed what, and when.",
+    "loadFailed": "The recent changes could not be loaded. Please try again.",
+    "empty": "No setting has been changed yet.",
+    "first": "Set to {value}",
+    "changed": "Changed from {old} to {value}",
+    "reset": "Reset to the default (was {old})",
+    "by": "{who}, {when}",
+    "system": "System"
+  }
+}

@@ -776,3 +776,15 @@ Notes with the audit table and all gaps: `docs/dashboard-notes.md`. Code: `juvo-
 | DB3 | Cards link only to lists that accept the filter: orders list now accepts any valid status and a from and to day range (a small shared change); other lists are linked without a filter. | No invented query parameters. | Add filters to those lists. |
 | DB4 | Where the API has no number the card says so instead of showing zero: payments to verify, failed courier bookings, refunds due, paid versus unpaid online orders, district grouping; "to pack" covers all open orders and delivery counts cover the last 30 days. | Never show a number that is not true. | API additions listed in the notes. |
 | DB5 | Out of stock counts only items that have a reorder level, and shows "at least" when the list was cut. | The stock report omits variants with level 0. | Add an out-of-stock count to the report. |
+
+## AI. Step 12g slice 2 (settings screen) decisions
+
+Notes: `docs/settings-ui-notes.md`. Screen `/admin/settings`; module `juvo-front/src/modules/settings`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| SU1 | The screen renders only what `GET /settings` returns (no invented settings); the localized description is the name and the key sits under it. | The API has no label field. | Add a label to the definitions. |
+| SU2 | Save sends the row version; a stale answer reloads the row and says so. Reset to default asks first and names the default and the stored value. | Two staff must not overwrite each other silently. | n/a |
+| SU3 | Switches for rewards, each payment method, auto-confirm of paid orders and OTP mode ask for a confirm that states the consequence. | Risky switches. | `setting-row.tsx`. |
+| SU4 | Text formats (time, email, web address) are checked by the server only, and its sentence is shown; history shows the latest 30 changes without filter or paging. | The API gives no format field and no paging. | API additions. |
+| SU5 | The existing Loyalty, Payments, Marketing and Notifications screens are unchanged and write the same stored rows. | One store, several views. | n/a |
