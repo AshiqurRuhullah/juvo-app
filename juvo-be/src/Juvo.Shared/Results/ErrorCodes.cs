@@ -411,4 +411,11 @@ public static class ErrorCodes
         public const string UrlInvalid = "CONTENT.URL_INVALID";
         public const string RateLimited = "CONTENT.RATE_LIMITED";
     }
+
+    public static class Settings
+    {
+        public const string UnknownKey = "SETTINGS.UNKNOWN_KEY";
+        public const string InvalidValue = "SETTINGS.INVALID_VALUE";
+        public const string ReadOnly = "SETTINGS.READ_ONLY";
+    }
 }

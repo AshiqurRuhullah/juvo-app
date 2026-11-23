@@ -53,7 +53,7 @@ public sealed class LoyaltySettingsService(IApplicationDbContext db, SettingsSer
 
     public async Task<LoyaltySettings> ReadAsync(CancellationToken cancellationToken)
     {
-        var v = await settings.ReadAsync(LoyaltySettingKeys.All, cancellationToken);
+        var v = await settings.ReadCachedAsync(LoyaltySettingKeys.All, cancellationToken);
         var d = LoyaltySettings.Defaults;
         return new LoyaltySettings(
             v.TryGetValue(LoyaltySettingKeys.Enabled, out var on) && bool.TryParse(on, out var enabled) ? enabled : d.Enabled,

@@ -751,3 +751,16 @@ Notes: `juvo-front/docs/seo-notes.md`. Code: `juvo-front/src/lib/seo.ts`, `src/a
 | SE4 | Structured data uses real values only: no rating without real reviews, no organisation fields without real brand data; JSON is escaped so it cannot close the script tag. | Never invent facts; safe markup. | `src/lib/seo.ts`. |
 | SE5 | hreflang is not used: the language is a cookie with no URL prefix, so English and Bengali share one URL. | Matches the site design. | Needs a URL-based language scheme. |
 | SE6 | Not in this step: analytics and ad tracking hooks with a cookie banner (R04), catalogue feed for Facebook and Instagram (R05), newsletter export (R06), page-speed measurement (R07). Contract gaps: no update time on products and categories, no public reviews endpoint, no public campaign list, no category description, no brand pages. | Small steps; nothing is faked. | Later steps and API work. |
+
+## AG. Step 12g slice 1 (settings registry backend) decisions
+
+Full list S1 to S12: `docs/step12g-settings-notes.md`; contract `docs/settings-api.md`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| ST1 | One registry over the existing `PlatformSettings` table (no new table, no migration); about 80 code-defined definitions with type, range or allowed values, default, en and bn text, edit permission, restart flag and sensitive flag. | One place, nothing duplicated. | Definitions in Application. |
+| ST2 | Unknown keys and values outside the range are refused (`SETTINGS.UNKNOWN_KEY`, `SETTINGS.INVALID_VALUE`); appsettings entries (OTP rules, lockout, 2FA flag) and `Currency.Store` = BDT are listed read-only (409 `SETTINGS.READ_ONLY`). | BR-005 and the safety rules are not switches. | Move a value to the registry only with a decision. |
+| ST3 | Changing a setting needs `settings.system.view` to reach the endpoint plus the setting's own edit permission: `settings.feature.edit` (loyalty, notification channels), `payments.gateway.edit` (payments) or `settings.system.edit` (the rest). No new permission codes. | Reuse the access model. | Role screens. |
+| ST4 | Reads go through `ISettingsReader` with a singleton cache emptied on save and a 10-second lifetime; the cache is per process (one app server, as in the known issues). | Cheap reads, no stale values for long. | Shared cache when more servers exist. |
+| ST5 | A value equal to the default is stored as an explicit row; DELETE removes it (reset to default). Every change is audited with old and new value; sensitive values are never returned and are masked in the audit trail (none is sensitive today). | Clear history. | n/a |
+| ST6 | Gaps (cannot change at run time): OTP length, expiry, cooldown, attempts; feature flags for pre-orders, reviews, social desk, POS, reseller; storefront default language; display currencies and rates; fraud rules, delivery, tax and courier slots keep their own screens and tables. | Nothing faked. | Later steps. |
