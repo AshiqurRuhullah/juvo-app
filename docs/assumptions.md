@@ -817,3 +817,16 @@ Full list P1 to P12: `docs/step12i-privacy-notes.md`; contract `docs/privacy-api
 | PV6 | Not covered: customer self-service deletion, retention rules, order status-history reasons, risk-flag messages, shipment events, return photos, backups and logs outside the database. | Later steps. | Follow-up. |
 
 **Owner decisions needed (the cautious choice is implemented):** O1 how long invoices must be kept and whether buyer details on invoices must ever be blanked (kept now; VAT and tax rules are unverified); O2 store credit, points and gift card balances on a closed account are forfeited (decide whether to refuse or refund first); O3 accept that audit values are blanked for erasure requests; O4 a legal review of Bangladesh data-protection rules is still needed; O5 whether support staff may export (now Super Admin only).
+
+## AL. Step 12h slice 2 (jobs and health screens) decisions
+
+Notes: `docs/system-ui-notes.md`. Screens `/admin/system/jobs` and `/admin/system/health`; module `juvo-front/src/modules/system`. The menu now has a System parent row holding Settings, Background jobs and System health.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| SS1 | A live integration with no recorded call shows "No calls yet" in grey, never Healthy; status uses colour, icon and text. | Never show green for something unrecorded. | `common.tsx`. |
+| SS2 | The test button appears only where the API says `canTest` (the sandbox courier); other slots show a plain note. | Never message a person from a test button. | When real adapters get a ping. |
+| SS3 | Requeue and retry show a confirm, a limit of 100 per call and a per-item result (requeued or skipped with the reason). Buttons, checkboxes and the bulk bar need `system.jobs.retry`. | Clear consequences, no silent skips. | n/a |
+| SS4 | The status panel refreshes every 30 seconds and pauses while the tab is hidden; it says it is per server process and resets on restart. | Honest, cheap. | Step 14 monitoring. |
+| SS5 | The jobs page lists the failure kinds the platform does not record (courier bookings, webhooks). | Nothing is faked. | Add a failure record. |
+| SS6 | Observed: the error scrubber hides `api_key=` but not "api key=" with a space; the slow-routes table only holds requests of 1000 ms or more, so it is usually empty (shown honestly). | Listed for a backend follow-up. | Backend. |
