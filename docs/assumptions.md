@@ -788,3 +788,17 @@ Notes: `docs/settings-ui-notes.md`. Screen `/admin/settings`; module `juvo-front
 | SU3 | Switches for rewards, each payment method, auto-confirm of paid orders and OTP mode ask for a confirm that states the consequence. | Risky switches. | `setting-row.tsx`. |
 | SU4 | Text formats (time, email, web address) are checked by the server only, and its sentence is shown; history shows the latest 30 changes without filter or paging. | The API gives no format field and no paging. | API additions. |
 | SU5 | The existing Loyalty, Payments, Marketing and Notifications screens are unchanged and write the same stored rows. | One store, several views. | n/a |
+
+## AJ. Step 12h slice 1 (jobs and integration health backend) decisions
+
+Full list H1 to H15: `docs/step12h-system-notes.md`; contract `docs/system-api.md`.
+
+| # | Decision | Reason | How to change |
+| --- | --- | --- | --- |
+| SY1 | New permissions `system.jobs.view`, `system.jobs.retry`, `system.health.view` (Manager gets view and health; Super Admin all); the older unused `platform.job.*` codes stay in the catalogue because codes are never renamed. | Clear names. | Role screens. |
+| SY2 | Retry exists only where a failure is recorded: outbox messages (one or up to 100, one conditional update so a message the worker just finished is never overwritten) and failed notification sends (through the existing notification path, so consent and idempotency are unchanged). Job runs are view-only. | Never retry what is not recorded. | n/a |
+| SY3 | Failed courier bookings and failed webhooks are not recorded today, so only the last failure per courier or gateway is visible in the health row; no table was added because nothing could be retried from it that the booking screen does not already offer. | Small steps; nothing faked. | Add a failure record with a real retry later. |
+| SY4 | Health is recorded by decorators on every courier and payment adapter and by the notification handler; the state is in memory per process (resets on restart, does not see other servers). Status: disabled gives Disabled, a sandbox adapter Sandbox, a live one Healthy at 0 failures in a row, Degraded at 1 or 2, Down at 3 or more. | One server today; no table needed. | Persist when more servers exist (Step 14). |
+| SY5 | `POST /system/integrations/{key}/test` works only for the sandbox courier (a price quote); every other slot answers 409 `SYSTEM.NOT_SUPPORTED` because the payment sandbox has no safe ping and SMS, email and WhatsApp would message a person. | Never message a customer from a test button. | Add pings when real providers exist. |
+| SY6 | `GET /system/status` reads a ring buffer (last 500 requests, last 100 unhandled errors) with route template, status and duration only: no path, query string or user. Error text is scrubbed (first line, secrets, phone numbers and emails hidden, 300 characters). | Useful without leaking. | n/a |
+| SY7 | Not built: reporting of OTP and system mail outcomes to health, maps or push rows (no adapters), an alert for a stopped worker (it shows as an old last-run time), uptime alerts. | Step 14 with the hosting choice. | Later. |
